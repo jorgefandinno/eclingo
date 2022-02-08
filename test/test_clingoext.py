@@ -34,6 +34,10 @@ class Test(unittest.TestCase):
 
 
     def test_prg01(self):
+        """Checks that the models of program are models.
+        Only two are obtained and this depends on the random seed.
+        New versions of clingo may break it.
+        """
         program = """
         {a}.
         {b}.
