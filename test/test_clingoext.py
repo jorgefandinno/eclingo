@@ -52,7 +52,7 @@ class Test(unittest.TestCase):
         self.control.add("base", [], program)
         self.control.ground([("base", [])])
         with self.control.solve(yield_=True) as handle:
-            obtained_models = [model.symbols(shown=True) for model in handle]
+            obtained_models = [list(model.symbols(shown=True)) for model in handle]
         self.assert_models(models, obtained_models)
     
 
@@ -222,8 +222,8 @@ class Test(unittest.TestCase):
         ground_program.sort()
 
         parts = []
-        parts.append(("p", [1]))
-        parts.append(("p", [2]))
+        parts.append(("p", [Number(1)]))
+        parts.append(("p", [Number(2)]))
         self.control.ground(parts)
         self.assertEqual(sorted(self.control.ground_program.objects), ground_program)
 
