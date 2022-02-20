@@ -12,7 +12,8 @@ from eclingo.util.logger import silent_logger
 
 # from eclingo.grounder import EpistemicSignature
 
-from clingo.ast import  parse_string
+#new
+from clingo.ast import  parse_string, Location, Position
 
 
 a  = clingo.Function('a', [], True)
@@ -398,20 +399,37 @@ class Test(unittest.TestCase):
         program = """
             #show a/0.
             """
-        parsed_program = [
-            _ast.Program(    # #program base.
-                location = {'begin': {'filename': '<string>', 'line': 1, 'column': 1}, 'end': {'filename': '<string>', 'line': 1, 'column': 1}},
-                name = 'base',
+        # parsed_program = [
+        #     _ast.Program(    # #program base.
+        #         location = {'begin': {'filename': '<string>', 'line': 1, 'column': 1}, 'end': {'filename': '<string>', 'line': 1, 'column': 1}},
+        #         name = 'base',
+        #         parameters = []
+        #         ),
+        #     _ast.ShowSignature(    # #show a/0.
+        #         location = {'begin': {'filename': '<string>', 'line': 2, 'column': 13}, 'end': {'filename': '<string>', 'line': 2, 'column': 23}},
+        #         name = 'a',
+        #         arity = 0,
+        #         positive = True,
+        #         csp = False
+        #     )]
+
+        parsed_program =  [
+            _ast.Program(
+                Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=1)), 
+                name = 'base', 
                 parameters = []
                 ),
-            _ast.ShowSignature(    # #show a/0.
-                location = {'begin': {'filename': '<string>', 'line': 2, 'column': 13}, 'end': {'filename': '<string>', 'line': 2, 'column': 23}},
-                name = 'a',
-                arity = 0,
-                positive = True,
+			_ast.ShowSignature(
+			    Location(begin=Position(filename='<string>', line=2, column=13), end=Position(filename='<string>', line=2, column=23)), 
+                name = 'a', 
+                arity = 0, 
+                positive = 1, 
                 csp = False
-            )]
-        self.control.add_program(program)       
+                )]
+
+        self.control.add_program(program)      
+        print(sorted(map(str,parsed_program)))
+        print(sorted(map(str,self.control.parsed_program)))
         self.assertEqual(self.control.parsed_program, parsed_program)
 
 
@@ -419,19 +437,34 @@ class Test(unittest.TestCase):
         program = """
             #show -a/0.
             """
-        parsed_program = [
-            _ast.Program(    # #program base.
-                location = {'begin': {'filename': '<string>', 'line': 1, 'column': 1}, 'end': {'filename': '<string>', 'line': 1, 'column': 1}},
-                name = 'base',
+        # parsed_program = [
+        #     _ast.Program(    # #program base.
+        #         location = {'begin': {'filename': '<string>', 'line': 1, 'column': 1}, 'end': {'filename': '<string>', 'line': 1, 'column': 1}},
+        #         name = 'base',
+        #         parameters = []
+        #         ),
+        #     _ast.ShowSignature(    # #show a/0.
+        #         location = {'begin': {'filename': '<string>', 'line': 2, 'column': 13}, 'end': {'filename': '<string>', 'line': 2, 'column': 23}},
+        #         name = 'a',
+        #         arity = 0,
+        #         positive = False,
+        #         csp = False
+        #     )]
+
+        parsed_program =  [
+            _ast.Program(
+                Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=1)), 
+                name = 'base', 
                 parameters = []
                 ),
-            _ast.ShowSignature(    # #show a/0.
-                location = {'begin': {'filename': '<string>', 'line': 2, 'column': 13}, 'end': {'filename': '<string>', 'line': 2, 'column': 23}},
-                name = 'a',
-                arity = 0,
-                positive = False,
+		_ast.ShowSignature(
+		Location(begin=Position(filename='<string>', line=2, column=13), end=Position(filename='<string>', line=2, column=23)), 
+                name = 'a', 
+                arity = 0, 
+                positive = False, 
                 csp = False
-            )]
+                )]
+            
         self.control.add_program(program)
         self.assertEqual(self.control.parsed_program, parsed_program)
 
@@ -445,4 +478,6 @@ class Test(unittest.TestCase):
                 literal = stm.body[0]
                 self.assertEqual(literal.type, _ast.ASTType.Literal)
                 self.assertEqual(literal.atom.type, _ast.ASTType.TheoryAtom)
-        parse_string(program, test)
+        # clingo.parse_program(program, test)
+
+
