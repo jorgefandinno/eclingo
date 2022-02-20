@@ -6,27 +6,37 @@ import clingo as _clingo # type: ignore
 from clingo import MessageCode, Symbol, TruthValue
 from clingo import ast as _ast  # type: ignore # pylint: disable=import-error
 
+#from clingo.ast import Location, ProgramBuilder, Position, parse_string
+from clingo.ast import ProgramBuilder as PB
+
 from eclingo.util import astutil as _astutil
 from eclingo.util.groundprogram import ClingoExternal, ClingoOutputAtom, ClingoProject, ClingoRule, ClingoWeightRule, GroundProgram
 
 
 class ProgramBuilder():
 
-    def __init__(self, builder, program):
-        self.builder = builder
+    def __init__(self, control, program):
+        self.control = control
         self.program = program
+        self.bld = PB(self.control)
 
     def __enter__(self):
-        self.builder.__enter__()
+        # self.builder.__enter__()
+
+        self.bld.__enter__()
         return self
 
     def __exit__(self, type_, value, traceback):
-        return self.builder.__exit__(type_, value, traceback)
+        # return self.builder.__exit__(type_, value, traceback)
+
+        return self.bld.__exit__(type_, value, traceback)
+        # return self
+
 
     def add(self, statement: _ast.AST): # pylint: disable=no-member
         self.program.append(statement)
         try:
-            return self.builder.add(statement)
+            return self.bld.add(statement)
         except RuntimeError as error:
             if len(error.args) != 1:
                 raise error
@@ -70,88 +80,7 @@ class SymbolicBackend():
         return (self._add_symbol_and_return_its_code(symbol) for symbol in symbols)
 
     def _add_symbols_and_return_their_negated_codes(self, symbols: Iterable[Symbol]):
-        return (-x for x in self._add_symbols_and_return_their_codes(symbols))
-
-
-# class Backend():
-#     def __init__(self, backend, program):
-#         self.backend = backend
-#         self.program = program
-
-#     def __enter__(self):
-#         self.backend.__enter__()
-#         return self
-
-#     def __exit__(self, type_, value, traceback):
-#         return self.backend.__exit__(type_, value, traceback)
-
-#     def add_acyc_edge(self, node_u: int, node_v: int, condition: List[int]) -> None:
-#         return self.backend.add_acyc_edge(node_u, node_v, condition)
-
-#     def add_assume(self, literals: List[int]) -> None:
-#         self.program.add_assume(literals)
-#         return self.backend.add_assume(literals)
-
-#     def add_atom(self, symbol: Optional[Symbol] = None) -> int:
-#         if symbol is not None:
-#             atom = self.backend.add_atom(symbol)
-#             self.program.add(ClingoOutputAtom(symbol, atom))
-#         else:
-#             atom = self.backend.add_atom()
-#         return atom
-
-#     def add_external(self, atom: int, value: TruthValue = TruthValue.False_) -> None:
-#         self.program.add_external(atom, value)
-#         return self.backend.add_external(atom, value)
-
-#     def add_heuristic(self, atom: int, type_: HeuristicType, bias: int, priority: int, condition: List[int]) -> None:
-#         self.program.add_heuristic(atom, type_, bias, priority, condition)
-#         return self.backend.add_heuristic(atom, type_, bias, priority, condition)
-
-#     def add_minimize(self, priority: int, literals: List[Tuple[int, int]]) -> None:
-#         self.program.add_minimize(priority, literals)
-#         return self.backend.add_minimize(priority, literals)
-
-#     def add_project(self, atoms: List[int]) -> None:
-#         self.program.add_project(atoms)
-#         return self.backend.add_project(atoms)
-
-#     def add_rule(self, head: Iterable[int], body: Iterable[int] = [], choice: bool = False) -> None:  # pylint: disable=dangerous-default-value
-#         # self.program.add_rule(choice, list(head), list(body))
-#         return self.backend.add_rule(head, body, choice)
-
-#     def add_weight_rule(self, head: Iterable[int], lower: int, body: Iterable[Tuple[int, int]] = [], choice: bool = False) -> None: # pylint: disable=dangerous-default-value
-#         self.program.add_weight_rule(choice, list(head), list(body), lower)
-#         return self.backend.add_weight_rule(head, lower, body, choice)
-
-#     def add(self, obj: Union[ClingoObject, Iterable[ClingoObject]]) -> None:
-#         if isinstance(obj, ClingoRule):
-#             self.add_rule(obj.head, obj.body, obj.choice)
-#         elif isinstance(obj, ClingoOutputAtom):
-#             self.add_atom(obj.symbol)
-#         if isinstance(obj, ClingoProject):
-#             pass
-#             # self.add_projection(obj)
-#         elif isinstance(obj, ClingoAssume):
-#             pass
-#             # self.assumtions.append(obj)
-#         elif isinstance(obj, ClingoExternal):
-#             pass
-#             # self.add_external(obj)
-#         elif isinstance(obj, ClingoHeuristic):
-#             pass
-#             # self.heuristics.append(obj)
-#         elif isinstance(obj, ClingoMinimize):
-#             pass
-#             # self.minimizes.append(obj)
-#         elif isinstance(obj, ClingoWeightRule):
-#             pass
-#             # self.weight_rules.append(obj)
-#         elif isinstance(obj, Iterable): # pylint: disable=isinstance-second-argument-not-valid-type
-#             for obj2 in obj:
-#                 self.add(obj2)
-
-
+        return (-x for x in self._add_symbols_and_return_their_codes(symbols))  
 
 class Control(object):  # type: ignore
 
@@ -168,7 +97,7 @@ class Control(object):  # type: ignore
             _clingo.parse_program(program, builder.add)
 
     def builder(self) -> ProgramBuilder:
-        return ProgramBuilder(self.control.builder(), self.parsed_program)
+        return ProgramBuilder(self.control, self.parsed_program)
 
     def ground(self, parts: Iterable[Tuple[str, Iterable[Symbol]]], context: Any = None) -> None:
         self.control.ground(parts, context)
@@ -295,3 +224,4 @@ class ApplicationWrapper(_clingo.Application):
 
 def clingo_main(application: Application, files: Iterable[str] = ()) -> int:
     return _clingo.clingo_main(ApplicationWrapper(application), files)
+

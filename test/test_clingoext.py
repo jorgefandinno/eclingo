@@ -5,11 +5,14 @@ import clingo
 from clingo import Function, Number
 from clingo import ast as _ast
 
+
 import eclingo.util.clingoext as clingoext
 from eclingo.util.groundprogram import *
 from eclingo.util.logger import silent_logger
 
 # from eclingo.grounder import EpistemicSignature
+
+from clingo.ast import  parse_string
 
 
 a  = clingo.Function('a', [], True)
@@ -248,15 +251,19 @@ class Test(unittest.TestCase):
         ground_program.sort()
 
         with self.control.builder() as builder:
-            clingo.parse_program(program, builder.add)       
+            parse_string(program, builder.add)
 
+        print(parsed_program)
+        print(sorted(map(str,self.control.parsed_program)))
         self.assertEqual(sorted(map(str,self.control.parsed_program)), parsed_program)
 
         parts = []
-        parts.append(("p", [1]))
-        parts.append(("p", [2]))
+        parts.append(("p", [Number(1)]))
+        parts.append(("p", [Number(2)]))
         self.control.ground(parts)
 
+        print("Ground program:")
+        print(sorted(self.control.ground_program.objects))
         self.assertEqual(sorted(self.control.ground_program.objects), ground_program)
 
 
@@ -281,13 +288,13 @@ class Test(unittest.TestCase):
         ground_program.sort()
 
         with self.control.builder() as builder:
-            clingo.parse_program(program, builder.add)       
+            parse_string(program, builder.add)       
 
         self.assertEqual(sorted(map(str,self.control.parsed_program)), parsed_program)
 
         parts = []
-        parts.append(("base", [1]))
-        parts.append(("base", [2]))
+        parts.append(("base", [Number(1)]))
+        parts.append(("base", [Number(2)]))
         self.control.ground(parts)
 
         self.assertEqual(sorted(self.control.ground_program.objects), ground_program)
@@ -315,8 +322,8 @@ class Test(unittest.TestCase):
         self.control.add("base", ["n", "m"], program)
 
         parts = []
-        parts.append(("base", [1,3]))
-        parts.append(("base", [11,12]))
+        parts.append(("base", [Number(1),Number(3)]))
+        parts.append(("base", [Number(11),Number(12)]))
         self.control.ground(parts)
         self.assertEqual(sorted(self.control.ground_program.objects), ground_program)
 
@@ -335,8 +342,8 @@ class Test(unittest.TestCase):
         ground_program.sort()
 
         parts = []
-        parts.append(("p", [1,5]))
-        parts.append(("p", [2]))
+        parts.append(("p", [Number(1),Number(5)]))
+        parts.append(("p", [Number(2)]))
         self.control.ground(parts)
         # pprint(sorted(self.control.ground_program.objects))
         self.assertEqual(sorted(self.control.ground_program.objects), ground_program)
@@ -438,4 +445,4 @@ class Test(unittest.TestCase):
                 literal = stm.body[0]
                 self.assertEqual(literal.type, _ast.ASTType.Literal)
                 self.assertEqual(literal.atom.type, _ast.ASTType.TheoryAtom)
-        clingo.parse_program(program, test)
+        parse_string(program, test)
