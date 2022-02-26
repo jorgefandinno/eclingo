@@ -88,7 +88,7 @@ class Test(unittest.TestCase):
 
     def test_prg01_pretty_ground_program(self):
         program = """
-        {a}.
+        a.
         {b}.
         c :- a.
         #project c.
@@ -99,6 +99,9 @@ class Test(unittest.TestCase):
 
         self.control.add("base", [], program)
         self.control.ground([("base", [])])
+
+        print(type(self.control.ground_program))
+        print(self.control.ground_program)
         self.assertEqual(str(self.control.ground_program).replace(' ','').replace('\n',''), program.replace(' ','').replace('\n',''))
 
 
@@ -155,6 +158,8 @@ class Test(unittest.TestCase):
         x_4 :- a.
         #project c.
         """     
+
+
 
         self.assertEqual(str(self.control.ground_program).replace(' ','').replace('\n',''), program2.replace(' ','').replace('\n',''))
 
@@ -391,7 +396,6 @@ class Test(unittest.TestCase):
 
         self.control.add("base", [], program)
         self.control.ground([("base", [])])
-        # pprint(sorted(self.control.ground_program.objects))
         self.assertEqual(sorted(self.control.ground_program.objects), ground_program)
 
 
@@ -427,9 +431,7 @@ class Test(unittest.TestCase):
                 csp = False
                 )]
 
-        self.control.add_program(program)      
-        print(sorted(map(str,parsed_program)))
-        print(sorted(map(str,self.control.parsed_program)))
+        self.control.add_program(program)
         self.assertEqual(self.control.parsed_program, parsed_program)
 
 
@@ -478,6 +480,6 @@ class Test(unittest.TestCase):
                 literal = stm.body[0]
                 self.assertEqual(literal.type, _ast.ASTType.Literal)
                 self.assertEqual(literal.atom.type, _ast.ASTType.TheoryAtom)
-        # clingo.parse_program(program, test)
+        clingo.parse_program(program, test)
 
 
