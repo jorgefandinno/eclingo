@@ -1,5 +1,4 @@
 import unittest
-from pprint import pprint
 
 import clingo
 from clingo import Function, Number
@@ -10,9 +9,6 @@ import eclingo.util.clingoext as clingoext
 from eclingo.util.groundprogram import *
 from eclingo.util.logger import silent_logger
 
-# from eclingo.grounder import EpistemicSignature
-
-#new
 from clingo.ast import  parse_string, Location, Position
 
 
@@ -88,7 +84,7 @@ class Test(unittest.TestCase):
 
     def test_prg01_pretty_ground_program(self):
         program = """
-        a.
+        {a}.
         {b}.
         c :- a.
         #project c.
@@ -100,8 +96,6 @@ class Test(unittest.TestCase):
         self.control.add("base", [], program)
         self.control.ground([("base", [])])
 
-        print(type(self.control.ground_program))
-        print(self.control.ground_program)
         self.assertEqual(str(self.control.ground_program).replace(' ','').replace('\n',''), program.replace(' ','').replace('\n',''))
 
 
@@ -135,7 +129,7 @@ class Test(unittest.TestCase):
         self.assertEqual(sorted(self.control.ground_program.objects), ground_program)
 
 
-    def test_prg01_pertty_ground_program_add(self):
+    def test_prg01_pretty_ground_program_add(self):
         program = """
         {a}.
         {b}.
@@ -158,8 +152,6 @@ class Test(unittest.TestCase):
         x_4 :- a.
         #project c.
         """     
-
-
 
         self.assertEqual(str(self.control.ground_program).replace(' ','').replace('\n',''), program2.replace(' ','').replace('\n',''))
 
@@ -259,8 +251,6 @@ class Test(unittest.TestCase):
         with self.control.builder() as builder:
             parse_string(program, builder.add)
 
-        print(parsed_program)
-        print(sorted(map(str,self.control.parsed_program)))
         self.assertEqual(sorted(map(str,self.control.parsed_program)), parsed_program)
 
         parts = []
@@ -268,8 +258,6 @@ class Test(unittest.TestCase):
         parts.append(("p", [Number(2)]))
         self.control.ground(parts)
 
-        print("Ground program:")
-        print(sorted(self.control.ground_program.objects))
         self.assertEqual(sorted(self.control.ground_program.objects), ground_program)
 
 
@@ -351,7 +339,6 @@ class Test(unittest.TestCase):
         parts.append(("p", [Number(1),Number(5)]))
         parts.append(("p", [Number(2)]))
         self.control.ground(parts)
-        # pprint(sorted(self.control.ground_program.objects))
         self.assertEqual(sorted(self.control.ground_program.objects), ground_program)
 
     def test_01(self):
@@ -403,19 +390,6 @@ class Test(unittest.TestCase):
         program = """
             #show a/0.
             """
-        # parsed_program = [
-        #     _ast.Program(    # #program base.
-        #         location = {'begin': {'filename': '<string>', 'line': 1, 'column': 1}, 'end': {'filename': '<string>', 'line': 1, 'column': 1}},
-        #         name = 'base',
-        #         parameters = []
-        #         ),
-        #     _ast.ShowSignature(    # #show a/0.
-        #         location = {'begin': {'filename': '<string>', 'line': 2, 'column': 13}, 'end': {'filename': '<string>', 'line': 2, 'column': 23}},
-        #         name = 'a',
-        #         arity = 0,
-        #         positive = True,
-        #         csp = False
-        #     )]
 
         parsed_program =  [
             _ast.Program(
@@ -439,19 +413,6 @@ class Test(unittest.TestCase):
         program = """
             #show -a/0.
             """
-        # parsed_program = [
-        #     _ast.Program(    # #program base.
-        #         location = {'begin': {'filename': '<string>', 'line': 1, 'column': 1}, 'end': {'filename': '<string>', 'line': 1, 'column': 1}},
-        #         name = 'base',
-        #         parameters = []
-        #         ),
-        #     _ast.ShowSignature(    # #show a/0.
-        #         location = {'begin': {'filename': '<string>', 'line': 2, 'column': 13}, 'end': {'filename': '<string>', 'line': 2, 'column': 23}},
-        #         name = 'a',
-        #         arity = 0,
-        #         positive = False,
-        #         csp = False
-        #     )]
 
         parsed_program =  [
             _ast.Program(
@@ -475,11 +436,14 @@ class Test(unittest.TestCase):
         program = """
             a :- &k{b}.
         """
+
         def test(stm):
-            if stm.type == _ast.ASTType.Rule:
+            if stm.ast_type == _ast.ASTType.Rule:
                 literal = stm.body[0]
-                self.assertEqual(literal.type, _ast.ASTType.Literal)
-                self.assertEqual(literal.atom.type, _ast.ASTType.TheoryAtom)
-        clingo.parse_program(program, test)
+                self.assertEqual(literal.ast_type, _ast.ASTType.Literal)
+                self.assertEqual(literal.atom.ast_type, _ast.ASTType.TheoryAtom)
+        
+        clingo.ast.parse_string(program, test)
+
 
 
