@@ -15,10 +15,19 @@ class Literal:
                 sign = Sign.NoSign
             else:
                 sign = Sign.Negation
+
         self.sign = sign
 
     def __repr__(self):
         return repr(self.sign) + repr(self.atom)
+    
+    def __str__(self):
+
+        if(self.sign==Sign.NoSign):
+            return str(self.atom)
+        
+        else:
+            return 'not ' + str(self.atom)
 
 
 @dataclass(eq=True, unsafe_hash=True, order=True)

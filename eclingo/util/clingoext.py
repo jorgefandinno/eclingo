@@ -6,11 +6,12 @@ import clingo as _clingo # type: ignore
 from clingo import MessageCode, Symbol, TruthValue
 from clingo import ast as _ast  # type: ignore # pylint: disable=import-error
 
-#from clingo.ast import Location, ProgramBuilder, Position, parse_string
 from clingo.ast import ProgramBuilder as PB
+from clingo.ast import  parse_string
 
 from eclingo.util import astutil as _astutil
 from eclingo.util.groundprogram import ClingoExternal, ClingoOutputAtom, ClingoProject, ClingoRule, ClingoWeightRule, GroundProgram
+
 
 
 class ProgramBuilder():
@@ -21,17 +22,13 @@ class ProgramBuilder():
         self.bld = PB(self.control)
 
     def __enter__(self):
-        # self.builder.__enter__()
 
         self.bld.__enter__()
         return self
 
     def __exit__(self, type_, value, traceback):
-        # return self.builder.__exit__(type_, value, traceback)
 
         return self.bld.__exit__(type_, value, traceback)
-        # return self
-
 
     def add(self, statement: _ast.AST): # pylint: disable=no-member
         self.program.append(statement)
@@ -94,7 +91,7 @@ class Control(object):  # type: ignore
 
     def add_program(self, program: str) -> None:
         with self.builder() as builder:
-            _clingo.parse_program(program, builder.add)
+            parse_string(program, builder.add)
 
     def builder(self) -> ProgramBuilder:
         return ProgramBuilder(self.control, self.parsed_program)
@@ -175,9 +172,6 @@ class Control(object):  # type: ignore
         if attr in self.__dict__:
             return getattr(self, attr)
         return getattr(self.control, attr)
-
-
-
 
 
 class Observer(_clingo.Observer):
