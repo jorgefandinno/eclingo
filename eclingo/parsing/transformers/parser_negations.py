@@ -7,13 +7,14 @@ from typing import Iterator, List, Set, Tuple
 from clingo import ast as _ast  # type: ignore
 
 from . import astutil as _astutil
-from . import transformer as _tf
+# from . import transformer as _tf
+from clingo.ast import Transformer
 
 # pylint: disable=all
 
 ####################################################################################
 
-class SimplifyStrongNegationsTransformer(_tf.Transformer):
+class SimplifyStrongNegationsTransformer(Transformer):
 
     def visit_UnaryOperation(self, x):
         if x.operator != _ast.UnaryOperator.Minus:
@@ -39,7 +40,7 @@ def simplify_strong_negations(stm: _ast.AST) -> _ast.AST:
 
 ####################################################################################
 
-class StrongNegationToAuxiliarTransformer(_tf.Transformer):
+class StrongNegationToAuxiliarTransformer(Transformer):
 
     def __init__(self, strong_negation_prefix="sn"):
         self.strong_negation_prefix = strong_negation_prefix
@@ -145,7 +146,7 @@ def strong_negation_auxiliary_rule_replacement(replacement: SnReplacementType) -
 ####################################################################################
 
 
-class DefaultNegationsToAuxiliarTransformer(_tf.Transformer):
+class DefaultNegationsToAuxiliarTransformer(Transformer):
 
     def __init__(self, default_negation_prefix="not"):
         self.default_negation_prefix = default_negation_prefix
@@ -197,6 +198,7 @@ def make_default_negation_auxiliar(stm: _ast.AST) -> Tuple[_ast.AST, NotReplacem
       * the first element is the auxiliary literal replacing the negated literal
       * the second element is the original literal replaced
     """
+    print("make default negation auxillar")
     trn = DefaultNegationsToAuxiliarTransformer()
     stm = trn.visit(stm)
     replacement = trn.replacement

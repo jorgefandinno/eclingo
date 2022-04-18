@@ -10,6 +10,10 @@ from . import astutil as _astutil
 
 # {{{1 parse_raw_formula
 
+
+#new
+from clingo.ast import Transformer
+
 class TheoryParser:
     """
     Parser for literals.
@@ -100,7 +104,7 @@ def parse_raw_formula(x):
 
 # {{{1 theory_term -> term
 
-class TheoryTermToTermTransformer(_tf.Transformer):
+class TheoryTermToTermTransformer(Transformer):
     """
     This class transforms a given theory term into a plain term.
     """
@@ -157,7 +161,7 @@ def theory_term_to_term(x):
 
 # {{{1 theory_term -> symbolic_atom
 
-class TheoryTermToLiteralTransformer(_tf.Transformer):
+class TheoryTermToLiteralTransformer(Transformer):
     """
     Turns the given theory term into an atom.
     """
@@ -221,4 +225,5 @@ def theory_term_to_literal(x, positive=True, sign=_ast.Sign.NoSign):
     """
     Convert the given theory term into an literal.
     """
+    print("theopry term---------------",x)
     return TheoryTermToLiteralTransformer()(x, positive, sign)

@@ -12,6 +12,10 @@ from eclingo.util import clingoext as _clingoext
 from .mappings import EpistemicSymbolToTestSymbolMapping, SymbolToEpistemicLiteralMapping, SymbolToEpistemicLiteralMappingUsingProgramLiterals, SymbolToEpistemicLiteralMappingUsingShowStatements
 
 
+#new
+# from clingo.ast import ProgramBuilder as _ProgramBuilder
+
+
 class ASTParsedObject():
     pass
 
@@ -30,8 +34,9 @@ class ShowSignature(set):
 
 class ProgramBuilder(_clingoext.ProgramBuilder):
 
-    def __init__(self, builder, program, show_signature):
-        super().__init__(builder, program)
+    def __init__(self, control, program, show_signature):
+        # super().__init__(builder, program)
+        super().__init__(control, program)
         self.show_signature = show_signature
 
     def add(self, statement: ASTObject):
@@ -52,7 +57,8 @@ class InternalStateControl(_clingoext.Control):
         self.show_mapping = SymbolToEpistemicLiteralMapping()
 
     def builder(self) -> ProgramBuilder:
-        return ProgramBuilder(self.control.builder(), self.parsed_program, self.show_signature)
+        # return ProgramBuilder(self.control.builder(), self.parsed_program, self.show_signature)
+        return ProgramBuilder(self.control, self.parsed_program, self.show_signature)
 
     def show_symbolic_atoms(self) -> Iterator[SymbolicAtom]:
         for show_statement in self.show_signature:

@@ -11,7 +11,7 @@ from clingo.ast import Sign
 import eclingo.prefixes as _prefixes
 
 from . import astutil as _astutil
-from . import transformer as _tf
+# from . import transformer as _tf
 from .parser_negations import (NotReplacementType, SnReplacementType,
                                default_negation_auxiliary_rule_replacement,
                                make_default_negation_auxiliar,
@@ -19,12 +19,19 @@ from .parser_negations import (NotReplacementType, SnReplacementType,
 from .theory_parser_literals import \
     theory_term_to_literal as _theory_term_to_literal
 
+
+#new
+from clingo.ast import Transformer
+
+from clingo.ast import TheoryAtomType, parse_string
+# from clingox.ast import  TheoryParser
+
 ####################################################################################
 
 # pylint: disable=unused-argument
 # pylint: disable=invalid-name
 
-class ApplyToEpistemicAtomsElementsTransformer(_tf.Transformer):
+class ApplyToEpistemicAtomsElementsTransformer(Transformer):
 
     def __init__(self, fun, update_fun=None):
         self.fun = fun
@@ -46,7 +53,11 @@ class ApplyToEpistemicAtomsElementsTransformer(_tf.Transformer):
 ####################################################################################
 
 def parse_epistemic_literals_elements(rule):
-    return ApplyToEpistemicAtomsElementsTransformer(_theory_term_to_literal)(rule)
+    print("rule",rule)
+    a = ApplyToEpistemicAtomsElementsTransformer(_theory_term_to_literal)
+    b=a(rule)
+    return b
+    # return ApplyToEpistemicAtomsElementsTransformer(_theory_term_to_literal)(rule)
 
 ####################################################################################
 
@@ -63,7 +74,15 @@ def make_strong_negation_auxiliar_in_epistemic_literals(stm: _ast.AST) -> Tuple[
     """
     replacement = set()
     trn = ApplyToEpistemicAtomsElementsTransformer(make_strong_negations_auxiliar, replacement.update)
-    stm = trn.visit(stm)
+
+    # if isinstance(stm,_ast.ASTSequence):
+    #     stm = trn.visit_sequence(stm)
+    
+    # else:
+    #     stm = trn.visit(stm)
+
+    stm = trn.visit_sequence(stm)
+
     return (stm, replacement)
 
 
@@ -81,14 +100,14 @@ def make_default_negation_auxiliar_in_epistemic_literals(stm: _ast.AST) -> Tuple
     """
     replacement = []
     trn = ApplyToEpistemicAtomsElementsTransformer(make_default_negation_auxiliar, replacement.extend)
-    stm = trn.visit(stm)
+    stm = trn.visit_sequence(stm)
     return (stm, replacement)
 
 
 ####################################################################################
 
 
-class TheoryBuildGuard(_astutil.Visitor):
+class TheoryBuildGuard(Transformer):
 
     def __init__(self, user_prefix="u"):
         self.guard = []
@@ -110,7 +129,7 @@ class TheoryBuildGuard(_astutil.Visitor):
 
 def build_guard(body):
     t = TheoryBuildGuard()
-    t.visit(body)
+    t.visit_sequence(body)
     return t.guard
 
 
@@ -119,7 +138,7 @@ def build_guard(body):
 def _prefix_to_atom_names(prefix, name):
     return prefix + name
 
-class PreapendPrefixTransformer(_tf.Transformer):
+class PreapendPrefixTransformer(Transformer):
 
     def __init__(self, prefix="", skip=None):
         if skip is None:
@@ -140,11 +159,24 @@ class PreapendPrefixTransformer(_tf.Transformer):
         return _ast.Function(stm.location, _prefix_to_atom_names(self.prefix, stm.name), stm.arguments, stm.external)
 
     def visit_TheoryAtom(self, stm, loc="body"):
+        
+        #old
+        # elements = stm.elements
+        # if stm.term.name == "k" and not stm.term.arguments:
+        #     elements = self.visit(elements, "k")
+        # if elements is stm.elements:
+        #     return stm
+        # return _ast.TheoryAtom(stm.location, stm.term, elements, stm.guard)
+
+        #new
+        print("stm-----",type(stm))
         elements = stm.elements
+        print("elements:", dir(elements))
         if stm.term.name == "k" and not stm.term.arguments:
-            elements = self.visit(elements, "k")
+            elements = self.visit_children(elements, "k")
         if elements is stm.elements:
             return stm
+        print("visited elem-----",elements)
         return _ast.TheoryAtom(stm.location, stm.term, elements, stm.guard)
 
     # def visit_Aggregate(self, stm, loc="body"):
@@ -168,7 +200,7 @@ def prefix_to_atom_names(stm, prefix="", skip=None):
 ####################################################################################
 
 
-class EpistemicLiteralNegationsToAuxiliarTransformer(_tf.Transformer):
+class EpistemicLiteralNegationsToAuxiliarTransformer(Transformer):
 
     def __init__(self, user_prefix="u"):
         self.user_prefix = user_prefix
@@ -250,10 +282,13 @@ def parse_epistemic_literals_negations(stm: _ast.AST, user_prefix: str ="u") -> 
 ####################################################################################
 
 def ensure_literal(stm):
-    if stm.type == _ast.ASTType.Symbol or stm.type == _ast.ASTType.Function:
+    
+    if stm.ast_type == _ast.ASTType.SymbolicTerm or stm.ast_type == _ast.ASTType.Function:
+    # if stm.ast_type == _ast.ASTType.Symbol or stm.ast_type == _ast.ASTType.Function:
         stm = _ast.SymbolicAtom(stm)
-    if stm.type == _ast.ASTType.SymbolicAtom:
+    if stm.ast_type == _ast.ASTType.SymbolicAtom:
         stm = _ast.Literal(stm.term.location, _ast.Sign.NoSign, stm)
+
     return stm
 
 def ensure_literals(stms):
@@ -262,7 +297,7 @@ def ensure_literals(stms):
     else:
         return [ensure_literal(stm) for stm in stms]
 
-class EClingoTransformer(_tf.Transformer):
+class EClingoTransformer(Transformer):
 
     def __init__(self, k_prefix="k"):
         self.k_prefix = k_prefix
@@ -270,8 +305,10 @@ class EClingoTransformer(_tf.Transformer):
         self.aux_rules = []
 
     def visit_Rule(self, x, loc="body"):
+
         head = ensure_literals(self.visit(x.head, loc="head"))
-        body = ensure_literals(self.visit(x.body, loc="body"))
+        body = ensure_literals(self.visit_sequence(x.body, loc="body"))
+
         if head is not x.head or body is not x.body:
             x = copy(x)
             x.head = head
@@ -281,7 +318,6 @@ class EClingoTransformer(_tf.Transformer):
                 aux_rule_head       = _ast.Aggregate(x.location, None, [conditional_literal], None)
                 aux_rule            = _ast.Rule(x.location, aux_rule_head, [nested_literal])
                 self.aux_rules.append(aux_rule)
-
         return x
 
     def visit_TheoryAtom(self, atom, loc="body"):
@@ -294,7 +330,9 @@ class EClingoTransformer(_tf.Transformer):
 
 
 def _replace_epistemic_literals_by_auxiliary_atoms(stm: _ast.AST, k_prefix: str = "k") -> List[_ast.AST]:
+
     trans = EClingoTransformer(k_prefix)
+
     rule = trans(stm)
     rules = [rule] + trans.aux_rules
     return rules
@@ -312,7 +350,7 @@ def replace_epistemic_literals_by_auxiliary_atoms(stms: ASTsType, k_prefix: str 
 ####################################################################################
 
 
-class G94Transformer(_tf.Transformer):
+class G94Transformer(Transformer):
 
     def visit_Literal(self, stm, loc="body"):
         is_nonnegative_epistemic_listeral = (

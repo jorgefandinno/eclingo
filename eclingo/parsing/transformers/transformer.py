@@ -152,8 +152,8 @@ class Transformer:
         which are passed to node-specific visit functions and to the visit
         function called for child nodes.
         """
-        if hasattr(x, "type"):
-            attr = "visit_" + str(x.type)
+        if hasattr(x, "ast_type"):
+            attr = "visit_" + str(x.ast_type).replace('ASTType.', '')
             if hasattr(self, attr):
                 return getattr(self, attr)(x, *args, **kwargs)
             else:
