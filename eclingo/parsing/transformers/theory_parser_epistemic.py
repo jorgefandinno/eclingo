@@ -53,7 +53,6 @@ class ApplyToEpistemicAtomsElementsTransformer(Transformer):
 ####################################################################################
 
 def parse_epistemic_literals_elements(rule):
-    print("rule",rule)
     a = ApplyToEpistemicAtomsElementsTransformer(_theory_term_to_literal)
     b=a(rule)
     return b
@@ -123,14 +122,11 @@ class TheoryBuildGuard(Transformer):
             self.positive = False
 
     def visit_TheoryAtom(self, atom, loc="body"):
-        print("visited theory atom-----:", atom)
-        print(atom.elements)
         if atom.term.name == "k" and not atom.term.arguments:
             self.visit_sequence(atom.elements, "k")
 
 
 def build_guard(body):
-    print("body-------",body)
     t = TheoryBuildGuard()
     t.visit_sequence(body)
     return t.guard
@@ -173,19 +169,10 @@ class PreapendPrefixTransformer(Transformer):
 
         #new
         elements = stm.elements
-        # print("elements:", dir(elements))
-        print()
-        print("before")
-        print("elements:", (elements))
         if stm.term.name == "k" and not stm.term.arguments:
             elements = self.visit_sequence(elements, "k")
-        print("\nafter")
-        print("elements",elements)
-        print("stm-----",stm.elements)
         if elements is stm.elements:
-            print("its tru")
             return stm
-        # print("visited elem-----",elements)
         return _ast.TheoryAtom(stm.location, stm.term, elements, stm.guard)
 
     # def visit_Aggregate(self, stm, loc="body"):
@@ -334,7 +321,6 @@ class EClingoTransformer(Transformer):
         if atom.term.name == "k" and not atom.term.arguments:
             # nested_literal = atom.elements[0].tuple[0]
             nested_literal = atom.elements[0].terms[0]
-            print("nested literal",nested_literal.ast_type)
             aux_atom = prefix_to_atom_names(nested_literal.atom, _prefixes.EPISTEMIC_PREFIX)
             self.epistemic_replacements.append((nested_literal, aux_atom))
             return aux_atom

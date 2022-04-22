@@ -36,31 +36,19 @@ class ProgramParser(object):
 def literal_statment_from_str(s):
     parser = ProgramParser()
     parser.parse_statement(":- " + s)
-    # print("this-----")
-    # print(parser._statements[1].body[0])
-    # print()
     return parser._statements[1].body[0]
 
 def theory_atom_statment_from_str(s):
-    print("atom")
-    print(literal_statment_from_str(s).atom)
     return literal_statment_from_str(s).atom
 
 class Test(unittest.TestCase):
 
     def test_epistemic_atom(self):
-        statement = theory_atom_statment_from_str("not &k{a,b}.")
-        print("----",statement)
-        print("----",statement.elements)
+        statement = theory_atom_statment_from_str("&k{a}.")
         self.assertEqual(len(statement.elements), 1)
         element = statement.elements[0]
-        print("element")
-        print(element)
-        # print("-----:",ast_type(element))
         self.assertEqual(ast_type(element), _ast.ASTType.TheoryAtomElement)
         terms = theory_atom_element_terms(element)
-        print("tttt")
-        print(terms[0], terms[1])
         self.assertEqual(len(terms), 1)
         term = terms[0]
 
@@ -77,8 +65,6 @@ class Test(unittest.TestCase):
         terms = theory_atom_element_terms(element)
         self.assertEqual(len(terms), 1)
         term = terms[0]
-        # print(ast_type(term))
-
         self.assertEqual(ast_type(term), _ast.ASTType.Literal)
 
 

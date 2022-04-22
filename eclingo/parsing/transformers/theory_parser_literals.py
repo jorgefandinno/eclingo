@@ -225,5 +225,4 @@ def theory_term_to_literal(x, positive=True, sign=_ast.Sign.NoSign):
     """
     Convert the given theory term into an literal.
     """
-    print("theopry term---------------",x)
     return TheoryTermToLiteralTransformer()(x, positive, sign)
