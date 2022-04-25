@@ -225,4 +225,8 @@ def theory_term_to_literal(x, positive=True, sign=_ast.Sign.NoSign):
     """
     Convert the given theory term into an literal.
     """
+    # print(x.ast_type)
+    # print(TheoryTermToLiteralTransformer()(x, positive, sign).ast_type)
+    # print(positive)
+    # print(sign)
     return TheoryTermToLiteralTransformer()(x, positive, sign)

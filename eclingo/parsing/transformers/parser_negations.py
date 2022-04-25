@@ -198,7 +198,7 @@ def make_default_negation_auxiliar(stm: _ast.AST) -> Tuple[_ast.AST, NotReplacem
       * the first element is the auxiliary literal replacing the negated literal
       * the second element is the original literal replaced
     """
-    print("make default negation auxillar")
+    # print("make default negation auxillar")
     trn = DefaultNegationsToAuxiliarTransformer()
     stm = trn.visit(stm)
     replacement = trn.replacement
