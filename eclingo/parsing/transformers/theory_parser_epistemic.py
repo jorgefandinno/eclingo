@@ -114,7 +114,10 @@ class TheoryBuildGuard(Transformer):
         self.positive = True
 
     def visit_Literal(self, x, loc="body"):
+
+        print("literal--",x.atom)
         if loc != "k":
+
             self.positive = True
             self.visit(x.atom)
             if self.positive:
@@ -123,6 +126,7 @@ class TheoryBuildGuard(Transformer):
             self.positive = False
 
     def visit_TheoryAtom(self, atom, loc="body"):
+        print("visit theory atom elements----",atom.elements)
         if atom.term.name == "k" and not atom.term.arguments:
             self.visit_sequence(atom.elements, "k")
 
@@ -146,7 +150,7 @@ class PreapendPrefixTransformer(Transformer):
         self.prefix = prefix
         self.skip = skip
 
-    def visit_Symbol(self, stm, loc="body"):
+    def visit_SymbolicTerm(self, stm, loc="body"):
         if stm.symbol.type != _clingo.SymbolType.Function:
             return stm
         if (stm.symbol.name, 0) in self.skip:

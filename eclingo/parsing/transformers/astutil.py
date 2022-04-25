@@ -83,7 +83,7 @@ class SignatureVisitor(Visitor):
     def __init__(self):
         self.signature = None
 
-    def visit_Symbol(self, stm):
+    def visit_SymbolicTerm(self, stm):
         self.signature = (stm.name, 0)
 
     def visit_Function(self, stm):

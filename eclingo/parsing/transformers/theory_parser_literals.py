@@ -166,7 +166,7 @@ class TheoryTermToLiteralTransformer(Transformer):
     Turns the given theory term into an atom.
     """
 
-    def visit_Symbol(self, x, positive, sign):
+    def visit_SymbolicTerm(self, x, positive, sign):
         """
         Maps functions to atoms.
 
