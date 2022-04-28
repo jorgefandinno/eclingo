@@ -19,12 +19,12 @@ class SimplifyStrongNegationsTransformer(Transformer):
     def visit_UnaryOperation(self, x):
         if x.operator != _ast.UnaryOperator.Minus:
             raise RuntimeError("invalid term: {}".format(_tf.str_location(x.location)))
-        elif x.argument.type == _ast.ASTType.UnaryOperation:
+        elif x.argument.ast_type == _ast.ASTType.UnaryOperation:
             if x.argument.operator != '-':
                 raise RuntimeError("invalid term: {}".format(_tf.str_location(x.location)))
             else:
                 return self.visit(x.argument.argument)
-        elif x.argument.type != _ast.ASTType.Function:
+        elif x.argument.ast_type != _ast.ASTType.Function:
                 raise RuntimeError("invalid term: {}".format(_tf.str_location(x.location)))
         else:
             return x
@@ -49,7 +49,7 @@ class StrongNegationToAuxiliarTransformer(Transformer):
     def visit_UnaryOperation(self, x):
         if x.operator != _ast.UnaryOperator.Minus:
             raise RuntimeError("invalid term: {}".format(_tf.str_location(x.location)))
-        elif x.argument.type != _ast.ASTType.Function:
+        elif x.argument.ast_type != _ast.ASTType.Function:
             raise RuntimeError("invalid term: {}".format(_tf.str_location(x.location)))
         else:
             x = simplify_strong_negations(x)
@@ -153,7 +153,7 @@ class DefaultNegationsToAuxiliarTransformer(Transformer):
         self.replacement = []
 
     def visit_Literal(self, x):
-        if x.atom.type == _ast.ASTType.BooleanConstant:
+        if x.atom.ast_type == _ast.ASTType.BooleanConstant:
             return x
 
         atom = self.visit(x.atom)
