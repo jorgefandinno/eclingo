@@ -23,7 +23,6 @@ class Test(unittest.TestCase):
         
         s = [ClingoOutputAtom(symbol=Function("b", [Number(1)], True), atom=0, order=0)]
         p = PrettyGroundProgram(s)
-        print(p)
 
         self.assertEqual(str(p),'b(1).')
 

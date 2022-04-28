@@ -4,6 +4,8 @@ from typing import Callable, Iterable, List
 import clingo as _clingo
 from clingo import ast as _ast
 
+from clingo.ast import Location, Position
+
 import eclingo.prefixes as _prefixes
 from eclingo.internal_states import ASTObject, ShowStatement
 
@@ -29,7 +31,8 @@ _CallbackType = Callable[[ASTObject], None]
 class _ProgramParser(object):
 
     def __init__(self, program: str, callback: _CallbackType, parameters: List[str] = [], name: str = "base", semantics = "c19-1"): # pylint: disable=dangerous-default-value
-        self.initial_location = {'begin': {'filename': '<string>', 'line': 1, 'column': 1}, 'end': {'filename': '<string>', 'line': 1, 'column': 1}}
+        # self.initial_location = {'begin': {'filename': '<string>', 'line': 1, 'column': 1}, 'end': {'filename': '<string>', 'line': 1, 'column': 1}}
+        self.initial_location = Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=1))
         self.program  = program
         self.callback = callback
         self.parameters = [_ast.Id(self.initial_location, x) for x in parameters] # pylint: disable=no-member
@@ -46,7 +49,6 @@ class _ProgramParser(object):
     def _parse_statement(self, statement: _ast.AST) -> None: # pylint: disable=no-member
         statement = _parse_epistemic_literals_elements(statement)
         statement = _prefix_to_atom_names(statement, _prefixes.U_PREFIX)
-        print("\nparsing new Statement---", statement)
         # this avoids collitions between user predicates and auxiliary predicates
         if statement.ast_type == _ast.ASTType.Rule: # pylint: disable=no-member
             for rule in self._parse_rule(statement):

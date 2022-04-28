@@ -7,8 +7,7 @@ from typing import Iterator, List, Set, Tuple
 from clingo import ast as _ast  # type: ignore
 
 from . import astutil as _astutil
-# from . import transformer as _tf
-from clingo.ast import Transformer
+from clingo.ast import Transformer, Location, Position
 
 # pylint: disable=all
 
@@ -17,15 +16,15 @@ from clingo.ast import Transformer
 class SimplifyStrongNegationsTransformer(Transformer):
 
     def visit_UnaryOperation(self, x):
-        if x.operator != _ast.UnaryOperator.Minus:
-            raise RuntimeError("invalid term: {}".format(_tf.str_location(x.location)))
+        if x.operator_type != _ast.UnaryOperator.Minus:
+            raise RuntimeError("invalid term: {}".format(x.location))
         elif x.argument.ast_type == _ast.ASTType.UnaryOperation:
             if x.argument.operator != '-':
-                raise RuntimeError("invalid term: {}".format(_tf.str_location(x.location)))
+                raise RuntimeError("invalid term: {}".format(x.location))
             else:
                 return self.visit(x.argument.argument)
         elif x.argument.ast_type != _ast.ASTType.Function:
-                raise RuntimeError("invalid term: {}".format(_tf.str_location(x.location)))
+                raise RuntimeError("invalid term: {}".format(x.location))
         else:
             return x
 
@@ -47,10 +46,10 @@ class StrongNegationToAuxiliarTransformer(Transformer):
         self.replacement = set()
 
     def visit_UnaryOperation(self, x):
-        if x.operator != _ast.UnaryOperator.Minus:
-            raise RuntimeError("invalid term: {}".format(_tf.str_location(x.location)))
+        if x.operator_type != _ast.UnaryOperator.Minus:
+            raise RuntimeError("invalid term: {}".format(x.location))
         elif x.argument.ast_type != _ast.ASTType.Function:
-            raise RuntimeError("invalid term: {}".format(_tf.str_location(x.location)))
+            raise RuntimeError("invalid term: {}".format(x.location))
         else:
             x = simplify_strong_negations(x)
             name      = x.argument.name
@@ -66,8 +65,13 @@ class StrongNegationToAuxiliarTransformer(Transformer):
 
 class StrongNegationReplacement(Set[Tuple[str, int, str]]):
     
-    location = {'begin': {'line': 1, 'column': 1, 'filename': '<replace_strong_negation_by_auxiliary_atoms>'},
-                'end':   {'line': 1, 'column': 1, 'filename': '<replace_strong_negation_by_auxiliary_atoms>'}}
+    # location = {'begin': {'line': 1, 'column': 1, 'filename': '<replace_strong_negation_by_auxiliary_atoms>'},
+    #             'end':   {'line': 1, 'column': 1, 'filename': '<replace_strong_negation_by_auxiliary_atoms>'}}
+
+    location = Location(
+                    begin=Position(filename='<replace_strong_negation_by_auxiliary_atoms>', line=1, column=1), 
+                    end=Position(filename='<replace_strong_negation_by_auxiliary_atoms>', line=1, column=1) 
+                )
 
     def get_auxiliary_rules(self) -> Iterator[_ast.AST]:
         """
@@ -137,8 +141,13 @@ def strong_negation_auxiliary_rule_replacement(replacement: SnReplacementType) -
         aux_name(X1, ..., Xn) :- -name(X1, ... , Xn).
     for each tuple in replacement
     """
-    location = {'begin': {'line': 1, 'column': 1, 'filename': '<transform>'},
-                'end':   {'line': 1, 'column': 1, 'filename': '<transform>'}}
+    # location = {'begin': {'line': 1, 'column': 1, 'filename': '<transform>'},
+    #             'end':   {'line': 1, 'column': 1, 'filename': '<transform>'}}
+
+    location = Location(
+                    begin=Position(filename='<transform>', line=1, column=1), 
+                    end=Position(filename='<transform>', line=1, column=1) 
+                )
     for name, arity, aux_name in replacement:
         yield strong_negation_auxiliary_rule(location, name, arity, aux_name)
 
@@ -173,10 +182,11 @@ class DefaultNegationsToAuxiliarTransformer(Transformer):
         else:
             sign = ""
        
-        location  = atom.term.location
-        aux_name  = sign + atom.term.name
-        arguments = atom.term.arguments
-        external  = atom.term.external
+        # location  = atom.term.location
+        location  = atom.symbol.location
+        aux_name  = sign + atom.symbol.name
+        arguments = atom.symbol.arguments
+        external  = atom.symbol.external
         aux_atom  = _ast.Function(location, aux_name, arguments, external)
         aux_atom  = _ast.SymbolicAtom(aux_atom)
         new_x     = _ast.Literal(location, _ast.Sign.NoSign, aux_atom)
@@ -198,7 +208,6 @@ def make_default_negation_auxiliar(stm: _ast.AST) -> Tuple[_ast.AST, NotReplacem
       * the first element is the auxiliary literal replacing the negated literal
       * the second element is the original literal replaced
     """
-    # print("make default negation auxillar")
     trn = DefaultNegationsToAuxiliarTransformer()
     stm = trn.visit(stm)
     replacement = trn.replacement

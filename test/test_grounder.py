@@ -42,11 +42,8 @@ class TestCase(unittest.TestCase):
             self.grounder.ground([("base", arguments)])
         ground_program = self.grounder.control.ground_program
         if self.print:
-            print("\n--- non-ground program")
             pprint(self.grounder.control.parsed_program)
-            print("\n--- program ---")
             pprint(ground_program.objects)
-        print("gp:",ground_program)
         return ground_program
 
     def assertEqualPrograms(self, ground_program, expected):

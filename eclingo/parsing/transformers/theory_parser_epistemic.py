@@ -11,7 +11,6 @@ from clingo.ast import Sign
 import eclingo.prefixes as _prefixes
 
 from . import astutil as _astutil
-# from . import transformer as _tf
 from .parser_negations import (NotReplacementType, SnReplacementType,
                                default_negation_auxiliary_rule_replacement,
                                make_default_negation_auxiliar,

@@ -3,7 +3,9 @@ from clingo import ast as _ast
 
 # pylint: disable=all
 
-def atom(location: dict, positive: bool, name: str, arguments: List) -> _ast.AST:
+# def atom(location: dict, positive: bool, name: str, arguments: List) -> _ast.AST:
+def atom(location: _ast.Location, positive: bool, name: str, arguments: List) -> _ast.AST:
+
     """
     Helper function to create an atom.
 

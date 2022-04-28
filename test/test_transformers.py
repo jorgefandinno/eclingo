@@ -45,34 +45,25 @@ class Test(unittest.TestCase):
 
     def test_epistemic_atom(self):
         statement = theory_atom_statment_from_str("&k{a}.")
-        # print(statement)
         self.assertEqual(len(statement.elements), 1)
         element = statement.elements[0]
-        # print(element)
         self.assertEqual(ast_type(element), _ast.ASTType.TheoryAtomElement)
         terms = theory_atom_element_terms(element)
-        # print(terms[0])
         self.assertEqual(len(terms), 1)
         term = terms[0]
 
-        # if clingo_version < '5.5.1':
-        #     self.assertEqual(ast_type(term), _ast.ASTType.TheoryUnparsedTerm)
-        # else:
-        #     self.assertEqual(ast_type(term), _ast.ASTType.SymbolicTerm)
+        if clingo_version < '5.5.1':
+            self.assertEqual(ast_type(term), _ast.ASTType.TheoryUnparsedTerm)
+        else:
+            self.assertEqual(ast_type(term), _ast.ASTType.SymbolicTerm)
 
         result = _parse_epistemic_literals_elements(statement)
-        # print("res ", (result))
         self.assertEqual(len(result.elements), 1)
         element = result.elements[0]
-        # print(element)
-        # print(dir(element))
-        # print(element.terms)
         self.assertEqual(ast_type(element), _ast.ASTType.TheoryAtomElement)
 
         terms = theory_atom_element_terms(element)
-        # print(terms)
         self.assertEqual(len(terms), 1)
         term = terms[0]
-        print("term",term)
         self.assertEqual(ast_type(term), _ast.ASTType.Literal)
 
