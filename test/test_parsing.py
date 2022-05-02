@@ -18,9 +18,10 @@ def flatten(lst):
     for lst2 in lst:
         if isinstance(lst2, list):
             for e in lst2:
-                result.append(e)
+                result.append(str(e))
         else:
-            result.append(lst2)
+            result.append(str(lst2))
+        
     return result
 
 def parse_program(stm, parameters=[], name="base"):
@@ -31,6 +32,7 @@ def parse_program(stm, parameters=[], name="base"):
 def clingo_parse_program(stm):
     ret = []
     _ast.parse_string(stm, ret.append)
+    ret = [str(rule) for rule in ret]
     return ret
 
 class TestCase(unittest.TestCase):
