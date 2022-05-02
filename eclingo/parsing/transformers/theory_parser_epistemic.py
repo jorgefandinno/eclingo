@@ -11,6 +11,7 @@ from clingo.ast import Sign
 import eclingo.prefixes as _prefixes
 
 from . import astutil as _astutil
+# from . import transformer as _tf
 from .parser_negations import (NotReplacementType, SnReplacementType,
                                default_negation_auxiliary_rule_replacement,
                                make_default_negation_auxiliar,
@@ -155,7 +156,8 @@ class PreapendPrefixTransformer(Transformer):
             return stm
         if (stm.symbol.name, 0) in self.skip:
             return stm
-        return _ast.Symbol(stm.location, _clingo.Function(_prefix_to_atom_names(self.prefix, stm.symbol.name), [], stm.symbol.positive))
+        # return _ast.Symbol(stm.location, _clingo.Function(_prefix_to_atom_names(self.prefix, stm.symbol.name), [], stm.symbol.positive))
+        return _ast.SymbolicTerm(stm.location, _clingo.Function(_prefix_to_atom_names(self.prefix, stm.symbol.name), [], stm.symbol.positive))
 
     def visit_Function(self, stm, loc="body"):
         if (stm.name, len(stm.arguments)) in self.skip:
@@ -360,7 +362,7 @@ class G94Transformer(Transformer):
     def visit_Literal(self, stm, loc="body"):
         is_nonnegative_epistemic_listeral = (
             (stm.sign == Sign.NoSign) and
-            (stm.atom.type == _ast.ASTType.TheoryAtom) and
+            (stm.atom.ast_type == _ast.ASTType.TheoryAtom) and
             (stm.atom.term.name == "k") and
             (not stm.atom.term.arguments)
         )
