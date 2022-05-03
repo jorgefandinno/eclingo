@@ -96,7 +96,7 @@ class Test(ClingoTestHelper,
     def test_show03_not_supported(self):
         with self.assertRaises(RuntimeError) as contex_manager:
             self.parse_program("a. b. #show a(0).")
-        self.assertEqual(contex_manager.exception.args[0], 'syntax error: only show statements of the form "#show atom/n." are allowed.')
+        self.assertEqual(str(contex_manager.exception.args[0]), 'syntax error: only show statements of the form "#show atom/n." are allowed.')
 
     def test_show04(self):
         self.assert_equal_parsing_program_with_show("a. #show a/0.", "u_a.", [ShowStatement(name='a', arity=0, poistive=True)])
