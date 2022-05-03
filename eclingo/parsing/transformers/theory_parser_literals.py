@@ -136,7 +136,7 @@ class TheoryTermToTermTransformer(Transformer):
             if isnum(lhs) and isnum(rhs):
                 lhs = lhs.symbol.number
                 rhs = rhs.symbol.number
-                return _ast.Symbol(x.location, _clingo.Number(lhs + rhs if x.name == "+" else lhs - rhs))
+                return _ast.SymbolicTerm(x.location, _clingo.Number(lhs + rhs if x.name == "+" else lhs - rhs))
             else:
                 return _ast.BinaryOperation(x.location, op, lhs, rhs)
         elif x.name == "-" and len(x.arguments) == 2:

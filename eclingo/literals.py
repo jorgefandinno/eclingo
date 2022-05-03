@@ -57,7 +57,7 @@ class EpistemicLiteral:
 
         literal_sign = ''
         if (self.sign == Sign.Negation):
-            literal_sign = '-'
+            literal_sign = 'not'
         elif (self.sign == Sign.DoubleNegation):
             literal_sign = 'not not '
 
