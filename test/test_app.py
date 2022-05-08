@@ -39,6 +39,7 @@ def parse_output(output):
 class TestExamples(unittest.TestCase):
 
     def assert_world_views(self, command, output_path):
+        print(command)
         process = subprocess.Popen(command,
                      stdout=subprocess.PIPE, 
                      stderr=subprocess.PIPE)

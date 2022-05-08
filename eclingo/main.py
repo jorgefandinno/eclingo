@@ -14,6 +14,7 @@ _FALSE = ["0", "no", "false"]
 _TRUE = ["1", "yes", "true"]
 
 
+# from eclingo.util.clingoext import Control
 
 
 
@@ -27,6 +28,7 @@ class Application(internal_control.Application):
         self.program_name = "eclingo"
         self.version = "0.2.1"
         self.config = AppConfig()
+        print("Application init called-main.py")
 
     def _parse_int(self, config, attr, min_value=None, max_value=None):
         """
@@ -35,6 +37,7 @@ class Application(internal_control.Application):
         Here `attr` has to be the name of an attribute. Optionally, a minimum
         and maximum value can be given for the integer.
         """
+        print("_parse_int called")
         def parse(value):
             num = int(value)
             if min_value is not None and num < min_value:
@@ -50,6 +53,7 @@ class Application(internal_control.Application):
         """
         Register eclingo related options.
         """
+        print("register_options called")
         group = "Eclingo Options"
 
         options.add(
@@ -57,6 +61,7 @@ class Application(internal_control.Application):
             "Set verbosity level of eclingo to <n>", self._parse_int(self.config, "eclingo_verbose"), argument="<n>")
 
     def _read(self, path):
+        print("read called")
         if path == "-":
             return sys.stdin.read()
         with open(path) as file_:
@@ -70,12 +75,14 @@ class Application(internal_control.Application):
         if not files:
             files = ["-"]
 
-
+        print("application main called")
+        print("control",control)
         eclingo_control = Control(control, self.config)
 
         for path in files:
             eclingo_control.add_program(self._read(path))
 
+        print("added program")
         eclingo_control.ground()
         eclingo_control.preprocess()
         eclingo_control.prepare_solver()
@@ -96,7 +103,9 @@ class Application(internal_control.Application):
 def main():
     sys.argv.append('--outf=3')
     application = Application()
+    print("application created")
     result = internal_control.clingo_main(application, sys.argv[1:])
+    print("result----",result)
     sys.exit(int(result))
 
 if __name__ == '__main__':

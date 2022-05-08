@@ -85,7 +85,7 @@ class InternalStateControl(_clingoext.Control):
 
 
 class Application(object):
-
+    print("------------------this")
     @abstractmethod
     def main(self, control: InternalStateControl, files: Sequence[str]) -> None:
         raise NotImplementedError
@@ -104,5 +104,7 @@ class ApplicationWrapper(_clingoext.ApplicationWrapper):
 
 
 def clingo_main(application: Application, files: Iterable[str] = ()) -> int:
+    print("before wrapper--------")
     application_wrapper = ApplicationWrapper(application)
+    print("wrapper created-------------")
     return _clingo.clingo_main(application_wrapper, files)
