@@ -83,9 +83,9 @@ class Application(internal_control.Application):
         sys.stdout.write('Solving...\n')
         wv_number = 1
         for world_view in eclingo_control.solve():
-            # sys.stdout.write('World view: %d\n' % wv_number)
-            # sys.stdout.write(str(world_view))
-            # sys.stdout.write('\n')
+            sys.stdout.write('World view: %d\n' % wv_number)
+            sys.stdout.write(str(world_view))
+            sys.stdout.write('\n')
             wv_number += 1
         if wv_number > 1:
             sys.stdout.write('SATISFIABLE\n')
