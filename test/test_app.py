@@ -39,13 +39,11 @@ def parse_output(output):
 class TestExamples(unittest.TestCase):
 
     def assert_world_views(self, command, output_path):
-        print(command)
         process = subprocess.Popen(command,
                      stdout=subprocess.PIPE, 
                      stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
         output = stdout.decode('utf-8')
-        # print(stderr.decode('utf-8'))
         world_views = parse_output(output)
         for world_view in world_views:
             world_view.sort()

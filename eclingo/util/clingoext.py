@@ -20,7 +20,6 @@ class ProgramBuilder():
         self.control = control
         self.program = program
         self.bld = PB(self.control)
-        print("clingoext called")
 
     def __enter__(self):
 

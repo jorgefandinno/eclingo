@@ -13,7 +13,6 @@ def solve(program):
     econtrol.add_program(program)
     world_views = []
     for world_view in econtrol.solve():
-        print(world_view)
         world_view = sorted(str(symbol) for symbol in world_view.symbols)
         world_views.append(world_view)
     return sorted(world_views)
@@ -31,7 +30,6 @@ class TestEclingoGround(TestCase):
         self.assert_models(solve('a.'), [[]])
 
     def test_positive_programs(self):
-        # print(solve('a. b :- &k{a}.'))
         self.assert_models(solve('a. b :- &k{a}.'), [['&k{a}']])
         self.assert_models(solve('{a}. b :- &k{a}.'), [[]])
         self.assert_models(solve('{a}. :- not a. b :- &k{a}.'), [['&k{a}']])

@@ -34,7 +34,6 @@ class Solver:
 
     def solve(self) -> Iterator[Candidate]:
         for candidate in self.generate_candidates():
-            print("cand", candidate)
             if self.test_candidate(candidate):
                 yield self._build_world_view(candidate)
 
@@ -46,7 +45,6 @@ class Solver:
         sys.stderr.write('\n')
         sys.stderr.write('-----------------------------------------------------------')
         sys.stderr.write('\n')
-        # pprint(self.generate_candidates.control.ground_program.objects, stream=sys.stderr)
         sys.stderr.write(str(self.generate_candidates.control.ground_program))
         sys.stderr.write('\n')
         sys.stderr.write('------------------------------------------------------------')
@@ -55,7 +53,6 @@ class Solver:
         sys.stderr.write('\n')
         sys.stderr.write('------------------------------------------------------------')
         sys.stderr.write('\n')
-        # pprint(self.test_candidate.control.ground_program.objects, stream=sys.stderr)
         sys.stderr.write(str(self.test_candidate.control.ground_program))
         sys.stderr.write('\n')
         sys.stderr.write('------------------------------------------------------------')

@@ -10,8 +10,6 @@ class Literal:
 
     def __init__(self, atom: Symbol, sign: Union[Sign, bool]):
         self.atom = atom
-        print("atom in literal: ", self.atom)
-        print("sign in literal: ", sign)
         if isinstance(sign, bool):
             if sign:
                 sign = Sign.NoSign

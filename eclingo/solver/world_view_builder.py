@@ -24,27 +24,19 @@ class WorldWiewBuilder():
     def world_view_from_candidate(self, candidate: Candidate):
         epistemic_literals = []
         processed_symbols = []
-        # print("candidate inside worldview",candidate)
         for epistemic_literal in candidate.pos:
-            # print("epistemic_literal",epistemic_literal)
-            # print("_epistemic_show_pos_mapping",self._epistemic_show_pos_mapping)
             if epistemic_literal in self._epistemic_show_pos_mapping:
                 show_literal = self._epistemic_show_pos_mapping[epistemic_literal]
-                print("show_literal---",show_literal)
                 epistemic_literals.append(show_literal)
                 processed_symbols.append(show_literal.objective_literal)
 
         processed_symbols_set = frozenset(processed_symbols)
-        print("epistemic_literals:",epistemic_literals)
         for epistemic_literal in candidate.neg:
-            print("is it called")
             if epistemic_literal in self._epistemic_show_neg_mapping:
                 show_literal = self._epistemic_show_neg_mapping[epistemic_literal]
                 if show_literal.objective_literal not in processed_symbols_set:
                     epistemic_literals.append(show_literal)
 
-        # print("epistemic_literals:",epistemic_literals)
-        # print("worldview op",WorldView(epistemic_literals))
         return WorldView(epistemic_literals)
 
 
