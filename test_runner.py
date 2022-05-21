@@ -14,9 +14,7 @@ def get_time_value(cmd):
     find2 = result.find('UNSATISFIABLE')
 
     # print(result)
-    if(find2!=-1 or find1==-1):
-        print("error in file")
-        exit(0)
+    
     
     # print(result)
 
@@ -29,6 +27,9 @@ def get_time_value(cmd):
         filtered = filter(lambda x: x.find("#   total CPU user time (s): ")!=-1, lines)
         time_type = "USER TIME"
         val = list(filtered)[0].split(" ")[-1]
+
+    if(find2!=-1 or find1==-1):
+        return (time_type, -1)
 
     return time_type, val
 
@@ -46,35 +47,42 @@ if __name__ == '__main__':
     
     commands = ["./runsolver --timestamp python eclingo/main.py -c length=9 0 test/yale/yale.lp test/yale/input/yale01.lp"]
 
-    
-    # df = pd.DataFrame(test, columns=['INSTANCE', 'TIME', 'TIME_TYPE'])
-    # print(test)
-
-    folders=['eligible', 'yale']
-
+    folders=[['eligible', ""], ['yale', "-c length=9 0"]]
     test_path = "test/"
+
     commands=[]
-
     for folder in folders:
-        path = pathlib.Path().resolve()
+        file_path = str(pathlib.Path().resolve()) + '/test/' + folder[0]
+        input_path =  file_path + '/input'
 
-        print(path)
-        
+        params = folder[1]
+        files = os.listdir(input_path)
+        files.sort()
+
+        for f in files:
+
+            full_input_path = input_path + "/" + f
+            command = "./runsolver --timestamp python eclingo/main.py " + params + " " + file_path + "/" + folder[0] + ".lp " + full_input_path 
+            commands.append([f, command])
 
     results=[]
-    for cmd in commands:
+    for command in commands:
+        instance = command[0]
+        cmd = command[1]
         time_type, val = get_time_value(cmd)
 
-        results.append(['instance',val,time_type])
+        if(val==-1):
+            print("error in file:",instance)
 
-    print(results)
+        else:
+            results.append([instance,val,time_type])
+            print(instance,val,time_type)
+
+    df = pd.DataFrame(results, columns=['INSTANCE', 'TIME', 'TIME_TYPE'])
+        
+    df.to_csv('results.csv', index=False) 
 
 
+    
 
-
-
-
-
-
-
-# ./runsolver --timestamp -C 1200 -W 180 -R 8192 -V 102400 -w watch.log -v values.log -o tool_output.log python eclingo/eclingo/main.py -c length=9 0 eclingo/test/yale/yale.lp eclingo/test/yale/input/yale01.lp
+    
