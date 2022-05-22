@@ -69,7 +69,6 @@ class Control(object):
         if not self.grounded:
             self.ground()
 
-
         self.solver = Solver(self.control, self.config)
 
     def solve(self):

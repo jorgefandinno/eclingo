@@ -38,15 +38,5 @@ class Grounder():
             _parse_program(program, builder.add, parameters, name, self.config.eclingo_semantics)
 
 
-
-    # def add_program(self, program: str, parameters: List[str] = [], name: str = "base") -> None: # pylint: disable=dangerous-default-value
-    #     with self.control.builder() as builder:
-    #         _parse_program(program, builder.add, parameters, name, self.config.eclingo_semantics)
-
-    #     def add_program(self, program: str) -> None:
-    #     with self.builder() as builder:
-    #         parse_string(program, builder.add)
-
-
     def ground(self, parts: Iterable[Tuple[str, Iterable[Symbol]]] = (("base", []),)) -> None: # pylint: disable=dangerous-default-value
         self.control.ground(parts)
