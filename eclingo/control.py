@@ -74,6 +74,7 @@ class Control(object):
     def solve(self):
         if self.solver is None:
             self.prepare_solver()
+
         for model in self.solver.solve():
             self.models += 1
             yield model
