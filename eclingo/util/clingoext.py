@@ -1,15 +1,13 @@
 import abc
-import textwrap as _textwrap
+import textwrap
 from typing import Any, Callable, Dict, Iterable, List, Sequence, Tuple, Union
 
-import clingo as _clingo # type: ignore
+import clingo
 from clingo import MessageCode, Symbol, TruthValue
-from clingo import ast as _ast  # type: ignore # pylint: disable=import-error
+from clingo import ast
+from clingo.ast import parse_string
 
-from clingo.ast import ProgramBuilder as PB
-from clingo.ast import  parse_string
-
-from eclingo.util import astutil as _astutil
+from eclingo.util import astutil
 from eclingo.util.groundprogram import ClingoExternal, ClingoOutputAtom, ClingoProject, ClingoRule, ClingoWeightRule, GroundProgram
 
 
@@ -19,30 +17,29 @@ class ProgramBuilder():
     def __init__(self, control, program):
         self.control = control
         self.program = program
-        self.bld = PB(self.control)
+        self.bulider = clingo.ast.ProgramBuilder(self.control)
 
     def __enter__(self):
-
-        self.bld.__enter__()
+        self.bulider.__enter__()
         return self
 
     def __exit__(self, type_, value, traceback):
 
-        return self.bld.__exit__(type_, value, traceback)
+        return self.bulider.__exit__(type_, value, traceback)
 
-    def add(self, statement: _ast.AST): # pylint: disable=no-member
+    def add(self, statement: ast.AST): # pylint: disable=no-member
         self.program.append(statement)
         try:
-            return self.bld.add(statement)
+            return self.bulider.add(statement)
         except RuntimeError as error:
             if len(error.args) != 1:
                 raise error
             if error.args[0] == 'literal expected':
-                error.args = ('literal expected, got\n' + _textwrap.indent(_astutil.ast_repr(statement), 13*' '), )
+                error.args = ('literal expected, got\n' + textwrap.indent(astutil.ast_repr(statement), 13*' '), )
             raise error
         except AttributeError as error:
             if error.args[0] == "'list' object has no attribute 'location'":
-                error.args = (error.args[0] + '\n' + _textwrap.indent(_astutil.ast_repr(statement), 13*' '), )
+                error.args = (error.args[0] + '\n' + textwrap.indent(astutil.ast_repr(statement), 13*' '), )
             raise error
 
 
@@ -81,11 +78,11 @@ class SymbolicBackend():
 
 class Control(object):  # type: ignore
 
-    def __init__(self, arguments: Iterable[str] = (), logger: Callable[[MessageCode, str], None] = None, message_limit: int = 20, *, control: _clingo.Control = None):
+    def __init__(self, arguments: Iterable[str] = (), logger: Callable[[MessageCode, str], None] = None, message_limit: int = 20, *, control: clingo.Control = None):
         if control is None:
-            control = _clingo.Control(arguments, logger, message_limit)
+            control = clingo.Control(arguments, logger, message_limit)
         self.control = control
-        self.parsed_program: List[_ast.AST] = [] # pylint: disable=no-member
+        self.parsed_program: List[ast.AST] = [] # pylint: disable=no-member
         self.ground_program = GroundProgram()
         self.control.register_observer(Observer(self.ground_program))
 
@@ -110,7 +107,7 @@ class Control(object):  # type: ignore
 
 
 
-    def add_to(self, control: Union['Control', _clingo.Control]):
+    def add_to(self, control: Union['Control', clingo.Control]):
         atoms_gen_to_test_map = dict()
         symbols_and_atoms = []
         with self.control.backend() as backend:
@@ -174,7 +171,7 @@ class Control(object):  # type: ignore
         return getattr(self.control, attr)
 
 
-class Observer(_clingo.Observer):
+class Observer(clingo.Observer):
 
     def __init__(self, program):
         self.program = program
@@ -202,11 +199,11 @@ class Application(object):
         raise NotImplementedError
 
 
-class ApplicationWrapper(_clingo.Application):
+class ApplicationWrapper(clingo.Application):
     def __init__(self, application):
         self.application = application
 
-    def main(self, control: _clingo.Control, files: Sequence[str]) -> None:
+    def main(self, control: clingo.Control, files: Sequence[str]) -> None:
         ext_control = Control(control=control)
         return self.application.main(ext_control, files)
 
@@ -217,5 +214,5 @@ class ApplicationWrapper(_clingo.Application):
 
 
 def clingo_main(application: Application, files: Iterable[str] = ()) -> int:
-    return _clingo.clingo_main(ApplicationWrapper(application), files)
+    return clingo.clingo_main(ApplicationWrapper(application), files)
 
