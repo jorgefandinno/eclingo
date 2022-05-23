@@ -3,11 +3,8 @@
  .../transformers/theory_parser_epistemic.py        |  84 +++++++---
  .../parsing/transformers/theory_parser_literals.py |  27 ++--
  eclingo/solver/world_view.py                       |   2 +-
- test/test_app.py                                   |   1 -
- test/test_clingoext.py                             |  98 +++++++-----
  test/test_grounder.py                              |   5 +-
  test/test_parsing.py                               |  11 +-
  test/test_pretty.py                                |  55 +++++++
  test/test_show.py                                  |  11 +-
- test/test_transformers.py                          |  69 ++++++++
- 25 files changed, 496 insertions(+), 626 deletions(-)
+  25 files changed, 496 insertions(+), 626 deletions(-)
