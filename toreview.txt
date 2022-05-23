@@ -1,4 +1,0 @@
- README.md                                          |   5 +-
- eclingo/main.py                                    |   2 +-
- eclingo/solver/world_view.py                       |   2 +-
- 25 files changed, 462 insertions(+), 626 deletions(-)
