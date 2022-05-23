@@ -1,7 +1,5 @@
  README.md                                          |   5 +-
  cputime_new_results.csv                            |  33 ++++
- eclingo/control.py                                 |   1 -
- eclingo/literals.py                                |  31 +++-
  eclingo/main.py                                    |   2 +-
  eclingo/parsing/__init__.py                        |  20 ++-
  eclingo/parsing/transformers/astutil.py            |  80 +--------
@@ -27,4 +25,4 @@
  test_runner.py                                     |  80 +++++++++
  toreview.txt                                       |   0
  usertime_new_results.csv                           |  33 ++++
- 31 files changed, 615 insertions(+), 578 deletions(-)
+ 30 files changed, 615 insertions(+), 577 deletions(-)
