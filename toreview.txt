@@ -5,6 +5,5 @@
  eclingo/solver/world_view.py                       |   2 +-
  test/test_grounder.py                              |   5 +-
  test/test_parsing.py                               |  11 +-
- test/test_pretty.py                                |  55 +++++++
  test/test_show.py                                  |  11 +-
   25 files changed, 496 insertions(+), 626 deletions(-)

@@ -14,3 +14,4 @@ eclingo/parsing/transformers/transformer.py
 test/test_app.py
 test/test_clingoext.py
 test/test_transformers.py
+test/test_pretty.py
