@@ -2,3 +2,4 @@ eclingo/util/clingoext.py
 eclingo/internal_states/internal_control.py
  eclingo/literals.py
  eclingo/parsing/__init__.py
+ eclingo/parsing/transformers/astutil.py
