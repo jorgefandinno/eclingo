@@ -7,3 +7,4 @@ eclingo/internal_states/internal_control.py
  eclingo/solver/solvers.py
  eclingo/util/groundprogram.py
  helper_test/helper_clingo.py
+ helper_test/helper_parsing.py
