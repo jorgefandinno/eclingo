@@ -1,9 +1,7 @@
 import unittest
-
 import clingo
 from clingo import Function, Number
 from clingo import ast as _ast
-
 
 import eclingo.util.clingoext as clingoext
 from eclingo.util.groundprogram import *
@@ -95,7 +93,6 @@ class Test(unittest.TestCase):
 
         self.control.add("base", [], program)
         self.control.ground([("base", [])])
-
         self.assertEqual(str(self.control.ground_program).replace(' ','').replace('\n',''), program.replace(' ','').replace('\n',''))
 
 
@@ -404,7 +401,6 @@ class Test(unittest.TestCase):
                 positive = 1, 
                 csp = False
                 )]
-
         self.control.add_program(program)
         self.assertEqual(self.control.parsed_program, parsed_program)
 

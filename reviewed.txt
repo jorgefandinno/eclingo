@@ -12,3 +12,4 @@ reviewed.txt
 toreview.txt
 eclingo/parsing/transformers/transformer.py
 test/test_app.py
+test/test_clingoext.py
