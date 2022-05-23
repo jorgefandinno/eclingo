@@ -4,5 +4,4 @@
  .../parsing/transformers/theory_parser_literals.py |  27 ++--
  eclingo/solver/world_view.py                       |   2 +-
  test/test_grounder.py                              |   5 +-
- test/test_parsing.py                               |  11 +-
   25 files changed, 496 insertions(+), 626 deletions(-)
