@@ -1,6 +1,6 @@
  README.md                                          |   5 +-
  eclingo/main.py                                    |   2 +-
- .../transformers/theory_parser_epistemic.py        |  84 +++++++---
+ .../transformers/theory_parser_epistemic.py        |  47 +++---
  .../parsing/transformers/theory_parser_literals.py |  27 ++--
  eclingo/solver/world_view.py                       |   2 +-
- 25 files changed, 500 insertions(+), 625 deletions(-)
+ 25 files changed, 462 insertions(+), 626 deletions(-)
