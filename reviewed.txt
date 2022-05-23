@@ -15,3 +15,4 @@ test/test_app.py
 test/test_clingoext.py
 test/test_transformers.py
 test/test_pretty.py
+test/test_show.py
