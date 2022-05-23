@@ -3,3 +3,5 @@ eclingo/internal_states/internal_control.py
  eclingo/literals.py
  eclingo/parsing/__init__.py
  eclingo/parsing/transformers/astutil.py
+ eclingo/parsing/transformers/parser_negations.py
+ eclingo/solver/solvers.py
