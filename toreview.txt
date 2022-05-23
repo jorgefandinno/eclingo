@@ -1,7 +1,6 @@
  README.md                                          |   5 +-
  cputime_new_results.csv                            |  33 ++++
  eclingo/main.py                                    |   2 +-
- eclingo/parsing/__init__.py                        |  20 ++-
  eclingo/parsing/transformers/astutil.py            |  80 +--------
  eclingo/parsing/transformers/parser_negations.py   |  57 ++++---
  .../transformers/theory_parser_epistemic.py        |  84 +++++++---
