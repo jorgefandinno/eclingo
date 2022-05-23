@@ -1,10 +1,14 @@
 eclingo/util/clingoext.py
 eclingo/internal_states/internal_control.py
- eclingo/literals.py
- eclingo/parsing/__init__.py
- eclingo/parsing/transformers/astutil.py
- eclingo/parsing/transformers/parser_negations.py
- eclingo/solver/solvers.py
- eclingo/util/groundprogram.py
- helper_test/helper_clingo.py
- helper_test/helper_parsing.py
+eclingo/literals.py
+eclingo/parsing/__init__.py
+eclingo/parsing/transformers/astutil.py
+eclingo/parsing/transformers/parser_negations.py
+eclingo/solver/solvers.py
+eclingo/util/groundprogram.py
+helper_test/helper_clingo.py
+helper_test/helper_parsing.py
+reviewed.txt
+toreview.txt
+eclingo/parsing/transformers/transformer.py
+test/test_app.py

@@ -1,9 +1,8 @@
  README.md                                          |   5 +-
- cputime_new_results.csv                            |  33 ++++
  eclingo/main.py                                    |   2 +-
  .../transformers/theory_parser_epistemic.py        |  84 +++++++---
  .../parsing/transformers/theory_parser_literals.py |  27 ++--
- reviewed.txt                                       |   2 +
+ eclingo/solver/world_view.py                       |   2 +-
  test/test_app.py                                   |   1 -
  test/test_clingoext.py                             |  98 +++++++-----
  test/test_grounder.py                              |   5 +-
@@ -11,6 +10,4 @@
  test/test_pretty.py                                |  55 +++++++
  test/test_show.py                                  |  11 +-
  test/test_transformers.py                          |  69 ++++++++
- toreview.txt                                       |   0
- usertime_new_results.csv                           |  33 ++++
- 30 files changed, 615 insertions(+), 577 deletions(-)
+ 25 files changed, 496 insertions(+), 626 deletions(-)
