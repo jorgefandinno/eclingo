@@ -4,7 +4,6 @@
  .../transformers/theory_parser_epistemic.py        |  84 +++++++---
  .../parsing/transformers/theory_parser_literals.py |  27 ++--
  reviewed.txt                                       |   2 +
- runsolver                                          | Bin 0 -> 145992 bytes
  test/test_app.py                                   |   1 -
  test/test_clingoext.py                             |  98 +++++++-----
  test/test_grounder.py                              |   5 +-
@@ -12,7 +11,6 @@
  test/test_pretty.py                                |  55 +++++++
  test/test_show.py                                  |  11 +-
  test/test_transformers.py                          |  69 ++++++++
- test_runner.py                                     |  80 +++++++++
  toreview.txt                                       |   0
  usertime_new_results.csv                           |  33 ++++
  30 files changed, 615 insertions(+), 577 deletions(-)
