@@ -167,7 +167,6 @@ class PrettyProjection(PrettyClingoOject):
         self.atoms = atoms
 
     def __repr__(self):
-
         atoms = ','.join(repr(atom) for atom in self.atoms)
         if atoms:
             return '#project ' + atoms  + '.'
@@ -175,7 +174,6 @@ class PrettyProjection(PrettyClingoOject):
             return '#project.'
     
     def __str__(self):
-
         atoms = ','.join(str(atom) for atom in self.atoms)
         if atoms:
             return '#project ' + atoms  + '.'
@@ -185,8 +183,6 @@ class PrettyProjection(PrettyClingoOject):
     def __lt__(self, other):
         if self.__class__ == other.__class__:
             return self.atoms < other.atoms
-        # elif isinstance(other, ClingoObject):
-        #     return self.order < other.order
         raise Exception("Incomparable type")
 
 

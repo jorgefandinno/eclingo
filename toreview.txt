@@ -1,14 +1,8 @@
  README.md                                          |   5 +-
  cputime_new_results.csv                            |  33 ++++
  eclingo/main.py                                    |   2 +-
- eclingo/parsing/transformers/astutil.py            |  80 +--------
- eclingo/parsing/transformers/parser_negations.py   |  57 ++++---
  .../transformers/theory_parser_epistemic.py        |  84 +++++++---
  .../parsing/transformers/theory_parser_literals.py |  27 ++--
- eclingo/parsing/transformers/transformer.py        | 178 ---------------------
- eclingo/solver/solvers.py                          |   2 -
- eclingo/solver/world_view.py                       |   2 +-
- eclingo/solver/world_view_builder.py               |   1 -
  eclingo/util/groundprogram.py                      | 155 +++++++++---------
  helper_test/helper_clingo.py                       |   5 -
  helper_test/helper_parsing.py                      |   4 +-

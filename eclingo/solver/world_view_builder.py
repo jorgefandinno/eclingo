@@ -31,6 +31,7 @@ class WorldWiewBuilder():
                 processed_symbols.append(show_literal.objective_literal)
 
         processed_symbols_set = frozenset(processed_symbols)
+
         for epistemic_literal in candidate.neg:
             if epistemic_literal in self._epistemic_show_neg_mapping:
                 show_literal = self._epistemic_show_neg_mapping[epistemic_literal]
