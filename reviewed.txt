@@ -6,3 +6,4 @@ eclingo/internal_states/internal_control.py
  eclingo/parsing/transformers/parser_negations.py
  eclingo/solver/solvers.py
  eclingo/util/groundprogram.py
+ helper_test/helper_clingo.py
