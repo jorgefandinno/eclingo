@@ -18,3 +18,5 @@ test/test_pretty.py
 test/test_show.py
 test/test_parsing.py
 test/test_grounder.py
+ .../transformers/theory_parser_epistemic.py
+ .../parsing/transformers/theory_parser_literals.py

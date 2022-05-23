@@ -9,8 +9,6 @@ from . import astutil as _astutil
 
 # {{{1 parse_raw_formula
 
-
-#new
 from clingo.ast import Transformer
 
 class TheoryParser:

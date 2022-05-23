@@ -14,7 +14,6 @@ _FALSE = ["0", "no", "false"]
 _TRUE = ["1", "yes", "true"]
 
 
-# from eclingo.util.clingoext import Control
 
 
 
@@ -70,6 +69,7 @@ class Application(internal_control.Application):
         """
         if not files:
             files = ["-"]
+
 
         eclingo_control = Control(control, self.config)
 
