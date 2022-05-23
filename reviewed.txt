@@ -17,3 +17,4 @@ test/test_transformers.py
 test/test_pretty.py
 test/test_show.py
 test/test_parsing.py
+test/test_grounder.py
