@@ -7,8 +7,10 @@ from clingo.ast import AST, ASTType, Location, Position, Transformer, parse_stri
 from clingox.ast import TheoryParser, theory_parser_from_definition
 
 theory = '''#theory eclingo {
-    default_negation { not : 0, unary};
-    &k/0 : default_negation, body
+    term { not : 0, unary;
+           - : 0, unary;
+         };
+    &k/0 : term, body
 }.
 '''
 
