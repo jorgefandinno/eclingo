@@ -30,6 +30,7 @@ conda activate eclingo
 Clone this repo:
 ```
 git clone https://github.com/potassco/eclingo.git
+git checkout develop
 ```
 
 ### Setup
@@ -43,7 +44,7 @@ pip install .
 
 ### Test
 ```
-pip3 install python3-pytest
+pip install -U pytest
 python3 -m pytest
 conda install -c mypy
 mypy eclingo
