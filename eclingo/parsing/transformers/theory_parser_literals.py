@@ -99,6 +99,27 @@ def parse_raw_formula(x):
     """
     return TheoryParser().parse(x)
 
+# from clingox.ast import TheoryParser, theory_parser_from_definition
+import clingox
+from clingox.ast import theory_parser_from_definition
+from clingo.ast import AST, ASTType, Location, Position, Transformer, parse_string, Variable
+
+theory = '''#theory eclingo {
+    term { not : 0, unary;
+           -   : 0, unary
+         };
+    &k/0 : term, body
+}.
+'''
+
+# theory parse is initiated during the parse_string call below
+theory_parser: clingox.ast.TheoryParser = None
+def extract(stm):
+    if stm.ast_type == ASTType.TheoryDefinition:
+        global theory_parser
+        theory_parser = theory_parser_from_definition(stm)
+parse_string(theory, extract)
+
 # {{{1 theory_term -> term
 
 class TheoryTermToTermTransformer(Transformer):
@@ -139,8 +160,8 @@ class TheoryTermToTermTransformer(Transformer):
                 return _ast.BinaryOperation(x.location, op, lhs, rhs)
         elif x.name == "-" and len(x.arguments) == 2:
             return _ast.BinaryOperation(x.location, _ast.BinaryOperator.Minus, self(x.arguments[0]), self(x.arguments[1]))
-        elif (x.name, TheoryParser.binary) in TheoryParser.table or (x.name, TheoryParser.unary) in TheoryParser.table:
-            raise RuntimeError("invalid term: {}".format(x.location))
+        # elif (x.name, TheoryParser.binary) in TheoryParser.table or (x.name, TheoryParser.unary) in TheoryParser.table:
+        #     raise RuntimeError("invalid term: {}".format(x.location))
         else:
             return _ast.Function(x.location, x.name, [self(a) for a in x.arguments], False)
 
@@ -148,7 +169,7 @@ class TheoryTermToTermTransformer(Transformer):
         """
         Unparsed term are first parsed and then handled by the transformer.
         """
-        return self.visit(parse_raw_formula(x))
+        return self.visit(theory_parser(x))
 
 def theory_term_to_term(x):
     """

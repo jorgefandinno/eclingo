@@ -56,7 +56,7 @@ class TestCase(unittest.TestCase):
             print(_ast_repr(program))
             print("--- expected program ---")
             print(_ast_repr(expected_program))
-        self.assertEqual(sorted(program), sorted(expected_program))
+        self.assertListEqual(sorted(program), sorted(expected_program))
 
     def assert_equal_program_with_show(self, program, expected, expected_show):
         program_without_show = []

@@ -38,7 +38,7 @@ class Extractor(Transformer):
         Extract theory atom.
         '''
         if self.parse:
-            x = theory_parse.visit(x)
+            x = theory_parse(x)
         self.atom = x
         return x
 
