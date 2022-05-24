@@ -9,7 +9,7 @@ from clingo.ast import parse_string
 
 from eclingo.util import astutil
 from eclingo.util.groundprogram import ClingoExternal, ClingoOutputAtom, ClingoProject, ClingoRule, ClingoWeightRule, GroundProgram
-
+from clingox import program
 
 
 class ProgramBuilder():
@@ -85,6 +85,8 @@ class Control(object):  # type: ignore
         self.parsed_program: List[ast.AST] = [] # pylint: disable=no-member
         self.ground_program = GroundProgram()
         self.control.register_observer(Observer(self.ground_program))
+        self.new_ground_program = program.Program()
+        self.control.register_observer(program.ProgramObserver(self.new_ground_program))
 
     def add_program(self, program: str) -> None:
         with self.builder() as builder:

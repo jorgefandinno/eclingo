@@ -71,6 +71,12 @@ class TestEclingoGround(TestCase):
             b :- not &k{ not a }.
             d :- &k{ b }.
             '''), [['&k{b}', '&m{a}']])
+        self.assert_models(solve('''
+            p, q.
+            r :- p.
+            r :- q.
+            s :- &k{ r }.
+            '''), [['&k{r}']])
 
 
 class TestEclingoNonGround(TestCase):

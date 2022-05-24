@@ -21,9 +21,6 @@ def flatten(lst):
     return result
 
 
-
-
-
 class TestCase(unittest.TestCase):
 
     def setUp(self):
