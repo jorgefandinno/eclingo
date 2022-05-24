@@ -8,7 +8,7 @@ from clingox.ast import TheoryParser, theory_parser_from_definition
 
 theory = '''#theory eclingo {
     term { not : 0, unary;
-           - : 0, unary;
+           -   : 0, unary
          };
     &k/0 : term, body
 }.
@@ -61,73 +61,75 @@ def theory_atom(s: str, mode: int=0) -> AST:
         clingo.ast.parse_string(theory + f"{s}.", visit)
     return cast(AST, v.atom)
 
+location = Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=1))
 
 class TesterCase(unittest.TestCase):
 
     def test_theory_parse(self):
         theory_atom_str = '&k{ a }'
-        location = Location(begin=Position(filename='<string>', line=1, column=5), end=Position(filename='<string>', line=1, column=6))
         element = ast.TheoryAtomElement([ast.SymbolicTerm(location, Function('a', [], True))], [])
         result = theory_atom(theory_atom_str).elements[0]
         self.assertEqual(result, element)
 
         theory_atom_str = '&k{ a(X) }'
-        location1 = Location(begin=Position(filename='<string>', line=1, column=5), end=Position(filename='<string>', line=1, column=9))
-        location2 = Location(begin=Position(filename='<string>', line=1, column=7), end=Position(filename='<string>', line=1, column=8))
-        element = ast.TheoryAtomElement([ast.TheoryFunction(location1, 'a', [ast.Variable(location2, 'X')])], [])
+        element = ast.TheoryAtomElement([ast.TheoryFunction(location, 'a', [ast.Variable(location, 'X')])], [])
         result = theory_atom(theory_atom_str).elements[0]
         self.assertEqual(result, element)
 
         theory_atom_str = '&k{ not a(X) }'
-        location1 = Location(begin=Position(filename='<string>', line=1, column=5), end=Position(filename='<string>', line=1, column=13))
-        location2 = Location(begin=Position(filename='<string>', line=1, column=9), end=Position(filename='<string>', line=1, column=13))
-        location3 = Location(begin=Position(filename='<string>', line=1, column=11), end=Position(filename='<string>', line=1, column=12))
-        element = ast.TheoryAtomElement([ast.TheoryUnparsedTerm(location1, [ast.TheoryUnparsedTermElement(['not'], ast.TheoryFunction(location2, 'a', [ast.Variable(location3, 'X')]))])], [])
+        element = ast.TheoryAtomElement([ast.TheoryUnparsedTerm(location, [ast.TheoryUnparsedTermElement(['not'], ast.TheoryFunction(location, 'a', [ast.Variable(location, 'X')]))])], [])
         result = theory_atom(theory_atom_str).elements[0]
         self.assertEqual(result, element)
 
     def test_theory_parse_with_theory(self):
         theory_atom_str = '&k{ a }'
-        location = Location(begin=Position(filename='<string>', line=1, column=5), end=Position(filename='<string>', line=1, column=6))
         element = ast.TheoryAtomElement([ast.SymbolicTerm(location, Function('a', [], True))], [])
         result = theory_atom(theory_atom_str, mode=1).elements[0]
         self.assertEqual(result, element)
 
         theory_atom_str = '&k{ a(X) }'
-        location1 = Location(begin=Position(filename='<string>', line=1, column=5), end=Position(filename='<string>', line=1, column=9))
-        location2 = Location(begin=Position(filename='<string>', line=1, column=7), end=Position(filename='<string>', line=1, column=8))
-        element = ast.TheoryAtomElement([ast.TheoryFunction(location1, 'a', [ast.Variable(location2, 'X')])], [])
+        element = ast.TheoryAtomElement([ast.TheoryFunction(location, 'a', [ast.Variable(location, 'X')])], [])
         result = theory_atom(theory_atom_str, mode=1).elements[0]
         self.assertEqual(result, element)
 
         theory_atom_str = '&k{ not a(X) }'
-        location1 = Location(begin=Position(filename='<string>', line=1, column=5), end=Position(filename='<string>', line=1, column=13))
-        location2 = Location(begin=Position(filename='<string>', line=1, column=9), end=Position(filename='<string>', line=1, column=13))
-        location3 = Location(begin=Position(filename='<string>', line=1, column=11), end=Position(filename='<string>', line=1, column=12))
-        element = ast.TheoryAtomElement([ast.TheoryUnparsedTerm(location1, [ast.TheoryUnparsedTermElement(['not'], ast.TheoryFunction(location2, 'a', [ast.Variable(location3, 'X')]))])], [])
+        element = ast.TheoryAtomElement([ast.TheoryUnparsedTerm(location, [ast.TheoryUnparsedTermElement(['not'], ast.TheoryFunction(location, 'a', [ast.Variable(location, 'X')]))])], [])
         result = theory_atom(theory_atom_str, mode=1).elements[0]
         self.assertEqual(result, element)
 
     def test_theory_parse_with_clingox_theory(self):
         theory_atom_str = '&k{ a }'
-        location = Location(begin=Position(filename='<string>', line=1, column=5), end=Position(filename='<string>', line=1, column=6))
         element = ast.TheoryAtomElement([ast.SymbolicTerm(location, Function('a', [], True))], [])
         result = theory_atom(theory_atom_str, mode=2).elements[0]
         self.assertEqual(result, element)
 
         theory_atom_str = '&k{ a(X) }'
-        location1 = Location(begin=Position(filename='<string>', line=1, column=5), end=Position(filename='<string>', line=1, column=9))
-        location2 = Location(begin=Position(filename='<string>', line=1, column=7), end=Position(filename='<string>', line=1, column=8))
-        element = ast.TheoryAtomElement([ast.TheoryFunction(location1, 'a', [ast.Variable(location2, 'X')])], [])
+        element = ast.TheoryAtomElement([ast.TheoryFunction(location, 'a', [ast.Variable(location, 'X')])], [])
         result = theory_atom(theory_atom_str, mode=2).elements[0]
         self.assertEqual(result, element)
 
         theory_atom_str = '&k{ not a(X) }'
-        location1 = Location(begin=Position(filename='<string>', line=1, column=9), end=Position(filename='<string>', line=1, column=13))
-        location2 = Location(begin=Position(filename='<string>', line=1, column=9), end=Position(filename='<string>', line=1, column=13))
-        location3 = Location(begin=Position(filename='<string>', line=1, column=11), end=Position(filename='<string>', line=1, column=12))
-        element = ast.TheoryAtomElement([ast.TheoryFunction(location1, 'not', [ast.TheoryFunction(location2, 'a', [ast.Variable(location3, 'X')])])], [])
+        element = ast.TheoryAtomElement([ast.TheoryFunction(location, 'not', [ast.TheoryFunction(location, 'a', [ast.Variable(location, 'X')])])], [])
         result = theory_atom(theory_atom_str, mode=2).elements[0]
-        print(repr(result))
+        self.assertEqual(result, element)
+
+        theory_atom_str = '&k{ - a(X) }'
+        element = ast.TheoryAtomElement([ast.TheoryFunction(location, '-', [ast.TheoryFunction(location, 'a', [ast.Variable(location, 'X')])])], [])
+        result = theory_atom(theory_atom_str, mode=2).elements[0]
+        self.assertEqual(result, element)
+
+        theory_atom_str = '&k{ not not a(X) }'
+        element = ast.TheoryAtomElement([ast.TheoryFunction(location, 'not', [ast.TheoryFunction(location, 'not', [ast.TheoryFunction(location, 'a', [ast.Variable(location, 'X')])])])], [])
+        result = theory_atom(theory_atom_str, mode=2).elements[0]
+        self.assertEqual(result, element)
+
+        theory_atom_str = '&k{ not - a(X) }'
+        element = ast.TheoryAtomElement([ast.TheoryFunction(location, 'not', [ast.TheoryFunction(location, '-', [ast.TheoryFunction(location, 'a', [ast.Variable(location, 'X')])])])], [])
+        result = theory_atom(theory_atom_str, mode=2).elements[0]
+        self.assertEqual(result, element)
+
+        theory_atom_str = '&k{ - not a(X) }'
+        element = ast.TheoryAtomElement([ast.TheoryFunction(location, '-', [ast.TheoryFunction(location, 'not', [ast.TheoryFunction(location, 'a', [ast.Variable(location, 'X')])])])], [])
+        result = theory_atom(theory_atom_str, mode=2).elements[0]
         self.assertEqual(result, element)
         
