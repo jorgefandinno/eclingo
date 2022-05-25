@@ -1,4 +1,4 @@
-from typing import Callable, Iterable, List
+from typing import Callable, Iterable, List, cast
 
 from clingo import ast
 
@@ -18,6 +18,20 @@ _CallbackType = Callable[[ASTObject], None]
 from clingo.ast import ASTType, Location, Position,  parse_string
 from clingox.ast import TheoryParser, theory_parser_from_definition, prefix_symbolic_atoms
 
+
+def parse_theory(s: str) -> TheoryParser:
+    """
+    Turn the given theory into a parser.
+    """
+    parser = None
+
+    def extract(stm):
+        nonlocal parser
+        if stm.ast_type == ASTType.TheoryDefinition:
+            parser = theory_parser_from_definition(stm)
+
+    parse_string(s, extract)
+    return cast(TheoryParser, parser)
 
 class _ProgramParser(object):
 
@@ -40,12 +54,7 @@ class _ProgramParser(object):
         self.strong_negation_replacements = StrongNegationReplacement()
         self.semantics = semantics
         # theory parse is initialited during the parse_string call below
-        self.theory_parser: TheoryParser = None
-        def extract(stm):
-            if stm.ast_type == ASTType.TheoryDefinition:
-                global theory_parser
-                self.theory_parser = theory_parser_from_definition(stm)
-        parse_string(_ProgramParser.eclingo_theory, extract)
+        self.theory_parser: parse_theory(_ProgramParser.eclingo_theory)
 
     def __call__(self) -> None:
         ast.parse_string(self.program, self._parse_statement)
