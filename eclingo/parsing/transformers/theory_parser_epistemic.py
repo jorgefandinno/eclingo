@@ -17,6 +17,7 @@ from .parser_negations import (NotReplacementType, SnReplacementType,
 from .theory_parser_literals import theory_term_to_literal
 
 from clingo.ast import Transformer
+from clingox.ast import prefix_symbolic_atoms
 
 ####################################################################################
 
@@ -114,58 +115,6 @@ def build_guard(body):
     t = TheoryBuildGuard()
     t.visit_sequence(body)
     return t.guard
-
-
-####################################################################################
-
-def _prefix_to_atom_names(prefix, name):
-    return prefix + name
-
-class PreapendPrefixTransformer(Transformer):
-
-    def __init__(self, prefix="", skip=None):
-        if skip is None:
-            skip = set()
-        self.prefix = prefix
-        self.skip = skip
-
-    def visit_SymbolicTerm(self, stm, loc="body"):
-        if stm.symbol.type != clingo.SymbolType.Function:
-            return stm
-        if (stm.symbol.name, 0) in self.skip:
-            return stm
-        return ast.SymbolicTerm(stm.location, clingo.Function(_prefix_to_atom_names(self.prefix, stm.symbol.name), [], stm.symbol.positive))
-
-    def visit_Function(self, stm, loc="body"):
-        if (stm.name, len(stm.arguments)) in self.skip:
-            return stm
-        return ast.Function(stm.location, _prefix_to_atom_names(self.prefix, stm.name), stm.arguments, stm.external)
-
-    def visit_TheoryAtom(self, stm, loc="body"):
-        elements = stm.elements
-        if stm.term.name == "k" and not stm.term.arguments:
-            elements = self.visit_sequence(elements, "k")
-        if elements is stm.elements:
-            return stm
-        return ast.TheoryAtom(stm.location, stm.term, elements, stm.guard)
-
-    # def visit_Aggregate(self, stm, loc="body"):
-    #     elements = self.visit(stm.elements, loc)
-    #     if elements is stm.elements:
-    #         return stm
-    #     return ast.Aggregate(stm.location, stm.left_guard, elements, stm.right_guard)
-
-
-
-####################################################################################
-
-
-def prefix_to_atom_names(stm, prefix="", skip=None):
-    if skip is None:
-        skip = set()
-    trn = PreapendPrefixTransformer(prefix, skip)
-    return trn.visit(stm)
-
 
 ####################################################################################
 
@@ -289,7 +238,7 @@ class EClingoTransformer(Transformer):
     def visit_TheoryAtom(self, atom, loc="body"):
         if atom.term.name == "k" and not atom.term.arguments:
             nested_literal = atom.elements[0].terms[0]
-            aux_atom = prefix_to_atom_names(nested_literal.atom, _prefixes.EPISTEMIC_PREFIX)
+            aux_atom = prefix_symbolic_atoms(nested_literal.atom, _prefixes.EPISTEMIC_PREFIX)
             self.epistemic_replacements.append((nested_literal, aux_atom))
             return aux_atom
         return atom

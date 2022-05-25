@@ -15,8 +15,6 @@ from .transformers.theory_parser_epistemic import \
 from .transformers.theory_parser_epistemic import \
     parse_epistemic_literals_elements as _parse_epistemic_literals_elements
 from .transformers.theory_parser_epistemic import \
-    prefix_to_atom_names as _prefix_to_atom_names
-from .transformers.theory_parser_epistemic import \
     replace_epistemic_literals_by_auxiliary_atoms as \
     _replace_epistemic_literals_by_auxiliary_atoms
 from .transformers.theory_parser_epistemic import \
@@ -26,7 +24,7 @@ from .transformers.theory_parser_epistemic import \
 _CallbackType = Callable[[ASTObject], None]
 
 from clingo.ast import ASTType, Location, Position,  parse_string
-from clingox.ast import TheoryParser, theory_parser_from_definition
+from clingox.ast import TheoryParser, theory_parser_from_definition, prefix_symbolic_atoms
 
 
 class _ProgramParser(object):
@@ -65,7 +63,7 @@ class _ProgramParser(object):
     def _parse_statement(self, statement: ast.AST) -> None: # pylint: disable=no-member
         statement = self.theory_parser(statement)
         statement = _parse_epistemic_literals_elements(statement)
-        statement = _prefix_to_atom_names(statement, prefixes.U_PREFIX)
+        statement = prefix_symbolic_atoms(statement, prefixes.U_PREFIX)
         # this avoids collitions between user predicates and auxiliary predicates
         if statement.ast_type == ast.ASTType.Rule: # pylint: disable=no-member
             for rule in self._parse_rule(statement):
