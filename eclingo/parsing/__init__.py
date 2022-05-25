@@ -1,4 +1,3 @@
-from collections import namedtuple
 from typing import Callable, Iterable, List
 
 from clingo import ast
@@ -8,18 +7,11 @@ from clingo.ast import Location, Position
 from eclingo import prefixes
 from eclingo.internal_states import ASTObject, ShowStatement
 
-from .transformers.parser_negations import \
-    StrongNegationReplacement as _StrongNegationReplacement
-from .transformers.theory_parser_epistemic import \
-    double_negate_epistemic_listerals
-from .transformers.theory_parser_epistemic import \
-    parse_epistemic_literals_elements as _parse_epistemic_literals_elements
-from .transformers.theory_parser_epistemic import \
-    replace_epistemic_literals_by_auxiliary_atoms as \
-    _replace_epistemic_literals_by_auxiliary_atoms
-from .transformers.theory_parser_epistemic import \
-    replace_negations_by_auxiliary_atoms_in_epistemic_literals as \
-    _replace_negations_by_auxiliary_atoms_in_epistemic_literals
+from .transformers.parser_negations import StrongNegationReplacement
+from .transformers.theory_parser_epistemic import double_negate_epistemic_listerals
+from .transformers.theory_parser_epistemic import parse_epistemic_literals_elements
+from .transformers.theory_parser_epistemic import replace_epistemic_literals_by_auxiliary_atoms
+from .transformers.theory_parser_epistemic import replace_negations_by_auxiliary_atoms_in_epistemic_literals
 
 _CallbackType = Callable[[ASTObject], None]
 
@@ -45,7 +37,7 @@ class _ProgramParser(object):
         self.callback = callback
         self.parameters = [ast.Id(self.initial_location, x) for x in parameters] # pylint: disable=no-member
         self.name = name
-        self.strong_negation_replacements = _StrongNegationReplacement()
+        self.strong_negation_replacements = StrongNegationReplacement()
         self.semantics = semantics
         # theory parse is initialited during the parse_string call below
         self.theory_parser: TheoryParser = None
@@ -62,7 +54,7 @@ class _ProgramParser(object):
 
     def _parse_statement(self, statement: ast.AST) -> None: # pylint: disable=no-member
         statement = self.theory_parser(statement)
-        statement = _parse_epistemic_literals_elements(statement)
+        statement = parse_epistemic_literals_elements(statement)
         statement = prefix_symbolic_atoms(statement, prefixes.U_PREFIX)
         # this avoids collitions between user predicates and auxiliary predicates
         if statement.ast_type == ast.ASTType.Rule: # pylint: disable=no-member
@@ -83,10 +75,10 @@ class _ProgramParser(object):
     def _parse_rule(self, rule: ast.AST) -> Iterable[ast.AST]: # pylint: disable=no-member
         if self.semantics == "g94":
             rule = double_negate_epistemic_listerals(rule)
-        (rules, sn_replacement) = _replace_negations_by_auxiliary_atoms_in_epistemic_literals(rule)
+        (rules, sn_replacement) = replace_negations_by_auxiliary_atoms_in_epistemic_literals(rule)
         self.strong_negation_replacements.update(sn_replacement) # pylint: disable=no-member
 
-        return _replace_epistemic_literals_by_auxiliary_atoms(rules, prefixes.EPISTEMIC_PREFIX)
+        return replace_epistemic_literals_by_auxiliary_atoms(rules, prefixes.EPISTEMIC_PREFIX)
 
     def _parse_program_statement(self, statement: ast.AST) -> List[ast.AST]: # pylint: disable=no-member
         if statement.name != "base" or \

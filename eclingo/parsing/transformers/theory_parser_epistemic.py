@@ -4,11 +4,10 @@
 from copy import copy
 from typing import Iterable, List, Tuple, Union
 
-import clingo
 from clingo import ast
 from clingo.ast import Sign
 
-import eclingo.prefixes as _prefixes
+from eclingo import prefixes
 
 from .parser_negations import (NotReplacementType, SnReplacementType,
                                default_negation_auxiliary_rule_replacement,
@@ -90,7 +89,7 @@ def make_default_negation_auxiliar_in_epistemic_literals(stm: ast.AST) -> Tuple[
 
 class TheoryBuildGuard(Transformer):
 
-    def __init__(self, user_prefix="u"):
+    def __init__(self):
         self.guard = []
         self.positive = True
 
@@ -108,8 +107,6 @@ class TheoryBuildGuard(Transformer):
         if atom.term.name == "k" and not atom.term.arguments:
             self.visit_sequence(atom.elements, "k")
         return atom
-
-
 
 def build_guard(body):
     t = TheoryBuildGuard()
@@ -238,7 +235,7 @@ class EClingoTransformer(Transformer):
     def visit_TheoryAtom(self, atom, loc="body"):
         if atom.term.name == "k" and not atom.term.arguments:
             nested_literal = atom.elements[0].terms[0]
-            aux_atom = prefix_symbolic_atoms(nested_literal.atom, _prefixes.EPISTEMIC_PREFIX)
+            aux_atom = prefix_symbolic_atoms(nested_literal.atom, prefixes.EPISTEMIC_PREFIX)
             self.epistemic_replacements.append((nested_literal, aux_atom))
             return aux_atom
         return atom
