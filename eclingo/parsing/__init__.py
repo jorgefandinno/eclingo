@@ -25,9 +25,21 @@ from .transformers.theory_parser_epistemic import \
 
 _CallbackType = Callable[[ASTObject], None]
 
+from clingo.ast import ASTType, Location, Position,  parse_string
+from clingox.ast import TheoryParser, theory_parser_from_definition
 
 
 class _ProgramParser(object):
+
+    eclingo_theory = '''
+    #theory eclingo {
+    term { not : 0, unary;
+           -   : 0, unary;
+           ~   : 0, unary
+         };
+    &k/0 : term, body
+    }.
+    '''
 
     def __init__(self, program: str, callback: _CallbackType, parameters: List[str] = [], name: str = "base", semantics = "c19-1"): # pylint: disable=dangerous-default-value
         self.initial_location = Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=1))
@@ -37,6 +49,13 @@ class _ProgramParser(object):
         self.name = name
         self.strong_negation_replacements = _StrongNegationReplacement()
         self.semantics = semantics
+        # theory parse is initialited during the parse_string call below
+        self.theory_parser: TheoryParser = None
+        def extract(stm):
+            if stm.ast_type == ASTType.TheoryDefinition:
+                global theory_parser
+                self.theory_parser = theory_parser_from_definition(stm)
+        parse_string(_ProgramParser.eclingo_theory, extract)
 
     def __call__(self) -> None:
         ast.parse_string(self.program, self._parse_statement)
@@ -44,6 +63,7 @@ class _ProgramParser(object):
             self.callback(aux_rule)
 
     def _parse_statement(self, statement: ast.AST) -> None: # pylint: disable=no-member
+        statement = self.theory_parser(statement)
         statement = _parse_epistemic_literals_elements(statement)
         statement = _prefix_to_atom_names(statement, prefixes.U_PREFIX)
         # this avoids collitions between user predicates and auxiliary predicates

@@ -108,6 +108,11 @@ class TesterCase(unittest.TestCase):
         result = theory_atom(theory_atom_str, mode=2).elements[0]
         self.assertEqual(result, element)
 
+        theory_atom_str = '&k{ not a }'
+        element = ast.TheoryAtomElement([ast.TheoryFunction(location, 'not', [ast.SymbolicTerm(location, Function('a', [], True))])], [])
+        result = theory_atom(theory_atom_str, mode=2).elements[0]
+        self.assertEqual(result, element)
+
         theory_atom_str = '&k{ not a(X) }'
         element = ast.TheoryAtomElement([ast.TheoryFunction(location, 'not', [ast.TheoryFunction(location, 'a', [ast.Variable(location, 'X')])])], [])
         result = theory_atom(theory_atom_str, mode=2).elements[0]
@@ -133,3 +138,13 @@ class TesterCase(unittest.TestCase):
         result = theory_atom(theory_atom_str, mode=2).elements[0]
         self.assertEqual(result, element)
         
+    def test_theory_parse_element(self):
+        element = ast.TheoryAtomElement([ast.TheoryFunction(location, '-', [ast.TheoryFunction(location, 'a', [ast.Variable(location, 'X')])])], [])
+        result = theory_parse(element)
+        expected = ast.TheoryAtomElement([ast.TheoryFunction(location, '-', [ast.TheoryFunction(location, 'a', [ast.Variable(location, 'X')])])], [])
+        self.assertEqual(element, expected)
+
+    def test_theory_parse_term(self):
+        term = ast.TheoryUnparsedTerm(Location(begin=Position(filename='<string>', line=1, column=7), end=Position(filename='<string>', line=1, column=9)), [ast.TheoryUnparsedTermElement(['-'], ast.SymbolicTerm(Location(begin=Position(filename='<string>', line=1, column=8), end=Position(filename='<string>', line=1, column=9)), Function('a', [], True)))])
+        result = theory_parse(term)
+        self.assertEqual(term, term)
