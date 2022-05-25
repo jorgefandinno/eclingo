@@ -46,8 +46,6 @@ class TheoryTermToTermTransformer(Transformer):
                 return ast.BinaryOperation(x.location, op, lhs, rhs)
         elif x.name == "-" and len(x.arguments) == 2:
             return ast.BinaryOperation(x.location, ast.BinaryOperator.Minus, self(x.arguments[0]), self(x.arguments[1]))
-        # elif (x.name, TheoryParser.binary) in TheoryParser.table or (x.name, TheoryParser.unary) in TheoryParser.table:
-        #     raise RuntimeError("invalid term: {}".format(x.location))
         else:
             return ast.Function(x.location, x.name, [self(a) for a in x.arguments], False)
 
