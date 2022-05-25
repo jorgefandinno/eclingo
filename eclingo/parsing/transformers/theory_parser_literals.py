@@ -57,7 +57,6 @@ def theory_term_to_term(x):
     """
     return TheoryTermToTermTransformer()(x)
 
-# {{{1 theory_term -> symbolic_atom
 
 class TheoryTermToLiteralTransformer(Transformer):
     """
