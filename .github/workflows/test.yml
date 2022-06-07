@@ -24,6 +24,10 @@ jobs:
 
     - name: install prerequisites
       shell: pwsh
+      run: pip install -r /requirements.txt
+
+    - name: install dev prerequisites
+      shell: pwsh
       run: pip install -r .github/requirements.txt
 
     - name: info
