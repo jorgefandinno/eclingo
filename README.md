@@ -39,6 +39,7 @@ git checkout develop
 Change your directory and install `eclingo`:
 ```
 cd eclingo/
+pip install -r requirements.txt
 pip install .
 ```
 
