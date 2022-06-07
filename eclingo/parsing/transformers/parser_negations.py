@@ -4,7 +4,7 @@ Module to replace strong and default negations by auxiliary atoms.
 from copy import copy
 from typing import Iterator, List, Set, Tuple
 
-from clingo import ast  # type: ignore
+from clingo import ast
 
 from . import astutil
 from clingo.ast import Transformer, Location, Position

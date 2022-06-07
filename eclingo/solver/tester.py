@@ -1,4 +1,10 @@
 import sys
+from typing import Sequence
+
+from clingo import Symbol
+import clingo
+from clingox.program import Remapping
+from clingox.backend import SymbolicBackend
 
 from eclingo import internal_states
 from eclingo.config import AppConfig
@@ -11,21 +17,26 @@ class CandidateTester():
 
     def __init__(self,
                  config: AppConfig,
-                 control: internal_states.InternalStateControl):
-        self._config     = config
-        self._epistemic_to_test = control.epistemic_to_test_mapping
-        self.control      = self._generate_control_test(control)
+                 control_gen: internal_states.InternalStateControl):
+        self._config = config
+        self._epistemic_to_test = control_gen.epistemic_to_test_mapping
+        self.control = clingoext.Control(['0'], message_limit=0)
+        CandidateTester._init_control_test(self.control, control_gen)
+        CandidateTester._add_choices_to(self.control, self._epistemic_to_test.keys())
 
-    def _generate_control_test(self, control) -> clingoext.Control:
-        control_test          = clingoext.Control(['0'], message_limit=0)
-        control.add_to(control_test)
-        self._add_choices_for_epistemic_literals_to(control_test)
+    @staticmethod
+    def _init_control_test(control_test: clingo.control.Control, control_gen: clingoext.Control) -> clingoext.Control:
+        program = control_gen.new_ground_program
+        with control_test.control.backend() as backend:
+            mapping = Remapping(backend, program.output_atoms, program.facts)
+            program.add_to_backend(backend, mapping)
+        
         control_test.control.configuration.solve.enum_mode = 'cautious' # type: ignore
-        return control_test
 
-    def _add_choices_for_epistemic_literals_to(self, control_test: clingoext.Control) -> None:
-        with control_test.symbolic_backend() as backend:
-            for literal_code in self._epistemic_to_test.keys():
+    @staticmethod
+    def _add_choices_to(control_test: clingoext.Control, literals: Sequence[Symbol]) -> None:
+        with SymbolicBackend(control_test.control.backend()) as backend:
+            for literal_code in literals:
                 backend.add_rule([literal_code], [], [], True)
                 # if self._config.eclingo_project_test:
                 #     backend.add_project(
