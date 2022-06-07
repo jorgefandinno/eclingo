@@ -4,6 +4,8 @@
 
 ![GitHub](https://img.shields.io/github/license/potassco/eclingo?color=blue)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/potassco/eclingo)
+![example branch parameter](https://github.com/jorgefandinno/eclingo/.github/workflows/test.yml/badge.svg?branch=develp)
+
 
 ---
 
