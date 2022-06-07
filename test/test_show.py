@@ -1,3 +1,4 @@
+import clingo
 from clingo import ast as _ast
 from clingo.ast import  parse_string, Location, Position
 
@@ -23,19 +24,28 @@ class Test(ClingoTestHelper,
         program = """
             #show a/0.
             """
+        if clingo.__version__ < '5.6.0':
+            signature = _ast.ShowSignature(    # pylint: disable=no-member
+                Location(begin=Position(filename='<string>', line=2, column=13), end=Position(filename='<string>', line=2, column=23)),
+                name = 'a',
+                arity = 0,
+                positive = True,
+                csp = False
+            )
+        else:
+            signature = _ast.ShowSignature(    # pylint: disable=no-member
+                Location(begin=Position(filename='<string>', line=2, column=13), end=Position(filename='<string>', line=2, column=23)),
+                name = 'a',
+                arity = 0,
+                positive = True,
+            )
         parsed_program = [
             _ast.Program( # pylint: disable=no-member
                 Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=1)),
                 name = 'base',
                 parameters = []
                 ),
-            _ast.ShowSignature( # pylint: disable=no-member
-                Location(begin=Position(filename='<string>', line=2, column=13), end=Position(filename='<string>', line=2, column=23)),
-                name = 'a',
-                arity = 0,
-                positive = True,
-                csp = False
-            )]
+            signature]
         self.assert_equal_clingo_parsed_program(program, parsed_program)
 
     def test_show01b(self):
@@ -60,19 +70,29 @@ class Test(ClingoTestHelper,
         program = """
             #show -a/0.
             """
+        if clingo.__version__ < '5.6.0':
+            signature = _ast.ShowSignature(    # pylint: disable=no-member
+                Location(begin=Position(filename='<string>', line=2, column=13), end=Position(filename='<string>', line=2, column=23)),
+                name = 'a',
+                arity = 0,
+                positive = False,
+                csp = False
+            )
+        else:
+            signature = _ast.ShowSignature(    # pylint: disable=no-member
+                Location(begin=Position(filename='<string>', line=2, column=13), end=Position(filename='<string>', line=2, column=23)),
+                name = 'a',
+                arity = 0,
+                positive = False,
+            )
         parsed_program = [
             _ast.Program(    # pylint: disable=no-member
                 Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=1)),
                 name = 'base',
                 parameters = []
                 ),
-            _ast.ShowSignature(    # pylint: disable=no-member
-                Location(begin=Position(filename='<string>', line=2, column=13), end=Position(filename='<string>', line=2, column=23)),
-                name = 'a',
-                arity = 0,
-                positive = False,
-                csp = False
-            )]
+                signature
+                ]
         self.assert_equal_clingo_parsed_program(program, parsed_program)
 
 
