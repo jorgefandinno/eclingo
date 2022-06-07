@@ -34,7 +34,7 @@ jobs:
       shell: pwsh
       run: |
         python -VV
-        clingo --version
+        python -c "import clingo; print(clingo.__version__)"
 
     - name: install eclingo
       shell: pwsh
