@@ -36,9 +36,10 @@ git checkout develop
 
 ### Setup
 
-Change your directory and install `eclingo`:
+Change your directory and install `clingox` and `eclingo`:
 ```
 cd eclingo/
+pip install clingox
 pip install .
 ```
 
