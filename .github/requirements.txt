@@ -1,0 +1,5 @@
+mypy
+pylint
+flake8
+coverage
+--extra-index-url https://test.pypi.org/simple/

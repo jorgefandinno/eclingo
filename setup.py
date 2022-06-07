@@ -16,8 +16,8 @@ setup(
             'eclingo=eclingo:main',
         ]
     },
-    python_requires='>=3.8',
-    nstall_requires=[
+    python_requires='>=3.9',
+    install_requires=[
           'clingox',
       ],
 )

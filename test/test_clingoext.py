@@ -387,20 +387,27 @@ class Test(unittest.TestCase):
         program = """
             #show a/0.
             """
-
+        if clingo.__version__ < '5.6.0':
+            signature = _ast.ShowSignature(
+                Location(begin=Position(filename='<string>', line=2, column=13), end=Position(filename='<string>', line=2, column=23)), 
+                name = 'a', 
+                arity = 0, 
+                positive = 1, 
+                csp = False)
+        else:
+            signature = _ast.ShowSignature(
+                Location(begin=Position(filename='<string>', line=2, column=13), end=Position(filename='<string>', line=2, column=23)), 
+                name = 'a', 
+                arity = 0, 
+                positive = 1)
         parsed_program =  [
             _ast.Program(
                 Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=1)), 
                 name = 'base', 
                 parameters = []
                 ),
-			_ast.ShowSignature(
-			    Location(begin=Position(filename='<string>', line=2, column=13), end=Position(filename='<string>', line=2, column=23)), 
-                name = 'a', 
-                arity = 0, 
-                positive = 1, 
-                csp = False
-                )]
+                signature
+                ]
         self.control.add_program(program)
         self.assertEqual(self.control.parsed_program, parsed_program)
 
@@ -409,21 +416,27 @@ class Test(unittest.TestCase):
         program = """
             #show -a/0.
             """
-
+        if clingo.__version__ < '5.6.0':
+            signature = _ast.ShowSignature(
+                Location(begin=Position(filename='<string>', line=2, column=13), end=Position(filename='<string>', line=2, column=23)), 
+                name = 'a', 
+                arity = 0, 
+                positive = 0, 
+                csp = False)
+        else:
+            signature = _ast.ShowSignature(
+                Location(begin=Position(filename='<string>', line=2, column=13), end=Position(filename='<string>', line=2, column=23)), 
+                name = 'a', 
+                arity = 0, 
+                positive = 0)
         parsed_program =  [
             _ast.Program(
                 Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=1)), 
                 name = 'base', 
                 parameters = []
                 ),
-		_ast.ShowSignature(
-		Location(begin=Position(filename='<string>', line=2, column=13), end=Position(filename='<string>', line=2, column=23)), 
-                name = 'a', 
-                arity = 0, 
-                positive = False, 
-                csp = False
-                )]
-            
+                signature
+            ]            
         self.control.add_program(program)
         self.assertEqual(self.control.parsed_program, parsed_program)
 
