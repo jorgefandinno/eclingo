@@ -30,13 +30,11 @@ jobs:
       shell: pwsh
       run: pip install -r .github/requirements.txt
 
-    - name: python info
+    - name: info
       shell: pwsh
-      run: python -VV
-
-    - name: clingo info
-      shell: pwsh
-      run: clingo --version
+      run: |
+        python -VV
+        clingo --version
 
     - name: install eclingo
       shell: pwsh
