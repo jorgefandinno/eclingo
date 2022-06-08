@@ -27,10 +27,6 @@ jobs:
       shell: pwsh
       run: pip install "clingo${{ matrix.clingo-version }}"
 
-    - name: install prerequisites
-      shell: pwsh
-      run: pip install -r requirements.txt
-
     - name: install dev prerequisites
       shell: pwsh
       run: pip install -r .github/requirements.txt
