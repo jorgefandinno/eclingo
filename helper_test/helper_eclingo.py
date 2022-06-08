@@ -1,12 +1,4 @@
-import eclingo as _eclingo
-
-from eclingo.util import clingoext as _clingoext
-from eclingo.util.logger import silent_logger
-from eclingo.util.astutil import ast_repr as _ast_repr
-
-from eclingo.parsing import parse_program as _parse_program
-from eclingo.internal_states import ShowStatement
-
+from eclingo import control as _control, internal_states, config as _config
 from . import helper
 
 class EclingoTestHelper(helper.TestHelper):
@@ -16,10 +8,10 @@ class EclingoTestHelper(helper.TestHelper):
         self.eclingo_control = None
     
     def _control_and_ground(self, program):
-        control  = _eclingo.internal_states.InternalStateControl(message_limit=0)
-        config   = _eclingo.config.AppConfig()
+        control  = internal_states.InternalStateControl(message_limit=0)
+        config   = _config.AppConfig()
         config.eclingo_semantics = "c19-1"
-        eclingo_control = _eclingo.control.Control(control=control, config=config)
+        eclingo_control = _control.Control(control=control, config=config)
         eclingo_control.add_program(program)
         eclingo_control.ground()
         return eclingo_control
