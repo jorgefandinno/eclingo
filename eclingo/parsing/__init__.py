@@ -49,7 +49,7 @@ class _ProgramParser(object):
         self.initial_location = Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=1))
         self.program  = program
         self.callback = callback
-        self.parameters = [ast.Id(self.initial_location, x) for x in parameters] # pylint: disable=no-member
+        self.parameters = [ast.Id(self.initial_location, x) for x in parameters]
         self.name = name
         self.strong_negation_replacements = StrongNegationReplacement()
         self.semantics = semantics
@@ -60,35 +60,35 @@ class _ProgramParser(object):
         for aux_rule in self.strong_negation_replacements.get_auxiliary_rules():
             self.callback(aux_rule)
 
-    def _parse_statement(self, statement: ast.AST) -> None: # pylint: disable=no-member
+    def _parse_statement(self, statement: ast.AST) -> None:
         statement = self.theory_parser(statement)
         statement = parse_epistemic_literals_elements(statement)
         statement = prefix_symbolic_atoms(statement, prefixes.U_PREFIX)
         # this avoids collitions between user predicates and auxiliary predicates
-        if statement.ast_type == ast.ASTType.Rule: # pylint: disable=no-member
+        if statement.ast_type == ast.ASTType.Rule:
             for rule in self._parse_rule(statement):
                 self.callback(rule)
-        elif statement.ast_type == ast.ASTType.Program: # pylint: disable=no-member
+        elif statement.ast_type == ast.ASTType.Program:
             for statement in self._parse_program_statement(statement):
                 self.callback(statement)
-        elif statement.ast_type == ast.ASTType.ShowSignature: # pylint: disable=no-member
+        elif statement.ast_type == ast.ASTType.ShowSignature:
             for stm in self._parse_show_signature_statement(statement):
                 self.callback(stm)
-        elif statement.ast_type == ast.ASTType.ShowTerm: # pylint: disable=no-member
+        elif statement.ast_type == ast.ASTType.ShowTerm:
             raise RuntimeError('syntax error: only show statements of the form "#show atom/n." are allowed.')
         else:
             self.callback(statement)
 
 
-    def _parse_rule(self, rule: ast.AST) -> Iterable[ast.AST]: # pylint: disable=no-member
+    def _parse_rule(self, rule: ast.AST) -> Iterable[ast.AST]:
         if self.semantics == "g94":
             rule = double_negate_epistemic_listerals(rule)
         (rules, sn_replacement) = replace_negations_by_auxiliary_atoms_in_epistemic_literals(rule)
-        self.strong_negation_replacements.update(sn_replacement) # pylint: disable=no-member
+        self.strong_negation_replacements.update(sn_replacement)
 
         return replace_epistemic_literals_by_auxiliary_atoms(rules, prefixes.EPISTEMIC_PREFIX)
 
-    def _parse_program_statement(self, statement: ast.AST) -> List[ast.AST]: # pylint: disable=no-member
+    def _parse_program_statement(self, statement: ast.AST) -> List[ast.AST]:
         if statement.name != "base" or \
            statement.parameters or \
            statement.location != self.initial_location:
@@ -97,10 +97,10 @@ class _ProgramParser(object):
         if self.name == "base" and not self.parameters:
             return [statement]
 
-        new_statement = ast.Program(statement.location, self.name, self.parameters) # pylint: disable=no-member
+        new_statement = ast.Program(statement.location, self.name, self.parameters)
         return [statement, new_statement]
 
-    def _parse_show_signature_statement(self, statement: ast.AST) -> List[ShowStatement]: # pylint: disable=no-member
+    def _parse_show_signature_statement(self, statement: ast.AST) -> List[ShowStatement]:
         return [ShowStatement(statement.name, statement.arity, statement.positive)]
 
 #######################################################################################################
