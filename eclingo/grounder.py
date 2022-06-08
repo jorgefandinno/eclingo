@@ -8,7 +8,7 @@ from eclingo.config import AppConfig
 from eclingo.literals import Literal
 
 from .internal_states import InternalStateControl
-from .parsing import parse_program as _parse_program
+from .parsing import parse_program
 
 CONTROL = Union[clingo.Control, clingoext.Control]
 
@@ -35,7 +35,7 @@ class Grounder():
 
     def add_program(self, program: str, parameters: List[str] = [], name: str = "base") -> None: # pylint: disable=dangerous-default-value
         with self.control.builder() as builder:
-            _parse_program(program, builder.add, parameters, name, self.config.eclingo_semantics)
+            parse_program(program, builder.add, parameters, name, self.config.eclingo_semantics)
 
 
     def ground(self, parts: Iterable[Tuple[str, Iterable[Symbol]]] = (("base", []),)) -> None: # pylint: disable=dangerous-default-value
