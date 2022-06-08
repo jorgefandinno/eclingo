@@ -53,7 +53,6 @@ class _ProgramParser(object):
         self.name = name
         self.strong_negation_replacements = StrongNegationReplacement()
         self.semantics = semantics
-        # theory parse is initialited during the parse_string call below
         self.theory_parser = parse_theory(_ProgramParser.eclingo_theory)
 
     def __call__(self) -> None:
