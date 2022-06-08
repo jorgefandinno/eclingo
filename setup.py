@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
-from eclingo.control import __version__
+from eclingo.__version__ import __version__
 
 setup(
     version = __version__,
