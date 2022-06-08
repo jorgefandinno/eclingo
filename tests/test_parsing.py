@@ -4,7 +4,7 @@ import unittest
 import clingo
 import clingo.ast as _ast
 from eclingo.util.astutil import ast_repr as _ast_repr
-from eclingo.parsing import parse_program as _parse_program
+from eclingo.parsing.parser import parse_program as _parse_program
 
 
 def parse_formula(stm):

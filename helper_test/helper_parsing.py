@@ -8,7 +8,7 @@ from eclingo.util import clingoext as _clingoext
 from eclingo.util.logger import silent_logger
 from eclingo.util.astutil import ast_repr as _ast_repr
 
-from eclingo.parsing import parse_program as _parse_program
+from eclingo.parsing.parser import parse_program as _parse_program
 from eclingo.internal_states import ShowStatement
 
 from . import helper

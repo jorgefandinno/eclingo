@@ -8,7 +8,7 @@ from eclingo.config import AppConfig
 from eclingo.literals import Literal
 
 from .internal_states import InternalStateControl
-from .parsing import parse_program
+from .parsing.parser import parse_program
 
 CONTROL = Union[clingo.Control, clingoext.Control]
 
