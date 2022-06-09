@@ -60,7 +60,7 @@ pip install .
 
 #### Rules
 
-`eclingo` accepts rules with the same structure as `clingo` does. Additionally, `eclingo` allows these rules to include subjective literals in their body. These subjective literals are represented using the modal operator **K**, which is represented as `&k{}`. The expression inside the curly braces can be an explicit literal (that is, an atom `A` or its explicit negation `-A`) possibly preceded by default negation, that is represented inside the braces as `not` (alternatively default negation can be represented as `~` for backward compatibility).
+`eclingo` accepts rules with the same structure as `clingo` does. Additionally, `eclingo` allows these rules to include subjective literals in their body. These subjective literals are represented using the modal operator **K**, which is represented as `&k{}`. The expression inside the curly braces can be an explicit literal (that is, an atom `A` or its explicit negation `-A`) possibly preceded by default negation, that is represented `not` (alternatively default negation can be represented as `~` for backward compatibility).
 
 > Modal operator **M** is not directly supported but `M q` can be replaced by the construction `not &k{ not q }`.
 
