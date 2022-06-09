@@ -36,7 +36,8 @@ For installation in development mode go to the [contributing](#Contributing) sec
 
 Clone this repo:
 ```
-git clone https://github.com/potassco/eclingo.git
+git clone https://github.com/potassco/eclingo.git &&
+cd eclingo/ &&
 git checkout develop
 ```
 
@@ -44,7 +45,6 @@ git checkout develop
 
 Change your directory and install `eclingo`:
 ```
-cd eclingo/
 pip install .
 ```
 
@@ -88,7 +88,8 @@ Install clingo using conda as explained [above](#Install-clingo).
 
 Clone this repo (or make your own fork of ```https://github.com/potassco/eclingo.git```):
 ```
-git@github.com:potassco/python-clingox.git
+git clone git@github.com:jorgefandinno/eclingo.git &&
+cd eclingo &&
 git checkout develop
 ```
 Unistall eclingo if you have already installed it
@@ -97,8 +98,9 @@ pip uninstall eclingo
 ```
 Install eclingo in development model and reactivate conda
 ```
-pip install -e .
-conda deactivate && conda activate eclingo
+pip install -e .[dev] &&
+conda deactivate &&
+conda activate eclingo
 ```
 
 Test your installation
@@ -119,6 +121,8 @@ git commit -am"<comment>"
 git push
 ```
 where `<comment>` should state the changes made. If comments are too long to state in one line, you can use ```git commit``` and write them in the editor.
+
+Create a pull request in github.
 
 ## License
 
