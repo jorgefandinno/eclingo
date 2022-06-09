@@ -115,8 +115,9 @@ git checkout -b <your_name>/<branch>
 ```
 where ```<your_name>``` is to be replaced by your name and ```<branch>``` should be the name of the branch you are creating.
 
-Once you have made the contributions commit and push the changes to your branch in the repository.
+Once you have made the contributions, test that everythink works correctly, commit and push the changes to your branch in the repository.
 ```
+pytest
 git commit -am"<comment>"
 git push
 ```
