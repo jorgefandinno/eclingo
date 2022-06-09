@@ -21,14 +21,18 @@ Currently, `eclingo` can compute world views under the following semantics:
 
 ## Installation
 
-### Clone
+### Install clingo
 
 Install the correct version of python and clingo:
 ```
-conda create --name eclingo python=3.9.12
+conda create --name eclingo python=3.9
 conda activate eclingo
-conda install -c potassco/label/dev clingo=5.5.2
+conda install -c potassco clingo=5.5
 ```
+
+For installation in development mode go to the [contributing](#Contributing) section below.
+
+### Clone
 
 Clone this repo:
 ```
@@ -41,16 +45,7 @@ git checkout develop
 Change your directory and install `eclingo`:
 ```
 cd eclingo/
-pip install -r requirements.txt
 pip install .
-```
-
-### Test
-```
-pip install -U pytest
-python3 -m pytest
-conda install -c mypy
-mypy eclingo
 ```
 
 ## Usage
@@ -87,6 +82,43 @@ For example, the show statement:
 ```
 refers to the subjective atom `&k{p/1}`.
 
+## Contributing
+
+Install clingo using conda as explained [above](#Install-clingo).
+
+Clone this repo (or make your own fork of ```https://github.com/potassco/eclingo.git```):
+```
+git@github.com:potassco/python-clingox.git
+git checkout develop
+```
+Unistall eclingo if you have already installed it
+```
+pip uninstall eclingo
+```
+Install eclingo in development model and reactivate conda
+```
+pip install -e .
+conda deactivate && conda activate eclingo
+```
+
+Test your installation
+```
+pytest
+```
+<!-- mypy eclingo -->
+
+To contribute create a new branch
+```
+git checkout -b <your_name>/<branch>
+```
+where ```<your_name>``` is to be replaced by your name and ```<branch>``` should be the name of the branch you are creating.
+
+Once you have made the contributions commit and push the changes to your branch in the repository.
+```
+git commit -am"<comment>"
+git push
+```
+where `<comment>` should state the changes made. If comments are too long to state in one line, you can use ```git commit``` and write them in the editor.
 
 ## License
 

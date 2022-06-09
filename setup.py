@@ -18,6 +18,13 @@ setup(
     },
     python_requires='>=3.9',
     install_requires=[
-          'clingox',
+        'clingo>=5.5.0,<5.6',
+        'clingox',
       ],
+    extras_require={
+        'dev': [
+            'pytest',
+            'mypy'
+        ]
+    }
 )
