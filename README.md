@@ -16,8 +16,8 @@ Currently, `eclingo` can compute world views under the following semantics:
 
 ## Dependencies
 
-- `python 3.9.12`
-- `clingo 5.5.2` Python module.
+- `python 3.9`
+- `clingo 5.5` Python module.
 
 ## Installation
 
