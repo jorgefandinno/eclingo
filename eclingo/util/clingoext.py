@@ -3,6 +3,7 @@ import textwrap
 from typing import Any, Callable, Dict, Iterable, List, Sequence, Tuple, Union
 
 import clingo
+import clingox
 from clingo import MessageCode, Symbol, TruthValue
 from clingo import ast
 from clingo.ast import parse_string
@@ -10,6 +11,7 @@ from clingo.ast import parse_string
 from eclingo.util import astutil
 from eclingo.util.groundprogram import ClingoExternal, ClingoOutputAtom, ClingoProject, ClingoRule, ClingoWeightRule, GroundProgram
 from clingox import program
+
 
 
 class ProgramBuilder():
@@ -99,10 +101,10 @@ class Control(object):  # type: ignore
         self.control.ground(parts, context)
 
     def symbolic_backend(self) -> SymbolicBackend:
-        return SymbolicBackend(self.control.backend())
+        return clingox.backend.SymbolicBackend(self.control.backend())
 
-    # def backend(self) -> Backend:
-    #     return Backend(self.control.backend(), self.ground_program)
+    #def backend(self) -> Backend:
+    #    return Backend(self.control.backend(), self.ground_program)
 
     # def register_observer(self, observer, replace: bool = False) -> None:
     #     return super().register_observer(observer, replace)
