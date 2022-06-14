@@ -97,6 +97,6 @@ class ApplicationWrapper(_clingoext.ApplicationWrapper):
         return getattr(self.application, attr)
 
 
-def clingo_main(application: Application, files: Iterable[str] = ()) -> int:
+def clingo_main(application: Application, files: Sequence[str] = ()) -> int:
     application_wrapper = ApplicationWrapper(application)
     return _clingo.clingo_main(application_wrapper, files)

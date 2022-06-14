@@ -188,7 +188,7 @@ class DefaultNegationsToAuxiliarTransformer(Transformer):
         return new_x
 
 
-NotReplacementType = List[Tuple[ast.AST, ast.AST]]
+NotReplacementType = List[ast.AST]
 
 ####################################################################################
 

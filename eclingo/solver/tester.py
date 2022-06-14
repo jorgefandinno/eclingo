@@ -1,5 +1,5 @@
 import sys
-from typing import Sequence
+from typing import Iterable, Sequence
 
 from clingo import Symbol
 import clingo
@@ -25,7 +25,7 @@ class CandidateTester():
         CandidateTester._add_choices_to(self.control, self._epistemic_to_test.keys())
 
     @staticmethod
-    def _init_control_test(control_test: clingo.control.Control, control_gen: clingoext.Control) -> clingoext.Control:
+    def _init_control_test(control_test: clingoext.Control, control_gen: clingoext.Control) -> None:
         program = control_gen.new_ground_program
         with control_test.control.backend() as backend:
             mapping = Remapping(backend, program.output_atoms, program.facts)
@@ -34,7 +34,7 @@ class CandidateTester():
         control_test.control.configuration.solve.enum_mode = 'cautious' # type: ignore
 
     @staticmethod
-    def _add_choices_to(control_test: clingoext.Control, literals: Sequence[Symbol]) -> None:
+    def _add_choices_to(control_test: clingoext.Control, literals: Iterable[Symbol]) -> None:
         with SymbolicBackend(control_test.control.backend()) as backend:
             for literal_code in literals:
                 backend.add_rule([literal_code], [], [], True)
