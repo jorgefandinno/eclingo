@@ -47,7 +47,7 @@ class ProgramBuilder():
 
 class Control(object):  # type: ignore
 
-    def __init__(self, arguments: Iterable[str] = (), logger: Callable[[MessageCode, str], None] = None, message_limit: int = 20, *, control: clingo.Control = None):
+    def __init__(self, arguments: Sequence[str] = (), logger: Callable[[MessageCode, str], None] = None, message_limit: int = 20, *, control: clingo.Control = None):
         if control is None:
             control = clingo.Control(arguments, logger, message_limit)
         self.control = control
@@ -64,7 +64,7 @@ class Control(object):  # type: ignore
     def builder(self) -> ProgramBuilder:
         return ProgramBuilder(self.control, self.parsed_program)
 
-    def ground(self, parts: Iterable[Tuple[str, Iterable[Symbol]]], context: Any = None) -> None:
+    def ground(self, parts: Sequence[Tuple[str, Sequence[Symbol]]], context: Any = None) -> None:
         self.control.ground(parts, context)
 
     def symbolic_backend(self) -> SymbolicBackend:
@@ -184,6 +184,6 @@ class ApplicationWrapper(clingo.Application):
         return getattr(self.application, attr)
 
 
-def clingo_main(application: Application, files: Iterable[str] = ()) -> int:
+def clingo_main(application: Application, files: Sequence[str] = ()) -> int:
     return clingo.clingo_main(ApplicationWrapper(application), files)
 
