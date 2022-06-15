@@ -1,5 +1,2 @@
-mypy
-pylint
-flake8
-coverage
+nox=2022.1.7
 --extra-index-url https://test.pypi.org/simple/

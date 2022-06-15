@@ -23,11 +23,8 @@ jobs:
       with:
         cache: 'pip'
     
-    - name: install poetry
-      run: python -m pip install poetry
-
-    - name: install nox
-      run: python -m pip install nox
+    - name: install dependencies
+      run: python -m pip -r requirements.txt
 
     - name: run tests
       run: nox
