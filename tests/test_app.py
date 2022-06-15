@@ -8,7 +8,7 @@ import eclingo
 from eclingo.util.logger import silent_logger
 
 
-APP_PATH = '../eclingo/main.py'
+APP_PATH = '../src/eclingo/main.py'
 
 INPUT_PROG_PATH = 'prog/input/'
 OUTPUT_PROG_PATH = 'prog/output/'
