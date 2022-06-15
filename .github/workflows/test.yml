@@ -18,8 +18,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install poetry
-      run: pipx install poetry
+    # - name: Install poetry
+    #   run: pipx install poetry
 
     - name: Set up Python
       uses: actions/setup-python@v3
