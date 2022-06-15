@@ -10,7 +10,7 @@ from eclingo.grounder import Grounder
 from eclingo.solver import Solver
 from eclingo.util.logger import logger
 
-from eclingo.__version__ import __version__
+from eclingo import __version__
 
 class Control(object):
 

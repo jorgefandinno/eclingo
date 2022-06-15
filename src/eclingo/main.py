@@ -7,7 +7,7 @@ from typing import Sequence
 
 from eclingo.config import AppConfig
 from eclingo.control import Control
-from eclingo.control import __version__
+from eclingo import __version__
 from eclingo.internal_states import internal_control
 from eclingo.internal_states.internal_control import InternalStateControl
 
