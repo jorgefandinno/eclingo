@@ -25,12 +25,11 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
-        cache: 'poetry'
+        cache: 'pip'
     
     - name: Install dependencies
       run: |
-        poetry env use ${{ matrix.python-version }}
-        poetry install --no-interaction
+        ${{ matrix.python-version }} -m pip install nox
 
     # - run: poetry run pytest
 
