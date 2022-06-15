@@ -14,7 +14,6 @@ jobs:
         os: ['ubuntu-latest']
         python-version: ['3.9']
         clingo-version: ['>=5.5.0,<5.6.0']
-        python-bin: 'python${{ python-version }}'
 
     steps:
     - uses: actions/checkout@v2
@@ -29,7 +28,7 @@ jobs:
         cache: 'pip'
     
     - name: Install dependencies
-      run: ${{ matrix.python-bin }} -m pip install nox
+      run: python -m pip install nox
 
     # - run: poetry run pytest
 
