@@ -27,8 +27,11 @@ jobs:
         python-version: '3.9'
         cache: 'poetry'
     
-    - name: Poetry
-      run: poetry install
+    - name: Install dependencies
+      run: |
+        poetry env use "3.10"
+        poetry install --no-interaction
+
     - run: poetry run pytest
 
 
