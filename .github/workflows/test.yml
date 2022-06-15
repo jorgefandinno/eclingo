@@ -21,13 +21,17 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v3
       with:
-        cache: 'pip'
-    
-    - name: install dependencies
-      run: python -m pip install -r requirements.txt
+        python-version: '3.9'
+        cache: 'poetry'
+    - run: poetry install
+    - run: poetry run pytest
 
-    - name: run tests
-      run: nox
+
+    # - name: install dependencies
+    #   run: python -m pip install -r requirements.txt
+
+    # - name: run tests
+    #   run: nox
     # - name: Set up Python
     #   uses: actions/setup-python@v3
     #   with:
