@@ -24,12 +24,12 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v3
       with:
-        python-version: '3.9'
+        python-version: ${{ matrix.python-version }}
         cache: 'poetry'
     
     - name: Install dependencies
       run: |
-        poetry env use "3.10"
+        poetry env use ${{ matrix.python-version }}
         poetry install --no-interaction
 
     - run: poetry run pytest
