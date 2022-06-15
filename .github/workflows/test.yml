@@ -33,6 +33,7 @@ jobs:
         poetry install --no-interaction
 
     - run: poetry run pytest
+    
 
 
     # - name: install dependencies
