@@ -18,32 +18,37 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ matrix.python-version }}
+    - name: install nox
+      run: python -m pip install nox
 
-    - name: Set up Clingo
-      shell: pwsh
-      run: pip install "clingo${{ matrix.clingo-version }}"
+    - name: run tests
+      run: nox
+    # - name: Set up Python
+    #   uses: actions/setup-python@v3
+    #   with:
+    #     python-version: ${{ matrix.python-version }}
 
-    - name: install dev prerequisites
-      shell: pwsh
-      run: pip install -r .github/requirements.txt
+    # - name: Set up Clingo
+    #   shell: pwsh
+    #   run: pip install "clingo${{ matrix.clingo-version }}"
 
-    - name: info
-      shell: pwsh
-      run: |
-        python -VV
-        python -c "import clingo; print(clingo.__version__)"
+    # - name: install dev prerequisites
+    #   shell: pwsh
+    #   run: pip install -r .github/requirements.txt
 
-    - name: install eclingo
-      shell: pwsh
-      run: python -m pip install .
+    # - name: info
+    #   shell: pwsh
+    #   run: |
+    #     python -VV
+    #     python -c "import clingo; print(clingo.__version__)"
 
-    - name: test
-      shell: pwsh
-      run: coverage run -m unittest discover -v
+    # - name: install eclingo
+    #   shell: pwsh
+    #   run: python -m pip install .
+
+    # - name: test
+    #   shell: pwsh
+    #   run: coverage run -m unittest discover -v
 
     # - name: type check
     #   shell: pwsh
