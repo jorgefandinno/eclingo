@@ -29,7 +29,7 @@ jobs:
     
     - name: Install dependencies
       run: |
-        ${{ matrix.python-version }} -m pip install nox
+      python${{ matrix.python-version }} -m pip install nox
 
     # - run: poetry run pytest
 
