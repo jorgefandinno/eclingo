@@ -32,6 +32,7 @@ class TestCase(unittest.TestCase):
         
     def ground_program(self, program, parameters=None, arguments=None):
         if parameters is None and arguments is None:
+            print(program)
             self.grounder.add_program(program)
             self.grounder.ground()
         else:
@@ -47,8 +48,17 @@ class TestCase(unittest.TestCase):
 
     def assertEqualPrograms(self, ground_program, expected):
         expected = map(lambda x: x.lstrip().rstrip(), expected)
-        ground_program = ground_program.pretty()
-        ground_program = sorted(map(str, ground_program.as_list()))
+        
+        #print("BEFORE PRETTY STR")
+        #print(ground_program)
+        ground_program = ground_program.pretty_str()
+        
+        
+        # Pretty string returns [int, Symbol]
+        # If converted to list we need to get rid of int, since we only want the symbols
+        #print("AFTER PRETTY STR")
+        #print(list(ground_program.split("\n")))
+        ground_program = sorted(map(str, list(ground_program.split("\n"))))
         self.assertEqual(ground_program, sorted(expected))
 
 

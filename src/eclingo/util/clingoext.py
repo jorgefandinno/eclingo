@@ -52,10 +52,14 @@ class Control(object):  # type: ignore
             control = clingo.Control(arguments, logger, message_limit)
         self.control = control
         self.parsed_program: List[ast.AST] = [] # pylint: disable=no-member
-        self.ground_program = GroundProgram()
-        self.control.register_observer(Observer(self.ground_program))
-        self.new_ground_program = program.Program()
-        self.control.register_observer(program.ProgramObserver(self.new_ground_program))
+        
+        # Issue 8 -> get rid of GroundProgram in favor of clingox counterpart
+        #self.ground_program = GroundProgram()
+        #self.control.register_observer(Observer(self.ground_program))
+        
+        
+        self.ground_program = program.Program()
+        self.control.register_observer(program.ProgramObserver(self.ground_program))
 
     def add_program(self, program: str) -> None:
         with self.builder() as builder:
