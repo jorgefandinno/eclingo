@@ -1,4 +1,4 @@
-from typing import Dict, Iterable, Optional  # , Dict
+from typing import Dict, Iterable, MutableMapping, Optional  # , Dict
 
 from clingo import Function, Symbol
 from clingo.ast import Sign #pylint: disable=import-error
@@ -8,7 +8,7 @@ from eclingo.literals import EpistemicLiteral, Literal
 from eclingo.util import clingoext
 
 
-class EpistemicSymbolToTestSymbolMapping(dict): # Dict[Symbol, Symbol],
+class EpistemicSymbolToTestSymbolMapping(dict[Symbol, Symbol]):
 
     def __init__(self, control: Optional[clingoext.Control] = None) -> None:
         super().__init__()

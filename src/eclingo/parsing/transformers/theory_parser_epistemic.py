@@ -2,7 +2,7 @@
 # pylint: disable=no-name-in-module
 # pylint: disable=import-error
 from copy import copy
-from typing import Iterable, List, Tuple, Union
+from typing import Iterable, List, Set, Tuple, Union, cast
 
 from clingo import ast
 from clingo.ast import Sign
@@ -50,7 +50,7 @@ def parse_epistemic_literals_elements(rule):
 ####################################################################################
 
 
-def make_strong_negation_auxiliar_in_epistemic_literals(stm: ast.AST) -> Tuple[ast.AST, SnReplacementType]:
+def make_strong_negation_auxiliar_in_epistemic_literals(stm: Iterable[ast.AST]) -> Tuple[Iterable[ast.AST], SnReplacementType]:
     """
     Replaces strong negation by an auxiliary atom inside epistemic literals.
     Returns a pair:
@@ -60,7 +60,7 @@ def make_strong_negation_auxiliar_in_epistemic_literals(stm: ast.AST) -> Tuple[a
       * the second element is its arity
       * the third element is the name of the auxiliary atom that replaces it
     """
-    replacement = set()
+    replacement: SnReplacementType = set()
     trn = ApplyToEpistemicAtomsElementsTransformer(make_strong_negations_auxiliar, replacement.update)
     stm = trn.visit_sequence(stm)
     return (stm, replacement)
@@ -69,7 +69,7 @@ def make_strong_negation_auxiliar_in_epistemic_literals(stm: ast.AST) -> Tuple[a
 ####################################################################################
 
 
-def make_default_negation_auxiliar_in_epistemic_literals(stm: ast.AST) -> Tuple[ast.AST, NotReplacementType]:
+def make_default_negation_auxiliar_in_epistemic_literals(stm: Iterable[ast.AST]) -> Tuple[Iterable[ast.AST], NotReplacementType]:
     """
     Replaces default negation by an auxiliary atom inside epistemic literals.
     Returns a pair:
@@ -78,7 +78,7 @@ def make_default_negation_auxiliar_in_epistemic_literals(stm: ast.AST) -> Tuple[
       * the first element is the auxiliary literal replacing the negated literal
       * the second element is the original literal replaced
     """
-    replacement = []
+    replacement: List[ast.AST] = []
     trn = ApplyToEpistemicAtomsElementsTransformer(make_default_negation_auxiliar, replacement.extend)
     stm = trn.visit_sequence(stm)
     return (stm, replacement)
@@ -171,7 +171,7 @@ def replace_negations_by_auxiliary_atoms_in_epistemic_literals(stms: ASTsType, u
     else:
         rules = []
         replacement = set()
-        for stm in stms:
+        for stm in cast(Iterable[ast.AST],stms):
             (new_rules, new_replacement) = _replace_negations_by_auxiliary_atoms_in_epistemic_literals(stm, user_prefix)
             rules.extend(new_rules)
             replacement.update(new_replacement)
@@ -252,7 +252,7 @@ def replace_epistemic_literals_by_auxiliary_atoms(stms: ASTsType, k_prefix: str 
         return _replace_epistemic_literals_by_auxiliary_atoms(stms, k_prefix)
     else:
         rules = []
-        for stm in stms:
+        for stm in cast(Iterable[ast.AST],stms):
             rules.extend(_replace_epistemic_literals_by_auxiliary_atoms(stm, k_prefix))
         return rules
 

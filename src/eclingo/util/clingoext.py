@@ -3,6 +3,8 @@ import textwrap
 from typing import Any, Callable, Dict, Iterable, List, Sequence, Tuple, Union
 
 import clingo
+import clingox
+
 from clingo import MessageCode, Symbol, TruthValue
 from clingo import ast
 from clingo.ast import parse_string
@@ -10,6 +12,7 @@ from clingo.ast import parse_string
 from eclingo.util import astutil
 from eclingo.util.groundprogram import ClingoExternal, ClingoOutputAtom, ClingoProject, ClingoRule, ClingoWeightRule, GroundProgram
 from clingox import program
+from clingox.backend import SymbolicBackend
 
 
 class ProgramBuilder():
@@ -42,43 +45,9 @@ class ProgramBuilder():
                 error.args = (error.args[0] + '\n' + textwrap.indent(astutil.ast_repr(statement), 13*' '), )
             raise error
 
-
-class SymbolicBackend():
-    def __init__(self, backend):
-        self.backend = backend
-
-    def __enter__(self):
-        self.backend.__enter__()
-        return self
-
-    def __exit__(self, type_, value, traceback):
-        return self.backend.__exit__(type_, value, traceback)
-
-    def add_atom(self, symbol: Symbol) -> None:
-        self.backend.add_atom(symbol)
-
-    def add_rule(self, head: Iterable[Symbol] = [], pos_body: Iterable[Symbol] = [], neg_body: Iterable[Symbol] = [], choice: bool = False) -> None:  # pylint: disable=dangerous-default-value
-        head = list(self._add_symbols_and_return_their_codes(head))
-        body = list(self._add_symbols_and_return_their_codes(pos_body))
-        body.extend(self._add_symbols_and_return_their_negated_codes(neg_body))
-        return self.backend.add_rule(head, body, choice)
-
-    def add_project(self, symbols: Iterable[Symbol]) -> None:
-        atoms = list(self._add_symbols_and_return_their_codes(symbols))
-        return self.backend.add_project(atoms)
-
-    def _add_symbol_and_return_its_code(self, symbol: Symbol):
-        return self.backend.add_atom(symbol)
-
-    def _add_symbols_and_return_their_codes(self, symbols: Iterable[Symbol]):
-        return (self._add_symbol_and_return_its_code(symbol) for symbol in symbols)
-
-    def _add_symbols_and_return_their_negated_codes(self, symbols: Iterable[Symbol]):
-        return (-x for x in self._add_symbols_and_return_their_codes(symbols))  
-
 class Control(object):  # type: ignore
 
-    def __init__(self, arguments: Iterable[str] = (), logger: Callable[[MessageCode, str], None] = None, message_limit: int = 20, *, control: clingo.Control = None):
+    def __init__(self, arguments: Sequence[str] = (), logger: Callable[[MessageCode, str], None] = None, message_limit: int = 20, *, control: clingo.Control = None):
         if control is None:
             control = clingo.Control(arguments, logger, message_limit)
         self.control = control
@@ -95,14 +64,14 @@ class Control(object):  # type: ignore
     def builder(self) -> ProgramBuilder:
         return ProgramBuilder(self.control, self.parsed_program)
 
-    def ground(self, parts: Iterable[Tuple[str, Iterable[Symbol]]], context: Any = None) -> None:
+    def ground(self, parts: Sequence[Tuple[str, Sequence[Symbol]]], context: Any = None) -> None:
         self.control.ground(parts, context)
 
     def symbolic_backend(self) -> SymbolicBackend:
-        return SymbolicBackend(self.control.backend())
+        return clingox.backend.SymbolicBackend(self.control.backend())
 
-    # def backend(self) -> Backend:
-    #     return Backend(self.control.backend(), self.ground_program)
+    #def backend(self) -> Backend:
+    #    return Backend(self.control.backend(), self.ground_program)
 
     # def register_observer(self, observer, replace: bool = False) -> None:
     #     return super().register_observer(observer, replace)
@@ -215,6 +184,6 @@ class ApplicationWrapper(clingo.Application):
         return getattr(self.application, attr)
 
 
-def clingo_main(application: Application, files: Iterable[str] = ()) -> int:
+def clingo_main(application: Application, files: Sequence[str] = ()) -> int:
     return clingo.clingo_main(ApplicationWrapper(application), files)
 

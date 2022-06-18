@@ -45,7 +45,7 @@ class ProgramBuilder(_clingoext.ProgramBuilder):
 
 class InternalStateControl(_clingoext.Control):
 
-    def __init__(self, arguments: Iterable[str] = (), logger: Callable[[MessageCode, str], None] = None, message_limit: int = 20, *, control: _clingo.Control = None):
+    def __init__(self, arguments: Sequence[str] = (), logger: Callable[[MessageCode, str], None] = None, message_limit: int = 20, *, control: _clingo.Control = None):
         super().__init__(arguments, logger, message_limit, control=control)
         self.show_signature = ShowSignature()
         self.epistemic_to_test_mapping = EpistemicSymbolToTestSymbolMapping()
@@ -64,7 +64,7 @@ class InternalStateControl(_clingoext.Control):
         for symbolic_atom in self.show_symbolic_atoms():
             yield symbolic_atom.symbol
 
-    def ground(self, parts: Iterable[Tuple[str, Iterable[Symbol]]], context: Any = None) -> None:
+    def ground(self, parts: Sequence[Tuple[str, Sequence[Symbol]]], context: Any = None) -> None:
         super().ground(parts, context)
         self.epistemic_to_test_mapping = EpistemicSymbolToTestSymbolMapping(self)
         self.show_mapping = self._generate_show_mapping()
@@ -97,6 +97,6 @@ class ApplicationWrapper(_clingoext.ApplicationWrapper):
         return getattr(self.application, attr)
 
 
-def clingo_main(application: Application, files: Iterable[str] = ()) -> int:
+def clingo_main(application: Application, files: Sequence[str] = ()) -> int:
     application_wrapper = ApplicationWrapper(application)
     return _clingo.clingo_main(application_wrapper, files)

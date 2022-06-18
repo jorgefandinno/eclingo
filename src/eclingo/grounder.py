@@ -1,4 +1,4 @@
-from typing import Dict, Iterable, List, NamedTuple, Tuple, Union
+from typing import Dict, Iterable, List, NamedTuple, Sequence, Tuple, Union
 
 import clingo  # type: ignore
 from clingo import Symbol
@@ -38,5 +38,5 @@ class Grounder():
             parse_program(program, builder.add, parameters, name, self.config.eclingo_semantics)
 
 
-    def ground(self, parts: Iterable[Tuple[str, Iterable[Symbol]]] = (("base", []),)) -> None: # pylint: disable=dangerous-default-value
+    def ground(self, parts: Sequence[Tuple[str, Sequence[Symbol]]] = (("base", []),)) -> None: # pylint: disable=dangerous-default-value
         self.control.ground(parts)

@@ -1,0 +1,39 @@
+[tool.poetry]
+name = "eclingo"
+version = "0.4.0"
+description = ""
+authors = ["jorgefandinno <jfandinno@unomaha.edu>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+clingo = "^5.5.2"
+clingox = "^1.1.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.1.2"
+coverage = {extras = ["toml"], version = "^6.4.1"}
+pytest-cov = "^3.0.0"
+nox = "^2022.1.7"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/potassco/eclingo"
+repository = "https://github.com/potassco/eclingo"
+keywords = ["hypermodern"]
+
+[tool.poetry.scripts]
+eclingo = "eclingo.main:main"
+
+[tool.coverage.paths]
+source = ["src", "*/site-packages"]
+
+[tool.coverage.run]
+branch = true
+source = ["eclingo"]
+
+[tool.coverage.report]
+show_missing = true
