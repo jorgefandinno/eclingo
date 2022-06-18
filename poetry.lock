@@ -55,14 +55,19 @@ cffi = "*"
 
 [[package]]
 name = "clingox"
-version = "1.1.0"
+version = "1.2.0.post1"
 description = "Support library for clingo."
 category = "main"
 optional = false
 python-versions = ">=3.6"
 
 [package.dependencies]
-clingo = "*"
+clingo = ">=5.5"
+
+[package.source]
+type = "legacy"
+url = "https://test.pypi.org/simple"
+reference = "test"
 
 [[package]]
 name = "colorama"
@@ -71,6 +76,11 @@ description = "Cross-platform colored terminal text."
 category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+
+[package.source]
+type = "legacy"
+url = "https://test.pypi.org/simple"
+reference = "test"
 
 [[package]]
 name = "colorlog"
@@ -100,6 +110,11 @@ tomli = {version = "*", optional = true, markers = "python_full_version <= \"3.1
 [package.extras]
 toml = ["tomli"]
 
+[package.source]
+type = "legacy"
+url = "https://test.pypi.org/simple"
+reference = "test"
+
 [[package]]
 name = "distlib"
 version = "0.3.4"
@@ -127,6 +142,11 @@ description = "iniconfig: brain-dead simple config-ini parsing"
 category = "dev"
 optional = false
 python-versions = "*"
+
+[package.source]
+type = "legacy"
+url = "https://test.pypi.org/simple"
+reference = "test"
 
 [[package]]
 name = "nox"
@@ -281,7 +301,7 @@ testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "f2a6d16d59decab475ddf6e48ead493b4eaa8ed4ec6fa213d724a456afac9143"
+content-hash = "fe1a582c90fddbdfaaf82bf9465d78d4762cb9093119dc5c2cdec562647fb75b"
 
 [metadata.files]
 argcomplete = [
@@ -383,12 +403,12 @@ clingo = [
     {file = "clingo-5.5.2.tar.gz", hash = "sha256:226c423c45253bf0fa192845dd1fc4baf0b0b1f82a8e8bb4b8480fe3cf847e47"},
 ]
 clingox = [
-    {file = "clingox-1.1.0-py3-none-any.whl", hash = "sha256:e30254a16bcea5cfe846f8904c767f5dd3d03f2997ca18cd70a587499e98dbae"},
-    {file = "clingox-1.1.0.tar.gz", hash = "sha256:860a8f02a899ddbc8554e126f951befbe6385d0a270f4d452a9bd67b0aa0be69"},
+    {file = "clingox-1.2.0.post1-py3-none-any.whl", hash = "sha256:b898eac30ac2f741b296110ed403562f5c4ed4526b32f8f57609b6af35ea503d"},
+    {file = "clingox-1.2.0.post1.tar.gz", hash = "sha256:ef61e5845f5cd0122b1847c92eba92d96b7b7d8b1dec59181061499cef50cb76"},
 ]
 colorama = [
-    {file = "colorama-0.4.4-py2.py3-none-any.whl", hash = "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"},
-    {file = "colorama-0.4.4.tar.gz", hash = "sha256:5941b2b48a20143d2267e95b1c2a7603ce057ee39fd88e7329b0c292aa16869b"},
+    {file = "colorama-0.4.4-py2.py3-none-any.whl", hash = "sha256:df1b75950404284103727ee967f46375d1bb4ba7302bb1af74521e12233c48a2"},
+    {file = "colorama-0.4.4.tar.gz", hash = "sha256:e0a5998fe95a9f21e5af4a73aff20ef37ca3f2efd1c38e84475efdf3031926f6"},
 ]
 colorlog = [
     {file = "colorlog-6.6.0-py2.py3-none-any.whl", hash = "sha256:351c51e866c86c3217f08e4b067a7974a678be78f07f85fc2d55b8babde6d94e"},
@@ -446,8 +466,8 @@ filelock = [
     {file = "filelock-3.7.1.tar.gz", hash = "sha256:3a0fd85166ad9dbab54c9aec96737b744106dc5f15c0b09a6744a445299fcf04"},
 ]
 iniconfig = [
-    {file = "iniconfig-1.1.1-py2.py3-none-any.whl", hash = "sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3"},
-    {file = "iniconfig-1.1.1.tar.gz", hash = "sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32"},
+    {file = "iniconfig-1.1.1-py2.py3-none-any.whl", hash = "sha256:8cd395a2a89caee27b08d7879c1515fa9d93e0c477a5b38c9893787fc5e51896"},
+    {file = "iniconfig-1.1.1.tar.gz", hash = "sha256:714dfcaf550420126ed7e66bb1cbc893752af388742828f294c21f847d78b88a"},
 ]
 nox = [
     {file = "nox-2022.1.7-py3-none-any.whl", hash = "sha256:efee12f02d39405b16d68f60e7a06fe1fc450ae58669d6cdda8c7f48e3bae9e3"},
