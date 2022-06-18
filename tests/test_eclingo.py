@@ -13,6 +13,8 @@ def solve(program):
     econtrol.add_program(program)
     world_views = []
     for world_view in econtrol.solve():
+        #world_view = sorted(map(str, list(world_view.split("\n"))))
+        #print(world_view)
         world_view = sorted(str(symbol) for symbol in world_view.symbols)
         world_views.append(world_view)
     return sorted(world_views)

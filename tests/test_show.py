@@ -108,6 +108,7 @@ class Test(ClingoTestHelper,
             ClingoRule(choice=True, head=[2], body=[], order=1)
         ]
         ground_program.sort()
+ 
         self.assert_equal_clingo_ground_program(program, ground_program)
 
     def test_show02c(self):

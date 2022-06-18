@@ -86,6 +86,7 @@ class Test(TestCase):
             "{k_not_u_a} :- not_u_a."])
     def test_epistemic_atom_with_default_negation02(self):
         self.assertEqualPrograms(self.ground_program("b :- &k{ not a}."), [
+            "__x1.",
             "u_b :- k_not_u_a.",
             "not_u_a.",
             "{k_not_u_a}."])
@@ -93,8 +94,8 @@ class Test(TestCase):
         self.assertEqualPrograms(self.ground_program("{a}. b :- &k{ not not a}."), [
             "{u_a}.",
             "u_b :- k_not2_u_a.",
-            "not2_u_a :- not x_2.",
-            "x_2 :- not u_a.",
+            "not2_u_a :- not __x2.",
+            "__x2 :- not u_a.",
             "{k_not2_u_a} :- not2_u_a."])
 
     def test_epistemic_atom_with_both_negations01(self):
@@ -106,6 +107,7 @@ class Test(TestCase):
             "sn_u_a :- -u_a."])
     def test_epistemic_atom_with_both_negations01b(self):
         self.assertEqualPrograms(self.ground_program("b :- &k{ not -a}."), [
+            "__x1.",
             "u_b :- k_not_sn_u_a.",
             "not_sn_u_a.",
             "{k_not_sn_u_a}."])
@@ -113,8 +115,8 @@ class Test(TestCase):
         self.assertEqualPrograms(self.ground_program("{-a}. b:- &k{ not not -a}."), [
             "{-u_a}.",
             "u_b :- k_not2_sn_u_a.",
-            "not2_sn_u_a :- not x_3.",
-            "x_3 :- not sn_u_a.",
+            "not2_sn_u_a :- not __x3.",
+            "__x3 :- not sn_u_a.",
             "{k_not2_sn_u_a} :- not2_sn_u_a.",
             "sn_u_a :- -u_a."])
 
@@ -143,6 +145,7 @@ class Test(TestCase):
             "{k_u_a(1)} :- u_a(1)."])
     def test_epistemic_with_variables04(self):
         self.assertEqualPrograms(self.ground_program("{a(1)}. dom(1). b :- &k{ not a(V0)}, dom(V0)."), [
+            "__x1.",
             "u_dom(1).",
             "{u_a(1)}.",
             "u_b :- k_not_u_a(1).",
@@ -150,11 +153,12 @@ class Test(TestCase):
             "{k_not_u_a(1)} :- not_u_a(1)."])
     def test_epistemic_with_variables05(self):
         self.assertEqualPrograms(self.ground_program("{a(1)}. dom(1). b :- &k{ not not a(V0)}, dom(V0)."), [
+            "__x1.",
             "u_dom(1).",
             "{u_a(1)}.",
             "u_b :- k_not2_u_a(1).",
-            "not2_u_a(1) :- not x_3.",
-            "x_3 :- not u_a(1).",
+            "not2_u_a(1) :- not __x3.",
+            "__x3 :- not u_a(1).",
             "{k_not2_u_a(1)} :- not2_u_a(1)."])
 
     def test_negated_epistemic_literals01(self):
@@ -174,16 +178,16 @@ class Test(TestCase):
     #         """)
 
     def test_parameters(self):
-        self.assertEqualPrograms(self.ground_program("a(1..n).", ["n"], [Number(3)]), ["u_a(1).", "u_a(2).", "u_a(3)."])
+        self.assertEqualPrograms(self.ground_program("a(1..n).", ["n"], [Number(3)]), ["__x1.", "__x2.", "__x3.", "u_a(1).", "u_a(2).", "u_a(3)."])
 
     def test_show01(self):
-        self.assertEqualPrograms(self.ground_program("a. b. #show a/0."), ["u_a.", "u_b."])
+        self.assertEqualPrograms(self.ground_program("a. b. #show a/0."), ["__x1.", "__x2.","u_a.", "u_b."])
         show_signature = ShowSignature({ShowStatement(name='a', arity=0, poistive=True)})
         self.assertEqual(self.grounder.control.show_signature, show_signature)
 
 
     def test_show02(self):
-        self.assertEqualPrograms(self.ground_program("a. b. #show a/0. #show b/0."), ["u_a.", "u_b."])
+        self.assertEqualPrograms(self.ground_program("a. b. #show a/0. #show b/0."), ["__x1.", "__x2.","u_a.", "u_b."])
         show_signature = ShowSignature({
             ShowStatement(name='a', arity=0, poistive=True),
             ShowStatement(name='b', arity=0, poistive=True)
@@ -191,6 +195,6 @@ class Test(TestCase):
         self.assertEqual(self.grounder.control.show_signature, show_signature)
 
     def test_show03(self):
-        self.assertEqualPrograms(self.ground_program("-a. b. #show -a/0."), ["-u_a.", "u_b."])
+        self.assertEqualPrograms(self.ground_program("-a. b. #show -a/0."), ["-u_a.","__x1.", "__x2.","u_b."])
         show_signature = ShowSignature({ShowStatement(name='a', arity=0, poistive=False)})
         self.assertEqual(self.grounder.control.show_signature, show_signature)

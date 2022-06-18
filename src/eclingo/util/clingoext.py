@@ -54,8 +54,8 @@ class Control(object):  # type: ignore
         self.parsed_program: List[ast.AST] = [] # pylint: disable=no-member
         
         # Issue 8 -> get rid of GroundProgram in favor of clingox counterpart
-        #self.ground_program = GroundProgram()
-        #self.control.register_observer(Observer(self.ground_program))
+        #self.new_ground_program = GroundProgram()
+        #self.control.register_observer(Observer(self.new_ground_program))
         
         
         self.ground_program = program.Program()
@@ -115,8 +115,18 @@ class Control(object):  # type: ignore
             for symbol_and_atom in symbols_and_atoms:
                 test_code = backend.add_atom(symbol_and_atom[0])
                 atoms_gen_to_test_map.update({symbol_and_atom[1] : test_code})
-
-            for obj in self.ground_program:
+            
+            # This parsing needs to be done due to how self.ground_program is given by the clingox library
+            # if the: "for obj in ground_pr_parsed" were not to be parsed using the pretty_str and more, the 
+            # for loop will not run since self.ground_program is an Program object and is not iterable.
+            print("Ground Program BEFORE parsing it: ", self.ground_program)
+            
+            ground_pr_parsed = self.ground_program.pretty_str()
+            ground_pr_parsed = sorted(map(str, list(ground_pr_parsed.split("\n"))))
+            
+            print("Ground Program AFTER parsing it: ", ground_pr_parsed)
+            
+            for obj in ground_pr_parsed:
                 if isinstance(obj, ClingoRule):
                     head = [atoms_gen_to_test(backend, atom) for atom in obj.head]
                     body = [atoms_gen_to_test(backend, atom) for atom in obj.body]
@@ -125,7 +135,7 @@ class Control(object):  # type: ignore
                     head = [atoms_gen_to_test(backend, atom) for atom in obj.head]
                     body = [(atoms_gen_to_test(backend, atom_weigth[0]), atom_weigth[1]) for atom_weigth in obj.body]
                     backend.add_weight_rule(head, obj.lower, body, obj.choice)
-
+            
         return atoms_gen_to_test_map
 
     def facts(self) -> Iterable[Symbol]:
