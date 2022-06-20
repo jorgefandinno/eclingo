@@ -82,9 +82,7 @@ class Control(object):  # type: ignore
         with control.backend() as backend:
             mapping = clingox_program.Remapping(backend, program.output_atoms, program.facts)
             program.add_to_backend(backend, mapping)
-
         return mapping
-        
 
     def facts(self) -> Iterable[Symbol]:
         for symbolic_atom in self.control.symbolic_atoms:
