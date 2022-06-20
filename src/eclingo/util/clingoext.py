@@ -11,7 +11,7 @@ from clingo.ast import parse_string
 
 from eclingo.util import astutil
 from eclingo.util.groundprogram import ClingoExternal, ClingoOutputAtom, ClingoProject, ClingoRule, ClingoWeightRule, GroundProgram
-from clingox import program
+from clingox import program as clingox_program
 from clingox.backend import SymbolicBackend
 
 
@@ -54,8 +54,8 @@ class Control(object):  # type: ignore
         self.parsed_program: List[ast.AST] = [] # pylint: disable=no-member
         self.ground_program = GroundProgram()
         self.control.register_observer(Observer(self.ground_program))
-        self.new_ground_program = program.Program()
-        self.control.register_observer(program.ProgramObserver(self.new_ground_program))
+        self.new_ground_program = clingox_program.Program()
+        self.control.register_observer(clingox_program.ProgramObserver(self.new_ground_program))
 
     def add_program(self, program: str) -> None:
         with self.builder() as builder:
@@ -79,50 +79,13 @@ class Control(object):  # type: ignore
 
 
     def add_to(self, control: Union['Control', clingo.Control]):
-        atoms_gen_to_test_map = dict()
-        symbols_and_atoms = []
-        with self.control.backend() as backend:
-            for name, arity, pos in self.control.symbolic_atoms.signatures:
-                for sy_atom in self.control.symbolic_atoms.by_signature(name, arity, pos):
-                    atom = backend.add_atom(sy_atom.symbol)
-                    symbols_and_atoms.append((sy_atom.symbol, atom))
-
-        # ----------------------------------------------------------------------------------
-        def atoms_gen_to_test(backend, literal):
-            if literal >= 0:
-                atom = literal
-                sign = True
-            else:
-                atom = -literal
-                sign = False
-
-            if atom not in atoms_gen_to_test_map:
-                test_code = backend.add_atom()
-                atoms_gen_to_test_map.update({atom : test_code})
-
-            atom = atoms_gen_to_test_map[atom]
-
-            if not sign:
-                atom = -atom
-            return atom
-        # ----------------------------------------------------------------------------------
-
+        program = self.new_ground_program
         with control.backend() as backend:
-            for symbol_and_atom in symbols_and_atoms:
-                test_code = backend.add_atom(symbol_and_atom[0])
-                atoms_gen_to_test_map.update({symbol_and_atom[1] : test_code})
+            mapping = clingox_program.Remapping(backend, program.output_atoms, program.facts)
+            program.add_to_backend(backend, mapping)
 
-            for obj in self.ground_program:
-                if isinstance(obj, ClingoRule):
-                    head = [atoms_gen_to_test(backend, atom) for atom in obj.head]
-                    body = [atoms_gen_to_test(backend, atom) for atom in obj.body]
-                    backend.add_rule(head, body, obj.choice)
-                elif  isinstance(obj, ClingoWeightRule):
-                    head = [atoms_gen_to_test(backend, atom) for atom in obj.head]
-                    body = [(atoms_gen_to_test(backend, atom_weigth[0]), atom_weigth[1]) for atom_weigth in obj.body]
-                    backend.add_weight_rule(head, obj.lower, body, obj.choice)
-
-        return atoms_gen_to_test_map
+        return mapping
+        
 
     def facts(self) -> Iterable[Symbol]:
         for symbolic_atom in self.control.symbolic_atoms:
