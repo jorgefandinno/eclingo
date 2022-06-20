@@ -52,13 +52,9 @@ class Control(object):  # type: ignore
             control = clingo.Control(arguments, logger, message_limit)
         self.control = control
         self.parsed_program: List[ast.AST] = [] # pylint: disable=no-member
-        
-        self.ground_program = GroundProgram()
-        self.control.register_observer(Observer(self.ground_program))
-        
-        
-        self.new_ground_program = clingox_program.Program()
-        self.control.register_observer(clingox_program.ProgramObserver(self.new_ground_program))
+              
+        self.ground_program = clingox_program.Program()
+        self.control.register_observer(clingox_program.ProgramObserver(self.ground_program))
 
     def add_program(self, program: str) -> None:
         with self.builder() as builder:
@@ -82,7 +78,7 @@ class Control(object):  # type: ignore
 
 
     def add_to(self, control: Union['Control', clingo.Control]):
-        program = self.new_ground_program
+        program = self.ground_program
         with control.backend() as backend:
             mapping = clingox_program.Remapping(backend, program.output_atoms, program.facts)
             program.add_to_backend(backend, mapping)

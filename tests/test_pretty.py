@@ -56,17 +56,14 @@ class Test(unittest.TestCase):
         self.control.ground([("base", [])])
         
         # Beautify for testing purposes
-        self.control.ground_program = self.control.new_ground_program.pretty_str()                               
-        self.control.ground_program = sorted(map(str, list(self.control.ground_program.split("\n"))))
-        
-        # stub print for debugging purposes                         
-        print(self.control.ground_program)                         
+        ground_program = self.control.ground_program.pretty_str()                               
+        ground_program = sorted(map(str, list(ground_program.split("\n"))))                   
         
         # The answer is correct but the way it is parsed is wrong, why changes it to be __x2 instad of x_2 
         # Has to do with how parsing works (?)
         
         # New testing -> Works
-        self.assertEqual(self.control.ground_program, sorted(new_expected))
+        self.assertEqual(ground_program, sorted(new_expected))
 
 
 

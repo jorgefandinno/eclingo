@@ -48,20 +48,6 @@ class Test(ClingoTestHelper,
             signature]
         self.assert_equal_clingo_parsed_program(program, parsed_program)
 
-    def test_show01b(self):
-        program = """
-            {a}.
-            {b}.
-            #show a/0.
-            """
-        ground_program = [
-            ClingoOutputAtom(symbol=_helpler.a, atom=2, order=0),
-            ClingoRule(choice=True, head=[1], body=[], order=1),
-            ClingoRule(choice=True, head=[2], body=[], order=1)
-        ]
-        ground_program.sort()
-        self.assert_equal_clingo_ground_program(program, ground_program)
-
     def test_show01c(self):
         self.assert_equal_parsing_program_with_show("a. b. #show a/0.", "u_a. u_b.", [ShowStatement(name='a', arity=0, poistive=True)])
 
@@ -95,21 +81,6 @@ class Test(ClingoTestHelper,
                 ]
         self.assert_equal_clingo_parsed_program(program, parsed_program)
 
-
-    def test_show02b(self):
-        program = """
-            {-a}.
-            {b}.
-            #show -a/0.
-            """
-        ground_program = [
-            ClingoOutputAtom(symbol=_helpler.s_neg(_helpler.a), atom=2, order=0),
-            ClingoRule(choice=True, head=[1], body=[], order=1),
-            ClingoRule(choice=True, head=[2], body=[], order=1)
-        ]
-        ground_program.sort()
- 
-        self.assert_equal_clingo_ground_program(program, ground_program)
 
     def test_show02c(self):
         self.assert_equal_parsing_program_with_show("-a. b. #show -a/0.", "-u_a. u_b.", [ShowStatement(name='a', arity=0, poistive=False)])
