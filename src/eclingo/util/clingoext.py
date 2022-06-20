@@ -11,7 +11,7 @@ from clingo.ast import parse_string
 
 from eclingo.util import astutil
 from eclingo.util.groundprogram import ClingoExternal, ClingoOutputAtom, ClingoProject, ClingoRule, ClingoWeightRule, GroundProgram
-from clingox import program as clingox_program
+from clingox import program
 from clingox.backend import SymbolicBackend
 
 

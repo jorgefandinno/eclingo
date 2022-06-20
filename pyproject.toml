@@ -4,10 +4,14 @@ version = "0.4.0"
 description = ""
 authors = ["jorgefandinno <jfandinno@unomaha.edu>"]
 
+[[tool.poetry.source]]
+name = "test"
+url = "https://test.pypi.org/simple/"
+
 [tool.poetry.dependencies]
 python = "^3.9"
 clingo = "^5.5.2"
-clingox = "^1.1.0"
+clingox = {version = "^1.2.0.post1", source = "test"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"
