@@ -26,7 +26,7 @@ class CandidateTester():
 
     @staticmethod
     def _init_control_test(control_test: clingoext.Control, control_gen: clingoext.Control) -> None:
-        program = control_gen.new_ground_program
+        program = control_gen.ground_program
         with control_test.control.backend() as backend:
             mapping = Remapping(backend, program.output_atoms, program.facts)
             program.add_to_backend(backend, mapping)

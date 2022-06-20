@@ -26,7 +26,6 @@ class Test(unittest.TestCase):
 
         self.assertEqual(str(p),'b(1).')
 
-
     def test_doubleNegation(self):
 
         program = """
@@ -34,22 +33,26 @@ class Test(unittest.TestCase):
         e :- not not d.
         """
 
-        expected = """ 
-        {d}.
-        e :- not x_2.
-        x_2 :- not d.
-        """
+        expected = [
+            "{d}.",
+            "e :- not __x2.",
+            "__x2 :- not d."
+        ]
+        
+        expected = map(lambda x: x.lstrip().rstrip(), expected)
 
         self.control = clingoext.Control(logger=silent_logger)
-
-
         self.control.configuration.solve.project = "auto,3"
         self.control.configuration.solve.models  = 0
 
         self.control.add("base", [], program)
         self.control.ground([("base", [])])
-
-        self.assertEqual(str(self.control.ground_program).replace(' ','').replace('\n',''), expected.replace(' ','').replace('\n',''))
+        
+        # Beautify for testing purposes
+        ground_program = self.control.ground_program.pretty_str()                               
+        ground_program = sorted(map(str, list(ground_program.split("\n"))))                   
+        
+        self.assertEqual(ground_program, sorted(expected))
 
 
 

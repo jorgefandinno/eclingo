@@ -27,6 +27,6 @@ class ClingoTestHelper(helper.TestHelper):
         self.clingo_control.ground([("base", [])])
         result = self.clingo_control.ground_program
         self._print(result)
-        self.assert_equal_ordered(result, expected)
+        self.assertEqual(str(result), str(expected))
 
 
