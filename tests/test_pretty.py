@@ -56,7 +56,7 @@ class Test(unittest.TestCase):
         self.control.ground([("base", [])])
         
         # Beautify for testing purposes
-        self.control.ground_program = self.control.ground_program.pretty_str()                               
+        self.control.ground_program = self.control.new_ground_program.pretty_str()                               
         self.control.ground_program = sorted(map(str, list(self.control.ground_program.split("\n"))))
         
         # stub print for debugging purposes                         

@@ -135,7 +135,7 @@ class Test(ClingoTestHelper,
         self.assert_equal_show_symbols('#show a/0.', [])
 
     def test_show06(self):
-        self.assert_equal_show_program('a.  #show a/0.', ['u_a.'])
+        self.assert_equal_show_program('a.  #show a/0.', ['__x1.', '__x2.','u_a.'])
 
     def test_show06b(self):
         self.assert_equal_show_program('{a}.  #show a/0.', ['{u_a}.', 'not_u_a :- not u_a.'])
