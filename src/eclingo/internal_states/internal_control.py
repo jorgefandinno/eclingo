@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import textwrap
 from typing import Any, Callable, Dict, Iterable, Iterator, List, Sequence, Tuple, Union
 
-import clingo as clingo
+import clingo
 from clingo import MessageCode, Symbol, SymbolicAtom
 from clingo import ast
 from clingo.ast import parse_string
@@ -102,7 +102,7 @@ class InternalStateControl(object):
     def builder(self) -> ProgramBuilder:
         return ProgramBuilder(self.control, self.parsed_program, self.show_signature)
 
-    def add_to(self, control: Union['Control', clingo.Control]):
+    def add_to(self, control: Union['InternalStateControl', clingo.Control]):
         program = self.ground_program
         with control.backend() as backend:
             mapping = clingox_program.Remapping(backend, program.output_atoms, program.facts)

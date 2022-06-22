@@ -1,3 +1,6 @@
-poetry==1.1.13
-nox==2022.1.7
+# poetry==1.1.13
+# nox==2022.1.7
+clingo==5.5.*
+clingox==1.2.0.post1
+--extra-index-url https://test.pypi.org/simple/
 
