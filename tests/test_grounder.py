@@ -7,7 +7,7 @@ from eclingo import grounder as _grounder
 from eclingo import config as _config
 from eclingo import internal_states as _internal_states
 from eclingo.internal_states import ShowSignature, ShowStatement
-from eclingo.util import clingoext as _clingoext
+import eclingo.internal_states.internal_control as internal_control
 
 
 def flatten(lst):
@@ -27,8 +27,8 @@ class TestCase(unittest.TestCase):
         self.print = False
         config   = _config.AppConfig()
         config.eclingo_semantics = "c19-1"
-        self.grounder = _grounder.Grounder(_internal_states.InternalStateControl(control=_clingoext.Control(message_limit=0)), config=config)
-        self.clingo_control_test = _clingoext.Control(message_limit=0)
+        self.grounder = _grounder.Grounder(_internal_states.InternalStateControl(control=internal_control.InternalStateControl(message_limit=0)), config=config)
+        self.clingo_control_test = internal_control.InternalStateControl(message_limit=0)
         
     def ground_program(self, program, parameters=None, arguments=None):
         if parameters is None and arguments is None:
@@ -39,11 +39,6 @@ class TestCase(unittest.TestCase):
             self.grounder.add_program(program, parameters)
             self.grounder.ground([("base", arguments)])
         ground_program = self.grounder.control.ground_program
-        if self.print:
-            print("\n--- non-ground program")
-            pprint(self.grounder.control.parsed_program)
-            print("\n--- program ---")
-            pprint(ground_program.objects)
         return ground_program
 
     def assertEqualPrograms(self, ground_program, expected):

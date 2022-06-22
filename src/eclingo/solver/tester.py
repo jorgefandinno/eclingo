@@ -8,7 +8,8 @@ from clingox.backend import SymbolicBackend
 
 from eclingo import internal_states
 from eclingo.config import AppConfig
-from eclingo.util import clingoext
+import eclingo.internal_states.internal_control as internal_control
+
 
 from .candidate import Candidate
 
@@ -20,12 +21,12 @@ class CandidateTester():
                  control_gen: internal_states.InternalStateControl):
         self._config = config
         self._epistemic_to_test = control_gen.epistemic_to_test_mapping
-        self.control = clingoext.Control(['0'], message_limit=0)
+        self.control = internal_control.InternalStateControl(['0'], message_limit=0)
         CandidateTester._init_control_test(self.control, control_gen)
         CandidateTester._add_choices_to(self.control, self._epistemic_to_test.keys())
 
     @staticmethod
-    def _init_control_test(control_test: clingoext.Control, control_gen: clingoext.Control) -> None:
+    def _init_control_test(control_test: internal_control.InternalStateControl, control_gen: internal_control.InternalStateControl) -> None:
         program = control_gen.ground_program
         with control_test.control.backend() as backend:
             mapping = Remapping(backend, program.output_atoms, program.facts)
@@ -34,7 +35,7 @@ class CandidateTester():
         control_test.control.configuration.solve.enum_mode = 'cautious' # type: ignore
 
     @staticmethod
-    def _add_choices_to(control_test: clingoext.Control, literals: Iterable[Symbol]) -> None:
+    def _add_choices_to(control_test: internal_control.InternalStateControl, literals: Iterable[Symbol]) -> None:
         with SymbolicBackend(control_test.control.backend()) as backend:
             for literal_code in literals:
                 backend.add_rule([literal_code], [], [], True)

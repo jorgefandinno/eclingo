@@ -3,8 +3,8 @@ import unittest
 import clingo
 from clingo import Function, Number
 
-import eclingo.util.clingoext as clingoext
 from eclingo.util.logger import silent_logger
+import eclingo.internal_states.internal_control as internal_control
 
 from eclingo.util.groundprogram import ClingoOutputAtom, ClingoProject, ClingoRule, GroundProgram, PrettyGroundProgram
 
@@ -41,7 +41,7 @@ class Test(unittest.TestCase):
         
         expected = map(lambda x: x.lstrip().rstrip(), expected)
 
-        self.control = clingoext.Control(logger=silent_logger)
+        self.control = internal_control.InternalStateControl(logger=silent_logger)
         self.control.configuration.solve.project = "auto,3"
         self.control.configuration.solve.models  = 0
 

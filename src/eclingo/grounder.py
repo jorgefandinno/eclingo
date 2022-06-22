@@ -3,14 +3,15 @@ from typing import Dict, Iterable, List, NamedTuple, Sequence, Tuple, Union
 import clingo  # type: ignore
 from clingo import Symbol
 
-import eclingo.util.clingoext as clingoext
+import clingox
+from clingox import program as clingox_program
 from eclingo.config import AppConfig
 from eclingo.literals import Literal
 
 from .internal_states import InternalStateControl
 from .parsing.parser import parse_program
 
-CONTROL = Union[clingo.Control, clingoext.Control]
+CONTROL = Union[clingo.Control, InternalStateControl]
 
 class EpistemicSignature(NamedTuple):
     epistemic_literal: Symbol
@@ -30,7 +31,8 @@ class Grounder():
         self.atom_to_symbol: Dict[int, Symbol] = dict()
         self.symbol_to_atom: Dict[Symbol, int] = dict()
         self.epistemic_signature: Dict[int, EpistemicSignature] = dict()
-        self.ground_program = clingoext.GroundProgram()
+        self.ground_program = clingox_program.Program()
+        self.control.register_observer(clingox_program.ProgramObserver(self.ground_program))
 
 
     def add_program(self, program: str, parameters: List[str] = [], name: str = "base") -> None: # pylint: disable=dangerous-default-value

@@ -46,12 +46,6 @@ class Control(object):
             self.add_program(program.read())
 
     def ground(self, parts: Iterable[Tuple[str, Iterable[Symbol]]] = (("base", []),)):
-        if self.config.eclingo_verbose > 1:
-            print("-----------------------------------------------------------")
-            print("   Auxiliary program")
-            print("-----------------------------------------------------------")
-            pprint(self.control.parsed_program)
-            print("------------------------------------------------------------")
         self.grounder.ground(parts)
         self.epistemic_signature = self.grounder.epistemic_signature
         self.epistemic_signature_symbol = dict(

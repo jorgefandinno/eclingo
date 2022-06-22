@@ -16,8 +16,8 @@ from .parser_negations import (NotReplacementType, SnReplacementType,
 from .theory_parser_literals import theory_term_to_literal
 
 from clingo.ast import Transformer
-from clingox.ast import prefix_symbolic_atoms
-
+from clingox.ast import prefix_symbolic_atoms, get_body
+#from clingox.ast import theory_term_to_literal
 ####################################################################################
 
 # pylint: disable=unused-argument
