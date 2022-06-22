@@ -26,7 +26,6 @@ class Test(unittest.TestCase):
 
         self.assertEqual(str(p),'b(1).')
 
-    # Functionality works. On change ground_program from clingox() the test failed because of how the parsing for asserting was being done.
     def test_doubleNegation(self):
 
         program = """
@@ -34,19 +33,13 @@ class Test(unittest.TestCase):
         e :- not not d.
         """
 
-        #expected = """ 
-        #{d}.
-        #e :- not x_2.
-        #x_2 :- not d.
-        #"""
-
-        # Try to set it up for clean (I changed x_2 -> __x2) -> Just checking, the ground works, but it ground variables weirdly
-        new_expected = [
+        expected = [
             "{d}.",
             "e :- not __x2.",
             "__x2 :- not d."
         ]
-        new_expected = map(lambda x: x.lstrip().rstrip(), new_expected)
+        
+        expected = map(lambda x: x.lstrip().rstrip(), expected)
 
         self.control = clingoext.Control(logger=silent_logger)
         self.control.configuration.solve.project = "auto,3"
@@ -56,17 +49,10 @@ class Test(unittest.TestCase):
         self.control.ground([("base", [])])
         
         # Beautify for testing purposes
-        self.control.ground_program = self.control.new_ground_program.pretty_str()                               
-        self.control.ground_program = sorted(map(str, list(self.control.ground_program.split("\n"))))
+        ground_program = self.control.ground_program.pretty_str()                               
+        ground_program = sorted(map(str, list(ground_program.split("\n"))))                   
         
-        # stub print for debugging purposes                         
-        print(self.control.ground_program)                         
-        
-        # The answer is correct but the way it is parsed is wrong, why changes it to be __x2 instad of x_2 
-        # Has to do with how parsing works (?)
-        
-        # New testing -> Works
-        self.assertEqual(self.control.ground_program, sorted(new_expected))
+        self.assertEqual(ground_program, sorted(expected))
 
 
 

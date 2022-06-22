@@ -38,7 +38,7 @@ class TestCase(unittest.TestCase):
         else:
             self.grounder.add_program(program, parameters)
             self.grounder.ground([("base", arguments)])
-        ground_program = self.grounder.control.new_ground_program
+        ground_program = self.grounder.control.ground_program
         if self.print:
             print("\n--- non-ground program")
             pprint(self.grounder.control.parsed_program)
