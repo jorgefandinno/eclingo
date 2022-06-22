@@ -1,6 +1,6 @@
 from typing import Dict, Iterable, Union, TYPE_CHECKING
 
-from clingo import Function, Symbol
+from clingo import Function, Symbol, SymbolicAtoms
 from clingo.ast import Sign #pylint: disable=import-error
 
 from eclingo import prefixes
@@ -8,17 +8,13 @@ from eclingo import prefixes
 from eclingo.literals import EpistemicLiteral, Literal
 import clingo
 
-if TYPE_CHECKING:
-    # This takes care of a cyclic import and it is only executed a typechecking time
-    # It would be nice to find a better way to handle this
-    from eclingo.internal_states.internal_control import InternalStateControl
 
 class EpistemicSymbolToTestSymbolMapping(dict[Symbol, Symbol]):
 
-    def __init__(self, control: Union[clingo.control.Control, 'InternalStateControl', None] = None) -> None:
+    def __init__(self, symbolic_atoms: SymbolicAtoms = None) -> None:
         super().__init__()
-        if control is not None:
-            for atom in control.symbolic_atoms:
+        if symbolic_atoms is not None:
+            for atom in symbolic_atoms:
                 symbol = atom.symbol
                 symbol_is_epistemic_literal = symbol.name.startswith(prefixes.EPISTEMIC_PREFIX)
                 if symbol_is_epistemic_literal:
