@@ -109,7 +109,6 @@ class InternalStateControl(object):
             program.add_to_backend(backend, mapping)
         return mapping
 
-    # Can this 2 functions be merged into one? facts and show symbols
     def facts(self) -> Iterable[Symbol]:
         for symbolic_atom in self.control.symbolic_atoms:
             if symbolic_atom.is_fact:
