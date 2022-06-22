@@ -15,7 +15,7 @@ from .parser_negations import (NotReplacementType, SnReplacementType,
                                make_strong_negations_auxiliar)
 from .theory_parser_literals import theory_term_to_literal
 
-from clingo.ast import Transformer
+from clingo.ast import Transformer, ASTSequence
 from clingox.ast import prefix_symbolic_atoms, get_body
 #from clingox.ast import theory_term_to_literal
 ####################################################################################
@@ -62,7 +62,7 @@ def make_strong_negation_auxiliar_in_epistemic_literals(stm: Iterable[ast.AST]) 
     """
     replacement: SnReplacementType = set()
     trn = ApplyToEpistemicAtomsElementsTransformer(make_strong_negations_auxiliar, replacement.update)
-    stm = trn.visit_sequence(stm)
+    stm = trn.visit_sequence(cast(ASTSequence, stm))
     return (stm, replacement)
 
 
@@ -80,7 +80,7 @@ def make_default_negation_auxiliar_in_epistemic_literals(stm: Iterable[ast.AST])
     """
     replacement: List[ast.AST] = []
     trn = ApplyToEpistemicAtomsElementsTransformer(make_default_negation_auxiliar, replacement.extend)
-    stm = trn.visit_sequence(stm)
+    stm = trn.visit_sequence(cast(ASTSequence,stm))
     return (stm, replacement)
 
 

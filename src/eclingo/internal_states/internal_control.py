@@ -30,7 +30,7 @@ class ShowStatement(ASTParsedObject):
 
 class ProgramBuilder():
             
-    def __init__(self, control, show_signature):
+    def __init__(self, control, show_signature: set[ShowStatement]):
         self.control = control
         self.show_signature = show_signature
         self.bulider = clingo.ast.ProgramBuilder(self.control)
@@ -62,7 +62,7 @@ class InternalStateControl(object):
         self.ground_program = clingox_program.Program()
         self.control.register_observer(clingox_program.ProgramObserver(self.ground_program))
         
-        self.show_signature = set()
+        self.show_signature: set[ShowStatement] = set()
         
         self.epistemic_to_test_mapping = EpistemicSymbolToTestSymbolMapping()
         self.show_mapping = SymbolToEpistemicLiteralMapping()
@@ -106,7 +106,7 @@ class InternalStateControl(object):
     
     def ground(self, parts: Sequence[Tuple[str, Sequence[Symbol]]], context: Any = None) -> None:
         self.control.ground(parts, context)
-        self.epistemic_to_test_mapping = EpistemicSymbolToTestSymbolMapping(self)
+        self.epistemic_to_test_mapping = EpistemicSymbolToTestSymbolMapping(self.control.symbolic_atoms)
         self.show_mapping = self._generate_show_mapping()
 
     def _generate_show_mapping(self) -> SymbolToEpistemicLiteralMapping:
