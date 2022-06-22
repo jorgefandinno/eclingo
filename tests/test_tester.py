@@ -1,8 +1,8 @@
 import unittest
 import clingo
 from clingox.program import Program, ProgramObserver, Remapping
-from eclingo.util import clingoext
 from eclingo.solver.tester import CandidateTester
+import eclingo.internal_states.internal_control as internal_control
 
 class TesterCase(unittest.TestCase):
 
@@ -31,13 +31,13 @@ class TesterCase(unittest.TestCase):
 
 
     def assertInitControl(self, program):
-        control_gen = clingoext.Control()
+        control_gen = internal_control.InternalStateControl()
         program1 = Program()
         control_gen.register_observer(ProgramObserver(program1))
         control_gen.add('base', [], program)
         control_gen.ground([("base", [])])
         self.assertEqualPrograms(program, str(program1))
-        control_test = clingoext.Control(['0'], message_limit=0)
+        control_test = internal_control.InternalStateControl(['0'], message_limit=0)
         program2 = Program()
         control_test.register_observer(ProgramObserver(program2))
         CandidateTester._init_control_test(control_test, control_gen)

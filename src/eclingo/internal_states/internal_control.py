@@ -57,27 +57,6 @@ class ProgramBuilder():
     def __exit__(self, type_, value, traceback):
 
         return self.bulider.__exit__(type_, value, traceback)
-    
-    '''
-    def add(self, statement: ASTObject): # pylint: disable=no-member
-
-        if isinstance(statement, ast.AST): # pylint: disable=no-member
-            self.program.append(statement)
-        try:
-            return self.bulider.add(statement)
-        except RuntimeError as error:
-            if len(error.args) != 1:
-                raise error
-            if error.args[0] == 'literal expected':
-                error.args = ('literal expected, got\n' + textwrap.indent(astutil.ast_repr(statement), 13*' '), )
-            raise error
-        except AttributeError as error:
-            if error.args[0] == "'list' object has no attribute 'location'":
-                error.args = (error.args[0] + '\n' + textwrap.indent(astutil.ast_repr(statement), 13*' '), )
-            raise error
-        else:
-            raise RuntimeError("Non recognised object: " + str(statement))
-    '''
 
     def add_st(self, statement: ast.AST): # pylint: disable=no-member
         self.program.append(statement)

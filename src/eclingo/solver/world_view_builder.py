@@ -6,7 +6,7 @@ from clingo import Symbol, SymbolicAtom
 from eclingo import internal_states
 from eclingo.prefixes import not_symbol
 from eclingo.solver.candidate import Candidate
-from eclingo.util import clingoext
+import eclingo.internal_states.internal_control as internal_control
 
 from .candidate import Candidate
 from .world_view import EpistemicLiteral, WorldView
@@ -47,14 +47,14 @@ class WorldWiewBuilderWithShow(WorldWiewBuilder):
         super().__init__(control)
         self.control = self._generate_control_show(control)
 
-    def _generate_control_show(self, control: internal_states.InternalStateControl) -> clingoext.Control:
-        control_show = clingoext.Control(['0'], message_limit=0)
+    def _generate_control_show(self, control: internal_states.InternalStateControl) -> internal_control.InternalStateControl:
+        control_show = internal_control.InternalStateControl(['0'], message_limit=0)
         control.add_to(control_show)
         self._add_rules_for_negative_check(control_show, control.show_symbolic_atoms())
         control_show.control.configuration.solve.enum_mode = 'cautious' # type: ignore
         return control_show
 
-    def _add_rules_for_negative_check(self, control_show: clingoext.Control, symbolic_show_atoms: Iterator[SymbolicAtom]) -> None:
+    def _add_rules_for_negative_check(self, control_show: internal_control.InternalStateControl, symbolic_show_atoms: Iterator[SymbolicAtom]) -> None:
         """
         adds a rule of the form 'not_u_a :- not u_a' for each symbolic atom 'u_a' in symbolic_show_atoms
         """
