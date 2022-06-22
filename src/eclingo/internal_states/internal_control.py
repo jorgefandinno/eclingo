@@ -8,8 +8,6 @@ from clingo import MessageCode, Symbol, SymbolicAtom
 from clingo import ast
 from clingo.ast import parse_string
 
-
-from eclingo.util import astutil
 from eclingo.prefixes import atom_user_name
 
 from .mappings import EpistemicSymbolToTestSymbolMapping, SymbolToEpistemicLiteralMapping, SymbolToEpistemicLiteralMappingUsingProgramLiterals, SymbolToEpistemicLiteralMappingUsingShowStatements
@@ -36,17 +34,16 @@ class ShowSignature(set):
 
 class ProgramBuilder():
             
-    def __init__(self, control, program, show_signature):
+    def __init__(self, control, show_signature):
         self.control = control
-        self.program = program
         self.show_signature = show_signature
         self.bulider = clingo.ast.ProgramBuilder(self.control)
         
     def add(self, statement: ASTObject):
         if isinstance(statement, ShowStatement):
             self.show_signature.add(statement)
-        elif isinstance(statement, ast.AST): # pylint: disable=no-member
-            return self.add_st(statement)
+        elif isinstance(statement, ast.AST):
+            return self.bulider.add(statement)
         else:
             raise RuntimeError("Non recognised object: " + str(statement))
 
@@ -55,24 +52,7 @@ class ProgramBuilder():
         return self
 
     def __exit__(self, type_, value, traceback):
-
         return self.bulider.__exit__(type_, value, traceback)
-
-    def add_st(self, statement: ast.AST): # pylint: disable=no-member
-        self.program.append(statement)
-        try:
-            return self.bulider.add(statement)
-        except RuntimeError as error:
-            if len(error.args) != 1:
-                raise error
-            if error.args[0] == 'literal expected':
-                error.args = ('literal expected, got\n' + textwrap.indent(astutil.ast_repr(statement), 13*' '), )
-            raise error
-        except AttributeError as error:
-            if error.args[0] == "'list' object has no attribute 'location'":
-                error.args = (error.args[0] + '\n' + textwrap.indent(astutil.ast_repr(statement), 13*' '), )
-            raise error     
-        
 
 
 class InternalStateControl(object):
@@ -82,9 +62,7 @@ class InternalStateControl(object):
         if control is None:
             control = clingo.Control(arguments, logger, message_limit)
         self.control = control
-        
-        self.parsed_program: List[ast.AST] = [] # pylint: disable=no-member
-              
+                     
         self.ground_program = clingox_program.Program()
         self.control.register_observer(clingox_program.ProgramObserver(self.ground_program))
         
@@ -98,9 +76,8 @@ class InternalStateControl(object):
         with self.builder() as builder:
             parse_string(program, builder.add)
 
-    # Remove self.show_signature from arguments (?)
     def builder(self) -> ProgramBuilder:
-        return ProgramBuilder(self.control, self.parsed_program, self.show_signature)
+        return ProgramBuilder(self.control, self.show_signature)
 
     def add_to(self, control: Union['InternalStateControl', clingo.Control]):
         program = self.ground_program
