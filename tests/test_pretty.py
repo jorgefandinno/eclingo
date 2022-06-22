@@ -41,11 +41,7 @@ class Test(unittest.TestCase):
         
         expected = map(lambda x: x.lstrip().rstrip(), expected)
 
-<<<<<<< HEAD
         self.control = internal_control.InternalStateControl(logger=silent_logger)
-=======
-        self.control = clingoext.Control(logger=silent_logger)
->>>>>>> develop
         self.control.configuration.solve.project = "auto,3"
         self.control.configuration.solve.models  = 0
 
