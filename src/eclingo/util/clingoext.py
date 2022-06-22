@@ -60,12 +60,15 @@ class Control(object):  # type: ignore
         with self.builder() as builder:
             parse_string(program, builder.add)
 
+    # Done
     def builder(self) -> ProgramBuilder:
         return ProgramBuilder(self.control, self.parsed_program)
 
+    #done
     def ground(self, parts: Sequence[Tuple[str, Sequence[Symbol]]], context: Any = None) -> None:
         self.control.ground(parts, context)
 
+    # done
     def symbolic_backend(self) -> SymbolicBackend:
         return clingox.backend.SymbolicBackend(self.control.backend())
 
@@ -76,7 +79,7 @@ class Control(object):  # type: ignore
     #     return super().register_observer(observer, replace)
 
 
-
+    #done
     def add_to(self, control: Union['Control', clingo.Control]):
         program = self.ground_program
         with control.backend() as backend:
@@ -84,11 +87,13 @@ class Control(object):  # type: ignore
             program.add_to_backend(backend, mapping)
         return mapping
 
+    #done
     def facts(self) -> Iterable[Symbol]:
         for symbolic_atom in self.control.symbolic_atoms:
             if symbolic_atom.is_fact:
                 yield symbolic_atom.symbol
 
+    #done
     def atom_to_symbol_mapping(self) -> Dict[int, Symbol]:
         mapping = dict()
         for symbolic_atom in self.control.symbolic_atoms:
