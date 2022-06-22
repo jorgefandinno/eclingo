@@ -16,12 +16,6 @@ class ClingoTestHelper(helper.TestHelper):
         self.clingo_control.add_program(program)
         self.program_added = True
 
-    def assert_equal_clingo_parsed_program(self, program, expected):
-        self.add_program(program)
-        result = self.clingo_control.parsed_program
-        self._print_ast(result)
-        self.assert_equal_ordered(result, expected)
-
     def assert_equal_clingo_ground_program(self, program, expected):
         if not self.program_added:
             self.add_program(program)

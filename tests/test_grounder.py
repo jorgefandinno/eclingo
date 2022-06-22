@@ -6,7 +6,7 @@ from clingo import Number
 from eclingo import grounder as _grounder
 from eclingo import config as _config
 from eclingo import internal_states as _internal_states
-from eclingo.internal_states import ShowSignature, ShowStatement
+from eclingo.internal_states import ShowStatement
 import eclingo.internal_states.internal_control as internal_control
 
 
@@ -165,13 +165,13 @@ class Test(TestCase):
 
     def test_show01(self):
         self.assertEqualPrograms(self.ground_program("a. b. #show a/0."), ["__x1.", "__x2.","u_a.", "u_b."])
-        show_signature = ShowSignature({ShowStatement(name='a', arity=0, poistive=True)})
+        show_signature = set({ShowStatement(name='a', arity=0, poistive=True)})
         self.assertEqual(self.grounder.control.show_signature, show_signature)
 
 
     def test_show02(self):
         self.assertEqualPrograms(self.ground_program("a. b. #show a/0. #show b/0."), ["__x1.", "__x2.","u_a.", "u_b."])
-        show_signature = ShowSignature({
+        show_signature = set({
             ShowStatement(name='a', arity=0, poistive=True),
             ShowStatement(name='b', arity=0, poistive=True)
         })
@@ -179,5 +179,5 @@ class Test(TestCase):
 
     def test_show03(self):
         self.assertEqualPrograms(self.ground_program("-a. b. #show -a/0."), ["-u_a.","__x1.", "__x2.","u_b."])
-        show_signature = ShowSignature({ShowStatement(name='a', arity=0, poistive=False)})
+        show_signature = set({ShowStatement(name='a', arity=0, poistive=False)})
         self.assertEqual(self.grounder.control.show_signature, show_signature)
