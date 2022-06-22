@@ -5,12 +5,12 @@ from clingo.ast import Sign #pylint: disable=import-error
 
 from eclingo import prefixes
 from eclingo.literals import EpistemicLiteral, Literal
-from eclingo.util import clingoext
+import clingo
 
 
 class EpistemicSymbolToTestSymbolMapping(dict[Symbol, Symbol]):
 
-    def __init__(self, control: Optional[clingoext.Control] = None) -> None:
+    def __init__(self, control: Optional[clingo.control.Control] = None) -> None:
         super().__init__()
         if control is not None:
             for atom in control.symbolic_atoms:

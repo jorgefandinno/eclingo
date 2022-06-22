@@ -126,7 +126,6 @@ class InternalStateControl(object):
                 mapping.update({symbolic_atom.literal : symbolic_atom.symbol})
         return mapping
     
-    
     def show_symbolic_atoms(self) -> Iterator[SymbolicAtom]:
         for show_statement in self.show_signature:
             symbolic_atoms = self.control.symbolic_atoms
@@ -139,7 +138,6 @@ class InternalStateControl(object):
         self.epistemic_to_test_mapping = EpistemicSymbolToTestSymbolMapping(self)
         self.show_mapping = self._generate_show_mapping()
 
-    
     def _generate_show_mapping(self) -> SymbolToEpistemicLiteralMapping:
         if self.show_signature:
             return SymbolToEpistemicLiteralMappingUsingShowStatements(self.show_symbols())
