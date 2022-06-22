@@ -28,10 +28,6 @@ class ShowStatement(ASTParsedObject):
     arity: int
     poistive: bool
 
-class ShowSignature(set):
-    pass
-
-
 class ProgramBuilder():
             
     def __init__(self, control, show_signature):
@@ -66,8 +62,7 @@ class InternalStateControl(object):
         self.ground_program = clingox_program.Program()
         self.control.register_observer(clingox_program.ProgramObserver(self.ground_program))
         
-        # Legacy
-        self.show_signature = ShowSignature() # What is this supposed to be doing?
+        self.show_signature = set()
         
         self.epistemic_to_test_mapping = EpistemicSymbolToTestSymbolMapping()
         self.show_mapping = SymbolToEpistemicLiteralMapping()
