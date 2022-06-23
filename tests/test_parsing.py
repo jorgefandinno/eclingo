@@ -1,5 +1,5 @@
 from eclingo import internal_states
-from eclingo.internal_states import ShowStatement
+from eclingo.internal_states.internal_control import ShowStatement
 import unittest
 import clingo
 import clingo.ast as _ast

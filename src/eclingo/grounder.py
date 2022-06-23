@@ -8,7 +8,7 @@ from clingox import program as clingox_program
 from eclingo.config import AppConfig
 from eclingo.literals import Literal
 
-from .internal_states import InternalStateControl
+from eclingo.internal_states.internal_control import InternalStateControl
 from .parsing.parser import parse_program
 
 CONTROL = Union[clingo.Control, InternalStateControl]

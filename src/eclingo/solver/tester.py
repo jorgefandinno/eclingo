@@ -18,7 +18,7 @@ class CandidateTester():
 
     def __init__(self,
                  config: AppConfig,
-                 control_gen: internal_states.InternalStateControl):
+                 control_gen: internal_control.InternalStateControl):
         self._config = config
         self._epistemic_to_test = control_gen.epistemic_to_test_mapping
         self.control = internal_control.InternalStateControl(['0'], message_limit=0)

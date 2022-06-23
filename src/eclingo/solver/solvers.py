@@ -1,7 +1,7 @@
 import sys
 from typing import Iterator
 
-from eclingo import internal_states
+from eclingo.internal_states import internal_control
 from eclingo.config import AppConfig
 from eclingo.solver.generator import CandidateGenerator
 from eclingo.solver.preprocessor import Preprocessor
@@ -15,7 +15,7 @@ from .world_view_builder import WorldWiewBuilderWithShow
 class Solver:
 
     def __init__(self,
-                 control: internal_states.InternalStateControl,
+                 control: internal_control.InternalStateControl,
                  config: AppConfig)  -> None:
         self._control = control
         self._config  = config
