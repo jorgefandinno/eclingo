@@ -1,7 +1,8 @@
 # poetry==1.1.13
 nox==2022.1.7
-clingo==5.5.*
-clingox==1.2.0.post2
+clingo>=5.5
+# clingox==1.2.0.post2
+git+https://github.com/jorgefandinno/python-clingox.git@jorge/filter_body
 pytest==7.1.2
 pytest-cov==3.0.0
 --extra-index-url https://test.pypi.org/simple/

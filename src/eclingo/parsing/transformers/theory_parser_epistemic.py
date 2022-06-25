@@ -9,14 +9,17 @@ from clingo.ast import Sign, AST
 
 from eclingo import prefixes
 
-from .parser_negations import (NotReplacementType, SnReplacementType,
+from .parser_negations import (SnReplacementType,
                                default_negation_auxiliary_rule_replacement,
                                make_default_negation_auxiliar,
                                make_strong_negations_auxiliar)
 
 from clingo.ast import Transformer, ASTSequence
-from clingox.ast import prefix_symbolic_atoms
-from clingox.ast import theory_term_to_literal
+from clingox.ast import (
+    prefix_symbolic_atoms,
+    theory_term_to_literal, 
+    filter_body_elements,
+)
 ####################################################################################
 
 # pylint: disable=unused-argument
@@ -74,7 +77,7 @@ def make_strong_negation_auxiliar_in_epistemic_literals(stm: Iterable[ast.AST]) 
 ####################################################################################
 
 
-def make_default_negation_auxiliar_in_epistemic_literals(stm: Iterable[ast.AST]) -> Tuple[Iterable[ast.AST], NotReplacementType]:
+def make_default_negation_auxiliar_in_epistemic_literals(stm: Iterable[ast.AST]) -> Tuple[Iterable[ast.AST], Iterable[ast.AST]]:
     """
     Replaces default negation by an auxiliary atom inside epistemic literals.
     Returns a pair:
@@ -91,33 +94,11 @@ def make_default_negation_auxiliar_in_epistemic_literals(stm: Iterable[ast.AST])
 
 ####################################################################################
 
-class TheoryBuildGuard(Transformer):
-
-    def __init__(self):
-        self.guard = []
-        self.positive = True
-
-    def visit_Literal(self, x, loc="body"):
-        if loc != "k":
-            self.positive = True
-            self.visit(x.atom)
-            if self.positive:
-                self.guard.append(x)
-        elif x.sign != ast.Sign.NoSign:
-            self.positive = False
-        return x
-    
-    
-    def visit_TheoryAtom(self, atom, loc="body"):
-        if atom.term.name == "k" and not atom.term.arguments:
-            self.visit_sequence(atom.elements, "k")
-        return atom
-    
-    
 def build_guard(body):
-    t = TheoryBuildGuard()
-    t.visit_sequence(body)
-    return t.guard
+    return list(filter_body_elements(
+        body,
+        theory_atom_predicate = lambda x : x.elements[0].terms[0].sign == Sign.NoSign,
+    ))
 
 ####################################################################################
 
@@ -131,7 +112,6 @@ class EpistemicLiteralNegationsToAuxiliarTransformer(Transformer):
     def visit_Rule(self, rule):
         head = rule.head
         body = rule.body
-
         body, self.sn_replacement = make_strong_negation_auxiliar_in_epistemic_literals(body)
         guard = build_guard(body)
         body, not_replacement = make_default_negation_auxiliar_in_epistemic_literals(body)

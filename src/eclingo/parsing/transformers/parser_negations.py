@@ -2,7 +2,7 @@
 Module to replace strong and default negations by auxiliary atoms.
 """
 from copy import copy
-from typing import Iterator, List, Set, Tuple
+from typing import Iterable, Iterator, List, Optional, Set, Tuple
 
 from clingo import ast
 
@@ -133,9 +133,37 @@ class DefaultNegationsToAuxiliarTransformer(Transformer):
         return new_x
     
 
-NotReplacementType = List[ast.AST]
-
 ####################################################################################
+
+# def _make_default_negation_auxiliar(stm: ast.AST, default_negation_prefix="not") -> Tuple[ast.AST, Optional[ast.AST]]:
+#     if stm.atom.ast_type != ast.ASTType.SymbolicAtom:
+#         return (stm, None)
+
+#     atom = stm.atom
+#     if stm.sign == ast.Sign.NoSign:
+#         return (stm, None)
+
+#     new_stm = copy(stm)
+
+#     if new_stm.sign == ast.Sign.Negation:
+#         sign = default_negation_prefix + "_"
+#     elif new_stm.sign == ast.Sign.DoubleNegation:
+#         sign = default_negation_prefix + "2_"
+#     else:
+#         sign = ""
+    
+#     location  = atom.symbol.location
+#     aux_name  = sign + atom.symbol.name
+#     arguments = atom.symbol.arguments
+#     external  = atom.symbol.external
+#     aux_atom  = ast.Function(location, aux_name, arguments, external)
+#     aux_atom  = ast.SymbolicAtom(aux_atom)
+#     new_stm   = ast.Literal(location, ast.Sign.NoSign, aux_atom)
+    
+#     return new_stm, stm
+
+
+NotReplacementType = Iterable[Tuple[ast.AST,ast.AST]]
 
 def make_default_negation_auxiliar(stm: ast.AST) -> Tuple[ast.AST, NotReplacementType]:
     """
@@ -150,7 +178,12 @@ def make_default_negation_auxiliar(stm: ast.AST) -> Tuple[ast.AST, NotReplacemen
     stm = trn.visit(stm)
     replacement = trn.replacement
     return (stm, replacement)
-
+    # replacment = Set[Tuple[ast.AST,ast.AST]]
+    # lits = []
+    # new_stm, stm = _make_default_negation_auxiliar(stm)
+    # if stm is not None:
+    #     replacment.add((new_stm, stm))
+    # return (new_stm, replacment)
 
 def default_negation_auxiliary_rule(location, aux_literal: ast.AST, original_literal: ast.AST, gard: List[ast.AST]) -> ast.AST:
     """
@@ -162,7 +195,7 @@ def default_negation_auxiliary_rule(location, aux_literal: ast.AST, original_lit
     return ast.Rule(location, aux_literal, rule_body)
 
 
-def default_negation_auxiliary_rule_replacement(location, replacement: NotReplacementType, gard: List[ast.AST]):
+def default_negation_auxiliary_rule_replacement(location, replacement: List[ast.AST], gard: List[ast.AST]):
     """
     Returns a rule of the form:
         aux_literal :- gard, original_literal
