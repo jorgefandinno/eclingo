@@ -1,5 +1,4 @@
 import unittest
-from pprint import pprint
 
 from clingo import Number
 
@@ -28,7 +27,6 @@ class TestCase(unittest.TestCase):
         config   = _config.AppConfig()
         config.eclingo_semantics = "c19-1"
         self.grounder = _grounder.Grounder(internal_control.InternalStateControl(control=internal_control.InternalStateControl(message_limit=0)), config=config)
-        self.clingo_control_test = internal_control.InternalStateControl(message_limit=0)
         
     def ground_program(self, program, parameters=None, arguments=None):
         if parameters is None and arguments is None:

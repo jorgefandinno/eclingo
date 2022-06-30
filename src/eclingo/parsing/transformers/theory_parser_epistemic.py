@@ -16,7 +16,7 @@ from .parser_negations import (NotReplacementType, SnReplacementType,
 from .theory_parser_literals import theory_term_to_literal
 
 from clingo.ast import Transformer, ASTSequence
-from clingox.ast import prefix_symbolic_atoms, get_body
+from clingox.ast import prefix_symbolic_atoms
 #from clingox.ast import theory_term_to_literal
 ####################################################################################
 
@@ -102,12 +102,14 @@ class TheoryBuildGuard(Transformer):
         elif x.sign != ast.Sign.NoSign:
             self.positive = False
         return x
-
+    
+    
     def visit_TheoryAtom(self, atom, loc="body"):
         if atom.term.name == "k" and not atom.term.arguments:
             self.visit_sequence(atom.elements, "k")
         return atom
-
+    
+    
 def build_guard(body):
     t = TheoryBuildGuard()
     t.visit_sequence(body)

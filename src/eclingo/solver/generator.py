@@ -34,4 +34,4 @@ class CandidateGenerator():
                 candidate_pos.append(epistemic_literal)
             else:
                 candidate_neg.append(epistemic_literal)
-        return Candidate(candidate_pos, candidate_neg, [], [])
+        return Candidate(candidate_pos, candidate_neg)

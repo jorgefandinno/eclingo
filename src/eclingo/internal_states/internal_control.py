@@ -1,6 +1,5 @@
 from abc import abstractmethod
 from dataclasses import dataclass
-import textwrap
 from typing import Any, Callable, Dict, Iterable, Iterator, List, Sequence, Tuple, Union
 
 import clingo
@@ -89,13 +88,6 @@ class InternalStateControl(object):
     def show_symbols(self) -> Iterator[Symbol]:
         for symbolic_atom in self.show_symbolic_atoms():
             yield symbolic_atom.symbol
-
-    def atom_to_symbol_mapping(self) -> Dict[int, Symbol]:
-        mapping = dict()
-        for symbolic_atom in self.control.symbolic_atoms:
-            if not symbolic_atom.is_fact:
-                mapping.update({symbolic_atom.literal : symbolic_atom.symbol})
-        return mapping
     
     def show_symbolic_atoms(self) -> Iterator[SymbolicAtom]:
         for show_statement in self.show_signature:

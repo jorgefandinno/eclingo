@@ -4,23 +4,14 @@ from clingo import Function, Number
 from clingo import ast as _ast
 
 from eclingo.util.groundprogram import *
-from eclingo.util.logger import silent_logger
 import eclingo.internal_states.internal_control as internal_control
 
 from clingo.ast import  parse_string, Location, Position
 
-
-a  = clingo.Function('a', [], True)
-b  = clingo.Function('b', [], True)
-c  = clingo.Function('c', [], True)
-d  = clingo.Function('d', [], True)
-e  = clingo.Function('e', [], True)
-f  = clingo.Function('f', [], True)
-
 class Test(unittest.TestCase):
 
     def setUp(self):
-        self.control = internal_control.InternalStateControl(logger=silent_logger)
+        self.control = internal_control.InternalStateControl()
 
     def assert_models(self, models, obtained_models):
         models.sort()

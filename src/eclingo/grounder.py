@@ -11,15 +11,6 @@ from eclingo.literals import Literal
 from eclingo.internal_states.internal_control import InternalStateControl
 from .parsing.parser import parse_program
 
-CONTROL = Union[clingo.Control, InternalStateControl]
-
-class EpistemicSignature(NamedTuple):
-    epistemic_literal: Symbol
-    code: int
-    literal: Literal
-    test_atom: Symbol
-    test_atom_code: int
-
 
 class Grounder():
 
@@ -29,8 +20,6 @@ class Grounder():
         self.facts: List[Symbol]           = []
         self.epistemic_facts: List[Symbol] = []
         self.atom_to_symbol: Dict[int, Symbol] = dict()
-        self.symbol_to_atom: Dict[Symbol, int] = dict()
-        self.epistemic_signature: Dict[int, EpistemicSignature] = dict()
         self.ground_program = clingox_program.Program()
         self.control.register_observer(clingox_program.ProgramObserver(self.ground_program))
 

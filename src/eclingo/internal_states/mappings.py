@@ -1,4 +1,4 @@
-from typing import Dict, Iterable, Union, TYPE_CHECKING
+from typing import Dict, Iterable, Union
 
 from clingo import Function, Symbol, SymbolicAtoms
 from clingo.ast import Sign #pylint: disable=import-error

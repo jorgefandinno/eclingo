@@ -3,21 +3,17 @@ import unittest
 import clingo
 from clingo import Function, Number
 
-from eclingo.util.logger import silent_logger
 import eclingo.internal_states.internal_control as internal_control
 
-from eclingo.util.groundprogram import ClingoOutputAtom, ClingoProject, ClingoRule, GroundProgram, PrettyGroundProgram
-
+from eclingo.util.groundprogram import ClingoOutputAtom, PrettyGroundProgram
 
 class Test(unittest.TestCase):
-
 
     def test_clingo_symbol_function(self):
         symbol=Function("b", [Number(1)], True)
         # p=PrettyGroundProgram(symbol)
 
         self.assertEqual(str(symbol), 'b(1)')
-
 
     def test_clingo_output_atom_pretty(self):
         
@@ -41,7 +37,7 @@ class Test(unittest.TestCase):
         
         expected = map(lambda x: x.lstrip().rstrip(), expected)
 
-        self.control = internal_control.InternalStateControl(logger=silent_logger)
+        self.control = internal_control.InternalStateControl()
         self.control.configuration.solve.project = "auto,3"
         self.control.configuration.solve.models  = 0
 

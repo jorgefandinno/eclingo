@@ -28,7 +28,8 @@ class EclingoTestHelper(helper.TestHelper):
             sorted_world_views.append(world_view)
         sorted_world_views = sorted(sorted_world_views)
         self.assertEqual(sorted_world_views, sorted(sorted(wv) for wv in expected))
-
+    
     def assert_equal_show_symbols(self, program, expected_show_symbols):
         self.eclingo_control = self._control_and_ground(program)
         self.assertEqual(sorted(str(symbolic_atom.symbol) for symbolic_atom in self.eclingo_control.control.show_symbolic_atoms()), sorted(expected_show_symbols))
+    
