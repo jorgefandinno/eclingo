@@ -3,14 +3,11 @@ import unittest
 import clingo
 from clingo import Function, Number
 
-
 import eclingo.internal_states.internal_control as internal_control
 
-from eclingo.util.groundprogram import ClingoOutputAtom, ClingoProject, ClingoRule, GroundProgram, PrettyGroundProgram
-
+from eclingo.util.groundprogram import ClingoOutputAtom, PrettyGroundProgram
 
 class Test(unittest.TestCase):
-
 
     def test_clingo_symbol_function(self):
         symbol=Function("b", [Number(1)], True)

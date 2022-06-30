@@ -1,5 +1,4 @@
 import os
-from os import register_at_fork
 import subprocess
 import unittest
 
@@ -41,8 +40,8 @@ class TestExamples(unittest.TestCase):
         process = subprocess.Popen(command,
                      stdout=subprocess.PIPE, 
                      stderr=subprocess.PIPE)
-        stdout, stderr = process.communicate()
-        output = stdout.decode('utf-8')
+        stdout = process.communicate()
+        output = stdout[0].decode('utf-8')
         world_views = parse_output(output)
         for world_view in world_views:
             world_view.sort()

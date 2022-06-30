@@ -4,7 +4,6 @@ from clingo.ast import  parse_string, Location, Position
 
 from eclingo.util.groundprogram import *
 from eclingo.internal_states import ShowStatement
-from helper_test import helper as _helpler
 from helper_test.helper_clingo import ClingoTestHelper
 from helper_test.helper_parsing import ParsingTestHelper
 from helper_test.helper_wv_builder_show import \

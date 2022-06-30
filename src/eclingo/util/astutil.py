@@ -4,7 +4,7 @@ Tools to work with ASTs.
 # pylint: disable=no-member
 
 from copy import copy
-from itertools import chain, product
+from itertools import chain
 
 import clingo # type: ignore
 from clingo import ast as _ast

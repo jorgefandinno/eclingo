@@ -8,14 +8,6 @@ import eclingo.internal_states.internal_control as internal_control
 
 from clingo.ast import  parse_string, Location, Position
 
-
-a  = clingo.Function('a', [], True)
-b  = clingo.Function('b', [], True)
-c  = clingo.Function('c', [], True)
-d  = clingo.Function('d', [], True)
-e  = clingo.Function('e', [], True)
-f  = clingo.Function('f', [], True)
-
 class Test(unittest.TestCase):
 
     def setUp(self):
