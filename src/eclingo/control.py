@@ -1,4 +1,3 @@
-from pprint import pprint
 import sys
 from typing import Iterable, Tuple
 
@@ -9,8 +8,6 @@ from eclingo.config import AppConfig
 from eclingo.grounder import Grounder
 from eclingo.solver import Solver
 from eclingo.util.logger import logger
-
-from eclingo import __version__
 
 class Control(object):
 
@@ -31,12 +28,10 @@ class Control(object):
         if self.max_models == 0:
             self.max_models = sys.maxsize
 
-        self.epistemic_signature = dict()
         self.grounder = Grounder(self.control, self.config)
         self.models = 0
         self.grounded = False
         self.solver = None
-        self.epistemic_signature_symbol = dict()
 
     def add_program(self, program):
         self.grounder.add_program(program)
@@ -44,13 +39,9 @@ class Control(object):
     def load(self, input_path):
         with open(input_path, 'r') as program:
             self.add_program(program.read())
-
+    
     def ground(self, parts: Iterable[Tuple[str, Iterable[Symbol]]] = (("base", []),)):
         self.grounder.ground(parts)
-        self.epistemic_signature = self.grounder.epistemic_signature
-        self.epistemic_signature_symbol = dict(
-            (s.epistemic_literal, s) for s in self.epistemic_signature.values()
-        )
         self.grounded = True
 
 

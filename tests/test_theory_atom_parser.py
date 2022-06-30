@@ -1,10 +1,10 @@
 import unittest
-from typing import Callable, List, Optional, Sequence, cast
+from typing import Optional, cast
 import clingo
 from clingo import ast
 from clingo.symbol import Function
 from clingo.ast import AST, ASTType, Location, Position, Transformer, parse_string, Variable
-from clingox.ast import TheoryParser, theory_parser_from_definition
+from clingox.ast import theory_parser_from_definition
 
 theory = '''#theory eclingo {
     term { not : 0, unary;
@@ -41,7 +41,6 @@ class Extractor(Transformer):
             x = theory_parse(x)
         self.atom = x
         return x
-
 
 def theory_atom(s: str, mode: int=0) -> AST:
     """

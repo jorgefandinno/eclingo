@@ -7,7 +7,6 @@ from typing import Sequence
 
 from eclingo.config import AppConfig
 from eclingo.control import Control
-from eclingo import __version__
 from eclingo.internal_states import internal_control
 from eclingo.internal_states.internal_control import InternalStateControl
 
@@ -25,10 +24,9 @@ class Application(internal_control.Application):
     """
 
     def __init__(self):
-        self.program_name = "eclingo"
-        self.version = __version__
         self.config = AppConfig()
 
+    '''
     def _parse_int(self, config, attr, min_value=None, max_value=None):
         """
         Parse integer and store result in `config.attr`.
@@ -45,18 +43,8 @@ class Application(internal_control.Application):
             setattr(config, attr, num)
             return True
         return parse
-
-
-    def register_options(self, options):
-        """
-        Register eclingo related options.
-        """
-        group = "Eclingo Options"
-
-        options.add(
-            group, "eclingo-verbose",
-            "Set verbosity level of eclingo to <n>", self._parse_int(self.config, "eclingo_verbose"), argument="<n>")
-
+    '''
+    
     def _read(self, path):
         if path == "-":
             return sys.stdin.read()

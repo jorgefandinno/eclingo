@@ -65,7 +65,11 @@ reference = "test"
 
 [[package]]
 name = "clingox"
+<<<<<<< HEAD
 version = "1.2.0.post2"
+=======
+version = "1.2.0.post1"
+>>>>>>> 370d4e545ba31ef6e7c16048600b4a4f9b4a99db
 description = "Support library for clingo."
 category = "main"
 optional = false
@@ -311,7 +315,11 @@ testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
+<<<<<<< HEAD
 content-hash = "7c5957c9c364a089b8c88229a0049c7cc55187ffa7d450ebd12869d7a3ddcaf2"
+=======
+content-hash = "fe1a582c90fddbdfaaf82bf9465d78d4762cb9093119dc5c2cdec562647fb75b"
+>>>>>>> 370d4e545ba31ef6e7c16048600b4a4f9b4a99db
 
 [metadata.files]
 argcomplete = [
@@ -352,12 +360,21 @@ clingo = [
     {file = "clingo-5.6.0.post6.tar.gz", hash = "sha256:ef251f1953b509d14caffe47608d4a1a19c9c61beece8f187f4679a199f0a4a2"},
 ]
 clingox = [
+<<<<<<< HEAD
     {file = "clingox-1.2.0.post2-py3-none-any.whl", hash = "sha256:61fa2ca3de67c805562e1485aaffcfdc1c8253dbae245aa870971c0aad71794f"},
     {file = "clingox-1.2.0.post2.tar.gz", hash = "sha256:d1d63244cee4a794149d51192295cc635ce3e411ed0347d2df98b5841f3831a4"},
 ]
 colorama = [
     {file = "colorama-0.4.5-py2.py3-none-any.whl", hash = "sha256:854bf444933e37f5824ae7bfc1e98d5bce2ebe4160d46b5edf346a89358e99da"},
     {file = "colorama-0.4.5.tar.gz", hash = "sha256:e6c6b4334fc50988a639d9b98aa429a0b57da6e17b9a44f0451f930b6967b7a4"},
+=======
+    {file = "clingox-1.2.0.post1-py3-none-any.whl", hash = "sha256:b898eac30ac2f741b296110ed403562f5c4ed4526b32f8f57609b6af35ea503d"},
+    {file = "clingox-1.2.0.post1.tar.gz", hash = "sha256:ef61e5845f5cd0122b1847c92eba92d96b7b7d8b1dec59181061499cef50cb76"},
+]
+colorama = [
+    {file = "colorama-0.4.4-py2.py3-none-any.whl", hash = "sha256:df1b75950404284103727ee967f46375d1bb4ba7302bb1af74521e12233c48a2"},
+    {file = "colorama-0.4.4.tar.gz", hash = "sha256:e0a5998fe95a9f21e5af4a73aff20ef37ca3f2efd1c38e84475efdf3031926f6"},
+>>>>>>> 370d4e545ba31ef6e7c16048600b4a4f9b4a99db
 ]
 colorlog = [
     {file = "colorlog-6.6.0-py2.py3-none-any.whl", hash = "sha256:351c51e866c86c3217f08e4b067a7974a678be78f07f85fc2d55b8babde6d94e"},

@@ -1,17 +1,10 @@
 from eclingo import internal_states
-from eclingo.internal_states import ShowStatement
+from eclingo.internal_states.internal_control import ShowStatement
 import unittest
 import clingo
 import clingo.ast as _ast
 from eclingo.util.astutil import ast_repr as _ast_repr
 from eclingo.parsing.parser import parse_program as _parse_program
-
-
-def parse_formula(stm):
-    ret = []
-    prg = clingo.Control(message_limit=0)
-    _ast.parse_string(stm + ".", ret.append)
-    return ret[-1]
 
 def flatten(lst):
     result = []
@@ -40,15 +33,6 @@ class TestCase(unittest.TestCase):
     def setUp(self):
         self.print = False
 
-    def assertEqualFormula(self, formula, expected):
-        expected_formula = parse_formula(expected)
-        if self.print:
-            print("--- formula ---")
-            print(_ast_repr(formula))
-            print("--- expected formula ---")
-            print(_ast_repr(expected_formula))
-        self.assertEqual(formula, expected_formula)
-
     def assert_equal_program(self, program, expected):
         expected_program = clingo_parse_program(expected)
         if self.print:
@@ -57,27 +41,6 @@ class TestCase(unittest.TestCase):
             print("--- expected program ---")
             print(_ast_repr(expected_program))
         self.assertListEqual(sorted(program), sorted(expected_program))
-
-    def assert_equal_program_with_show(self, program, expected, expected_show):
-        program_without_show = []
-        show_statements = []
-        for statement in program:
-            if isinstance(statement, ShowStatement):
-                show_statements.append(statement)
-            else:
-                program_without_show.append(statement)
-        expected_program = clingo_parse_program(expected)
-        if self.print:
-            print("--- program ---")
-            print(_ast_repr(program_without_show))
-            print("--- expected program ---")
-            print(_ast_repr(expected_program))
-        self.assertEqual(sorted(program_without_show), sorted(expected_program))
-        self.assertEqual(sorted(show_statements), sorted(expected_show))
-
-
-
-
 
 class Test(TestCase):
 

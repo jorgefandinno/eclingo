@@ -14,7 +14,7 @@ from .world_view import EpistemicLiteral, WorldView
 
 class WorldWiewBuilder():
 
-    def __init__(self, control: internal_states.InternalStateControl):
+    def __init__(self, control: internal_control.InternalStateControl):
         self._epistemic_show_pos_mapping: Dict[Symbol, EpistemicLiteral] = control.show_mapping.positive
         self._epistemic_show_neg_mapping: Dict[Symbol, EpistemicLiteral] = control.show_mapping.negative
 
@@ -43,11 +43,11 @@ class WorldWiewBuilder():
 
 class WorldWiewBuilderWithShow(WorldWiewBuilder):
 
-    def __init__(self, control: internal_states.InternalStateControl):
+    def __init__(self, control: internal_control.InternalStateControl):
         super().__init__(control)
         self.control = self._generate_control_show(control)
 
-    def _generate_control_show(self, control: internal_states.InternalStateControl) -> internal_control.InternalStateControl:
+    def _generate_control_show(self, control: internal_control.InternalStateControl) -> internal_control.InternalStateControl:
         control_show = internal_control.InternalStateControl(['0'], message_limit=0)
         control.add_to(control_show)
         self._add_rules_for_negative_check(control_show, control.show_symbolic_atoms())
@@ -92,4 +92,4 @@ class WorldWiewBuilderWithShow(WorldWiewBuilder):
                 else:
                     new_candidate_neg.append(symbol)
 
-        return super().world_view_from_candidate(Candidate(new_candidate_pos, new_candidate_neg, [], []))
+        return super().world_view_from_candidate(Candidate(new_candidate_pos, new_candidate_neg))
