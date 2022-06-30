@@ -4,21 +4,16 @@ from clingo.ast import  parse_string, Location, Position
 
 from eclingo.util.groundprogram import *
 from eclingo.internal_states import ShowStatement
-from helper_test.helper_clingo import ClingoTestHelper
 from helper_test.helper_parsing import ParsingTestHelper
 from helper_test.helper_wv_builder_show import \
     WorldWiewBuilderWithShowTestHelper
 
 
-class Test(ClingoTestHelper,
-           ParsingTestHelper,
+class Test(ParsingTestHelper,
            WorldWiewBuilderWithShowTestHelper):
 
     def setUp(self):
         super().setUp()
-        self.printing = False
-        self.printing_ast_repr = False
-
 
     def test_show01c(self):
         self.assert_equal_parsing_program_with_show("a. b. #show a/0.", "u_a. u_b.", [ShowStatement(name='a', arity=0, poistive=True)])

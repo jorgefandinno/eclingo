@@ -47,7 +47,6 @@ class TestExamples(unittest.TestCase):
         for i in range(1, 17):
             control  = internal_states.InternalStateControl()
             control.configuration.solve.models  = 0
-            _config.add_efacts = True
             eclingo_control = _control.Control(control=control)
             # eclingo_control.config.eclingo_verbose = 2
             path = os.path.dirname(os.path.realpath(__file__))

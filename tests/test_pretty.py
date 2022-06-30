@@ -15,7 +15,6 @@ class Test(unittest.TestCase):
 
         self.assertEqual(str(symbol), 'b(1)')
 
-
     def test_clingo_output_atom_pretty(self):
         
         s = [ClingoOutputAtom(symbol=Function("b", [Number(1)], True), atom=0, order=0)]

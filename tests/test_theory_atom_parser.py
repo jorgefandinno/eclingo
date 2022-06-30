@@ -42,7 +42,6 @@ class Extractor(Transformer):
         self.atom = x
         return x
 
-
 def theory_atom(s: str, mode: int=0) -> AST:
     """
     Convert string to theory term.
