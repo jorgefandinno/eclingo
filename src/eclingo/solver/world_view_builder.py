@@ -92,4 +92,4 @@ class WorldWiewBuilderWithShow(WorldWiewBuilder):
                 else:
                     new_candidate_neg.append(symbol)
 
-        return super().world_view_from_candidate(Candidate(new_candidate_pos, new_candidate_neg, [], []))
+        return super().world_view_from_candidate(Candidate(new_candidate_pos, new_candidate_neg))

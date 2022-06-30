@@ -3,7 +3,6 @@ import unittest
 
 from clingo import Number
 from eclingo import control as _control, internal_states, config as _config
-from eclingo.util.logger import silent_logger
 
 
 
@@ -24,7 +23,7 @@ class TestExamples(unittest.TestCase):
 
     def test_prog_g94(self):
         for i in range(1, 11):
-            control  = internal_states.InternalStateControl(logger=silent_logger)
+            control  = internal_states.InternalStateControl()
             control.configuration.solve.models  = 0
             eclingo_control = _control.Control(control=control)
             path = os.path.dirname(os.path.realpath(__file__))
@@ -46,7 +45,7 @@ class TestExamples(unittest.TestCase):
 
     def test_eligible_g94(self):
         for i in range(1, 17):
-            control  = internal_states.InternalStateControl(logger=silent_logger)
+            control  = internal_states.InternalStateControl()
             control.configuration.solve.models  = 0
             _config.add_efacts = True
             eclingo_control = _control.Control(control=control)
@@ -74,7 +73,7 @@ class TestExamples(unittest.TestCase):
     def test_yale_g94(self):
         for i in range(1, 9):
             if i != 6:
-                control  = internal_states.InternalStateControl(logger=silent_logger)
+                control  = internal_states.InternalStateControl()
                 control.configuration.solve.models  = 0
                 eclingo_control = _control.Control(control=control)
                 # eclingo_control.config.eclingo_verbose = 10

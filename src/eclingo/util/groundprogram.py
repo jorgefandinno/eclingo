@@ -82,13 +82,7 @@ class GroundProgram():
 
     def __init__(self, objects: IterableType[ClingoObject] = []):  # pylint: disable=dangerous-default-value
         self.objects = list(objects)
-
-    def add_rule(self, choice: bool = False, head: IterableType[int] = [], body: IterableType[int] = []) -> None: # pylint: disable=dangerous-default-value
-        self.objects.append(ClingoRule(choice=choice, head=list(head), body=list(body)))
-
-    def add_rules(self, rules: IterableType[ClingoRule]) -> None:
-        self.objects.extend(rules)
-
+    
     def add_project(self, atoms: List[int] = []) -> None: # pylint: disable=dangerous-default-value
         self.objects.append(ClingoProject(list(atoms)))
 
@@ -273,11 +267,7 @@ class PrettyGroundProgram():
         pretty_rule = self._rewrite_rule(rule)
         self.__add_rule(pretty_rule)
         return pretty_rule
-
-    def add_rules(self, rules: IterableType['ClingoRule']) -> None:
-        for rule in rules:
-            self.add_rule(rule)
-
+    
     def _rewrite_projection(self, projection: 'ClingoProject') -> PrettyProjection:
         return PrettyProjection(self._rewrite_literal(atom) for atom in projection.atoms)
 
@@ -325,19 +315,7 @@ class PrettyGroundProgram():
         self.heuristics.sort()
         self.minimizes.sort()
         self.weight_rules.sort()
-
-    def as_list(self):
-        return [ PrettyRule(False, [fact]) for fact in self.facts ] + \
-               self.cfacts + \
-               self.dfacts + \
-               self.rules + \
-               self.weight_rules + \
-               self.assumtions + \
-               self.assumtions + \
-               self.heuristics + \
-               self.minimizes + \
-               self.projections
-
+    
     def __repr__(self):
         self.sort()
         facts = '.\n'.join(repr(x) for x in self.facts)

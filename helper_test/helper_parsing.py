@@ -4,7 +4,6 @@ import clingo as _clingo
 
 import clingo.ast as _ast
 
-from eclingo.util.logger import silent_logger
 from eclingo.util.astutil import ast_repr as _ast_repr
 
 from eclingo.parsing.parser import parse_program as _parse_program

@@ -1,6 +1,5 @@
 import eclingo.internal_states.internal_control as internal_control
 
-from eclingo.util.logger import silent_logger
 from . import helper
 
 
@@ -9,7 +8,7 @@ class ClingoTestHelper(helper.TestHelper):
 
     def setUp(self):
         super().setUp()
-        self.clingo_control = internal_control.InternalStateControl(logger=silent_logger)
+        self.clingo_control = internal_control.InternalStateControl()
         self.program_added = False
 
     def add_program(self, program):
