@@ -10,7 +10,7 @@ from eclingo.main import main as eclingo_main
 
 
 
-APP_PATH = '../src/eclingo/main.py'
+APP_PATH = '../src/eclingo/__main__.py'
 
 INPUT_PROG_PATH = 'prog/input/'
 OUTPUT_PROG_PATH = 'prog/output/'
@@ -51,7 +51,9 @@ class TestExamples(unittest.TestCase):
             process = subprocess.Popen(command,
                     stdout=subprocess.PIPE, 
                     stderr=subprocess.PIPE)
-            stdout, _ = process.communicate()
+            stdout, stderr = process.communicate()
+            # if process.returncode != 0:
+            #     self.fail(f"{command} exit with {process.returncode}\n{stderr.decode('utf-8')}")
             output = stdout.decode('utf-8')
         else:
             if use_stdin:
