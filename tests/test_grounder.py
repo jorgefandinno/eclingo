@@ -163,21 +163,13 @@ class Test(TestCase):
 
     def test_show01(self):
         self.assertEqualPrograms(self.ground_program("a. b. #show a/0."), ["__x1.", "__x2.","u_a.", "u_b."])
-<<<<<<< HEAD
-        show_signature = ShowSignature({ShowStatement(name='a', arity=0, poistive=True)})
-=======
         show_signature = set({ShowStatement(name='a', arity=0, poistive=True)})
->>>>>>> 1ee5a1e88a5854ff966da509a90b494765239c9f
         self.assertEqual(self.grounder.control.show_signature, show_signature)
 
 
     def test_show02(self):
         self.assertEqualPrograms(self.ground_program("a. b. #show a/0. #show b/0."), ["__x1.", "__x2.","u_a.", "u_b."])
-<<<<<<< HEAD
-        show_signature = ShowSignature({
-=======
         show_signature = set({
->>>>>>> 1ee5a1e88a5854ff966da509a90b494765239c9f
             ShowStatement(name='a', arity=0, poistive=True),
             ShowStatement(name='b', arity=0, poistive=True)
         })
@@ -185,9 +177,5 @@ class Test(TestCase):
 
     def test_show03(self):
         self.assertEqualPrograms(self.ground_program("-a. b. #show -a/0."), ["-u_a.","__x1.", "__x2.","u_b."])
-<<<<<<< HEAD
-        show_signature = ShowSignature({ShowStatement(name='a', arity=0, poistive=False)})
-=======
         show_signature = set({ShowStatement(name='a', arity=0, poistive=False)})
->>>>>>> 1ee5a1e88a5854ff966da509a90b494765239c9f
         self.assertEqual(self.grounder.control.show_signature, show_signature)

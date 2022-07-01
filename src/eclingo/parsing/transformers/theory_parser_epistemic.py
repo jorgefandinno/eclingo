@@ -13,7 +13,7 @@ from .parser_negations import (NotReplacementType, SnReplacementType,
                                default_negation_auxiliary_rule_replacement,
                                make_default_negation_auxiliar,
                                make_strong_negations_auxiliar)
-#from .theory_parser_literals import theory_term_to_literal
+from .theory_parser_literals import theory_term_to_literal
 
 from clingo.ast import Transformer, ASTSequence
 from clingox.ast import prefix_symbolic_atoms
