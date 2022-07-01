@@ -1,12 +1,9 @@
 import unittest
 import clingo
-from clingo import Function, Number
 from clingo import ast as _ast
 
-from eclingo.util.groundprogram import *
 import eclingo.internal_states.internal_control as internal_control
 
-from clingo.ast import  parse_string, Location, Position
 
 class Test(unittest.TestCase):
 

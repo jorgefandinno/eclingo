@@ -67,22 +67,12 @@ class CandidateTester():
             for model in handle:
                 for atom in candidate_pos:
                     if not model.contains(atom):
-                        if self._config.eclingo_verbose > 2:
-                            sys.stderr.write(">>> False, '%s' should hold in all models:\n    %s\n\n" % (atom, model))
-                        elif self._config.eclingo_verbose > 3:
-                            sys.stderr.write(">>> Model: %s\n\n" % model)
                         return False
 
             if model is None:
-                if self._config.eclingo_verbose > 2:
-                    sys.stderr.write(">>> False:\n%s\n\n" % "Unsatisfiable")
                 return False
 
             for atom in candidate_neg:
                 if model.contains(atom):
-                    if self._config.eclingo_verbose > 2:
-                        sys.stderr.write(">>> False, '%s' should not hold in some model:\n    %s\n\n" % (atom, model))
                     return False
-        if self._config.eclingo_verbose > 2:
-            sys.stderr.write(">>> True\n")
         return True

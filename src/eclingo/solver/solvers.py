@@ -28,32 +28,9 @@ class Solver:
         self._preprocesor = Preprocessor(self._config, self._control)
         self._preprocesor()
 
-        if self._config.eclingo_verbose > 1:
-            self._stderr_write_current_state()
-
 
     def solve(self) -> Iterator[Candidate]:
         for candidate in self.generate_candidates():
             if self.test_candidate(candidate):
                 yield self._build_world_view(candidate)
 
-
-    def _stderr_write_current_state(self) -> None:
-        sys.stderr.write('-----------------------------------------------------------')
-        sys.stderr.write('\n')
-        sys.stderr.write('   Generate program')
-        sys.stderr.write('\n')
-        sys.stderr.write('-----------------------------------------------------------')
-        sys.stderr.write('\n')
-        sys.stderr.write(str(self.generate_candidates.control.ground_program))
-        sys.stderr.write('\n')
-        sys.stderr.write('------------------------------------------------------------')
-        sys.stderr.write('\n')
-        sys.stderr.write('   Test program')
-        sys.stderr.write('\n')
-        sys.stderr.write('------------------------------------------------------------')
-        sys.stderr.write('\n')
-        sys.stderr.write(str(self.test_candidate.control.ground_program))
-        sys.stderr.write('\n')
-        sys.stderr.write('------------------------------------------------------------')
-        sys.stderr.write('\n')
