@@ -13,7 +13,6 @@ def tests(session):
         "src/eclingo/control.py",
         "src/eclingo/solver/tester.py",
         "src/eclingo/parsing/parser.py",
-        "src/eclingo/solver/world_view_builder.py",
     ]
     tested_files_80 = [
         "src/eclingo/literals.py",
