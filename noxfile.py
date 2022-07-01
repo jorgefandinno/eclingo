@@ -12,14 +12,16 @@ def tests(session):
     omit = [
         "src/eclingo/__main__.py",
     ]
-    tested_files_90 = []
+    tested_files_90 = [
+        "src/eclingo/parsing/transformers/parser_negations.py",
+    ]
     tested_files_80 = [
         "src/eclingo/literals.py",
         "src/eclingo/prefixes.py",
         "src/eclingo/parsing/transformers/theory_parser_epistemic.py",
     ]
     tested_files_70 = [
-        "src/eclingo/parsing/transformers/parser_negations.py",
+       
     ]
     tested_files_60 = [
         "src/eclingo/parsing/transformers/theory_parser_literals.py",
