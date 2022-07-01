@@ -13,29 +13,12 @@ from clingo.ast import Transformer, Location, Position
 
 ####################################################################################
 
+#Unused class
 class SimplifyStrongNegationsTransformer(Transformer):
-
-    def visit_UnaryOperation(self, x):
-        if x.operator_type != ast.UnaryOperator.Minus:
-            raise RuntimeError("invalid term: {}".format(x.location))
-        elif x.argument.ast_type == ast.ASTType.UnaryOperation:
-            if x.argument.operator != '-':
-                raise RuntimeError("invalid term: {}".format(x.location))
-            else:
-                return self.visit(x.argument.argument)
-        elif x.argument.ast_type != ast.ASTType.Function:
-                raise RuntimeError("invalid term: {}".format(x.location))
-        else:
-            return x
+    pass
 
 ####################################################################################
 
-def simplify_strong_negations(stm: ast.AST) -> ast.AST:
-    """
-    Removes duplicate occurrences of strong negation and provides
-    an equivalent formula.
-    """
-    return SimplifyStrongNegationsTransformer().visit(stm)
 
 ####################################################################################
 
@@ -45,6 +28,7 @@ class StrongNegationToAuxiliarTransformer(Transformer):
         self.strong_negation_prefix = strong_negation_prefix
         self.replacement = set()
 
+    
     def visit_UnaryOperation(self, x):
         if x.operator_type != ast.UnaryOperator.Minus:
             raise RuntimeError("invalid term: {}".format(x.location))
@@ -60,7 +44,7 @@ class StrongNegationToAuxiliarTransformer(Transformer):
             atom      = ast.Function(location, aux_name, arguments, external)
             self.replacement.add((name, len(arguments), aux_name))
             return atom
-
+    
 ####################################################################################
 
 class StrongNegationReplacement(Set[Tuple[str, int, str]]):
@@ -99,6 +83,14 @@ class StrongNegationReplacement(Set[Tuple[str, int, str]]):
 
 SnReplacementType = Set[Tuple[str, int, str]]
 
+
+def simplify_strong_negations(stm: ast.AST) -> ast.AST:
+    """
+    Removes duplicate occurrences of strong negation and provides
+    an equivalent formula.
+    """
+    return SimplifyStrongNegationsTransformer().visit(stm)
+
 def make_strong_negations_auxiliar(stm: ast.AST) -> Tuple[ast.AST, SnReplacementType]:
     """
     Replaces strong negation by an auxiliary atom.
@@ -112,39 +104,6 @@ def make_strong_negations_auxiliar(stm: ast.AST) -> Tuple[ast.AST, SnReplacement
     trn = StrongNegationToAuxiliarTransformer()
     stm = trn.visit(stm)
     return (stm, trn.replacement)
-
-
-def strong_negation_auxiliary_rule(location, name: str, arity: int, aux_name: str) -> ast.AST:
-    """
-    Returns a rule of the form:
-        aux_name(X1, ..., Xn) :- -name(X1, ... , Xn).
-    where n = arity
-    """
-    arguments = []
-    for i in range(0, arity):
-        var_name = "V" + str(i)
-        var = ast.Variable(location, var_name)
-        arguments.append(var)
-    head = astutil.atom(location, True, aux_name, arguments)
-    head = ast.Literal(location, ast.Sign.NoSign, head)
-    body_atom = astutil.atom(location, False, name, arguments)
-    body = [ast.Literal(location, ast.Sign.NoSign, body_atom)]
-    return ast.Rule(location, head, body)
-
-
-def strong_negation_auxiliary_rule_replacement(replacement: SnReplacementType) -> Iterator[ast.AST]:
-    """
-    Returns a rule of the form:
-        aux_name(X1, ..., Xn) :- -name(X1, ... , Xn).
-    for each tuple in replacement
-    """
-    location = Location(
-                    begin=Position(filename='<transform>', line=1, column=1), 
-                    end=Position(filename='<transform>', line=1, column=1) 
-                )
-    for name, arity, aux_name in replacement:
-        yield strong_negation_auxiliary_rule(location, name, arity, aux_name)
-
 
 ####################################################################################
 
@@ -186,7 +145,7 @@ class DefaultNegationsToAuxiliarTransformer(Transformer):
         
         self.replacement.append((x, new_x))
         return new_x
-
+    
 
 NotReplacementType = List[ast.AST]
 

@@ -1,19 +1,20 @@
-from typing import Dict, Iterable, MutableMapping, Optional  # , Dict
+from typing import Dict, Iterable, Union
 
-from clingo import Function, Symbol
+from clingo import Function, Symbol, SymbolicAtoms
 from clingo.ast import Sign #pylint: disable=import-error
 
 from eclingo import prefixes
+
 from eclingo.literals import EpistemicLiteral, Literal
-from eclingo.util import clingoext
+import clingo
 
 
 class EpistemicSymbolToTestSymbolMapping(dict[Symbol, Symbol]):
 
-    def __init__(self, control: Optional[clingoext.Control] = None) -> None:
+    def __init__(self, symbolic_atoms: SymbolicAtoms = None) -> None:
         super().__init__()
-        if control is not None:
-            for atom in control.symbolic_atoms:
+        if symbolic_atoms is not None:
+            for atom in symbolic_atoms:
                 symbol = atom.symbol
                 symbol_is_epistemic_literal = symbol.name.startswith(prefixes.EPISTEMIC_PREFIX)
                 if symbol_is_epistemic_literal:

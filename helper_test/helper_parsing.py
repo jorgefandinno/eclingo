@@ -1,15 +1,9 @@
-import unittest
-
-import clingo as _clingo
-
 import clingo.ast as _ast
 
-from eclingo.util import clingoext as _clingoext
-from eclingo.util.logger import silent_logger
-from eclingo.util.astutil import ast_repr as _ast_repr
 
 from eclingo.parsing.parser import parse_program as _parse_program
-from eclingo.internal_states import ShowStatement
+from eclingo.internal_states.internal_control import ShowStatement
+
 
 from . import helper
 
@@ -67,3 +61,4 @@ class ParsingTestHelper(helper.TestHelper):
                 program_without_show.append(statement)
         self.__assert_equal_parsing_program(program_without_show, expected_program)
         self.assert_equal_ordered(show_statements, expected_show)
+    

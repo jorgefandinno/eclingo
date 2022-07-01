@@ -60,7 +60,9 @@ class ASTInspector(object):
             return self.visit_none(x, *args, **kwargs)
         raise TypeError("unexpected type: {}".format(x))
 
+'''
 def inspect_ast(stm):
     t = ASTInspector()
     t.visit(stm)
     return t.string
+'''

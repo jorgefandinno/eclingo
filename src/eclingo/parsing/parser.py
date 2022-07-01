@@ -5,7 +5,7 @@ from clingo import ast
 from clingo.ast import Location, Position
 
 from eclingo import prefixes
-from eclingo.internal_states import ASTObject, ShowStatement
+from eclingo.internal_states.internal_control import ASTObject, ShowStatement
 
 from .transformers.parser_negations import StrongNegationReplacement
 from .transformers.theory_parser_epistemic import double_negate_epistemic_listerals

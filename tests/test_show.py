@@ -1,115 +1,17 @@
-import clingo
-from clingo import ast as _ast
-from clingo.ast import  parse_string, Location, Position
-
-from eclingo.util.groundprogram import *
-from eclingo.internal_states import ShowStatement
-from helper_test import helper as _helpler
-from helper_test.helper_clingo import ClingoTestHelper
+from eclingo.internal_states.internal_control import ShowStatement
 from helper_test.helper_parsing import ParsingTestHelper
 from helper_test.helper_wv_builder_show import \
     WorldWiewBuilderWithShowTestHelper
 
 
-class Test(ClingoTestHelper,
-           ParsingTestHelper,
+class Test(ParsingTestHelper,
            WorldWiewBuilderWithShowTestHelper):
 
     def setUp(self):
         super().setUp()
-        self.printing = False
-        self.printing_ast_repr = False
-
-    def test_01a(self):
-        program = """
-            #show a/0.
-            """
-        if clingo.__version__ < '5.6.0':
-            signature = _ast.ShowSignature(    # pylint: disable=no-member
-                Location(begin=Position(filename='<string>', line=2, column=13), end=Position(filename='<string>', line=2, column=23)),
-                name = 'a',
-                arity = 0,
-                positive = True,
-                csp = False
-            )
-        else:
-            signature = _ast.ShowSignature(    # pylint: disable=no-member
-                Location(begin=Position(filename='<string>', line=2, column=13), end=Position(filename='<string>', line=2, column=23)),
-                name = 'a',
-                arity = 0,
-                positive = True,
-            )
-        parsed_program = [
-            _ast.Program( # pylint: disable=no-member
-                Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=1)),
-                name = 'base',
-                parameters = []
-                ),
-            signature]
-        self.assert_equal_clingo_parsed_program(program, parsed_program)
-
-    def test_show01b(self):
-        program = """
-            {a}.
-            {b}.
-            #show a/0.
-            """
-        ground_program = [
-            ClingoOutputAtom(symbol=_helpler.a, atom=2, order=0),
-            ClingoRule(choice=True, head=[1], body=[], order=1),
-            ClingoRule(choice=True, head=[2], body=[], order=1)
-        ]
-        ground_program.sort()
-        self.assert_equal_clingo_ground_program(program, ground_program)
 
     def test_show01c(self):
         self.assert_equal_parsing_program_with_show("a. b. #show a/0.", "u_a. u_b.", [ShowStatement(name='a', arity=0, poistive=True)])
-
-
-    def test_show02(self):
-        program = """
-            #show -a/0.
-            """
-        if clingo.__version__ < '5.6.0':
-            signature = _ast.ShowSignature(    # pylint: disable=no-member
-                Location(begin=Position(filename='<string>', line=2, column=13), end=Position(filename='<string>', line=2, column=23)),
-                name = 'a',
-                arity = 0,
-                positive = False,
-                csp = False
-            )
-        else:
-            signature = _ast.ShowSignature(    # pylint: disable=no-member
-                Location(begin=Position(filename='<string>', line=2, column=13), end=Position(filename='<string>', line=2, column=23)),
-                name = 'a',
-                arity = 0,
-                positive = False,
-            )
-        parsed_program = [
-            _ast.Program(    # pylint: disable=no-member
-                Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=1)),
-                name = 'base',
-                parameters = []
-                ),
-                signature
-                ]
-        self.assert_equal_clingo_parsed_program(program, parsed_program)
-
-
-    def test_show02b(self):
-        program = """
-            {-a}.
-            {b}.
-            #show -a/0.
-            """
-        ground_program = [
-            ClingoOutputAtom(symbol=_helpler.s_neg(_helpler.a), atom=2, order=0),
-            ClingoRule(choice=True, head=[1], body=[], order=1),
-            ClingoRule(choice=True, head=[2], body=[], order=1)
-        ]
-        ground_program.sort()
- 
-        self.assert_equal_clingo_ground_program(program, ground_program)
 
     def test_show02c(self):
         self.assert_equal_parsing_program_with_show("-a. b. #show -a/0.", "-u_a. u_b.", [ShowStatement(name='a', arity=0, poistive=False)])

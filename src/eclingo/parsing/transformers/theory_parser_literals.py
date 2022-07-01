@@ -78,6 +78,7 @@ class TheoryTermToLiteralTransformer(Transformer):
         else:
             raise RuntimeError("invalid formula: {}".format(x.location))
 
+    
     def visit_TheoryFunction(self, x, positive, sign):
         """
         Maps theory functions to atoms.
@@ -94,8 +95,8 @@ class TheoryTermToLiteralTransformer(Transformer):
         else:
             atom = astutil.atom(x.location, positive, x.name, [theory_term_to_term(a) for a in x.arguments])
             return ast.Literal(x.location, sign, atom)
-
-
+    
+    
 def theory_term_to_literal(x, positive=True, sign=ast.Sign.NoSign):
     """
     Convert the given theory term into an literal.

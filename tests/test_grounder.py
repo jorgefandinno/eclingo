@@ -1,13 +1,12 @@
 import unittest
-from pprint import pprint
 
 from clingo import Number
 
 from eclingo import grounder as _grounder
 from eclingo import config as _config
 from eclingo import internal_states as _internal_states
-from eclingo.internal_states import ShowSignature, ShowStatement
-from eclingo.util import clingoext as _clingoext
+from eclingo.internal_states.internal_control import ShowStatement
+import eclingo.internal_states.internal_control as internal_control
 
 
 def flatten(lst):
@@ -27,8 +26,7 @@ class TestCase(unittest.TestCase):
         self.print = False
         config   = _config.AppConfig()
         config.eclingo_semantics = "c19-1"
-        self.grounder = _grounder.Grounder(_internal_states.InternalStateControl(control=_clingoext.Control(message_limit=0)), config=config)
-        self.clingo_control_test = _clingoext.Control(message_limit=0)
+        self.grounder = _grounder.Grounder(internal_control.InternalStateControl(control=internal_control.InternalStateControl(message_limit=0)), config=config)
         
     def ground_program(self, program, parameters=None, arguments=None):
         if parameters is None and arguments is None:
@@ -38,12 +36,7 @@ class TestCase(unittest.TestCase):
         else:
             self.grounder.add_program(program, parameters)
             self.grounder.ground([("base", arguments)])
-        ground_program = self.grounder.control.new_ground_program
-        if self.print:
-            print("\n--- non-ground program")
-            pprint(self.grounder.control.parsed_program)
-            print("\n--- program ---")
-            pprint(ground_program.objects)
+        ground_program = self.grounder.control.ground_program
         return ground_program
 
     def assertEqualPrograms(self, ground_program, expected):
@@ -170,13 +163,21 @@ class Test(TestCase):
 
     def test_show01(self):
         self.assertEqualPrograms(self.ground_program("a. b. #show a/0."), ["__x1.", "__x2.","u_a.", "u_b."])
+<<<<<<< HEAD
         show_signature = ShowSignature({ShowStatement(name='a', arity=0, poistive=True)})
+=======
+        show_signature = set({ShowStatement(name='a', arity=0, poistive=True)})
+>>>>>>> 1ee5a1e88a5854ff966da509a90b494765239c9f
         self.assertEqual(self.grounder.control.show_signature, show_signature)
 
 
     def test_show02(self):
         self.assertEqualPrograms(self.ground_program("a. b. #show a/0. #show b/0."), ["__x1.", "__x2.","u_a.", "u_b."])
+<<<<<<< HEAD
         show_signature = ShowSignature({
+=======
+        show_signature = set({
+>>>>>>> 1ee5a1e88a5854ff966da509a90b494765239c9f
             ShowStatement(name='a', arity=0, poistive=True),
             ShowStatement(name='b', arity=0, poistive=True)
         })
@@ -184,5 +185,9 @@ class Test(TestCase):
 
     def test_show03(self):
         self.assertEqualPrograms(self.ground_program("-a. b. #show -a/0."), ["-u_a.","__x1.", "__x2.","u_b."])
+<<<<<<< HEAD
         show_signature = ShowSignature({ShowStatement(name='a', arity=0, poistive=False)})
+=======
+        show_signature = set({ShowStatement(name='a', arity=0, poistive=False)})
+>>>>>>> 1ee5a1e88a5854ff966da509a90b494765239c9f
         self.assertEqual(self.grounder.control.show_signature, show_signature)

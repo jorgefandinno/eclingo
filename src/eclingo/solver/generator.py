@@ -3,7 +3,7 @@ from typing import Iterator
 
 import clingo
 
-from eclingo import internal_states
+from eclingo.internal_states import internal_control
 from eclingo.config import AppConfig
 
 from .candidate import Candidate
@@ -11,7 +11,7 @@ from .candidate import Candidate
 
 class CandidateGenerator():
 
-    def __init__(self, config: AppConfig, control: internal_states.InternalStateControl) -> None:
+    def __init__(self, config: AppConfig, control: internal_control.InternalStateControl) -> None:
         self._config = config
         self.control = control
         self._epistemic_literals = self.control.epistemic_to_test_mapping.epistemic_literals()
@@ -22,8 +22,6 @@ class CandidateGenerator():
         with self.control.solve(yield_=True) as handle:
             for model in handle:
                 candidate = self.__model_to_candidate(model)
-                if self._config.eclingo_verbose > 2:
-                    sys.stderr.write(">>> Candidate:\n    Model:%s\n    %s\n" % (model, candidate))
                 yield candidate
 
     def __model_to_candidate(self, model: clingo.Model) -> Candidate:
@@ -34,4 +32,4 @@ class CandidateGenerator():
                 candidate_pos.append(epistemic_literal)
             else:
                 candidate_neg.append(epistemic_literal)
-        return Candidate(candidate_pos, candidate_neg, [], [])
+        return Candidate(candidate_pos, candidate_neg)
