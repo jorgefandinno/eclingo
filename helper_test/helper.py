@@ -1,7 +1,5 @@
 import unittest
 
-from eclingo.util.astutil import ast_repr as _ast_repr
-
 class TestHelper(unittest.TestCase):
 
     def setUp(self):

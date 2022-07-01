@@ -86,7 +86,7 @@ def main():
     sys.argv.append('--outf=3')
     application = Application()
     result = internal_control.clingo_main(application, sys.argv[1:])
-    sys.exit(int(result))
+    return int(result)
 
 if __name__ == '__main__':
     main()

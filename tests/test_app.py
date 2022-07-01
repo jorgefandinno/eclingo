@@ -1,9 +1,12 @@
-import os
+import contextlib
+import io
+import os, sys
 import subprocess
 import unittest
+from unittest.mock import patch
 
-from clingo import Number
-import eclingo
+from eclingo.main import main as eclingo_main
+
 
 
 APP_PATH = '../src/eclingo/main.py'
@@ -36,12 +39,21 @@ def parse_output(output):
 
 class TestExamples(unittest.TestCase):
 
-    def assert_world_views(self, command, output_path):
-        process = subprocess.Popen(command,
-                     stdout=subprocess.PIPE, 
-                     stderr=subprocess.PIPE)
-        stdout = process.communicate()
-        output = stdout[0].decode('utf-8')
+    def assert_world_views(self, command, output_path, external_call=True):
+        if external_call:
+            process = subprocess.Popen(command,
+                        stdout=subprocess.PIPE, 
+                        stderr=subprocess.PIPE)
+            stdout, stderr = process.communicate()
+            output = stdout.decode('utf-8')
+        else:
+            # do something to call main directly on the process
+            with (
+                contextlib.redirect_stdout(io.StringIO()) as stdout,
+                patch.object(sys, 'argv', command[1:])
+            ):
+                eclingo_main()
+                output = stdout.getvalue()
         world_views = parse_output(output)
         for world_view in world_views:
             world_view.sort()
@@ -66,6 +78,7 @@ class TestExamples(unittest.TestCase):
 
             command = ['python', app_path, '0', input_path]
             self.assert_world_views(command, output_path)
+            self.assert_world_views(command, output_path, external_call=False)
 
 
     def test_eligible_g94(self):
@@ -80,6 +93,7 @@ class TestExamples(unittest.TestCase):
 
             command = ['python', app_path, '0', elegible_path, input_path]
             self.assert_world_views(command, output_path)
+            self.assert_world_views(command, output_path, external_call=False)
 
 
     def test_yale_g94(self):
@@ -97,3 +111,4 @@ class TestExamples(unittest.TestCase):
                 constant = '-c length=%d' % i
                 command = ['python', app_path, constant, '0', yale_path, input_path]
                 self.assert_world_views(command, output_path)
+                self.assert_world_views(command, output_path, external_call=False)

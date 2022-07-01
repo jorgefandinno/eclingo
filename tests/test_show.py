@@ -1,8 +1,3 @@
-import clingo
-from clingo import ast as _ast
-from clingo.ast import  parse_string, Location, Position
-
-from eclingo.util.groundprogram import *
 from eclingo.internal_states.internal_control import ShowStatement
 from helper_test.helper_parsing import ParsingTestHelper
 from helper_test.helper_wv_builder_show import \

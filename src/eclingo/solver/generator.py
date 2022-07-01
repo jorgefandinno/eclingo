@@ -22,8 +22,6 @@ class CandidateGenerator():
         with self.control.solve(yield_=True) as handle:
             for model in handle:
                 candidate = self.__model_to_candidate(model)
-                if self._config.eclingo_verbose > 2:
-                    sys.stderr.write(">>> Candidate:\n    Model:%s\n    %s\n" % (model, candidate))
                 yield candidate
 
     def __model_to_candidate(self, model: clingo.Model) -> Candidate:

@@ -7,7 +7,6 @@ from eclingo import internal_states
 from eclingo.config import AppConfig
 from eclingo.grounder import Grounder
 from eclingo.solver import Solver
-from eclingo.util.logger import logger
 
 class Control(object):
 
@@ -21,7 +20,7 @@ class Control(object):
         else:
             self.project    = None
             self.max_models = 1
-            self.control = internal_states.InternalStateControl(['0', '--project'], logger=logger)
+            self.control = internal_states.InternalStateControl(['0', '--project'])
         if config is None:
             config = AppConfig()
         self.config = config

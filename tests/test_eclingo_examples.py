@@ -2,8 +2,10 @@ import os
 import unittest
 
 from clingo import Number
-from eclingo import control as _control, config as _config
+from eclingo import control as _control
 from eclingo.internal_states import internal_control
+
+
 
 
 INPUT_PROG_PATH = 'prog/input/'
