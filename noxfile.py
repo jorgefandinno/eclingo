@@ -9,9 +9,7 @@ def typecheck(session):
 
 @nox.session(python=None)
 def tests(session):
-    tested_files_90 = [
-        "src/eclingo/control.py",
-    ]
+    tested_files_90 = []
     tested_files_80 = [
         "src/eclingo/literals.py",
         "src/eclingo/internal_states/internal_control.py",
@@ -32,7 +30,7 @@ def tests(session):
     # session.run("pytest", *args)
     session.run("coverage", "run", "-m", "unittest")
     session.run("coverage", "report", "--sort=cover", "--fail-under=100", "--omit", ",".join(tested_files_90 + tested_files_80 + tested_files_70 + tested_files_60))
-    session.run("coverage", "report", "--sort=cover", "--fail-under=90", "--include", ",".join(tested_files_90))
+    # session.run("coverage", "report", "--sort=cover", "--fail-under=90", "--include", ",".join(tested_files_90))
     session.run("coverage", "report", "--sort=cover", "--fail-under=80", "--include", ",".join(tested_files_80))
     session.run("coverage", "report", "--sort=cover", "--fail-under=70", "--include", ",".join(tested_files_70))
     session.run("coverage", "report", "--sort=cover", "--fail-under=60", "--include", ",".join(tested_files_60))

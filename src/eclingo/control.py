@@ -10,13 +10,13 @@ from eclingo.solver import Solver
 
 class Control(object):
 
-    def __init__(self, control=None, config=None):
-        if control is not None:
-            self.project    = control.configuration.solve.project
-            self.max_models = int(control.configuration.solve.models)
-            control.configuration.solve.project = "auto,3"
-            control.configuration.solve.models  = 0
-            self.control = control
+    def __init__(self, control, config=None):
+        # if control is not None:
+        self.project    = control.configuration.solve.project
+        self.max_models = int(control.configuration.solve.models)
+        control.configuration.solve.project = "auto,3"
+        control.configuration.solve.models  = 0
+        self.control = control
         # else:
         #     self.project    = None
         #     self.max_models = 1
