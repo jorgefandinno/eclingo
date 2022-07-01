@@ -12,7 +12,6 @@ def tests(session):
     tested_files_90 = []
     tested_files_80 = [
         "src/eclingo/literals.py",
-        "src/eclingo/internal_states/internal_control.py",
         "src/eclingo/prefixes.py",
         "src/eclingo/parsing/transformers/theory_parser_epistemic.py",
     ]
