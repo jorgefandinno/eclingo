@@ -12,7 +12,6 @@ def tests(session):
     tested_files_90 = [
         "src/eclingo/control.py",
         "src/eclingo/solver/tester.py",
-        "src/eclingo/parsing/parser.py",
     ]
     tested_files_80 = [
         "src/eclingo/literals.py",
