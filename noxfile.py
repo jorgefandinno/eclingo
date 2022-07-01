@@ -11,7 +11,6 @@ def typecheck(session):
 def tests(session):
     tested_files_90 = [
         "src/eclingo/control.py",
-        "src/eclingo/solver/tester.py",
     ]
     tested_files_80 = [
         "src/eclingo/literals.py",
