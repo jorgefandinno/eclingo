@@ -17,10 +17,10 @@ class Control(object):
             control.configuration.solve.project = "auto,3"
             control.configuration.solve.models  = 0
             self.control = control
-        else:
-            self.project    = None
-            self.max_models = 1
-            self.control = internal_states.InternalStateControl(['0', '--project'])
+        # else:
+        #     self.project    = None
+        #     self.max_models = 1
+        #     self.control = internal_states.InternalStateControl(['0', '--project'])
         if config is None:
             config = AppConfig()
         self.config = config
