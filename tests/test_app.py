@@ -4,7 +4,7 @@ import os, sys
 import subprocess
 import unittest
 from unittest.mock import patch
-import eclingo
+
 
 from eclingo.main import main as eclingo_main
 
@@ -99,9 +99,9 @@ class TestExamples(unittest.TestCase):
             app_path = os.path.join(path, APP_PATH)
 
             command = ['python', app_path, '0']
-            # self.assert_world_views(command, [input_path], output_path)
-            # self.assert_world_views(command, [input_path], output_path, external_call=False)
             self.assert_world_views(command, [input_path], output_path, external_call=False, use_stdin=True)
+            self.assert_world_views(command, [input_path], output_path, external_call=False)
+            self.assert_world_views(command, [input_path], output_path)
 
 
     def test_eligible_g94(self):
@@ -115,8 +115,8 @@ class TestExamples(unittest.TestCase):
             app_path = os.path.join(path, APP_PATH)
 
             command = ['python', app_path, '0' ]
-            self.assert_world_views(command, [elegible_path, input_path], output_path)
             self.assert_world_views(command, [elegible_path, input_path], output_path, external_call=False)
+            self.assert_world_views(command, [elegible_path, input_path], output_path)
 
 
     def test_yale_g94(self):
@@ -133,5 +133,6 @@ class TestExamples(unittest.TestCase):
 
                 constant = '-c length=%d' % i
                 command = ['python', app_path, constant, '0']
-                self.assert_world_views(command, [yale_path, input_path], output_path)
                 self.assert_world_views(command, [yale_path, input_path], output_path, external_call=False)
+                self.assert_world_views(command, [yale_path, input_path], output_path)
+                

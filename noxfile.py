@@ -11,6 +11,8 @@ def typecheck(session):
 def tests(session):
     omit = [
         "src/eclingo/__main__.py",
+        "tests/*",
+        "helper_test/*"
     ]
     tested_files_90 = [
         "src/eclingo/parsing/transformers/parser_negations.py",

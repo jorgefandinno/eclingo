@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from typing import Union
 from clingo import Symbol
-from clingo.ast import Sign # pylint: disable=import-error
+from clingo.ast import Sign
 
-def sign2str(sign: Union[Sign, bool]):
+def sign2str(sign: Sign):
     literal_sign = ''
     if (sign == Sign.Negation):
         literal_sign = 'not '
@@ -16,13 +16,8 @@ class Literal:
     atom: Symbol
     sign: Sign
 
-    def __init__(self, atom: Symbol, sign: Union[Sign, bool]):
+    def __init__(self, atom: Symbol, sign: Sign):
         self.atom = atom
-        if isinstance(sign, bool):
-            if sign:
-                sign = Sign.NoSign
-            else:
-                sign = Sign.Negation
         self.sign = sign
 
     def __repr__(self):

@@ -1,4 +1,4 @@
-from typing import Callable, Iterable, List, cast
+from typing import Callable, Iterable, List, Sequence, cast
 
 from clingo import ast
 
@@ -45,7 +45,7 @@ class _ProgramParser(object):
     }.
     '''
 
-    def __init__(self, program: str, callback: _CallbackType, parameters: List[str] = [], name: str = "base", semantics = "c19-1"): # pylint: disable=dangerous-default-value
+    def __init__(self, program: str, callback: _CallbackType, parameters: Sequence[str] = (), name: str = "base", semantics = "c19-1"):
         self.initial_location = Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=1))
         self.program  = program
         self.callback = callback
@@ -105,5 +105,5 @@ class _ProgramParser(object):
 
 #######################################################################################################
 
-def parse_program(program: str, callback: _CallbackType, parameters: List[str] = [], name: str = "base", semantics: str="c19-1") -> None: # pylint: disable=dangerous-default-value
+def parse_program(program: str, callback: _CallbackType, parameters: Sequence[str] = (), name: str = "base", semantics: str="c19-1") -> None:
     _ProgramParser(program, callback, parameters, name, semantics)()
