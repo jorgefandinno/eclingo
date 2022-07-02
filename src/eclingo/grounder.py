@@ -1,12 +1,9 @@
 from typing import Dict, Iterable, List, NamedTuple, Sequence, Tuple, Union
 
-import clingo  # type: ignore
 from clingo import Symbol
 
-import clingox
 from clingox import program as clingox_program
 from eclingo.config import AppConfig
-from eclingo.literals import Literal
 
 from eclingo.internal_states.internal_control import InternalStateControl
 from .parsing.parser import parse_program
@@ -24,7 +21,7 @@ class Grounder():
         self.control.register_observer(clingox_program.ProgramObserver(self.ground_program))
 
 
-    def add_program(self, program: str, parameters: List[str] = [], name: str = "base") -> None: # pylint: disable=dangerous-default-value
+    def add_program(self, program: str, parameters: Sequence[str] = (), name: str = "base") -> None:
         with self.control.builder() as builder:
             parse_program(program, builder.add, parameters, name, self.config.eclingo_semantics)
 

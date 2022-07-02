@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, Iterable, Iterator, List, Sequence, Tuple, Union
+from typing import Any, Callable, Iterable, Iterator, Sequence, Tuple, Union
 
 import clingo
 from clingo import MessageCode, Symbol, SymbolicAtom
@@ -15,17 +15,16 @@ import clingox
 from clingox import program as clingox_program
 from clingox.backend import SymbolicBackend
 
-class ASTParsedObject():
-    pass
 
-ASTObject = Union[ASTParsedObject, ast.AST]  # pylint: disable=no-member
 
 
 @dataclass(frozen=True)
-class ShowStatement(ASTParsedObject):
+class ShowStatement():
     name: str
     arity: int
     poistive: bool
+
+ASTObject = Union[ShowStatement, ast.AST]
 
 class ProgramBuilder():
             
@@ -36,11 +35,9 @@ class ProgramBuilder():
         
     def add(self, statement: ASTObject):
         if isinstance(statement, ShowStatement):
-            self.show_signature.add(statement)
-        elif isinstance(statement, ast.AST):
-            return self.bulider.add(statement)
-        else:
-            raise RuntimeError("Non recognised object: " + str(statement))
+            return self.show_signature.add(statement)
+        return self.bulider.add(statement)
+
 
     def __enter__(self):
         self.bulider.__enter__()
@@ -66,9 +63,9 @@ class InternalStateControl(object):
         self.epistemic_to_test_mapping = EpistemicSymbolToTestSymbolMapping()
         self.show_mapping = SymbolToEpistemicLiteralMapping()
         
-    def add_program(self, program: str) -> None:
-        with self.builder() as builder:
-            parse_string(program, builder.add)
+    # def add_program(self, program: str) -> None:
+    #     with self.builder() as builder:
+    #         parse_string(program, builder.add)
 
     def builder(self) -> ProgramBuilder:
         return ProgramBuilder(self.control, self.show_signature)
@@ -113,7 +110,7 @@ class InternalStateControl(object):
 
     def __getattr__(self, attr):
         if attr in self.__dict__:
-            return getattr(self, attr)
+            return getattr(self, attr) # pragma: no cover
         return getattr(self.control, attr)
 
 
@@ -121,7 +118,10 @@ class Application(object):
 
     @abstractmethod
     def main(self, control: InternalStateControl, files: Sequence[str]) -> None:
-        raise NotImplementedError
+        """
+        Function to replace clingo's default main function.
+        This function must be implemented.
+        """
 
 
 class ApplicationWrapper(clingo.Application):
@@ -134,7 +134,7 @@ class ApplicationWrapper(clingo.Application):
 
     def __getattr__(self, attr):
         if attr in self.__dict__:
-            return getattr(self, attr)
+            return getattr(self, attr) # pragma: no cover
         return getattr(self.application, attr)
 
 
