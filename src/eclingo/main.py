@@ -87,6 +87,3 @@ def main():
     application = Application()
     result = internal_control.clingo_main(application, sys.argv[1:])
     return int(result)
-
-if __name__ == '__main__':
-    main()

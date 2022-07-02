@@ -120,4 +120,7 @@ class Test(TestCase):
     def test_parameters02(self):
         self.assert_equal_program(parse_program("a(1..n).", ["n"], "base" ), "#program base(n). u_a(1..n).")
 
+    def test_heuristic(self):
+        self.assert_equal_program(parse_program("#heuristic a. [1,sign]", [], "base" ), "#heuristic u_a. [1,sign]")
+
     

@@ -83,8 +83,7 @@ class WorldWiewBuilderWithShow(WorldWiewBuilder):
             for model in handle:
                 pass
 
-            if model is None:
-                raise RuntimeError("Program is unsatisfiable.")
+            assert model is not None
 
             for symbol in itertools.chain(self._epistemic_show_pos_mapping, self._epistemic_show_neg_mapping):
                 if model.contains(symbol):

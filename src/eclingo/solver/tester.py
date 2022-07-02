@@ -69,8 +69,7 @@ class CandidateTester():
                     if not model.contains(atom):
                         return False
 
-            if model is None:
-                return False
+            assert model is not None
 
             for atom in candidate_neg:
                 if model.contains(atom):
