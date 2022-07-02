@@ -5,7 +5,7 @@ from copy import copy
 from typing import Iterable, List, Set, Tuple, Union, cast
 
 from clingo import ast
-from clingo.ast import Sign
+from clingo.ast import Sign, AST
 
 from eclingo import prefixes
 
@@ -44,8 +44,14 @@ class ApplyToEpistemicAtomsElementsTransformer(Transformer):
 
 ####################################################################################
 
+def _theory_term_to_literal_adapter(element: AST) -> AST:
+    assert len(element.terms) == 1
+    new_element = copy(element)
+    new_element.terms[0] = theory_term_to_literal(element.terms[0])
+    return new_element
+
 def parse_epistemic_literals_elements(rule):
-    return ApplyToEpistemicAtomsElementsTransformer(theory_term_to_literal)(rule)
+    return ApplyToEpistemicAtomsElementsTransformer(_theory_term_to_literal_adapter)(rule)
 
 ####################################################################################
 

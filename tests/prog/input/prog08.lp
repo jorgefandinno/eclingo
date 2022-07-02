@@ -1,1 +1,1 @@
-a(f(b)) :- not &k{ ~a(f(b)) }.
+a(f(b)) :- not &k{ not a(f(b)) }.

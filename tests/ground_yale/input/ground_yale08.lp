@@ -139,38 +139,38 @@ false :- not occurs_4.
 false :- not occurs_5.
 false :- not occurs_6.
 false :- not occurs_7.
-occurs_load_0 :- not &k{~occurs_load_0}.
-occurs_load_1 :- not &k{~occurs_load_1}.
-occurs_load_2 :- not &k{~occurs_load_2}.
-occurs_load_3 :- not &k{~occurs_load_3}.
-occurs_load_4 :- not &k{~occurs_load_4}.
-occurs_load_5 :- not &k{~occurs_load_5}.
-occurs_load_6 :- not &k{~occurs_load_6}.
-occurs_load_7 :- not &k{~occurs_load_7}.
-occurs_fire_0 :- not &k{~occurs_fire_0}.
-occurs_fire_1 :- not &k{~occurs_fire_1}.
-occurs_fire_2 :- not &k{~occurs_fire_2}.
-occurs_fire_3 :- not &k{~occurs_fire_3}.
-occurs_fire_4 :- not &k{~occurs_fire_4}.
-occurs_fire_5 :- not &k{~occurs_fire_5}.
-occurs_fire_6 :- not &k{~occurs_fire_6}.
-occurs_fire_7 :- not &k{~occurs_fire_7}.
-occurs_aim_0 :- not &k{~occurs_aim_0}.
-occurs_aim_1 :- not &k{~occurs_aim_1}.
-occurs_aim_2 :- not &k{~occurs_aim_2}.
-occurs_aim_3 :- not &k{~occurs_aim_3}.
-occurs_aim_4 :- not &k{~occurs_aim_4}.
-occurs_aim_5 :- not &k{~occurs_aim_5}.
-occurs_aim_6 :- not &k{~occurs_aim_6}.
-occurs_aim_7 :- not &k{~occurs_aim_7}.
-occurs_cock_0 :- not &k{~occurs_cock_0}.
-occurs_cock_1 :- not &k{~occurs_cock_1}.
-occurs_cock_2 :- not &k{~occurs_cock_2}.
-occurs_cock_3 :- not &k{~occurs_cock_3}.
-occurs_cock_4 :- not &k{~occurs_cock_4}.
-occurs_cock_5 :- not &k{~occurs_cock_5}.
-occurs_cock_6 :- not &k{~occurs_cock_6}.
-occurs_cock_7 :- not &k{~occurs_cock_7}.
+occurs_load_0 :- not &k{ not occurs_load_0}.
+occurs_load_1 :- not &k{ not occurs_load_1}.
+occurs_load_2 :- not &k{ not occurs_load_2}.
+occurs_load_3 :- not &k{ not occurs_load_3}.
+occurs_load_4 :- not &k{ not occurs_load_4}.
+occurs_load_5 :- not &k{ not occurs_load_5}.
+occurs_load_6 :- not &k{ not occurs_load_6}.
+occurs_load_7 :- not &k{ not occurs_load_7}.
+occurs_fire_0 :- not &k{ not occurs_fire_0}.
+occurs_fire_1 :- not &k{ not occurs_fire_1}.
+occurs_fire_2 :- not &k{ not occurs_fire_2}.
+occurs_fire_3 :- not &k{ not occurs_fire_3}.
+occurs_fire_4 :- not &k{ not occurs_fire_4}.
+occurs_fire_5 :- not &k{ not occurs_fire_5}.
+occurs_fire_6 :- not &k{ not occurs_fire_6}.
+occurs_fire_7 :- not &k{ not occurs_fire_7}.
+occurs_aim_0 :- not &k{ not occurs_aim_0}.
+occurs_aim_1 :- not &k{ not occurs_aim_1}.
+occurs_aim_2 :- not &k{ not occurs_aim_2}.
+occurs_aim_3 :- not &k{ not occurs_aim_3}.
+occurs_aim_4 :- not &k{ not occurs_aim_4}.
+occurs_aim_5 :- not &k{ not occurs_aim_5}.
+occurs_aim_6 :- not &k{ not occurs_aim_6}.
+occurs_aim_7 :- not &k{ not occurs_aim_7}.
+occurs_cock_0 :- not &k{ not occurs_cock_0}.
+occurs_cock_1 :- not &k{ not occurs_cock_1}.
+occurs_cock_2 :- not &k{ not occurs_cock_2}.
+occurs_cock_3 :- not &k{ not occurs_cock_3}.
+occurs_cock_4 :- not &k{ not occurs_cock_4}.
+occurs_cock_5 :- not &k{ not occurs_cock_5}.
+occurs_cock_6 :- not &k{ not occurs_cock_6}.
+occurs_cock_7 :- not &k{ not occurs_cock_7}.
 ggoal :- &k{goal}.
 false :- not ggoal.
 holds_cocked_1 :- occurs_cock_0.

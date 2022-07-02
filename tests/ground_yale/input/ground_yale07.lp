@@ -70,27 +70,27 @@ false :- not occurs_3.
 false :- not occurs_4.
 false :- not occurs_5.
 false :- not occurs_6.
-occurs_load_0 :- not &k{~occurs_load_0}.
-occurs_load_1 :- not &k{~occurs_load_1}.
-occurs_load_2 :- not &k{~occurs_load_2}.
-occurs_load_3 :- not &k{~occurs_load_3}.
-occurs_load_4 :- not &k{~occurs_load_4}.
-occurs_load_5 :- not &k{~occurs_load_5}.
-occurs_load_6 :- not &k{~occurs_load_6}.
-occurs_pull_trigger_0 :- not &k{~occurs_pull_trigger_0}.
-occurs_pull_trigger_1 :- not &k{~occurs_pull_trigger_1}.
-occurs_pull_trigger_2 :- not &k{~occurs_pull_trigger_2}.
-occurs_pull_trigger_3 :- not &k{~occurs_pull_trigger_3}.
-occurs_pull_trigger_4 :- not &k{~occurs_pull_trigger_4}.
-occurs_pull_trigger_5 :- not &k{~occurs_pull_trigger_5}.
-occurs_pull_trigger_6 :- not &k{~occurs_pull_trigger_6}.
-occurs_aim_0 :- not &k{~occurs_aim_0}.
-occurs_aim_1 :- not &k{~occurs_aim_1}.
-occurs_aim_2 :- not &k{~occurs_aim_2}.
-occurs_aim_3 :- not &k{~occurs_aim_3}.
-occurs_aim_4 :- not &k{~occurs_aim_4}.
-occurs_aim_5 :- not &k{~occurs_aim_5}.
-occurs_aim_6 :- not &k{~occurs_aim_6}.
+occurs_load_0 :- not &k{ not occurs_load_0}.
+occurs_load_1 :- not &k{ not occurs_load_1}.
+occurs_load_2 :- not &k{ not occurs_load_2}.
+occurs_load_3 :- not &k{ not occurs_load_3}.
+occurs_load_4 :- not &k{ not occurs_load_4}.
+occurs_load_5 :- not &k{ not occurs_load_5}.
+occurs_load_6 :- not &k{ not occurs_load_6}.
+occurs_pull_trigger_0 :- not &k{ not occurs_pull_trigger_0}.
+occurs_pull_trigger_1 :- not &k{ not occurs_pull_trigger_1}.
+occurs_pull_trigger_2 :- not &k{ not occurs_pull_trigger_2}.
+occurs_pull_trigger_3 :- not &k{ not occurs_pull_trigger_3}.
+occurs_pull_trigger_4 :- not &k{ not occurs_pull_trigger_4}.
+occurs_pull_trigger_5 :- not &k{ not occurs_pull_trigger_5}.
+occurs_pull_trigger_6 :- not &k{ not occurs_pull_trigger_6}.
+occurs_aim_0 :- not &k{ not occurs_aim_0}.
+occurs_aim_1 :- not &k{ not occurs_aim_1}.
+occurs_aim_2 :- not &k{ not occurs_aim_2}.
+occurs_aim_3 :- not &k{ not occurs_aim_3}.
+occurs_aim_4 :- not &k{ not occurs_aim_4}.
+occurs_aim_5 :- not &k{ not occurs_aim_5}.
+occurs_aim_6 :- not &k{ not occurs_aim_6}.
 ggoal :- &k{goal}.
 false :- not ggoal.
 executable_pull_trigger_0.

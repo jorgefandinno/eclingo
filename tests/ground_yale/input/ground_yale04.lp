@@ -21,14 +21,14 @@ false :- not occurs_0.
 false :- not occurs_1.
 false :- not occurs_2.
 false :- not occurs_3.
-occurs_load_0 :- not &k{~occurs_load_0}.
-occurs_load_1 :- not &k{~occurs_load_1}.
-occurs_load_2 :- not &k{~occurs_load_2}.
-occurs_load_3 :- not &k{~occurs_load_3}.
-occurs_pull_trigger_0 :- not &k{~occurs_pull_trigger_0}.
-occurs_pull_trigger_1 :- not &k{~occurs_pull_trigger_1}.
-occurs_pull_trigger_2 :- not &k{~occurs_pull_trigger_2}.
-occurs_pull_trigger_3 :- not &k{~occurs_pull_trigger_3}.
+occurs_load_0 :- not &k{ not occurs_load_0}.
+occurs_load_1 :- not &k{ not occurs_load_1}.
+occurs_load_2 :- not &k{ not occurs_load_2}.
+occurs_load_3 :- not &k{ not occurs_load_3}.
+occurs_pull_trigger_0 :- not &k{ not occurs_pull_trigger_0}.
+occurs_pull_trigger_1 :- not &k{ not occurs_pull_trigger_1}.
+occurs_pull_trigger_2 :- not &k{ not occurs_pull_trigger_2}.
+occurs_pull_trigger_3 :- not &k{ not occurs_pull_trigger_3}.
 ggoal :- &k{goal}.
 false :- not ggoal.
 executable_pull_trigger_0.
