@@ -3,7 +3,7 @@ from eclingo.internal_states.internal_control import ShowStatement
 import unittest
 import clingo
 import clingo.ast as _ast
-from eclingo.parsing.parser import parse_program as _parse_program
+from eclingo.parsing import parser
 
 def flatten(lst):
     result = []
@@ -18,7 +18,7 @@ def flatten(lst):
 
 def parse_program(stm, parameters=[], name="base"):
     ret = []
-    _parse_program(stm, ret.append, parameters, name)
+    parser.parse_program(stm, ret.append, parameters, name)
     return flatten(ret)
 
 def clingo_parse_program(stm):
