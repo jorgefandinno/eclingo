@@ -30,20 +30,15 @@ class StrongNegationToAuxiliarTransformer(Transformer):
 
     
     def visit_UnaryOperation(self, x):
-        if x.operator_type != ast.UnaryOperator.Minus:
-            raise RuntimeError("invalid term: {}".format(x.location))
-        elif x.argument.ast_type != ast.ASTType.Function:
-            raise RuntimeError("invalid term: {}".format(x.location))
-        else:
-            x = simplify_strong_negations(x)
-            name      = x.argument.name
-            location  = x.argument.location
-            aux_name  = self.strong_negation_prefix + "_" + name
-            arguments = x.argument.arguments
-            external  = x.argument.external
-            atom      = ast.Function(location, aux_name, arguments, external)
-            self.replacement.add((name, len(arguments), aux_name))
-            return atom
+        x = simplify_strong_negations(x)
+        name      = x.argument.name
+        location  = x.argument.location
+        aux_name  = self.strong_negation_prefix + "_" + name
+        arguments = x.argument.arguments
+        external  = x.argument.external
+        atom      = ast.Function(location, aux_name, arguments, external)
+        self.replacement.add((name, len(arguments), aux_name))
+        return atom
     
 ####################################################################################
 
@@ -115,13 +110,17 @@ class DefaultNegationsToAuxiliarTransformer(Transformer):
         self.replacement = []
 
     def visit_Literal(self, x):
+        '''
         if x.atom.ast_type == ast.ASTType.BooleanConstant:
             return x
-
+        '''
+        
         atom = self.visit(x.atom)
+        
+        '''
         if atom is x.atom and (x.sign == ast.Sign.NoSign):
             return x
-
+        '''
         new_x = copy(x)
         new_x.atom = atom
 
@@ -133,7 +132,7 @@ class DefaultNegationsToAuxiliarTransformer(Transformer):
         elif new_x.sign == ast.Sign.DoubleNegation:
             sign = self.default_negation_prefix + "2_"
         else:
-            sign = ""
+            pass
        
         location  = atom.symbol.location
         aux_name  = sign + atom.symbol.name
