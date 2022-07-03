@@ -5,6 +5,7 @@ from clingo import ast
 from clingo.ast import Location, Position
 
 from eclingo import prefixes
+from eclingo.config import AppConfig
 from eclingo.internal_states.internal_control import ASTObject, ShowStatement
 
 from .transformers.parser_negations import StrongNegationReplacement
@@ -105,5 +106,5 @@ class _ProgramParser(object):
 
 #######################################################################################################
 
-def parse_program(program: str, callback: _CallbackType, parameters: Sequence[str] = (), name: str = "base", semantics: str="c19-1") -> None:
-    _ProgramParser(program, callback, parameters, name, semantics)()
+def parse_program(program: str, callback: _CallbackType, parameters: Sequence[str] = (), name: str = "base", config: AppConfig = AppConfig(semantics="c19-1")) -> None:
+    _ProgramParser(program, callback, parameters, name, config.eclingo_semantics)()
