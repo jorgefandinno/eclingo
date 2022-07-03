@@ -46,14 +46,14 @@ class _ProgramParser(object):
     }.
     '''
 
-    def __init__(self, program: str, callback: _CallbackType, parameters: Sequence[str] = (), name: str = "base", semantics = "c19-1"):
+    def __init__(self, program: str, callback: _CallbackType, parameters: Sequence[str] = (), name: str = "base", config: AppConfig = AppConfig(semantics="c19-1")):
         self.initial_location = Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=1))
         self.program  = program
         self.callback = callback
         self.parameters = [ast.Id(self.initial_location, x) for x in parameters]
         self.name = name
         self.strong_negation_replacements = StrongNegationReplacement()
-        self.semantics = semantics
+        self.semantics = config.eclingo_semantics
         self.theory_parser = parse_theory(_ProgramParser.eclingo_theory)
 
     def __call__(self) -> None:
@@ -107,4 +107,4 @@ class _ProgramParser(object):
 #######################################################################################################
 
 def parse_program(program: str, callback: _CallbackType, parameters: Sequence[str] = (), name: str = "base", config: AppConfig = AppConfig(semantics="c19-1")) -> None:
-    _ProgramParser(program, callback, parameters, name, config.eclingo_semantics)()
+    _ProgramParser(program, callback, parameters, name, config)()
