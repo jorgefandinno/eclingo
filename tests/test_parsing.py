@@ -1,9 +1,6 @@
-from eclingo import internal_states
-from eclingo.internal_states.internal_control import ShowStatement
 import unittest
-import clingo
-import clingo.ast as _ast
-from eclingo.parsing.parser import parse_program as _parse_program
+from clingo import ast
+from eclingo.parsing import parser
 
 def flatten(lst):
     result = []
@@ -18,12 +15,12 @@ def flatten(lst):
 
 def parse_program(stm, parameters=[], name="base"):
     ret = []
-    _parse_program(stm, ret.append, parameters, name)
+    parser.parse_program(stm, ret.append, parameters, name)
     return flatten(ret)
 
 def clingo_parse_program(stm):
     ret = []
-    _ast.parse_string(stm, ret.append)
+    ast.parse_string(stm, ret.append)
     ret = [str(rule) for rule in ret]
     return ret
 
@@ -36,9 +33,9 @@ class TestCase(unittest.TestCase):
         expected_program = clingo_parse_program(expected)
         if self.print:
             print("--- program ---")
-            print(_ast_repr(program))
+            print(ast_repr(program))
             print("--- expected program ---")
-            print(_ast_repr(expected_program))
+            print(ast_repr(expected_program))
         self.assertListEqual(sorted(program), sorted(expected_program))
 
 class Test(TestCase):

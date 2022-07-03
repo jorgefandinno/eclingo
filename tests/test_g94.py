@@ -1,10 +1,11 @@
+from eclingo.config import AppConfig
 from helper_test.helper_parsing import ParsingTestHelper
 
 class Test(ParsingTestHelper):
 
     def setUp(self) -> None:
         super().setUp()
-        self.eclingo_semantics = "g94"
+        self.config: AppConfig = AppConfig(semantics="g94")
 
     def test_parsing_ground_programs(self):
         self.assert_equal_parsing_program('a :- &k{a}, a.', "u_a :- not not k_u_a, u_a. {k_u_a} :- u_a.")

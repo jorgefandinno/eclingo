@@ -1,4 +1,5 @@
 import clingo.ast as _ast
+from eclingo.config import AppConfig
 
 
 from eclingo.parsing.parser import parse_program as _parse_program
@@ -21,11 +22,11 @@ class ParsingTestHelper(helper.TestHelper):
 
     def setUp(self):
         super().setUp()
-        self.eclingo_semantics = "c19-1"
+        self.config: AppConfig = AppConfig(semantics="c19-1")
 
     def parse_program(self, stm, parameters=(), name="base"):
         ret = []
-        _parse_program(stm, ret.append, parameters, name, semantics=self.eclingo_semantics)
+        _parse_program(stm, ret.append, parameters, name, config=self.config)
         return _flatten(ret)
 
     def clingo_parse_program(self, stm):
@@ -39,15 +40,6 @@ class ParsingTestHelper(helper.TestHelper):
 
     def __assert_equal_parsing_program(self, parsed_program, expected_program):
         expected_program = self.clingo_parse_program(expected_program)
-        if self.printing:
-            print("--- program ---")
-            print(parsed_program)
-            if self.printing_ast_repr:
-                print(_ast_repr(parsed_program))
-            print("--- expected program ---")
-            if self.printing_ast_repr:
-                print(expected_program)
-                print(_ast_repr(expected_program))
         self.assert_equal_ordered(parsed_program, expected_program)
 
     def assert_equal_parsing_program_with_show(self, program, expected_program, expected_show):
