@@ -160,29 +160,6 @@ def replace_negations_by_auxiliary_atoms_in_epistemic_literals(stm: ast.AST, use
 
 ASTsType = Union[ast.AST, Iterable[ast.AST]]
 
-'''
-def replace_negations_by_auxiliary_atoms_in_epistemic_literals(stms: ASTsType, user_prefix: str ="u") -> Tuple[List[ast.AST], SnReplacementType]:
-    """
-    Replaces strong and default negations by an auxiliary atom inside epistemic literals of the rule.
-
-    user_prefix is preapend to the name of all symbols to avoid collisions with the axiliary atoms.
-
-    Returns a triple:
-    - the first element is the result of such replacement
-    - the second element is a list of rules relating the auxiliary atoms used to replace default negation with their original literals
-    - the third element contains the infomration about the replacements corresponding to strong negation
-    """
-    if isinstance(stms, ast.AST):
-        return _replace_negations_by_auxiliary_atoms_in_epistemic_literals(stms, user_prefix)
-    
-    rules = []
-    replacement = set()
-    for stm in cast(Iterable[ast.AST],stms):
-        (new_rules, new_replacement) = _replace_negations_by_auxiliary_atoms_in_epistemic_literals(stm, user_prefix)
-        rules.extend(new_rules)
-        replacement.update(new_replacement)
-    return (rules, replacement)
-'''  
 ####################################################################################
 
 def ensure_literal(stm):
