@@ -20,7 +20,7 @@ goal :- -holds(alive,length), not imposs.
 imposs :- occurs(A,S), not executable(A,S).
 :- not &k{goal}.
 
-occurs(A,S) :- not &k{ ~ occurs(A,S) }, stepless(S), action(A).
+occurs(A,S) :- not &k{ not occurs(A,S) }, stepless(S), action(A).
 
 occurs(S) :- &k{occurs(A,S)}, action(A), stepless(S).
 :- not occurs(S), stepless(S).

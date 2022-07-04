@@ -26,7 +26,7 @@ def tests(session):
        
     ]
     tested_files_60 = [
-        "src/eclingo/parsing/transformers/theory_parser_literals.py",
+
     ]
     # args = session.posargs or ["--cov"]
     # session.run("poetry", "install", external=True)

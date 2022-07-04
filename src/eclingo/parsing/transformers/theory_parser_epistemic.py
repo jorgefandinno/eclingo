@@ -5,7 +5,7 @@ from copy import copy
 from typing import Iterable, List, Set, Tuple, Union, cast
 
 from clingo import ast
-from clingo.ast import Sign
+from clingo.ast import Sign, AST
 
 from eclingo import prefixes
 
@@ -13,11 +13,10 @@ from .parser_negations import (NotReplacementType, SnReplacementType,
                                default_negation_auxiliary_rule_replacement,
                                make_default_negation_auxiliar,
                                make_strong_negations_auxiliar)
-from .theory_parser_literals import theory_term_to_literal
 
 from clingo.ast import Transformer, ASTSequence
 from clingox.ast import prefix_symbolic_atoms
-#from clingox.ast import theory_term_to_literal
+from clingox.ast import theory_term_to_literal
 ####################################################################################
 
 # pylint: disable=unused-argument
@@ -44,8 +43,14 @@ class ApplyToEpistemicAtomsElementsTransformer(Transformer):
 
 ####################################################################################
 
+def _theory_term_to_literal_adapter(element: AST) -> AST:
+    assert len(element.terms) == 1
+    new_element = copy(element)
+    new_element.terms[0] = theory_term_to_literal(element.terms[0])
+    return new_element
+
 def parse_epistemic_literals_elements(rule):
-    return ApplyToEpistemicAtomsElementsTransformer(theory_term_to_literal)(rule)
+    return ApplyToEpistemicAtomsElementsTransformer(_theory_term_to_literal_adapter)(rule)
 
 ####################################################################################
 
@@ -86,7 +91,6 @@ def make_default_negation_auxiliar_in_epistemic_literals(stm: Iterable[ast.AST])
 
 ####################################################################################
 
-
 class TheoryBuildGuard(Transformer):
 
     def __init__(self):
@@ -117,7 +121,6 @@ def build_guard(body):
 
 ####################################################################################
 
-
 class EpistemicLiteralNegationsToAuxiliarTransformer(Transformer):
 
     def __init__(self, user_prefix="u"):
@@ -139,7 +142,7 @@ class EpistemicLiteralNegationsToAuxiliarTransformer(Transformer):
 ####################################################################################
 
 
-def _replace_negations_by_auxiliary_atoms_in_epistemic_literals(stm: ast.AST, user_prefix: str ="u") -> Tuple[List[ast.AST], SnReplacementType]:
+def replace_negations_by_auxiliary_atoms_in_epistemic_literals(stm: ast.AST, user_prefix: str ="u") -> Tuple[List[ast.AST], SnReplacementType]:
     """
     Replaces strong and default negations by an auxiliary atom inside epistemic literals of the rule.
 
@@ -155,53 +158,12 @@ def _replace_negations_by_auxiliary_atoms_in_epistemic_literals(stm: ast.AST, us
     return ([rule] + trn.aux_rules, trn.sn_replacement)
 
 
-ASTsType = Union[ast.AST, Iterable[ast.AST]]
-
-def replace_negations_by_auxiliary_atoms_in_epistemic_literals(stms: ASTsType, user_prefix: str ="u") -> Tuple[List[ast.AST], SnReplacementType]:
-    """
-    Replaces strong and default negations by an auxiliary atom inside epistemic literals of the rule.
-
-    user_prefix is preapend to the name of all symbols to avoid collisions with the axiliary atoms.
-
-    Returns a triple:
-    - the first element is the result of such replacement
-    - the second element is a list of rules relating the auxiliary atoms used to replace default negation with their original literals
-    - the third element contains the infomration about the replacements corresponding to strong negation
-    """
-    if isinstance(stms, ast.AST):
-        return _replace_negations_by_auxiliary_atoms_in_epistemic_literals(stms, user_prefix)
-    else:
-        rules = []
-        replacement = set()
-        for stm in cast(Iterable[ast.AST],stms):
-            (new_rules, new_replacement) = _replace_negations_by_auxiliary_atoms_in_epistemic_literals(stm, user_prefix)
-            rules.extend(new_rules)
-            replacement.update(new_replacement)
-        return (rules, replacement)
-
-####################################################################################
-
-
-def parse_epistemic_literals_negations(stm: ast.AST, user_prefix: str ="u") -> Tuple[List[ast.AST], SnReplacementType]:
-    """
-    Parses epistemic literals and replaces negations by an auxiliary atom inside them.
-    The result is an epistemic logic program where all literals inside of epistemic literals are positive.
-
-    user_prefix is preapend to the name of all symbols to avoid collisions with the axiliary atoms.
-
-    Returns a triple:
-    - the first element is the result of such replacement
-    - the second element is a list of rules relating the auxiliary atoms used to replace default negation with their original literals
-    - the third element contains the infomration about the replacements corresponding to strong negation
-    """
-    # stm = parse_epistemic_literals_elements(stm)
-    return replace_negations_by_auxiliary_atoms_in_epistemic_literals(stm, user_prefix)
 
 ####################################################################################
 
 def ensure_literal(stm):
-    if stm.ast_type == ast.ASTType.SymbolicTerm or stm.ast_type == ast.ASTType.Function:
-        stm = ast.SymbolicAtom(stm)
+    assert stm.ast_type != ast.ASTType.SymbolicTerm
+    assert stm.ast_type != ast.ASTType.Function
     if stm.ast_type == ast.ASTType.SymbolicAtom:
         stm = ast.Literal(stm.symbol.location, ast.Sign.NoSign, stm)
     return stm
@@ -231,17 +193,14 @@ class EClingoTransformer(Transformer):
                 aux_rule_head       = ast.Aggregate(x.location, None, [conditional_literal], None)
                 aux_rule            = ast.Rule(x.location, aux_rule_head, [nested_literal])
                 self.aux_rules.append(aux_rule)
-
         return x
 
     def visit_TheoryAtom(self, atom, loc="body"):
-        if atom.term.name == "k" and not atom.term.arguments:
-            nested_literal = atom.elements[0].terms[0]
-            aux_atom = prefix_symbolic_atoms(nested_literal.atom, prefixes.EPISTEMIC_PREFIX)
-            self.epistemic_replacements.append((nested_literal, aux_atom))
-            return aux_atom
-        return atom
-
+        assert atom.term.name == "k" and not atom.term.arguments
+        nested_literal = atom.elements[0].terms[0]
+        aux_atom = prefix_symbolic_atoms(nested_literal.atom, prefixes.EPISTEMIC_PREFIX)
+        self.epistemic_replacements.append((nested_literal, aux_atom))
+        return aux_atom
 
 def _replace_epistemic_literals_by_auxiliary_atoms(stm: ast.AST, k_prefix: str = "k") -> List[ast.AST]:
     trans = EClingoTransformer(k_prefix)
@@ -249,14 +208,11 @@ def _replace_epistemic_literals_by_auxiliary_atoms(stm: ast.AST, k_prefix: str =
     rules = [rule] + trans.aux_rules
     return rules
 
-def replace_epistemic_literals_by_auxiliary_atoms(stms: ASTsType, k_prefix: str = "k") -> List[ast.AST]:
-    if isinstance(stms, ast.AST):
-        return _replace_epistemic_literals_by_auxiliary_atoms(stms, k_prefix)
-    else:
-        rules = []
-        for stm in cast(Iterable[ast.AST],stms):
-            rules.extend(_replace_epistemic_literals_by_auxiliary_atoms(stm, k_prefix))
-        return rules
+def replace_epistemic_literals_by_auxiliary_atoms(stms: Iterable[ast.AST], k_prefix: str = "k") -> List[ast.AST]:
+    rules = []
+    for stm in stms:
+        rules.extend(_replace_epistemic_literals_by_auxiliary_atoms(stm, k_prefix))
+    return rules
 
 
 ####################################################################################
@@ -277,8 +233,7 @@ class G94Transformer(Transformer):
                 Sign.DoubleNegation,
                 stm.atom
             )
-        else:
-            return stm
+        return stm
 
 def double_negate_epistemic_listerals(stm):
     transformer = G94Transformer()

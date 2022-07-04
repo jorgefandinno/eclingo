@@ -5,8 +5,8 @@ false :- &k{occurs_load_0}, &k{occurs_pull_trigger_0}.
 occurs_0 :- &k{occurs_load_0}.
 occurs_0 :- &k{occurs_pull_trigger_0}.
 false :- not occurs_0.
-occurs_load_0 :- not &k{~occurs_load_0}.
-occurs_pull_trigger_0 :- not &k{~occurs_pull_trigger_0}.
+occurs_load_0 :- not &k{ not occurs_load_0}.
+occurs_pull_trigger_0 :- not &k{ not occurs_pull_trigger_0}.
 ggoal :- &k{goal}.
 false :- not ggoal.
 executable_pull_trigger_0.
