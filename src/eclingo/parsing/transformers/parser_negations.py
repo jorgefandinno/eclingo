@@ -30,6 +30,8 @@ class StrongNegationToAuxiliarTransformer(Transformer):
 
     
     def visit_UnaryOperation(self, x):
+        assert x.operator_type == ast.UnaryOperator.Minus
+        assert x.argument.ast_type == ast.ASTType.Function
         x = simplify_strong_negations(x)
         name      = x.argument.name
         location  = x.argument.location
@@ -110,34 +112,20 @@ class DefaultNegationsToAuxiliarTransformer(Transformer):
         self.replacement = []
 
     def visit_Literal(self, x):
-        '''
-        if x.atom.ast_type == ast.ASTType.BooleanConstant:
-            return x
-        '''
+        assert x.atom.ast_type != ast.ASTType.BooleanConstant
         
-        atom = self.visit(x.atom)
-        
-        '''
-        if atom is x.atom and (x.sign == ast.Sign.NoSign):
+        if x.sign == ast.Sign.NoSign:
             return x
-        '''
-        new_x = copy(x)
-        new_x.atom = atom
 
-        if new_x.sign == ast.Sign.NoSign:
-            return new_x
-
-        if new_x.sign == ast.Sign.Negation:
+        if x.sign == ast.Sign.Negation:
             sign = self.default_negation_prefix + "_"
-        elif new_x.sign == ast.Sign.DoubleNegation:
+        elif x.sign == ast.Sign.DoubleNegation:
             sign = self.default_negation_prefix + "2_"
-        else:
-            pass
        
-        location  = atom.symbol.location
-        aux_name  = sign + atom.symbol.name
-        arguments = atom.symbol.arguments
-        external  = atom.symbol.external
+        location  = x.atom.symbol.location
+        aux_name  = sign + x.atom.symbol.name
+        arguments = x.atom.symbol.arguments
+        external  = x.atom.symbol.external
         aux_atom  = ast.Function(location, aux_name, arguments, external)
         aux_atom  = ast.SymbolicAtom(aux_atom)
         new_x     = ast.Literal(location, ast.Sign.NoSign, aux_atom)
