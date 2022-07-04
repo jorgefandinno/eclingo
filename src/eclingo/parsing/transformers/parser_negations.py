@@ -116,7 +116,6 @@ class DefaultNegationsToAuxiliarTransformer(Transformer):
         
         if x.sign == ast.Sign.NoSign:
             return x
-
         if x.sign == ast.Sign.Negation:
             sign = self.default_negation_prefix + "_"
         elif x.sign == ast.Sign.DoubleNegation:
