@@ -17,7 +17,7 @@ from .transformers.theory_parser_epistemic import replace_negations_by_auxiliary
 _CallbackType = Callable[[ASTObject], None]
 
 from clingo.ast import ASTType, Location, Position,  parse_string
-from clingox.ast import TheoryParser, theory_parser_from_definition, prefix_symbolic_atoms
+from clingox.ast import TheoryParser, theory_parser_from_definition, prefix_symbolic_atoms, reify_symbolic_atoms
 
 
 def parse_theory(s: str) -> TheoryParser:
@@ -54,8 +54,9 @@ class _ProgramParser(object):
         self.name = name
         self.strong_negation_replacements = StrongNegationReplacement()
         self.semantics = config.eclingo_semantics
+        self.reification = config.eclingo_reification
         self.theory_parser = parse_theory(_ProgramParser.eclingo_theory)
-
+        
     def __call__(self) -> None:
         ast.parse_string(self.program, self._parse_statement)
         for aux_rule in self.strong_negation_replacements.get_auxiliary_rules():
@@ -64,7 +65,12 @@ class _ProgramParser(object):
     def _parse_statement(self, statement: ast.AST) -> None:
         statement = self.theory_parser(statement)
         statement = parse_epistemic_literals_elements(statement)
-        statement = prefix_symbolic_atoms(statement, prefixes.U_PREFIX)
+        
+        if self.reification:
+            statement = reify_symbolic_atoms(statement, "u")
+        else:
+            statement = prefix_symbolic_atoms(statement, prefixes.U_PREFIX)
+    
         # this avoids collitions between user predicates and auxiliary predicates
         if statement.ast_type == ast.ASTType.Rule:
             for rule in self._parse_rule(statement):
@@ -79,7 +85,6 @@ class _ProgramParser(object):
             raise RuntimeError('syntax error: only show statements of the form "#show atom/n." are allowed.')
         else:
             self.callback(statement)
-
 
     def _parse_rule(self, rule: ast.AST) -> Iterable[ast.AST]:
         if self.semantics == "g94":
@@ -107,4 +112,7 @@ class _ProgramParser(object):
 #######################################################################################################
 
 def parse_program(program: str, callback: _CallbackType, parameters: Sequence[str] = (), name: str = "base", config: AppConfig = AppConfig(semantics="c19-1")) -> None:
+    _ProgramParser(program, callback, parameters, name, config)()
+    
+def reify_parse_program(program: str, callback: _CallbackType, parameters: Sequence[str] = (), name: str = "base", config: AppConfig = AppConfig(semantics="c19-1", verbose=0, use_reification=True)) -> None:
     _ProgramParser(program, callback, parameters, name, config)()
