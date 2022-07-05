@@ -9,14 +9,8 @@ NOT2_PREFIX = "not2_"
 SN_PREFIX   = "sn_"
 U_PREFIX    = "u_"
 
-<<<<<<< HEAD
-def atom_user_name(name: str, *, positive: bool = True) -> str:
-    name = "u_" + name
-    return name
-=======
 def atom_user_name(name: str) -> str:
     return "u_" + name
->>>>>>> 3be432048dc6e8544a3783e1aa7bd98f2f165c02
     
 def atom_not_name(name: str) -> str:
     return "not_" + name
@@ -26,18 +20,12 @@ def not_symbol(symbol: Symbol) -> Symbol:
     return Function(name, symbol.arguments, positive=True)
 
 def original_user_symbol(symbol: Symbol) -> Symbol:
-<<<<<<< HEAD
-=======
     assert symbol.name.startswith(U_PREFIX)
->>>>>>> 3be432048dc6e8544a3783e1aa7bd98f2f165c02
     name = symbol.name[len(U_PREFIX):]
     return Function(name, symbol.arguments, symbol.positive)
 
 def symbol_to_epistemic_literal(symbol: Symbol) -> EpistemicLiteral:
-<<<<<<< HEAD
-=======
     assert symbol.name.startswith(EPISTEMIC_PREFIX)
->>>>>>> 3be432048dc6e8544a3783e1aa7bd98f2f165c02
     name = symbol.name[len(EPISTEMIC_PREFIX):]
     
     # if symbol is of the form &k{not L} with L an explicit literal
