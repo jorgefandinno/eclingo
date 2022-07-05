@@ -86,8 +86,8 @@ def make_default_negation_auxiliar_in_epistemic_literals(stm: Iterable[ast.AST])
       * the first element is the auxiliary literal replacing the negated literal
       * the second element is the original literal replaced
     """
-    replacement: List[ast.AST] = []
-    trn = ApplyToEpistemicAtomsElementsTransformer(make_default_negation_auxiliar, replacement.extend)
+    replacement: Set[ast.AST] = set()
+    trn = ApplyToEpistemicAtomsElementsTransformer(make_default_negation_auxiliar, lambda x: replacement.add(x) if x is not None else None)
     stm = trn.visit_sequence(cast(ASTSequence,stm))
     return (stm, replacement)
 

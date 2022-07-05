@@ -106,14 +106,10 @@ def make_strong_negations_auxiliar(stm: ast.AST) -> Tuple[ast.AST, SnReplacement
 
 ####################################################################################
 
-def _make_default_negation_auxiliar(stm: ast.AST, default_negation_prefix="not") -> Tuple[ast.AST, Optional[ast.AST]]:
+def _make_default_negation_auxiliar(stm: ast.AST, default_negation_prefix="not") -> ast.AST:
     assert stm.ast_type == ast.ASTType.Literal
-    assert stm.atom.ast_type == ast.ASTType.SymbolicAtom
-    # this may be useful for accepting #true and #false
-    # if stm.atom.ast_type != ast.ASTType.SymbolicAtom:
-    #     return (stm, None)
 
-    if stm.sign == ast.Sign.NoSign:
+    if stm.sign == ast.Sign.NoSign or stm.atom.ast_type != ast.ASTType.SymbolicAtom:
         return stm
     if stm.sign == ast.Sign.Negation:
         sign = default_negation_prefix + "_"
@@ -131,7 +127,7 @@ def _make_default_negation_auxiliar(stm: ast.AST, default_negation_prefix="not")
     return new_stm
 
 
-NotReplacementType = Iterable[Tuple[ast.AST,ast.AST]]
+NotReplacementType = Optional[Tuple[ast.AST,ast.AST]]
 
 def make_default_negation_auxiliar(stm: ast.AST) -> Tuple[ast.AST, NotReplacementType]:
     """
@@ -144,14 +140,14 @@ def make_default_negation_auxiliar(stm: ast.AST) -> Tuple[ast.AST, NotReplacemen
     """
     assert stm.ast_type == ast.ASTType.TheoryAtomElement
     assert len(stm.terms) == 1
-    replacment: Set[Tuple[ast.AST,ast.AST]] = set()
     new_stm = copy(stm)
     lit = new_stm.terms[0]
     new_lit = _make_default_negation_auxiliar(lit)
-    if new_lit is not lit:
-        new_stm.terms[0] = new_lit
-        replacment.add((lit, new_lit))
-    return (new_stm, replacment)
+    if new_lit is lit:
+        return (new_stm, None)
+    new_stm.terms[0] = new_lit
+    return (new_stm, (lit, new_lit))
+    
 
 def default_negation_auxiliary_rule(location, aux_literal: ast.AST, original_literal: ast.AST, gard: List[ast.AST]) -> ast.AST:
     """
