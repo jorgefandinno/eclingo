@@ -24,7 +24,6 @@ def original_user_symbol(symbol: Symbol) -> Symbol:
     name = symbol.name[len(U_PREFIX):]
     return Function(name, symbol.arguments, symbol.positive)
 
-
 def symbol_to_epistemic_literal(symbol: Symbol) -> EpistemicLiteral:
     name = symbol.name[len(EPISTEMIC_PREFIX):]
     
