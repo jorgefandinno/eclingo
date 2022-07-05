@@ -36,14 +36,13 @@ class TestCase(unittest.TestCase):
 
     def assert_equal_program(self, program, expected):
         expected_program = clingo_parse_program(expected)
-        if self.print:
-            print("--- program ---")
-            print(ast_repr(program))
-            print("--- expected program ---")
-            print(ast_repr(expected_program))
         self.assertListEqual(sorted(program), sorted(expected_program))
 
 class Test(TestCase):
+
+    def test_non_epistemic_rules(self):
+        self.assert_equal_program(reify_parse_program("a :- b, c, not d, not not e."), "u(a) :- u(b), u(c), not u(d), not not u(e).")
+        self.assert_equal_program(reify_parse_program("-a :- b, -c, not -d, not not -e."), "u(-a) :- u(b), u(-c), not u(-d), not not u(-e).")
 
     def test_epistemic_atom(self):
         self.assert_equal_program(reify_parse_program(":- &k{a}."), ":- k_u(a). {k_u(a)} :- u(a).")
