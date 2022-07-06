@@ -58,7 +58,7 @@ class Test(TestCase):
         self.assert_equal_program(reify_parse_program(":- &k{ not not a}."), ":- k_not2_u(a). not2_u(a) :- not not u(a). {k_not2_u(a)} :- not2_u(a).")
 
     def test_epistemic_atom_with_both_negations(self):
-        #self.assert_equal_program(reify_parse_program(":- &k{ not -a}."), ":- k_not_sn_u(a). not_sn_u(a) :- not sn_u(a). {k_not_sn_u(a)} :- not_sn_u(a). sn_u(a) :- -u(a).")
+        # self.assert_equal_program(reify_parse_program(":- &k{ not -a}."), ":- k_not_sn_u(a). not_sn_u(a) :- not sn_u(a). {k_not_sn_u(a)} :- not_sn_u(a). sn_u(a) :- -u(a).")
         self.assert_equal_program(parse_program(":- &k{ not not -a}."), ":- k_not2_sn_u_a. not2_sn_u_a :- not not sn_u_a.  {k_not2_sn_u_a} :- not2_sn_u_a. sn_u_a :- -u_a.")
 
 # Changed above
