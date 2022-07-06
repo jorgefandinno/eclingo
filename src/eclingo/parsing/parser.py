@@ -67,7 +67,7 @@ class _ProgramParser(object):
         statement = parse_epistemic_literals_elements(statement)
         
         if self.reification:
-            statement = reify_symbolic_atoms(statement, "u", reify_strong_negation=True)
+            statement = reify_symbolic_atoms(statement, prefixes.U_NAME, reify_strong_negation=True)
         else:
             statement = prefix_symbolic_atoms(statement, prefixes.U_PREFIX)
     

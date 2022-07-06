@@ -7,13 +7,15 @@ EPISTEMIC_PREFIX = "k_"
 NOT_PREFIX  = "not_"
 NOT2_PREFIX = "not2_"
 SN_PREFIX   = "sn_"
-U_PREFIX    = "u_"
+U_NAME = "u"
+U_PREFIX    = U_NAME + "_"
+
 
 def atom_user_name(name: str) -> str:
-    return "u_" + name
+    return U_PREFIX + name
     
 def atom_not_name(name: str) -> str:
-    return "not_" + name
+    return NOT_PREFIX + name
 
 def not_symbol(symbol: Symbol) -> Symbol:
     name = atom_not_name(symbol.name)
