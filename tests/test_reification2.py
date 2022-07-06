@@ -1,7 +1,7 @@
 # To be merged with test_reification.py later
 # Let us keep it as a separated file until finishing with the current patch
 
-from unittest import TestCase
+from .ast_tester import ASTTestCase
 from typing import cast
 from clingo import ast
 from clingo.ast import AST
@@ -34,7 +34,7 @@ if 'unittest.util' in __import__('sys').modules:
     # Show full diff in self.assertEqual.
     __import__('sys').modules['unittest.util']._MAX_LENGTH = 999999999
 
-class Test(TestCase):
+class Test(ASTTestCase):
 
 
     def assert_symbolic_literal_to_term(self, lit: str, term: str):
