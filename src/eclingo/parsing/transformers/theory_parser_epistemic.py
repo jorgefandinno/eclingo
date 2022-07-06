@@ -18,7 +18,7 @@ from clingo.ast import Transformer, ASTSequence
 from clingox.ast import (
     prefix_symbolic_atoms,
     theory_term_to_literal, 
-    filter_body_elements,
+    filter_body_literals,
 )
 ####################################################################################
 
@@ -95,7 +95,7 @@ def make_default_negation_auxiliar_in_epistemic_literals(stm: Iterable[ast.AST])
 ####################################################################################
 
 def build_guard(body):
-    return list(filter_body_elements(
+    return list(filter_body_literals(
         body,
         theory_atom_predicate = lambda x : x.elements[0].terms[0].sign == Sign.NoSign,
     ))
