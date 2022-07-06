@@ -113,6 +113,4 @@ class _ProgramParser(object):
 
 def parse_program(program: str, callback: _CallbackType, parameters: Sequence[str] = (), name: str = "base", config: AppConfig = AppConfig(semantics="c19-1")) -> None:
     _ProgramParser(program, callback, parameters, name, config)()
-    
-def reify_parse_program(program: str, callback: _CallbackType, parameters: Sequence[str] = (), name: str = "base", config: AppConfig = AppConfig(semantics="c19-1", verbose=0, use_reification=True)) -> None:
-    _ProgramParser(program, callback, parameters, name, config)()
+
