@@ -36,8 +36,9 @@ if 'unittest.util' in __import__('sys').modules:
 
 class Test(ASTTestCase):
 
+
     def assert_symbolic_literal_to_term(self, lit: str, term: str):
-        parsed_lit = parse_literal(lit) # Example working in a(b)
+        parsed_lit = parse_literal(lit)
         parsed_term = parse_term(term)
         result = ast_reify.symbolic_literal_to_term(parsed_lit)
         self.maxDiff = None
