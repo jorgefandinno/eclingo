@@ -6,27 +6,47 @@ from clingo.ast import (
     AST,
     ASTType,
 )
+from typing import List
 
-#print(x.atom.symbol.arguments[0]) # Will give me the arguments to construct the args
-#print(x.sign) # will give me what kind of sign 
 def symbolic_literal_to_term(x: AST) -> AST:
-    assert x.ast_type == ASTType.Literal and x.atom.ast_type == ASTType.SymbolicAtom
     symbol = x.atom.symbol
+    sign_name = refine_name(x.sign) # Returns not1, not2 or '' (empty str)
 
     # Create List of arguments 
     arg_list = []
     for i in range(len(symbol.arguments)):
         arg_list.append((symbol.arguments[i]))
+    
+    # Create args list (Symbolic terms from the arguments list)
+    args: List[AST] = []
+    if sign_name == 'not1' or sign_name == 'not2': # Base Case -> Negation
+    
+        for t in range(len(arg_list)): # Get all Symbolic term arguments
+            arg = ast.SymbolicTerm(x.location, clingo.Function(str(arg_list[t]), [], True))
+            args.append(arg)
+
+        if not arg_list: # Base Case 1. No Symbolic term arguments, then literal becomes only argument to not1/2 negation.
+            lit_fun = [ast.SymbolicTerm(x.location, clingo.Function(symbol.name, [], True))]
+        else:            # Base Case 2. Make Symbolic Term args the arguments of Literal. Then not1/2 becomes name of that literal.
+            lit_fun = [ast.Function(x.location, symbol.name, args, False)]
+            
+    elif not arg_list:  # No arguments and no negation case -> Return basic Symbolic Term
+        return ast.SymbolicTerm(x.location, clingo.Function(symbol.name, [], True))
+    
+    else:               # Arguments and no negation -> 
+        for t in range(len(arg_list)): # Get all Symbolic term arguments and make symbol.name of literal the name of the returning Function
+            arg = ast.SymbolicTerm(x.location, clingo.Function(str(arg_list[t]), [], True))
+            args.append(arg)
+        lit_fun = args
+        sign_name = symbol.name
         
-    name = refine_name(x.sign, x.atom)
+    return ast.Function(x.location, sign_name, lit_fun, False)
 
-    return ast.Function(x.location, name, arg_list, False)
-
-def refine_name(sign, stm) -> str:
+# Helper Function to refine Negation names
+def refine_name(sign) -> str:
+    name = ''
     if (sign == Sign.Negation):
         name = 'not1'
-        return str(reify_symbolic_atoms(stm, name, reify_strong_negation=True))
     elif (sign == Sign.DoubleNegation):
         name = 'not2'
-        return str(reify_symbolic_atoms(stm, name, reify_strong_negation=True))
-    return stm.symbol.name
+    return name
