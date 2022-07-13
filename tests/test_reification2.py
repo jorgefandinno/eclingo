@@ -43,8 +43,6 @@ class Test(ASTTestCase):
         self.assertEqual(result, parsed_term)
 
     def test_symbolic_literal_to_term(self):
-        #self.assert_symbolic_literal_to_term("-a(b,c)","-a(b,c)")
-        
         self.assert_symbolic_literal_to_term("a(b)","a(b)")
         self.assert_symbolic_literal_to_term("a","a")
         self.assert_symbolic_literal_to_term("not a","not1(a)")
@@ -53,8 +51,10 @@ class Test(ASTTestCase):
         self.assert_symbolic_literal_to_term("a(b,c)","a(b,c)")
         self.assert_symbolic_literal_to_term("not a(b,c)","not1(a(b,c))")
         self.assert_symbolic_literal_to_term("not not a(b,c)","not2(a(b,c))")
-        '''
+        
+        self.assert_symbolic_literal_to_term("-a","-a")
+        self.assert_symbolic_literal_to_term("-a(b,c)","-a(b,c)")
         self.assert_symbolic_literal_to_term("not -a(b,c)","not1(-a(b,c))")
         self.assert_symbolic_literal_to_term("not not -a(b,c)","not2(-a(b,c))")
-        '''
+        
 
