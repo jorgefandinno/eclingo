@@ -74,8 +74,9 @@ class Test(ASTTestCase):
         self.assert_symbolic_literal_to_term("a(b(X),c,Y)", "a(b(X),c,Y)")
         self.assert_symbolic_literal_to_term("not a(b(X),c,Y)", "not1(a(b(X),c,Y))")
         self.assert_symbolic_literal_to_term("not not a(b(X),c,Y)", "not2(a(b(X),c,Y))")
-
         
+        self.assert_symbolic_literal_to_term("a(b(t(X)),c,Y)", "a(b(t(X)),c,Y)")
+
         self.assert_symbolic_literal_to_term("-a(X)", "-a(X)")
         self.assert_symbolic_literal_to_term("-a(b(X),c,Y)", "-a(b(X),c,Y)")
         self.assert_symbolic_literal_to_term("not -a(b(X),c,Y)", "not1(-a(b(X),c,Y))")
