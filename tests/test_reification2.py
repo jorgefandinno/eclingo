@@ -56,6 +56,7 @@ class Test(ASTTestCase):
         self.assert_symbolic_literal_to_term("not not a", "not2(a)")
 
         self.assert_symbolic_literal_to_term("a(b,c)", "a(b,c)")
+        self.assert_symbolic_literal_to_term("a(b(x),y)", "a(b(x),y)")
         self.assert_symbolic_literal_to_term("not a(b,c)", "not1(a(b,c))")
         self.assert_symbolic_literal_to_term("not not a(b,c)", "not2(a(b,c))")
 
