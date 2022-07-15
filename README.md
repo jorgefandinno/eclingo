@@ -104,9 +104,12 @@ conda activate eclingo
 ```
 
 Test your installation
+```bash
+python -m pip install nox
+nox
 ```
-pytest
-```
+Note that `nox -r` can be used to speed up subsequent runs. It avoids
+recreating virtual environments.
 <!-- mypy eclingo -->
 
 To contribute create a new branch
@@ -115,15 +118,41 @@ git checkout -b <your_name>/<branch>
 ```
 where ```<your_name>``` is to be replaced by your name and ```<branch>``` should be the name of the branch you are creating.
 
-Once you have made the contributions, test that everythink works correctly, commit and push the changes to your branch in the repository.
+Once you have made the contributions, test that everythink works correctly. 
+We auto format code using [black]. We provide a [pre-commit][pre]
+config to automate this process. It can be set up using the following commands:
+
+```bash
+python -m pip install pre-commit
+pre-commit install
 ```
-pytest
+
+This blackens the source code whenever `git commit` is used.
+
+There is also a format session for nox. It can be run as follows:
+
+```bash
+nox -rs format
+nox -rs format -- --check --diff clingox
+```
+
+The latter command can be used to inspect changes before applying them.
+
+
+Finally, test, commit and push the changes to your branch in the repository.
+```
+nox -r
 git commit -am"<comment>"
 git push
 ```
 where `<comment>` should state the changes made. If comments are too long to state in one line, you can use ```git commit``` and write them in the editor.
 
 Create a pull request in github.
+
+[doc]: https://potassco.org/clingo/python-api/current/
+[nox]: https://nox.thea.codes/en/stable/index.html
+[pre]: https://pre-commit.com/
+[black]: https://black.readthedocs.io/en/stable/
 
 ## License
 
