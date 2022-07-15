@@ -102,9 +102,17 @@ def unary_parsing(x: AST, sign_name: str, args: List[AST]):
         return ast.UnaryOperation(x.location, 0, n_arg)
 
     for t in range(n):
-        arg = ast.SymbolicTerm(
-            x.location, clingo.Function(str(symbol.arguments[t]), [], True)
-        )
+        if symbol.arguments[t].ast_type == ASTType.Function:
+            name_func_sym = symbol.arguments[t].name
+            arg = function_wrapper(symbol.arguments[t], x, args, name_func_sym)
+
+        elif symbol.arguments[t].ast_type == ASTType.Variable:
+            arg = ast.Variable(x.location, str(symbol.arguments[t]))
+
+        else:
+            arg = ast.SymbolicTerm(
+                x.location, clingo.Function(str(symbol.arguments[t]), [], True)
+            )
         args.append(arg)
     lit_fun = ast.Function(x.location, symbol.name, args, False)
     unary_term = ast.UnaryOperation(x.location, 0, lit_fun)
