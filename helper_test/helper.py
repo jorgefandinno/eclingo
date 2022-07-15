@@ -1,7 +1,7 @@
 import unittest
 
-class TestHelper(unittest.TestCase):
 
+class TestHelper(unittest.TestCase):
     def setUp(self):
         self.printing = False
         self.printing_ast_repr = False

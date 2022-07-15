@@ -1,41 +1,44 @@
 import sys
 from typing import Iterable, Sequence
 
-from clingo import Symbol
 import clingo
-from clingox.program import Remapping
+from clingo import Symbol
 from clingox.backend import SymbolicBackend
+from clingox.program import Remapping
 
+import eclingo.internal_states.internal_control as internal_control
 from eclingo import internal_states
 from eclingo.config import AppConfig
-import eclingo.internal_states.internal_control as internal_control
-
 
 from .candidate import Candidate
 
 
-class CandidateTester():
-
-    def __init__(self,
-                 config: AppConfig,
-                 control_gen: internal_control.InternalStateControl):
+class CandidateTester:
+    def __init__(
+        self, config: AppConfig, control_gen: internal_control.InternalStateControl
+    ):
         self._config = config
         self._epistemic_to_test = control_gen.epistemic_to_test_mapping
-        self.control = internal_control.InternalStateControl(['0'], message_limit=0)
+        self.control = internal_control.InternalStateControl(["0"], message_limit=0)
         CandidateTester._init_control_test(self.control, control_gen)
         CandidateTester._add_choices_to(self.control, self._epistemic_to_test.keys())
 
     @staticmethod
-    def _init_control_test(control_test: internal_control.InternalStateControl, control_gen: internal_control.InternalStateControl) -> None:
+    def _init_control_test(
+        control_test: internal_control.InternalStateControl,
+        control_gen: internal_control.InternalStateControl,
+    ) -> None:
         program = control_gen.ground_program
         with control_test.control.backend() as backend:
             mapping = Remapping(backend, program.output_atoms, program.facts)
             program.add_to_backend(backend, mapping)
-        
-        control_test.control.configuration.solve.enum_mode = 'cautious' # type: ignore
+
+        control_test.control.configuration.solve.enum_mode = "cautious"  # type: ignore
 
     @staticmethod
-    def _add_choices_to(control_test: internal_control.InternalStateControl, literals: Iterable[Symbol]) -> None:
+    def _add_choices_to(
+        control_test: internal_control.InternalStateControl, literals: Iterable[Symbol]
+    ) -> None:
         with SymbolicBackend(control_test.control.backend()) as backend:
             for literal_code in literals:
                 backend.add_rule([literal_code], [], [], True)
@@ -43,7 +46,6 @@ class CandidateTester():
                 #     backend.add_project(
                 #         [self._atoms_gen_to_test(signature.test_atom_code)
                 #          for signature in self._epistemic_to_test.values()])
-
 
     def __call__(self, candidate: Candidate) -> bool:
         candidate_pos = []
@@ -59,10 +61,12 @@ class CandidateTester():
             candidate_assumptions.append(assumption)
             literal = self._epistemic_to_test[literal]
             candidate_neg.append(literal)
-        self.control.configuration.solve.models  = 0
+        self.control.configuration.solve.models = 0
         self.control.configuration.solve.project = "no"
 
-        with self.control.solve(yield_=True, assumptions=candidate_assumptions) as handle:
+        with self.control.solve(
+            yield_=True, assumptions=candidate_assumptions
+        ) as handle:
             model = None
             for model in handle:
                 for atom in candidate_pos:

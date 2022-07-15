@@ -1,9 +1,10 @@
+from pprint import pformat
 from typing import Any, MutableMapping, MutableSequence, Sequence
 from unittest import TestCase
-from pprint import pformat
 
 from clingo.ast import AST
 from clingox.ast import ast_to_dict
+
 
 def remove_key_recursively(value: Any, key: Any) -> None:
     """
@@ -21,9 +22,7 @@ def remove_key_recursively(value: Any, key: Any) -> None:
             remove_key_recursively(element, key)
 
 
-
 class ASTTestCase(TestCase):
-
     def assertASTEqual(self, first, second, msg=None):
         first_dict = ast_to_dict(first)
         second_dict = ast_to_dict(second)

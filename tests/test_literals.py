@@ -2,11 +2,11 @@ import unittest
 
 from clingo import Function
 from clingo.ast import Sign
+
 from eclingo.literals import Literal
 
 
 class Test(unittest.TestCase):
-
     def assert_str(self, literal: Literal, s: str) -> None:
         self.assertEqual(str(literal), s)
 
@@ -22,6 +22,8 @@ class Test(unittest.TestCase):
     def test_repr(self):
         symbol = Function("a")
         s = repr(symbol)
-        self.assert_repr(Literal(symbol, Sign.NoSign), repr(Sign.NoSign)+s)
-        self.assert_repr(Literal(symbol, Sign.Negation), repr(Sign.Negation)+s)
-        self.assert_repr(Literal(symbol, Sign.DoubleNegation), repr(Sign.DoubleNegation)+s)
+        self.assert_repr(Literal(symbol, Sign.NoSign), repr(Sign.NoSign) + s)
+        self.assert_repr(Literal(symbol, Sign.Negation), repr(Sign.Negation) + s)
+        self.assert_repr(
+            Literal(symbol, Sign.DoubleNegation), repr(Sign.DoubleNegation) + s
+        )

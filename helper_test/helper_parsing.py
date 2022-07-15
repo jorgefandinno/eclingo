@@ -1,12 +1,11 @@
 import clingo.ast as _ast
+
 from eclingo.config import AppConfig
-
-
-from eclingo.parsing.parser import parse_program as _parse_program
 from eclingo.internal_states.internal_control import ShowStatement
-
+from eclingo.parsing.parser import parse_program as _parse_program
 
 from . import helper
+
 
 def _flatten(lst):
     result = []
@@ -18,8 +17,8 @@ def _flatten(lst):
             result.append(lst2)
     return result
 
-class ParsingTestHelper(helper.TestHelper):
 
+class ParsingTestHelper(helper.TestHelper):
     def setUp(self):
         super().setUp()
         self.config: AppConfig = AppConfig(semantics="c19-1")
@@ -42,7 +41,9 @@ class ParsingTestHelper(helper.TestHelper):
         expected_program = self.clingo_parse_program(expected_program)
         self.assert_equal_ordered(parsed_program, expected_program)
 
-    def assert_equal_parsing_program_with_show(self, program, expected_program, expected_show):
+    def assert_equal_parsing_program_with_show(
+        self, program, expected_program, expected_show
+    ):
         parsed_program = self.parse_program(program)
         program_without_show = []
         show_statements = []
@@ -53,4 +54,3 @@ class ParsingTestHelper(helper.TestHelper):
                 program_without_show.append(statement)
         self.__assert_equal_parsing_program(program_without_show, expected_program)
         self.assert_equal_ordered(show_statements, expected_show)
-    

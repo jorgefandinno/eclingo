@@ -1,9 +1,10 @@
 from eclingo.util import clingoext as _clingoext
 from eclingo.util.logger import silent_logger
+
 from . import helper
 
-class ClingoTestHelper(helper.TestHelper):
 
+class ClingoTestHelper(helper.TestHelper):
     def setUp(self):
         super().setUp()
         self.clingo_control = _clingoext.Control(logger=silent_logger)
@@ -26,5 +27,3 @@ class ClingoTestHelper(helper.TestHelper):
         result = self.clingo_control.ground_program
         self._print(result)
         self.assertEqual(str(result), str(expected))
-
-

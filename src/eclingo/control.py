@@ -8,14 +8,14 @@ from eclingo.config import AppConfig
 from eclingo.grounder import Grounder
 from eclingo.solver import Solver
 
-class Control(object):
 
+class Control(object):
     def __init__(self, control, config=None):
         # if control is not None:
-        self.project    = control.configuration.solve.project
+        self.project = control.configuration.solve.project
         self.max_models = int(control.configuration.solve.models)
         control.configuration.solve.project = "auto,3"
-        control.configuration.solve.models  = 0
+        control.configuration.solve.models = 0
         self.control = control
         # else:
         #     self.project    = None
@@ -36,13 +36,12 @@ class Control(object):
         self.grounder.add_program(program)
 
     def load(self, input_path):
-        with open(input_path, 'r') as program:
+        with open(input_path, "r") as program:
             self.add_program(program.read())
-    
+
     def ground(self, parts: Iterable[Tuple[str, Iterable[Symbol]]] = (("base", []),)):
         self.grounder.ground(parts)
         self.grounded = True
-
 
     def preprocess(self):
         pass

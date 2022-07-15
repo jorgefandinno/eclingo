@@ -6,7 +6,7 @@ inertial(alive).
 action(load).
 action(pull_trigger).
 
-%%%%%%  executable  %%%%%%% 
+%%%%%%  executable  %%%%%%%
 executable(pull_trigger,T) :- stepless(T).
 executable(load,T) :- -holds(loaded,T),stepless(T).
 

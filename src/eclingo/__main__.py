@@ -1,4 +1,3 @@
-
 """The pytest entry point."""
 from eclingo.main import main
 

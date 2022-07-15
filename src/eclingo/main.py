@@ -14,9 +14,6 @@ _FALSE = ["0", "no", "false"]
 _TRUE = ["1", "yes", "true"]
 
 
-
-
-
 class Application(internal_control.Application):
     """
     Application class that can be used with `clingo.clingo_main` to solve CSP
@@ -44,7 +41,7 @@ class Application(internal_control.Application):
             return True
         return parse
     '''
-    
+
     def _read(self, path):
         if path == "-":
             return sys.stdin.read()
@@ -59,7 +56,6 @@ class Application(internal_control.Application):
         if not files:
             files = ["-"]
 
-
         eclingo_control = Control(control, self.config)
 
         for path in files:
@@ -69,21 +65,21 @@ class Application(internal_control.Application):
         eclingo_control.preprocess()
         eclingo_control.prepare_solver()
 
-        sys.stdout.write('Solving...\n')
+        sys.stdout.write("Solving...\n")
         wv_number = 1
         for world_view in eclingo_control.solve():
-            sys.stdout.write('World view: %d\n' % wv_number)
+            sys.stdout.write("World view: %d\n" % wv_number)
             sys.stdout.write(str(world_view))
-            sys.stdout.write('\n')
+            sys.stdout.write("\n")
             wv_number += 1
         if wv_number > 1:
-            sys.stdout.write('SATISFIABLE\n')
+            sys.stdout.write("SATISFIABLE\n")
         else:
-            sys.stdout.write('UNSATISFIABLE\n')
+            sys.stdout.write("UNSATISFIABLE\n")
 
 
 def main():
-    sys.argv.append('--outf=3')
+    sys.argv.append("--outf=3")
     application = Application()
     result = internal_control.clingo_main(application, sys.argv[1:])
     return int(result)

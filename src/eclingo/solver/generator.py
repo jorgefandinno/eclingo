@@ -3,18 +3,21 @@ from typing import Iterator
 
 import clingo
 
-from eclingo.internal_states import internal_control
 from eclingo.config import AppConfig
+from eclingo.internal_states import internal_control
 
 from .candidate import Candidate
 
 
-class CandidateGenerator():
-
-    def __init__(self, config: AppConfig, control: internal_control.InternalStateControl) -> None:
+class CandidateGenerator:
+    def __init__(
+        self, config: AppConfig, control: internal_control.InternalStateControl
+    ) -> None:
         self._config = config
         self.control = control
-        self._epistemic_literals = self.control.epistemic_to_test_mapping.epistemic_literals()
+        self._epistemic_literals = (
+            self.control.epistemic_to_test_mapping.epistemic_literals()
+        )
         with self.control.symbolic_backend() as backend:
             backend.add_project(self._epistemic_literals)
 

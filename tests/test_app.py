@@ -1,31 +1,29 @@
 import contextlib
 import io
-import os, sys
+import os
 import subprocess
+import sys
 import unittest
 from unittest.mock import patch
 
-
 from eclingo.main import main as eclingo_main
 
+APP_PATH = "../src/eclingo/__main__.py"
 
+INPUT_PROG_PATH = "prog/input/"
+OUTPUT_PROG_PATH = "prog/output/"
 
-APP_PATH = '../src/eclingo/__main__.py'
+KB_ELIGIBLE_PATH = "eligible/eligible.lp"
+INPUT_ELIGIBLE_PATH = "eligible/input/"
+OUTPUT_ELIGIBLE_PATH = "eligible/output/"
 
-INPUT_PROG_PATH = 'prog/input/'
-OUTPUT_PROG_PATH = 'prog/output/'
-
-KB_ELIGIBLE_PATH = 'eligible/eligible.lp'
-INPUT_ELIGIBLE_PATH = 'eligible/input/'
-OUTPUT_ELIGIBLE_PATH = 'eligible/output/'
-
-KB_YALE_PATH = 'yale/yale.lp'
-INPUT_YALE_PATH = 'yale/input/'
-OUTPUT_YALE_PATH = 'yale/output/'
+KB_YALE_PATH = "yale/yale.lp"
+INPUT_YALE_PATH = "yale/input/"
+OUTPUT_YALE_PATH = "yale/output/"
 
 
 def parse_output(output):
-    lines = output.split('\n')
+    lines = output.split("\n")
     world_views = []
     is_world_view = False
     for line in lines:
@@ -33,14 +31,15 @@ def parse_output(output):
             world_view = line.split()
             world_views.append(world_view)
             is_world_view = False
-        elif line.startswith('World view:'):
+        elif line.startswith("World view:"):
             is_world_view = True
     return world_views
 
 
 class TestExamples(unittest.TestCase):
-
-    def assert_world_views(self, command, input_paths, output_path, external_call=True, use_stdin=False):
+    def assert_world_views(
+        self, command, input_paths, output_path, external_call=True, use_stdin=False
+    ):
         """
         `use_stdin` can be `True` only when `external_call` is also `False`
         """
@@ -48,13 +47,13 @@ class TestExamples(unittest.TestCase):
         if not use_stdin:
             command.extend(input_paths)
         if external_call:
-            process = subprocess.Popen(command,
-                    stdout=subprocess.PIPE, 
-                    stderr=subprocess.PIPE)
+            process = subprocess.Popen(
+                command, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            )
             stdout, stderr = process.communicate()
             # if process.returncode != 0:
             #     self.fail(f"{command} exit with {process.returncode}\n{stderr.decode('utf-8')}")
-            output = stdout.decode('utf-8')
+            output = stdout.decode("utf-8")
         else:
             if use_stdin:
                 program = ""
@@ -64,15 +63,15 @@ class TestExamples(unittest.TestCase):
                 # command.append("-")
                 with (
                     contextlib.redirect_stdout(io.StringIO()) as stdout,
-                    patch.object(sys, 'argv', command[1:]),
-                    patch.object(sys, 'stdin', io.StringIO(program))
+                    patch.object(sys, "argv", command[1:]),
+                    patch.object(sys, "stdin", io.StringIO(program)),
                 ):
                     eclingo_main()
                     output = stdout.getvalue()
             else:
                 with (
                     contextlib.redirect_stdout(io.StringIO()) as stdout,
-                    patch.object(sys, 'argv', command[1:])
+                    patch.object(sys, "argv", command[1:]),
                 ):
                     eclingo_main()
                     output = stdout.getvalue()
@@ -81,58 +80,64 @@ class TestExamples(unittest.TestCase):
             world_view.sort()
         world_views.sort()
         world_views = [str(wv) for wv in world_views]
-        world_views = str(world_views).replace(' ', '').replace("'", '').replace('"', '')
-        
-        with open(output_path, 'r') as output_prog:
+        world_views = (
+            str(world_views).replace(" ", "").replace("'", "").replace('"', "")
+        )
+
+        with open(output_path, "r") as output_prog:
             sol = output_prog.read()
-            sol = sol.replace('\n', '').replace(' ', '')
-        self.assertEqual(world_views, sol, 'in ' + str(command))
-    
-    
+            sol = sol.replace("\n", "").replace(" ", "")
+        self.assertEqual(world_views, sol, "in " + str(command))
+
     def test_prog_g94(self):
         for i in range(1, 11):
             path = os.path.dirname(os.path.realpath(__file__))
             input_path = os.path.join(path, INPUT_PROG_PATH)
-            input_path = os.path.join(input_path, f'prog{i:02d}.lp')
+            input_path = os.path.join(input_path, f"prog{i:02d}.lp")
             output_path = os.path.join(path, OUTPUT_PROG_PATH)
-            output_path = os.path.join(output_path, f'sol{i:02d}.txt')
+            output_path = os.path.join(output_path, f"sol{i:02d}.txt")
             app_path = os.path.join(path, APP_PATH)
 
-            command = ['python', app_path, '0']
-            self.assert_world_views(command, [input_path], output_path, external_call=False, use_stdin=True)
-            self.assert_world_views(command, [input_path], output_path, external_call=False)
+            command = ["python", app_path, "0"]
+            self.assert_world_views(
+                command, [input_path], output_path, external_call=False, use_stdin=True
+            )
+            self.assert_world_views(
+                command, [input_path], output_path, external_call=False
+            )
             self.assert_world_views(command, [input_path], output_path)
-
 
     def test_eligible_g94(self):
         for i in range(1, 17):
             path = os.path.dirname(os.path.realpath(__file__))
             elegible_path = os.path.join(path, KB_ELIGIBLE_PATH)
             input_path = os.path.join(path, INPUT_ELIGIBLE_PATH)
-            input_path = os.path.join(input_path, f'eligible{i:02d}.lp')
+            input_path = os.path.join(input_path, f"eligible{i:02d}.lp")
             output_path = os.path.join(path, OUTPUT_ELIGIBLE_PATH)
-            output_path = os.path.join(output_path, f'sol_eligible{i:02d}.txt')
+            output_path = os.path.join(output_path, f"sol_eligible{i:02d}.txt")
             app_path = os.path.join(path, APP_PATH)
 
-            command = ['python', app_path, '0' ]
-            self.assert_world_views(command, [elegible_path, input_path], output_path, external_call=False)
+            command = ["python", app_path, "0"]
+            self.assert_world_views(
+                command, [elegible_path, input_path], output_path, external_call=False
+            )
             self.assert_world_views(command, [elegible_path, input_path], output_path)
-
 
     def test_yale_g94(self):
         for i in range(1, 9):
             if i != 6:
                 path = os.path.dirname(os.path.realpath(__file__))
-                yale_path  =  os.path.join(path, KB_YALE_PATH)
-                input_path =  os.path.join(path, INPUT_YALE_PATH)
-                input_path =  os.path.join(input_path, f'yale{i:02d}.lp')
+                yale_path = os.path.join(path, KB_YALE_PATH)
+                input_path = os.path.join(path, INPUT_YALE_PATH)
+                input_path = os.path.join(input_path, f"yale{i:02d}.lp")
                 output_path = os.path.join(path, OUTPUT_YALE_PATH)
-                output_path = os.path.join(output_path, f'sol_yale{i:02d}.txt')
+                output_path = os.path.join(output_path, f"sol_yale{i:02d}.txt")
 
                 app_path = os.path.join(path, APP_PATH)
 
-                constant = '-c length=%d' % i
-                command = ['python', app_path, constant, '0']
-                self.assert_world_views(command, [yale_path, input_path], output_path, external_call=False)
+                constant = "-c length=%d" % i
+                command = ["python", app_path, constant, "0"]
+                self.assert_world_views(
+                    command, [yale_path, input_path], output_path, external_call=False
+                )
                 self.assert_world_views(command, [yale_path, input_path], output_path)
-                
