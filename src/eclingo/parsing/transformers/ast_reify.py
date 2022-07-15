@@ -17,15 +17,14 @@ def symbolic_literal_to_term(x: AST) -> AST:
     len_list = len(symbol.arguments)
     # Create args list (Symbolic terms from the arguments list)
     if sign_name == "not1" or sign_name == "not2":  # Base Case -> Negation
-
-        if (
-            not len_list
-        ):  # Base Case 1. No Symbolic term arguments, then literal becomes only argument to not1/2 negation.
+        if not len_list:
+            # Base Case 1. No Symbolic term arguments, then literal becomes only argument to not1/2 negation.
             lit_fun = [
                 ast.SymbolicTerm(x.location, clingo.Function(symbol.name, [], True))
             ]
 
-        else:  # Base Case 2. Make Symbolic Term args the arguments of Literal. Then not1/2 becomes name of that literal.
+        else:
+            # Base Case 2. Make Symbolic Term args the arguments of Literal. Then not1/2 becomes name of that literal.
             for t in range(len_list):
                 arg = ast.SymbolicTerm(
                     x.location, clingo.Function(str(symbol.arguments[t]), [], True)
@@ -33,15 +32,14 @@ def symbolic_literal_to_term(x: AST) -> AST:
                 args.append(arg)
             lit_fun = [ast.Function(x.location, symbol.name, args, False)]
 
-    elif (
-        len_list < 1
-    ):  # No arguments and no negation case -> Return basic Symbolic Term
+    elif len_list < 1:
+        # No arguments and no negation case -> Return basic Symbolic Term
         return ast.SymbolicTerm(x.location, clingo.Function(symbol.name, [], True))
 
-    else:  # Arguments and no negation ->
-        for t in range(
-            len_list
-        ):  # Get all Symbolic term arguments and make symbol.name of literal the name of the returning Function
+    else:
+        # Arguments and no negation ->
+        for t in range(len_list):
+            # Get all Symbolic term arguments and make symbol.name of literal the name of the returning Function
             arg = ast.SymbolicTerm(
                 x.location, clingo.Function(str(symbol.arguments[t]), [], True)
             )
