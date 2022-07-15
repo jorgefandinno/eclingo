@@ -18,9 +18,9 @@ def function_wrapper(x: ASTType.Function, loc: AST, args: List[AST], name_f: str
 
         if name_f == x.name:
             return funct
-
-        final = ast.Function(loc.location, name_f, new_args, False)
-        return final
+        else:
+            final = ast.Function(loc.location, name_f, new_args, False)
+            return final
 
     if x.ast_type == ASTType.Variable:
         arg = ast.Variable(loc.location, str(x))
