@@ -2,6 +2,12 @@ import nox
 
 # If using conda, then be sure to be in the nox environment different from "base" before running this file.
 
+@nox.session
+def format(session):
+    session.install("black", "isort")
+    args = session.posargs if session.posargs else ["src/eclingo"]
+    session.run("isort", "--profile", "black", "src/eclingo")
+    session.run("black", *args)
 
 @nox.session(python=None)
 def typecheck(session):
