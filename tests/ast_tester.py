@@ -1,18 +1,25 @@
-from typing import MutableSequence
+from typing import Any, MutableMapping, MutableSequence, Sequence
 from unittest import TestCase
 from pprint import pformat
 
 from clingo.ast import AST
 from clingox.ast import ast_to_dict
 
-def remove_location_from_dict(d: dict) -> None:
-    if 'location' in d:
-        del d['location']
-    for key, value in d.items():
-        if isinstance(value, MutableSequence):
-            for element in value:
-                if isinstance(element, dict):
-                    remove_location_from_dict(element)
+def remove_key_recursively(value: Any, key: Any) -> None:
+    """
+    This function removes the given key from any mutable mappings contained in
+    in the given value composed of nested sequences, mutable mappings, and
+    other values.
+    """
+    if isinstance(value, MutableMapping):
+        if key in value:
+            del value[key]
+        for element in value.values():
+            remove_key_recursively(element, key)
+    elif isinstance(value, Sequence) and not isinstance(value, str):
+        for element in value:
+            remove_key_recursively(element, key)
+
 
 
 class ASTTestCase(TestCase):
@@ -20,8 +27,8 @@ class ASTTestCase(TestCase):
     def assertASTEqual(self, first, second, msg=None):
         first_dict = ast_to_dict(first)
         second_dict = ast_to_dict(second)
-        remove_location_from_dict(first_dict)
-        remove_location_from_dict(second_dict)
+        remove_key_recursively(first_dict, "location")
+        remove_key_recursively(second_dict, "location")
         ast_msg = f"""\n
 {str(first)} != {str(second)}
 
