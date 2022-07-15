@@ -24,11 +24,14 @@ def symbolic_literal_to_term(x: AST) -> AST:
             ]
 
         else:
-            # Base Case 2. Make Symbolic Term args the arguments of Literal. Then not1/2 becomes name of that literal.
+            # Base Case 2. Make Symbolic Term args or Variable the arguments of Literal. Then not1/2 becomes name of that literal.
             for t in range(len_list):
-                arg = ast.SymbolicTerm(
-                    x.location, clingo.Function(str(symbol.arguments[t]), [], True)
-                )
+                if symbol.arguments[t].ast_type == ASTType.Variable:
+                    arg = ast.Variable(x.location, str(symbol.arguments[t]))
+                else:
+                    arg = ast.SymbolicTerm(
+                        x.location, clingo.Function(str(symbol.arguments[t]), [], True)
+                    )
                 args.append(arg)
             lit_fun = [ast.Function(x.location, symbol.name, args, False)]
 
@@ -39,10 +42,13 @@ def symbolic_literal_to_term(x: AST) -> AST:
     else:
         # Arguments and no negation ->
         for t in range(len_list):
-            # Get all Symbolic term arguments and make symbol.name of literal the name of the returning Function
-            arg = ast.SymbolicTerm(
-                x.location, clingo.Function(str(symbol.arguments[t]), [], True)
-            )
+            if symbol.arguments[t].ast_type == ASTType.Variable:
+                arg = ast.Variable(x.location, str(symbol.arguments[t]))
+            else:
+                # Get all Symbolic term arguments and make symbol.name of literal the name of the returning Function
+                arg = ast.SymbolicTerm(
+                    x.location, clingo.Function(str(symbol.arguments[t]), [], True)
+                )
             args.append(arg)
         lit_fun = args
         sign_name = symbol.name
