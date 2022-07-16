@@ -4,33 +4,14 @@ import clingo
 from clingo import ast
 from clingo.ast import AST, ASTType, Sign
 
-
-def function_wrapper(x: ASTType.Function, loc: AST, args: List[AST], name_f: str):
-    # Recursive base case -> If Type is function keep iterating until all arguments have been processed
-    type_args = x.ast_type
-    new_args: List[AST] = []
-
-    # x -> Is the whole Function. Example (b(t(X)))
-    if type_args == ASTType.Function:
-        for n in range(len(x.arguments)):
-            funct = function_wrapper(x.arguments[n], loc, args, x.name)
-            new_args.append(funct)
-
-        if name_f == x.name:
-            return funct
-
-        
-        final = ast.Function(loc.location, name_f, new_args, False)
-        return final
-        
-
-    if x.ast_type == ASTType.Variable:
-        arg = ast.Variable(loc.location, str(x))
-    else:
-        arg = ast.SymbolicTerm(loc.location, clingo.Function(str(x), [], True))
-    new_args.append(arg)
-
-    return ast.Function(loc.location, name_f, new_args, False)
+"""
+    Reify function. Gets an AST of a literal and parses it to obtain an ASTType.Function
+    Cases where:
+        1. Negation or DoubleNegation (Based on sign)
+        2. Basic Symbolic Term, returns ASTType.SymbolicTerm
+        3. No negation
+        4. Unary Operation of explicit negation
+"""
 
 
 def symbolic_literal_to_term(x: AST) -> AST:
@@ -42,7 +23,7 @@ def symbolic_literal_to_term(x: AST) -> AST:
         return unary_parsing(x, sign_name, args)
 
     len_list = len(symbol.arguments)
-    # Create args list (Symbolic terms from the arguments list)
+
     if sign_name == "not1" or sign_name == "not2":  # Base Case -> Negation
         if not len_list:
             # Base Case 1. No Symbolic term arguments, then literal becomes only argument to not1/2 negation.
@@ -55,10 +36,11 @@ def symbolic_literal_to_term(x: AST) -> AST:
             for t in range(len_list):
                 if symbol.arguments[t].ast_type == ASTType.Function:
                     name_func_sym = symbol.arguments[t].name
-                    arg = function_wrapper(symbol.arguments[t], x, args, name_func_sym)
+                    arg = function_wrapper(symbol.arguments[t], x)
 
                 elif symbol.arguments[t].ast_type == ASTType.Variable:
                     arg = ast.Variable(x.location, str(symbol.arguments[t]))
+
                 else:
                     arg = ast.SymbolicTerm(
                         x.location, clingo.Function(str(symbol.arguments[t]), [], True)
@@ -71,17 +53,16 @@ def symbolic_literal_to_term(x: AST) -> AST:
         return ast.SymbolicTerm(x.location, clingo.Function(symbol.name, [], True))
 
     else:
-        # Arguments and no negation ->
+        # Base Case 3: Arguments and no negation or double negation
         for t in range(len_list):
             if symbol.arguments[t].ast_type == ASTType.Function:
                 name_func_sym = symbol.arguments[t].name
-                arg = function_wrapper(symbol.arguments[t], x, args, name_func_sym)
+                arg = function_wrapper(symbol.arguments[t], x)
 
             elif symbol.arguments[t].ast_type == ASTType.Variable:
                 arg = ast.Variable(x.location, str(symbol.arguments[t]))
 
             else:
-                # Get all Symbolic term arguments and make symbol.name of literal the name of the returning Function
                 arg = ast.SymbolicTerm(
                     x.location, clingo.Function(str(symbol.arguments[t]), [], True)
                 )
@@ -92,6 +73,12 @@ def symbolic_literal_to_term(x: AST) -> AST:
         sign_name = symbol.name
 
     return ast.Function(x.location, sign_name, lit_fun, False)
+
+
+"""
+    Helper Function: 
+    Parses term for ASTType Unary Operation.
+"""
 
 
 def unary_parsing(x: AST, sign_name: str, args: List[AST]):
@@ -106,7 +93,7 @@ def unary_parsing(x: AST, sign_name: str, args: List[AST]):
     for t in range(n):
         if symbol.arguments[t].ast_type == ASTType.Function:
             name_func_sym = symbol.arguments[t].name
-            arg = function_wrapper(symbol.arguments[t], x, args, name_func_sym)
+            arg = function_wrapper(symbol.arguments[t], x)
 
         elif symbol.arguments[t].ast_type == ASTType.Variable:
             arg = ast.Variable(x.location, str(symbol.arguments[t]))
@@ -125,11 +112,34 @@ def unary_parsing(x: AST, sign_name: str, args: List[AST]):
     return unary_term
 
 
-# Helper Function to refine Negation names
-def refine_name(sign) -> str:
+"""
+    Helper Function: Refines Negation names based on sign of AST
+"""
+
+
+def refine_name(sign: Sign) -> str:
     name = ""
     if sign == Sign.Negation:
         name = "not1"
     elif sign == Sign.DoubleNegation:
         name = "not2"
     return name
+
+
+"""
+    Helper function:
+    Parses a literal for which an argument is of type ASTType.Function and has SymbolicTerms or Variables as arguments
+"""
+
+
+def function_wrapper(x: ASTType.Function, loc: AST) -> ASTType.Function:
+    funct_args: List[AST] = []
+    for n in range(len(x.arguments)):
+        if x.arguments[n].ast_type == ASTType.Variable:
+            arg = ast.Variable(loc.location, str(x.arguments[n]))
+        else:
+            arg = ast.SymbolicTerm(
+                loc.location, clingo.Function(str(x.arguments[n]), [], True)
+            )
+        funct_args.append(arg)
+    return ast.Function(loc.location, x.name, funct_args, False)

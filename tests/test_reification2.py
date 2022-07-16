@@ -56,7 +56,6 @@ class Test(ASTTestCase):
         self.assert_symbolic_literal_to_term("not not a", "not2(a)")
 
         self.assert_symbolic_literal_to_term("a(b,c)", "a(b,c)")
-        self.assert_symbolic_literal_to_term("a(b(x),y)", "a(b(x),y)")
         self.assert_symbolic_literal_to_term("not a(b,c)", "not1(a(b,c))")
         self.assert_symbolic_literal_to_term("not not a(b,c)", "not2(a(b,c))")
 
@@ -66,7 +65,6 @@ class Test(ASTTestCase):
         self.assert_symbolic_literal_to_term("not not -a(b,c)", "not2(-a(b,c))")
     
     def test_non_ground_symbolic_literal_to_term(self):
-        self.assert_symbolic_literal_to_term("a(b(X),Y)", "a(b(X),Y)")
         self.assert_symbolic_literal_to_term("a(X)", "a(X)")
         self.assert_symbolic_literal_to_term("not a(X)", "not1(a(X))")
         self.assert_symbolic_literal_to_term("not not a(X)", "not2(a(X))")
@@ -74,8 +72,6 @@ class Test(ASTTestCase):
         self.assert_symbolic_literal_to_term("a(b(X),c,Y)", "a(b(X),c,Y)")
         self.assert_symbolic_literal_to_term("not a(b(X),c,Y)", "not1(a(b(X),c,Y))")
         self.assert_symbolic_literal_to_term("not not a(b(X),c,Y)", "not2(a(b(X),c,Y))")
-        
-        self.assert_symbolic_literal_to_term("a(b(t(X)),c,Y)", "a(b(t(X)),c,Y)")
 
         self.assert_symbolic_literal_to_term("-a(X)", "-a(X)")
         self.assert_symbolic_literal_to_term("-a(b(X),c,Y)", "-a(b(X),c,Y)")
@@ -83,4 +79,3 @@ class Test(ASTTestCase):
         self.assert_symbolic_literal_to_term(
             "not not -a(b(X),c,Y)", "not2(-a(b(X),c,Y))"
         )
-        
