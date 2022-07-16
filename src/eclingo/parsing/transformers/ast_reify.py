@@ -32,20 +32,7 @@ def symbolic_literal_to_term(x: AST) -> AST:
             ]
 
         else:
-            # Base Case 2. Make Symbolic Term args or Variable the arguments of Literal. Then not1/2 becomes name of that literal.
-            for t in range(len_list):
-                if symbol.arguments[t].ast_type == ASTType.Function:
-                    name_func_sym = symbol.arguments[t].name
-                    arg = function_wrapper(symbol.arguments[t], x)
-
-                elif symbol.arguments[t].ast_type == ASTType.Variable:
-                    arg = ast.Variable(x.location, str(symbol.arguments[t]))
-
-                else:
-                    arg = ast.SymbolicTerm(
-                        x.location, clingo.Function(str(symbol.arguments[t]), [], True)
-                    )
-                args.append(arg)
+            args = argument_parser(x, symbol.arguments)
             lit_fun = [ast.Function(x.location, symbol.name, args, False)]
 
     elif len_list < 1:
@@ -53,23 +40,7 @@ def symbolic_literal_to_term(x: AST) -> AST:
         return ast.SymbolicTerm(x.location, clingo.Function(symbol.name, [], True))
 
     else:
-        # Base Case 3: Arguments and no negation or double negation
-        for t in range(len_list):
-            if symbol.arguments[t].ast_type == ASTType.Function:
-                name_func_sym = symbol.arguments[t].name
-                arg = function_wrapper(symbol.arguments[t], x)
-
-            elif symbol.arguments[t].ast_type == ASTType.Variable:
-                arg = ast.Variable(x.location, str(symbol.arguments[t]))
-
-            else:
-                arg = ast.SymbolicTerm(
-                    x.location, clingo.Function(str(symbol.arguments[t]), [], True)
-                )
-
-            args.append(arg)
-
-        lit_fun = args
+        lit_fun = argument_parser(x, symbol.arguments)
         sign_name = symbol.name
 
     return ast.Function(x.location, sign_name, lit_fun, False)
@@ -90,19 +61,7 @@ def unary_parsing(x: AST, sign_name: str, args: List[AST]):
         n_arg = ast.SymbolicTerm(x.location, clingo.Function(symbol.name, [], True))
         return ast.UnaryOperation(x.location, 0, n_arg)
 
-    for t in range(n):
-        if symbol.arguments[t].ast_type == ASTType.Function:
-            name_func_sym = symbol.arguments[t].name
-            arg = function_wrapper(symbol.arguments[t], x)
-
-        elif symbol.arguments[t].ast_type == ASTType.Variable:
-            arg = ast.Variable(x.location, str(symbol.arguments[t]))
-
-        else:
-            arg = ast.SymbolicTerm(
-                x.location, clingo.Function(str(symbol.arguments[t]), [], True)
-            )
-        args.append(arg)
+    args = argument_parser(x, symbol.arguments)
     lit_fun = ast.Function(x.location, symbol.name, args, False)
     unary_term = ast.UnaryOperation(x.location, 0, lit_fun)
 
@@ -128,18 +87,24 @@ def refine_name(sign: Sign) -> str:
 
 """
     Helper function:
-    Parses a literal for which an argument is of type ASTType.Function and has SymbolicTerms or Variables as arguments
+    Parses a literal for which there are SymbolicTerms or Variables as arguments
 """
 
+def argument_parser(x: AST, arguments: list) -> List[AST]:
+    arg_list: List[AST] = []
+    n = len(arguments)
+    for t in range(n):
+        if arguments[t].ast_type == ASTType.Function:
+            funct_arg = argument_parser(x, arguments[t].arguments)
+            arg = ast.Function(x.location, arguments[t].name, funct_arg, False)
 
-def function_wrapper(x: ASTType.Function, loc: AST) -> ASTType.Function:
-    funct_args: List[AST] = []
-    for n in range(len(x.arguments)):
-        if x.arguments[n].ast_type == ASTType.Variable:
-            arg = ast.Variable(loc.location, str(x.arguments[n]))
+        elif arguments[t].ast_type == ASTType.Variable:
+            arg = ast.Variable(x.location, str(arguments[t]))
+
         else:
             arg = ast.SymbolicTerm(
-                loc.location, clingo.Function(str(x.arguments[n]), [], True)
+                x.location, clingo.Function(str(arguments[t]), [], True)
             )
-        funct_args.append(arg)
-    return ast.Function(loc.location, x.name, funct_args, False)
+        arg_list.append(arg)
+
+    return arg_list
