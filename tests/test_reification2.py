@@ -79,3 +79,7 @@ class Test(ASTTestCase):
         self.assert_symbolic_literal_to_term(
             "not not -a(b(X),c,Y)", "not2(-a(b(X),c,Y))"
         )
+        
+    def test_multiple_variables_symbolic_literal_to_term(self):
+        self.assert_symbolic_literal_to_term("a(b(X,Z),c,Y)", "a(b(X,Z),c,Y)")
+        self.assert_symbolic_literal_to_term("a(b(x,z),c)", "a(b(x,z),c)")
