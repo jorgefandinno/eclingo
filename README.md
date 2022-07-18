@@ -118,7 +118,7 @@ git checkout -b <your_name>/<branch>
 ```
 where ```<your_name>``` is to be replaced by your name and ```<branch>``` should be the name of the branch you are creating.
 
-Once you have made the contributions, test that everythink works correctly. 
+Once you have made the contributions, test that everythink works correctly.
 We auto format code using [black]. We provide a [pre-commit][pre]
 config to automate this process. It can be set up using the following commands:
 
