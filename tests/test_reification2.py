@@ -48,7 +48,7 @@ class Test(ASTTestCase):
         result = ast_reify.symbolic_literal_to_term(parsed_lit)
         self.maxDiff = None
         self.assertEqual(result, parsed_term)
-
+    
     def test_symbolic_literal_to_term(self):
         self.assert_symbolic_literal_to_term("a(b)", "a(b)")
         self.assert_symbolic_literal_to_term("a", "a")
@@ -84,6 +84,7 @@ class Test(ASTTestCase):
         self.assert_symbolic_literal_to_term("a(b(X,Z),c,Y)", "a(b(X,Z),c,Y)")
         self.assert_symbolic_literal_to_term("a(b(x,z),c)", "a(b(x,z),c)")
 
+    
     def test_theory_atom_symbolic_literal_to_term(self):
         self.assertEqual(
             ast_reify.symbolic_literal_to_term(parse_literal("&k{ p(X) }")),
@@ -97,3 +98,4 @@ class Test(ASTTestCase):
             ast_reify.symbolic_literal_to_term(parse_literal("&k{ p(X) }")),
             parse_literal("&k{ p(X) }"),
         )
+        
