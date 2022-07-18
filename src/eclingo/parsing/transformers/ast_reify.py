@@ -1,110 +1,58 @@
-from typing import List
-
+"""
+This module contains functions for reififcation of `AST` objects
+"""
 import clingo
 from clingo import ast
 from clingo.ast import AST, ASTType, Sign
 
-"""
-    Reify function. Gets an AST of a literal and parses it to obtain an ASTType.Function
-    Cases where:
-        1. Negation or DoubleNegation (Based on sign)
-        2. Basic Symbolic Term, returns ASTType.SymbolicTerm
-        3. No negation
-        4. Unary Operation of explicit negation
-"""
+
+def _positive_symbolic_literal_to_term(x: AST):
+    """
+    Helper function to ensure proper treatment of clingo.Function and ast.Function
+    """
+    if x.ast_type != ast.ASTType.Function or x.arguments or x.external:
+        return x
+    return ast.SymbolicTerm(x.location, clingo.Function(x.name, [], True))
 
 
-def symbolic_literal_to_term(x: AST) -> AST:
-    symbol = x.atom.symbol
-    sign_name = refine_name(x.sign)
+def symbolic_literal_to_term(
+    lit: AST, negation_name: str = "not1", double_negation_name: str = "not2"
+) -> AST:
+    """
+    Convert the given literal into a clingo term according to the following rules:
+    - `atom => atom`
+    - `not atom => not1(atom)`
+    - `not not atom => not2(atom)`
 
-    args: List[AST] = []
-    if x.atom.symbol.ast_type == ASTType.UnaryOperation:
-        return unary_parsing(x, sign_name, args)
+    Parameters
+    ----------
+    lit
+        An `AST` that represents a literal.
+    negation_name
+        A string to be used to represent negation.
+    double_negation_name
+        A string to be used to represent double negation.
 
-    len_list = len(symbol.arguments)
+    Returns
+    -------
+    An `AST` that represnts the reified literal as a term.
+    """
+    assert lit.ast_type == ASTType.Literal
+    if lit.atom.ast_type != ASTType.SymbolicAtom:
+        return lit
+    symbol = lit.atom.symbol
 
-    if sign_name == "not1" or sign_name == "not2":  # Base Case -> Negation
-        if not len_list:
-            # Base Case 1. No Symbolic term arguments, then literal becomes only argument to not1/2 negation.
-            lit_fun = [
-                ast.SymbolicTerm(x.location, clingo.Function(symbol.name, [], True))
-            ]
+    if lit.atom.symbol.ast_type == ASTType.UnaryOperation:
+        symbol = symbol.argument
 
-        else:
-            args = argument_parser(x, symbol.arguments)
-            lit_fun = [ast.Function(x.location, symbol.name, args, False)]
+    symbol = _positive_symbolic_literal_to_term(symbol)
 
-    elif len_list < 1:
-        # No arguments and no negation case -> Return basic Symbolic Term
-        return ast.SymbolicTerm(x.location, clingo.Function(symbol.name, [], True))
+    if lit.atom.symbol.ast_type == ASTType.UnaryOperation:
+        symbol = ast.UnaryOperation(lit.location, 0, symbol)
 
-    else:
-        lit_fun = argument_parser(x, symbol.arguments)
-        sign_name = symbol.name
+    if lit.sign == ast.Sign.NoSign:
+        return symbol
 
-    return ast.Function(x.location, sign_name, lit_fun, False)
+    sign_name = negation_name if lit.sign == Sign.Negation else double_negation_name
 
-
-"""
-    Helper Function: 
-    Parses term for ASTType Unary Operation.
-"""
-
-
-def unary_parsing(x: AST, sign_name: str, args: List[AST]):
-    symbol = x.atom.symbol
-    symbol = symbol.argument
-
-    n = len(symbol.arguments)
-    if n < 1:
-        n_arg = ast.SymbolicTerm(x.location, clingo.Function(symbol.name, [], True))
-        return ast.UnaryOperation(x.location, 0, n_arg)
-
-    args = argument_parser(x, symbol.arguments)
-    lit_fun = ast.Function(x.location, symbol.name, args, False)
-    unary_term = ast.UnaryOperation(x.location, 0, lit_fun)
-
-    if sign_name == "not1" or sign_name == "not2":
-        return ast.Function(x.location, sign_name, [unary_term], False)
-
-    return unary_term
-
-
-"""
-    Helper Function: Refines Negation names based on sign of AST
-"""
-
-
-def refine_name(sign: Sign) -> str:
-    name = ""
-    if sign == Sign.Negation:
-        name = "not1"
-    elif sign == Sign.DoubleNegation:
-        name = "not2"
-    return name
-
-
-"""
-    Helper function:
-    Parses a literal for which there are SymbolicTerms or Variables as arguments
-"""
-
-def argument_parser(x: AST, arguments: list) -> List[AST]:
-    arg_list: List[AST] = []
-    n = len(arguments)
-    for t in range(n):
-        if arguments[t].ast_type == ASTType.Function:
-            funct_arg = argument_parser(x, arguments[t].arguments)
-            arg = ast.Function(x.location, arguments[t].name, funct_arg, False)
-
-        elif arguments[t].ast_type == ASTType.Variable:
-            arg = ast.Variable(x.location, str(arguments[t]))
-
-        else:
-            arg = ast.SymbolicTerm(
-                x.location, clingo.Function(str(arguments[t]), [], True)
-            )
-        arg_list.append(arg)
-
-    return arg_list
+    return ast.Function(lit.location, sign_name, [symbol], False)
