@@ -2,6 +2,7 @@ from clingo import ast as _ast
 
 # pylint: disable=all
 
+
 class ASTInspector(object):
     """
     Visit `clingo.clingo.ast.AST` objects by visiting all child nodes.
@@ -9,6 +10,7 @@ class ASTInspector(object):
     Implement `visit_<type>` where `<type>` is the type of the nodes to be
     visited.
     """
+
     def __init__(self):
         self.level = 0
         self.string = ""
@@ -46,7 +48,7 @@ class ASTInspector(object):
         Default visit method to dispatch calls to child nodes.
         """
         if isinstance(x, _ast.AST):
-            ident = 2*self.level*" "
+            ident = 2 * self.level * " "
             self.string += ident + str(x.type) + ":    " + str(x) + "\n"
             self.level += 1
             self.visit_children(x, *args, **kwargs)
@@ -60,9 +62,10 @@ class ASTInspector(object):
             return self.visit_none(x, *args, **kwargs)
         raise TypeError("unexpected type: {}".format(x))
 
-'''
+
+"""
 def inspect_ast(stm):
     t = ASTInspector()
     t.visit(stm)
     return t.string
-'''
+"""

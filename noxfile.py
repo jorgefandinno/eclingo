@@ -2,10 +2,12 @@ import nox
 
 # If using conda, then be sure to be in the nox environment different from "base" before running this file.
 
+
 @nox.session(python=None)
 def typecheck(session):
     session.install("-r", "requirements.txt", "mypy")
     session.run("mypy", "src/eclingo")
+
 
 @nox.session(python=None)
 def tests(session):
@@ -14,16 +16,15 @@ def tests(session):
     session.run("coverage", "run", "-m", "unittest")
     session.notify("coverage")
 
+
 @nox.session(python=None)
 def coverage(session):
-    omit = [
-        "src/eclingo/__main__.py",
-        "tests/*",
-        "helper_test/*"
-    ]
-    session.run("coverage", "report", "--sort=cover", "--fail-under=100", "--omit", ",".join(omit))
-
-        
-
-
-
+    omit = ["src/eclingo/__main__.py", "tests/*", "helper_test/*"]
+    session.run(
+        "coverage",
+        "report",
+        "--sort=cover",
+        "--fail-under=100",
+        "--omit",
+        ",".join(omit),
+    )

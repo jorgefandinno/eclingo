@@ -9,7 +9,7 @@ action(load).
 action(pull_trigger).
 action(aim).
 
-%%%%%%  executable  %%%%%%% 
+%%%%%%  executable  %%%%%%%
 executable(pull_trigger,T):-  stepless(T).
 executable(load,T) :- -holds(loaded,T),stepless(T).
 executable(aim,T):-  stepless(T).

@@ -10,5 +10,3 @@ vtx(X) :- edge(X,_).
 vtx(Y) :- edge(_,Y).
 
 #show in/2.
-
-

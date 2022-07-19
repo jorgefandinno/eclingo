@@ -1,19 +1,22 @@
 from typing import Set
+
 from clingo import Symbol
-from eclingo.config import AppConfig
+
 import eclingo.internal_states.internal_control as internal_control
+from eclingo.config import AppConfig
 
 
-class Preprocessor():
-
-    def __init__(self,
-                 config: AppConfig,
-                 control: internal_control.InternalStateControl) -> None:
+class Preprocessor:
+    def __init__(
+        self, config: AppConfig, control: internal_control.InternalStateControl
+    ) -> None:
         self._control = control
-        self._config  = config
+        self._config = config
         self._epistemic_to_test_mapping = self._control.epistemic_to_test_mapping
-        self.facts               = set(self._control.facts())
-        self._epistemic_facts    = self._generate_epistemic_facts(self._epistemic_to_test_mapping, self.facts)
+        self.facts = set(self._control.facts())
+        self._epistemic_facts = self._generate_epistemic_facts(
+            self._epistemic_to_test_mapping, self.facts
+        )
 
     def __call__(self):
         self._add_epistemic_facts_to_control()
