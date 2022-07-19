@@ -75,7 +75,6 @@ class Test(unittest.TestCase):
 
         """
 
-
         self.control.configuration.solve.project = "auto,3"
         self.control.configuration.solve.models = 0
 
@@ -114,4 +113,3 @@ class Test(unittest.TestCase):
                 self.assertEqual(literal.atom.ast_type, _ast.ASTType.TheoryAtom)
 
         clingo.ast.parse_string(program, test)
-
