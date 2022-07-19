@@ -36,11 +36,6 @@ class TestCase(unittest.TestCase):
 
     def assert_equal_program(self, program, expected):
         expected_program = clingo_parse_program(expected)
-        if self.print:
-            print("--- program ---")
-            print(ast_repr(program))
-            print("--- expected program ---")
-            print(ast_repr(expected_program))
         self.assertListEqual(sorted(program), sorted(expected_program))
 
 

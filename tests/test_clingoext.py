@@ -31,6 +31,7 @@ class Test(unittest.TestCase):
         c :- a.
         #project c.
         """
+
         models = ["a c", ""]
 
         self.control.configuration.solve.project = "auto,3"
@@ -71,7 +72,9 @@ class Test(unittest.TestCase):
         {b}.
         c :- a.
         #project c.
+
         """
+
 
         self.control.configuration.solve.project = "auto,3"
         self.control.configuration.solve.models = 0
@@ -111,3 +114,4 @@ class Test(unittest.TestCase):
                 self.assertEqual(literal.atom.ast_type, _ast.ASTType.TheoryAtom)
 
         clingo.ast.parse_string(program, test)
+
