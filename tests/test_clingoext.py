@@ -1,4 +1,5 @@
 import unittest
+
 import clingo
 from clingo import ast as _ast
 
@@ -6,7 +7,6 @@ import eclingo.internal_states.internal_control as internal_control
 
 
 class Test(unittest.TestCase):
-
     def setUp(self):
         self.control = internal_control.InternalStateControl()
 
@@ -14,10 +14,11 @@ class Test(unittest.TestCase):
         models.sort()
         for model in obtained_models:
             model.sort()
-        obtained_models = [' '.join(str(symbol) for symbol in model) for model in obtained_models]
+        obtained_models = [
+            " ".join(str(symbol) for symbol in model) for model in obtained_models
+        ]
         obtained_models.sort()
         self.assertEqual(obtained_models, models)
-
 
     def test_prg01(self):
         """Checks that the models of program are models.
@@ -30,17 +31,17 @@ class Test(unittest.TestCase):
         c :- a.
         #project c.
         """
-        models = ['a c', '']
+
+        models = ["a c", ""]
 
         self.control.configuration.solve.project = "auto,3"
-        self.control.configuration.solve.models  = 0
+        self.control.configuration.solve.models = 0
 
         self.control.add("base", [], program)
         self.control.ground([("base", [])])
         with self.control.solve(yield_=True) as handle:
             obtained_models = [list(model.symbols(shown=True)) for model in handle]
         self.assert_models(models, obtained_models)
-
 
     def test_prg01_pretty_ground_program(self):
         program = """
@@ -51,14 +52,19 @@ class Test(unittest.TestCase):
         """
 
         self.control.configuration.solve.project = "auto,3"
-        self.control.configuration.solve.models  = 0
+        self.control.configuration.solve.models = 0
 
         self.control.add("base", [], program)
         self.control.ground([("base", [])])
-        self.assertEqual(sorted(str(self.control.ground_program).replace(' ','').replace('\n','').split('.')), sorted(program.replace(' ','').replace('\n','').split('.')))
-
-
-
+        self.assertEqual(
+            sorted(
+                str(self.control.ground_program)
+                .replace(" ", "")
+                .replace("\n", "")
+                .split(".")
+            ),
+            sorted(program.replace(" ", "").replace("\n", "").split(".")),
+        )
 
     def test_prg01_pretty_ground_program_add(self):
         program = """
@@ -66,10 +72,12 @@ class Test(unittest.TestCase):
         {b}.
         c :- a.
         #project c.
-        """      
+
+        """
+
 
         self.control.configuration.solve.project = "auto,3"
-        self.control.configuration.solve.models  = 0
+        self.control.configuration.solve.models = 0
 
         self.control.add("base", [], program)
         self.control.ground([("base", [])])
@@ -82,10 +90,17 @@ class Test(unittest.TestCase):
         c :- a.
         __x4 :- a.
         #project c.
-        """     
+        """
 
-        self.assertEqual(sorted(str(self.control.ground_program).replace(' ','').replace('\n','').split('.')), sorted(program2.replace(' ','').replace('\n','').split('.')))
-
+        self.assertEqual(
+            sorted(
+                str(self.control.ground_program)
+                .replace(" ", "")
+                .replace("\n", "")
+                .split(".")
+            ),
+            sorted(program2.replace(" ", "").replace("\n", "").split(".")),
+        )
 
     def test_parsing_theory_atoms(self):
         program = """
@@ -99,3 +114,4 @@ class Test(unittest.TestCase):
                 self.assertEqual(literal.atom.ast_type, _ast.ASTType.TheoryAtom)
 
         clingo.ast.parse_string(program, test)
+
