@@ -16,7 +16,7 @@ def _positive_symbolic_literal_to_term(x: AST):
     return ast.SymbolicTerm(x.location, clingo.Function(x.name, [], True))
 
 
-def theory_atom_to_function(x: AST) -> AST:
+def theory_atom_to_term(x: AST) -> AST:
     """
     Convert the given literal into ast.Function
     - `x.atom.term` -> subjective literal term
@@ -32,11 +32,11 @@ def theory_atom_to_function(x: AST) -> AST:
     -------
     An `AST` that represnts the reified Theory Atom Element as an AST.Function.
     """
-    theory_atom = x.atom.elements[0].terms[0]
+    term = x.atom.elements[0].terms[0]
 
-    plain_term = theory_term_to_term(theory_atom, False)
+    term = theory_term_to_term(term, False)
 
-    return ast.Function(x.location, str(x.atom.term), [plain_term], False)
+    return ast.Function(x.location, str(x.atom.term), [term], False)
 
 
 def symbolic_literal_to_term(
