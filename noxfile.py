@@ -3,6 +3,14 @@ import nox
 # If using conda, then be sure to be in the nox environment different from "base" before running this file.
 
 
+@nox.session
+def format(session):
+    session.install("black", "isort")
+    args = session.posargs if session.posargs else ["src/eclingo"]
+    session.run("isort", "--profile", "black", "src/eclingo")
+    session.run("black", *args)
+
+
 @nox.session(python=None)
 def typecheck(session):
     session.install("-r", "requirements.txt", "mypy")
@@ -28,3 +36,15 @@ def coverage(session):
         "--omit",
         ",".join(omit),
     )
+
+
+@nox.session
+def pylint(session):
+    session.install("-r", "requirements.txt", "pylint")
+    session.run("pylint", "src/eclingo")
+
+
+@nox.session
+def lint_flake8(session):
+    session.install("flake8", "flake8-black", "flake8-isort")
+    session.run("flake8", "src/eclingo")
