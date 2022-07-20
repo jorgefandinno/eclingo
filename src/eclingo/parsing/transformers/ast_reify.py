@@ -4,7 +4,7 @@ This module contains functions for reififcation of `AST` objects
 import clingo
 from clingo import ast
 from clingo.ast import AST, ASTType, Sign
-from clingox.ast import theory_term_to_term
+from clingox.ast import theory_term_to_literal, theory_term_to_term
 
 
 def _positive_symbolic_literal_to_term(x: AST):
@@ -32,9 +32,14 @@ def theory_atom_to_term(x: AST) -> AST:
     -------
     An `AST` that represnts the reified Theory Atom Element as an AST.Function.
     """
-    term = x.atom.elements[0].terms[0]
 
-    term = theory_term_to_term(term, False)
+    if x.atom.elements[0].terms[0].ast_type == ASTType.TheoryUnparsedTerm:
+        literal = theory_term_to_literal(x.atom.elements[0].terms[0])
+        term = symbolic_literal_to_term(literal)
+
+    else:
+        term = x.atom.elements[0].terms[0]
+        term = theory_term_to_term(term, False)
 
     return ast.Function(x.location, str(x.atom.term), [term], False)
 
