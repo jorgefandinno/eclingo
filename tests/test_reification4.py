@@ -1,6 +1,6 @@
 import clingox
 from clingo.ast import AST
-from clingox.ast import theory_term_to_term, theory_term_to_literal
+from clingox.ast import theory_term_to_term
 
 from eclingo.parsing.transformers import ast_reify
 from tests.test_reification2 import parse_literal, parse_term

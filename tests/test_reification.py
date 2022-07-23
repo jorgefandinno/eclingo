@@ -4,6 +4,8 @@ from clingo import ast
 
 from eclingo.config import AppConfig
 from eclingo.parsing import parser
+from eclingo.parsing.transformers import ast_reify
+from tests.test_reification2 import parse_literal
 
 
 def flatten(lst):
@@ -20,6 +22,8 @@ def flatten(lst):
 
 def parse_program(stm, parameters=[], name="base"):
     ret = []
+    
+    print("THE STATEMENT")
     parser.parse_program(
         stm,
         ret.append,
@@ -27,6 +31,8 @@ def parse_program(stm, parameters=[], name="base"):
         name,
         config=AppConfig(semantics="c19-1", verbose=0, use_reification=True),
     )
+    
+    print("FINISH THE STATEMENT")
     return flatten(ret)
 
 
@@ -38,6 +44,7 @@ def clingo_parse_program(stm):
 
 
 class TestCase(unittest.TestCase):
+
     def setUp(self):
         self.print = False
 
@@ -47,6 +54,7 @@ class TestCase(unittest.TestCase):
 
 
 class Test(TestCase):
+    '''
     def test_non_epistemic_rules(self):
         self.assert_equal_program(
             parse_program("a :- b, c, not d, not not e."),
@@ -56,12 +64,18 @@ class Test(TestCase):
             parse_program("-a :- b, -c, not -d, not not -e."),
             "u(-a) :- u(b), u(-c), not u(-d), not not u(-e).",
         )
-
+'''
     def test_epistemic_atom(self):
+        
         self.assert_equal_program(
-            parse_program(":- &k{a}."), ":- k_u(a). {k_u(a)} :- u(a)."
+            parse_program(":- &k{a}."), ":- k(u(a)). {k(u(a))} :- u(a)."
         )
-
+        '''
+        self.assert_equal_program(
+            parse_program(":- &k{a}."), ":- k(u(a)). {k(u(a))} :- u(a)."
+        )
+       '''
+    '''
     def test_epistemic_atom_with_strong_negation(self):
         # Deal with the negated symbols -> Maybe on the reify_symbolic_atoms we have to deal for the case when storn negation of literal
         self.assert_equal_program(
@@ -90,7 +104,7 @@ class Test(TestCase):
         pass
         # self.assert_equal_program(parse_program(":- &k{ not -a}."), ":- k_not_sn_u(a). not_sn_u(a) :- not sn_u(a). {k_not_sn_u(a)} :- not_sn_u(a). sn_u(a) :- -u(a).")
         # self.assert_equal_program(parse_program(":- &k{ not not -a}."), ":- k_not2_sn_u_a. not2_sn_u_a :- not not sn_u_a.  {k_not2_sn_u_a} :- not2_sn_u_a. sn_u_a :- -u_a.")
-
+    
     # Changed above
     ######################################################
     # Not changed below
@@ -192,3 +206,4 @@ class Test(TestCase):
             parse_program("#heuristic a. [1,sign]", [], "base"),
             "#heuristic u(a). [1,sign]",
         )
+    '''

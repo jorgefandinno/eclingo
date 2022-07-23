@@ -6,6 +6,8 @@ from clingo.ast import Location, Position
 from eclingo import prefixes
 from eclingo.config import AppConfig
 from eclingo.internal_states.internal_control import ASTObject, ShowStatement
+from eclingo.parsing.transformers import ast_reify
+from tests.test_reification2 import parse_literal
 
 from .transformers.parser_negations import StrongNegationReplacement
 from .transformers.theory_parser_epistemic import (
@@ -116,9 +118,11 @@ class _ProgramParser(object):
         ) = replace_negations_by_auxiliary_atoms_in_epistemic_literals(rule)
         self.strong_negation_replacements.update(sn_replacement)
 
-        return replace_epistemic_literals_by_auxiliary_atoms(
-            rules, prefixes.EPISTEMIC_PREFIX
+        ret = replace_epistemic_literals_by_auxiliary_atoms(
+            rules, self.reification, prefixes.EPISTEMIC_PREFIX
         )
+
+        return ret
 
     def _parse_program_statement(self, statement: ast.AST) -> List[ast.AST]:
         if (

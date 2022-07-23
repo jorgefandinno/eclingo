@@ -5,14 +5,17 @@ from copy import copy
 from typing import Iterable, List, Set, Tuple, Union, cast
 
 from clingo import ast
-from clingo.ast import AST, ASTSequence, Sign, Transformer
+from clingo.ast import AST, ASTSequence, ASTType, Sign, Transformer
 from clingox.ast import (
     filter_body_literals,
     prefix_symbolic_atoms,
+    reify_symbolic_atoms,
     theory_term_to_literal,
 )
 
-from eclingo import prefixes
+from eclingo import config, prefixes
+from eclingo.parsing.transformers import ast_reify
+from tests.test_reification2 import parse_literal
 
 from .parser_negations import (
     SnReplacementType,
@@ -187,10 +190,11 @@ def ensure_literals(stms):
 
 
 class EClingoTransformer(Transformer):
-    def __init__(self, k_prefix="k"):
+    def __init__(self, use_reification, k_prefix="k"):
         self.k_prefix = k_prefix
         self.epistemic_replacements = []
         self.aux_rules = []
+        self.reification = use_reification
 
     def visit_Rule(self, x, loc="body"):
         head = ensure_literals(self.visit(x.head, loc="head"))
@@ -200,39 +204,61 @@ class EClingoTransformer(Transformer):
             x.head = head
             x.body = body
             for (nested_literal, aux_atom) in self.epistemic_replacements:
+                # print("This is the nested literal", nested_literal)
+                # print("The aux atom that creates the conditional", aux_atom)
                 conditional_literal = ast.ConditionalLiteral(
                     x.location, ensure_literal(aux_atom), []
                 )
+                # print("This is the conditional literal", conditional_literal)
+                # print(
+                # "Conditional Literal reified",
+                # ast_reify.symbolic_literal_to_term(conditional_literal.literal),
+                # )
                 aux_rule_head = ast.Aggregate(
                     x.location, None, [conditional_literal], None
                 )
+                # print("This is the aux_rule_head", aux_rule_head)
                 aux_rule = ast.Rule(x.location, aux_rule_head, [nested_literal])
+                # print(aux_rule)
                 self.aux_rules.append(aux_rule)
         return x
 
     def visit_TheoryAtom(self, atom, loc="body"):
         assert atom.term.name == "k" and not atom.term.arguments
         nested_literal = atom.elements[0].terms[0]
-        aux_atom = prefix_symbolic_atoms(nested_literal.atom, prefixes.EPISTEMIC_PREFIX)
+        # This is where the k_ is coming from
+        # use the use_reification
+        if self.reification:
+            aux_atom = reify_symbolic_atoms(
+                nested_literal.atom, atom.term.name, reify_strong_negation=True
+            )
+        else:
+            aux_atom = prefix_symbolic_atoms(
+                nested_literal.atom, prefixes.EPISTEMIC_PREFIX
+            )
         self.epistemic_replacements.append((nested_literal, aux_atom))
         return aux_atom
 
 
 def _replace_epistemic_literals_by_auxiliary_atoms(
-    stm: ast.AST, k_prefix: str = "k"
+    stm: ast.AST, use_reification: bool, k_prefix: str = "k"
 ) -> List[ast.AST]:
-    trans = EClingoTransformer(k_prefix)
+    trans = EClingoTransformer(use_reification, k_prefix)
     rule = trans(stm)
     rules = [rule] + trans.aux_rules
     return rules
 
 
 def replace_epistemic_literals_by_auxiliary_atoms(
-    stms: Iterable[ast.AST], k_prefix: str = "k"
+    stms: Iterable[ast.AST], use_reification: bool, k_prefix: str = "k"
 ) -> List[ast.AST]:
     rules = []
     for stm in stms:
-        rules.extend(_replace_epistemic_literals_by_auxiliary_atoms(stm, k_prefix))
+        rules.extend(
+            _replace_epistemic_literals_by_auxiliary_atoms(
+                stm, use_reification, k_prefix
+            )
+        )
     return rules
 
 
