@@ -54,7 +54,7 @@ class TestCase(unittest.TestCase):
 
 
 class Test(TestCase):
-    '''
+
     def test_non_epistemic_rules(self):
         self.assert_equal_program(
             parse_program("a :- b, c, not d, not not e."),
@@ -64,17 +64,12 @@ class Test(TestCase):
             parse_program("-a :- b, -c, not -d, not not -e."),
             "u(-a) :- u(b), u(-c), not u(-d), not not u(-e).",
         )
-'''
+
     def test_epistemic_atom(self):
-        
         self.assert_equal_program(
             parse_program(":- &k{a}."), ":- k(u(a)). {k(u(a))} :- u(a)."
         )
-        '''
-        self.assert_equal_program(
-            parse_program(":- &k{a}."), ":- k(u(a)). {k(u(a))} :- u(a)."
-        )
-       '''
+       
     '''
     def test_epistemic_atom_with_strong_negation(self):
         # Deal with the negated symbols -> Maybe on the reify_symbolic_atoms we have to deal for the case when storn negation of literal
