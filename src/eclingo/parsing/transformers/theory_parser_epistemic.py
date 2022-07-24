@@ -14,8 +14,6 @@ from clingox.ast import (
 )
 
 from eclingo import config, prefixes
-from eclingo.parsing.transformers import ast_reify
-from tests.test_reification2 import parse_literal
 
 from .parser_negations import (
     SnReplacementType,
@@ -204,22 +202,13 @@ class EClingoTransformer(Transformer):
             x.head = head
             x.body = body
             for (nested_literal, aux_atom) in self.epistemic_replacements:
-                # print("This is the nested literal", nested_literal)
-                # print("The aux atom that creates the conditional", aux_atom)
                 conditional_literal = ast.ConditionalLiteral(
                     x.location, ensure_literal(aux_atom), []
                 )
-                # print("This is the conditional literal", conditional_literal)
-                # print(
-                # "Conditional Literal reified",
-                # ast_reify.symbolic_literal_to_term(conditional_literal.literal),
-                # )
                 aux_rule_head = ast.Aggregate(
                     x.location, None, [conditional_literal], None
                 )
-                # print("This is the aux_rule_head", aux_rule_head)
                 aux_rule = ast.Rule(x.location, aux_rule_head, [nested_literal])
-                # print(aux_rule)
                 self.aux_rules.append(aux_rule)
         return x
 

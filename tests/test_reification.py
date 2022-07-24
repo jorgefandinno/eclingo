@@ -23,7 +23,6 @@ def flatten(lst):
 def parse_program(stm, parameters=[], name="base"):
     ret = []
     
-    print("THE STATEMENT")
     parser.parse_program(
         stm,
         ret.append,
@@ -32,7 +31,6 @@ def parse_program(stm, parameters=[], name="base"):
         config=AppConfig(semantics="c19-1", verbose=0, use_reification=True),
     )
     
-    print("FINISH THE STATEMENT")
     return flatten(ret)
 
 

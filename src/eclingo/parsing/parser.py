@@ -6,8 +6,6 @@ from clingo.ast import Location, Position
 from eclingo import prefixes
 from eclingo.config import AppConfig
 from eclingo.internal_states.internal_control import ASTObject, ShowStatement
-from eclingo.parsing.transformers import ast_reify
-from tests.test_reification2 import parse_literal
 
 from .transformers.parser_negations import StrongNegationReplacement
 from .transformers.theory_parser_epistemic import (
