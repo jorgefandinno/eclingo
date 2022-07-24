@@ -69,7 +69,6 @@ class Test(TestCase):
         self.assert_equal_program(
             parse_program(":- &k{a}."), ":- k(u(a)). {k(u(a))} :- u(a)."
         )
-       
     '''
     def test_epistemic_atom_with_strong_negation(self):
         # Deal with the negated symbols -> Maybe on the reify_symbolic_atoms we have to deal for the case when storn negation of literal

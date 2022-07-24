@@ -226,8 +226,6 @@ class EClingoTransformer(Transformer):
     def visit_TheoryAtom(self, atom, loc="body"):
         assert atom.term.name == "k" and not atom.term.arguments
         nested_literal = atom.elements[0].terms[0]
-        # This is where the k_ is coming from
-        # use the use_reification
         if self.reification:
             aux_atom = reify_symbolic_atoms(
                 nested_literal.atom, atom.term.name, reify_strong_negation=True

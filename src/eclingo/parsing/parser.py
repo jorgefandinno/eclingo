@@ -118,11 +118,9 @@ class _ProgramParser(object):
         ) = replace_negations_by_auxiliary_atoms_in_epistemic_literals(rule)
         self.strong_negation_replacements.update(sn_replacement)
 
-        ret = replace_epistemic_literals_by_auxiliary_atoms(
+        return replace_epistemic_literals_by_auxiliary_atoms(
             rules, self.reification, prefixes.EPISTEMIC_PREFIX
         )
-
-        return ret
 
     def _parse_program_statement(self, statement: ast.AST) -> List[ast.AST]:
         if (

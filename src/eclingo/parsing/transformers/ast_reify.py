@@ -32,7 +32,6 @@ def theory_atom_to_term(x: AST) -> AST:
     -------
     An `AST` that represnts the reified Theory Atom Element as an AST.Function.
     """
-
     if x.atom.elements[0].terms[0].ast_type == ASTType.TheoryUnparsedTerm:
         literal = theory_term_to_literal(x.atom.elements[0].terms[0])
         term = symbolic_literal_to_term(literal)
