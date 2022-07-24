@@ -9,6 +9,7 @@ from clingo.ast import AST, ASTSequence, Sign, Transformer
 from clingox.ast import (
     filter_body_literals,
     prefix_symbolic_atoms,
+    reify_symbolic_atoms,
     theory_term_to_literal,
 )
 
@@ -187,10 +188,11 @@ def ensure_literals(stms):
 
 
 class EClingoTransformer(Transformer):
-    def __init__(self, k_prefix="k"):
+    def __init__(self, use_reification, k_prefix="k"):
         self.k_prefix = k_prefix
         self.epistemic_replacements = []
         self.aux_rules = []
+        self.reification = use_reification
 
     def visit_Rule(self, x, loc="body"):
         head = ensure_literals(self.visit(x.head, loc="head"))
@@ -213,26 +215,37 @@ class EClingoTransformer(Transformer):
     def visit_TheoryAtom(self, atom, loc="body"):
         assert atom.term.name == "k" and not atom.term.arguments
         nested_literal = atom.elements[0].terms[0]
-        aux_atom = prefix_symbolic_atoms(nested_literal.atom, prefixes.EPISTEMIC_PREFIX)
+        if self.reification:
+            aux_atom = reify_symbolic_atoms(
+                nested_literal.atom, atom.term.name, reify_strong_negation=True
+            )
+        else:
+            aux_atom = prefix_symbolic_atoms(
+                nested_literal.atom, prefixes.EPISTEMIC_PREFIX
+            )
         self.epistemic_replacements.append((nested_literal, aux_atom))
         return aux_atom
 
 
 def _replace_epistemic_literals_by_auxiliary_atoms(
-    stm: ast.AST, k_prefix: str = "k"
+    stm: ast.AST, use_reification: bool, k_prefix: str = "k"
 ) -> List[ast.AST]:
-    trans = EClingoTransformer(k_prefix)
+    trans = EClingoTransformer(use_reification, k_prefix)
     rule = trans(stm)
     rules = [rule] + trans.aux_rules
     return rules
 
 
 def replace_epistemic_literals_by_auxiliary_atoms(
-    stms: Iterable[ast.AST], k_prefix: str = "k"
+    stms: Iterable[ast.AST], use_reification: bool, k_prefix: str = "k"
 ) -> List[ast.AST]:
     rules = []
     for stm in stms:
-        rules.extend(_replace_epistemic_literals_by_auxiliary_atoms(stm, k_prefix))
+        rules.extend(
+            _replace_epistemic_literals_by_auxiliary_atoms(
+                stm, use_reification, k_prefix
+            )
+        )
     return rules
 
 
