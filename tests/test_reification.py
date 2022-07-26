@@ -22,7 +22,7 @@ def flatten(lst):
 
 def parse_program(stm, parameters=[], name="base"):
     ret = []
-    
+    print("THE STATEMENT")
     parser.parse_program(
         stm,
         ret.append,
@@ -30,7 +30,7 @@ def parse_program(stm, parameters=[], name="base"):
         name,
         config=AppConfig(semantics="c19-1", verbose=0, use_reification=True),
     )
-    
+    print("END OF STATEMENT")
     return flatten(ret)
 
 
@@ -53,6 +53,7 @@ class TestCase(unittest.TestCase):
 
 class Test(TestCase):
 
+    '''
     def test_non_epistemic_rules(self):
         self.assert_equal_program(
             parse_program("a :- b, c, not d, not not e."),
@@ -68,6 +69,7 @@ class Test(TestCase):
             parse_program(":- &k{a}."), ":- k(u(a)). {k(u(a))} :- u(a)."
         )
     '''
+    """
     def test_epistemic_atom_with_strong_negation(self):
         # Deal with the negated symbols -> Maybe on the reify_symbolic_atoms we have to deal for the case when storn negation of literal
         self.assert_equal_program(
@@ -77,12 +79,14 @@ class Test(TestCase):
         self.assert_equal_program(
             parse_program(":- &k{- -a}."), ":- k_u(a). {k_u(a)} :- u(a)."
         )
-
+    """
+    
     def test_epistemic_atom_with_default_negation(self):
         self.assert_equal_program(
             parse_program(":- &k{ not a}."),
-            ":- k_not_u(a). not_u(a) :- not u(a). {k_not_u(a)} :- not_u(a).",
+            ":- k(not1(u(a))). not1(u(a)) :- not u(a). {k(not1(u(a)))} :- not1(u(a)).",
         )
+        '''
         self.assert_equal_program(
             parse_program("b :- &k{ not a}."),
             "u(b) :- k_not_u(a). not_u(a) :- not u(a). {k_not_u(a)} :- not_u(a).",
@@ -91,7 +95,8 @@ class Test(TestCase):
             parse_program(":- &k{ not not a}."),
             ":- k_not2_u(a). not2_u(a) :- not not u(a). {k_not2_u(a)} :- not2_u(a).",
         )
-
+        '''
+    '''
     def test_epistemic_atom_with_both_negations(self):
         pass
         # self.assert_equal_program(parse_program(":- &k{ not -a}."), ":- k_not_sn_u(a). not_sn_u(a) :- not sn_u(a). {k_not_sn_u(a)} :- not_sn_u(a). sn_u(a) :- -u(a).")

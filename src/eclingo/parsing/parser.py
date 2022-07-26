@@ -113,7 +113,9 @@ class _ProgramParser(object):
         (
             rules,
             sn_replacement,
-        ) = replace_negations_by_auxiliary_atoms_in_epistemic_literals(rule)
+        ) = replace_negations_by_auxiliary_atoms_in_epistemic_literals(
+            rule, self.reification
+        )
         self.strong_negation_replacements.update(sn_replacement)
 
         return replace_epistemic_literals_by_auxiliary_atoms(
