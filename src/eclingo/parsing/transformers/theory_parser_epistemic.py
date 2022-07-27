@@ -29,7 +29,7 @@ from .parser_negations import (
 
 
 class ApplyToEpistemicAtomsElementsTransformer(Transformer):
-    def __init__(self, reification: bool, fun, update_fun=None):
+    def __init__(self, reification, fun, update_fun=None):
         self.fun = fun
         self.update_fun = update_fun
         self.reification = reification
@@ -68,6 +68,7 @@ def parse_epistemic_literals_elements(rule):
 
 
 def make_strong_negation_auxiliar_in_epistemic_literals(
+    use_reification: bool,
     stm: Iterable[ast.AST],
 ) -> Tuple[Iterable[ast.AST], SnReplacementType]:
     """
@@ -81,7 +82,7 @@ def make_strong_negation_auxiliar_in_epistemic_literals(
     """
     replacement: SnReplacementType = set()
     trn = ApplyToEpistemicAtomsElementsTransformer(
-        False, make_strong_negations_auxiliar, replacement.update
+        use_reification, make_strong_negations_auxiliar, replacement.update
     )
     stm = trn.visit_sequence(cast(ASTSequence, stm))
     return (stm, replacement)
@@ -138,7 +139,7 @@ class EpistemicLiteralNegationsToAuxiliarTransformer(Transformer):
         head = rule.head
         body = rule.body
         body, self.sn_replacement = make_strong_negation_auxiliar_in_epistemic_literals(
-            body
+            self.reification, body
         )
         guard = build_guard(body)
         body, not_replacement = make_default_negation_auxiliar_in_epistemic_literals(
@@ -219,14 +220,17 @@ class EClingoTransformer(Transformer):
     def visit_TheoryAtom(self, atom, loc="body"):
         assert atom.term.name == "k" and not atom.term.arguments
         nested_literal = atom.elements[0].terms[0]
+
         if self.reification:
             aux_atom = reify_symbolic_atoms(
-                nested_literal.atom, atom.term.name, reify_strong_negation=True
+                nested_literal.atom, atom.term.name, reify_strong_negation=False
             )
         else:
             aux_atom = prefix_symbolic_atoms(
                 nested_literal.atom, prefixes.EPISTEMIC_PREFIX
             )
+
+        # aux_atom = prefix_symbolic_atoms(nested_literal.atom, prefixes.EPISTEMIC_PREFIX)
         self.epistemic_replacements.append((nested_literal, aux_atom))
         return aux_atom
 

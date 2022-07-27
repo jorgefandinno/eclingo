@@ -25,9 +25,10 @@ class SimplifyStrongNegationsTransformer(Transformer):
 
 
 class StrongNegationToAuxiliarTransformer(Transformer):
-    def __init__(self, strong_negation_prefix="sn"):
+    def __init__(self, use_reification, strong_negation_prefix="sn"):
         self.strong_negation_prefix = strong_negation_prefix
         self.replacement = set()
+        self.reification = use_reification
 
     def visit_UnaryOperation(self, x):
         assert x.operator_type == ast.UnaryOperator.Minus
@@ -35,11 +36,16 @@ class StrongNegationToAuxiliarTransformer(Transformer):
         x = simplify_strong_negations(x)
         name = x.argument.name
         location = x.argument.location
-        aux_name = self.strong_negation_prefix + "_" + name
-        arguments = x.argument.arguments
-        external = x.argument.external
-        atom = ast.Function(location, aux_name, arguments, external)
-        self.replacement.add((name, len(arguments), aux_name))
+        if self.reification:
+            atom = ast_reify.symbolic_literal_to_term(x)
+            aux_name = atom.argument.name
+            arguments = atom.argument.arguments
+        else:
+            aux_name = self.strong_negation_prefix + "_" + name
+            arguments = x.argument.arguments
+            external = x.argument.external
+            atom = ast.Function(location, aux_name, arguments, external)
+            self.replacement.add((name, len(arguments), aux_name))
         return atom
 
 
@@ -108,7 +114,7 @@ def make_strong_negations_auxiliar(
       * the second element is its arity
       * the third element is the name of the auxiliary atom that replaces it
     """
-    trn = StrongNegationToAuxiliarTransformer()
+    trn = StrongNegationToAuxiliarTransformer(reification)
     stm = trn.visit(stm)
     return (stm, trn.replacement)
 
@@ -122,12 +128,12 @@ def _make_default_negation_auxiliar(
     assert stm.ast_type == ast.ASTType.Literal
     location = stm.atom.symbol.location
 
+    if stm.sign == ast.Sign.NoSign or stm.atom.ast_type != ast.ASTType.SymbolicAtom:
+        return stm
     if reification:
         print(ast_reify.symbolic_literal_to_term(stm))
         aux_atom = ast_reify.symbolic_literal_to_term(stm)
     else:
-        if stm.sign == ast.Sign.NoSign or stm.atom.ast_type != ast.ASTType.SymbolicAtom:
-            return stm
         if stm.sign == ast.Sign.Negation:
             sign = default_negation_prefix + "_"
         else:  # stm.sign == ast.Sign.DoubleNegation:
