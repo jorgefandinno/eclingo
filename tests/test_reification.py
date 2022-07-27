@@ -111,7 +111,7 @@ class Test(TestCase):
             parse_program(":- &k{a(V0)}."), ":- k(u(a(V0))). {k(u(a(V0)))} :- u(a(V0))."
         )
     
-        '''
+    '''
         self.assert_equal_program(
             parse_program(":- &k{-a(V0)}."),
             ":- k_u(sn_a(V0)). sn_a(V0) :- -a(V0). {k_u(sn_a(V0))} :- u(sn_a(V0)).",
@@ -161,13 +161,13 @@ class Test(TestCase):
     # Note that the last two rules appear repeated. The second copy apears when processing the rules
     # not_u_b(V0) :- &k{u_a(V0)}, not u_b(V0).
     # An improvement would removing those unecessary rules
-    '''
+    
     def test_epistemic_with_variables_safety04(self):
         self.assert_equal_program(
             parse_program("b :- not not &k{a(X)}."),
             """
-            u(b) :- not not k_u(a(X)).
-            { k_u(a(X)) : } :- u(a(X)).
+            u(b) :- not not k(u(a(X))).
+            { k(u(a(X))) : } :- u(a(X)).
             """,
         )
 
@@ -175,20 +175,21 @@ class Test(TestCase):
         self.assert_equal_program(
             parse_program(":- not &k{a(V0)}, &k{b(V0)}."),
             """
-            :- not k_u(a(V0)), k_u(b(V0)).
-            {k_u(a(V0))} :- u(a(V0)).
-            {k_u(b(V0))} :- u(b(V0)).
+            :- not k(u(a(V0))), k(u(b(V0))).
+            {k(u(a(V0)))} :- u(a(V0)).
+            {k(u(b(V0)))} :- u(b(V0)).
             """,
         )
         self.assert_equal_program(
             parse_program(":- not not &k{a(V0)}, &k{b(V0)}."),
             """
-            :- not not k_u(a(V0)), k_u(b(V0)).
-            {k_u(a(V0))} :- u(a(V0)).
-            {k_u(b(V0))} :- u(b(V0)).
+            :- not not k(u(a(V0))), k(u(b(V0))).
+            {k(u(a(V0)))} :- u(a(V0)).
+            {k(u(b(V0)))} :- u(b(V0)).
             """,
         )
 
+    """
     def test_weighted_rules(self):
         self.assert_equal_program(parse_program(":-{a} = 0."), ":-{u(a)} = 0.")
 
@@ -208,4 +209,4 @@ class Test(TestCase):
             parse_program("#heuristic a. [1,sign]", [], "base"),
             "#heuristic u(a). [1,sign]",
         )
-    '''
+    """

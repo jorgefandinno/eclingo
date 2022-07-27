@@ -36,16 +36,16 @@ class StrongNegationToAuxiliarTransformer(Transformer):
         x = simplify_strong_negations(x)
         name = x.argument.name
         location = x.argument.location
-        if self.reification:
-            atom = ast_reify.symbolic_literal_to_term(x)
-            aux_name = atom.argument.name
-            arguments = atom.argument.arguments
-        else:
-            aux_name = self.strong_negation_prefix + "_" + name
-            arguments = x.argument.arguments
-            external = x.argument.external
-            atom = ast.Function(location, aux_name, arguments, external)
-            self.replacement.add((name, len(arguments), aux_name))
+        # if self.reification:
+        # atom = ast_reify.symbolic_literal_to_term(x)
+        # aux_name = atom.argument.name
+        # arguments = atom.argument.arguments
+        # else:
+        aux_name = self.strong_negation_prefix + "_" + name
+        arguments = x.argument.arguments
+        external = x.argument.external
+        atom = ast.Function(location, aux_name, arguments, external)
+        self.replacement.add((name, len(arguments), aux_name))
         return atom
 
 
