@@ -76,7 +76,9 @@ class _ProgramParser(object):
 
     def __call__(self) -> None:
         ast.parse_string(self.program, self._parse_statement)
-        for aux_rule in self.strong_negation_replacements.get_auxiliary_rules():
+        for aux_rule in self.strong_negation_replacements.get_auxiliary_rules(
+            self.reification
+        ):
             self.callback(aux_rule)
 
     def _parse_statement(self, statement: ast.AST) -> None:

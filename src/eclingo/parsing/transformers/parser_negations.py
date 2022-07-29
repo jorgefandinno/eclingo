@@ -6,6 +6,9 @@ from typing import Iterable, Iterator, List, Optional, Set, Tuple
 
 from clingo import ast
 from clingo.ast import Location, Position, Transformer
+from clingox.ast import reify_symbolic_atoms
+
+from eclingo import prefixes
 
 from . import ast_reify, astutil
 
@@ -35,15 +38,16 @@ class StrongNegationToAuxiliarTransformer(Transformer):
         assert x.argument.ast_type == ast.ASTType.Function
         x = simplify_strong_negations(x)
         name = x.argument.name
+
         location = x.argument.location
-        # if self.reification:
-        # atom = ast_reify.symbolic_literal_to_term(x)
-        # aux_name = atom.argument.name
-        # arguments = atom.argument.arguments
-        # else:
-        aux_name = self.strong_negation_prefix + "_" + name
         arguments = x.argument.arguments
         external = x.argument.external
+
+        if self.reification:
+            aux_name = "-" + name
+        else:
+            aux_name = self.strong_negation_prefix + "_" + name
+
         atom = ast.Function(location, aux_name, arguments, external)
         self.replacement.add((name, len(arguments), aux_name))
         return atom
@@ -63,16 +67,18 @@ class StrongNegationReplacement(Set[Tuple[str, int, str]]):
         ),
     )
 
-    def get_auxiliary_rules(self) -> Iterator[ast.AST]:
+    def get_auxiliary_rules(self, reification) -> Iterator[ast.AST]:
         """
         Returns a rule of the form:
             aux_name(X1, ..., Xn) :- -name(X1, ... , Xn).
         for each tuple in replacement
         """
         for name, arity, aux_name in self:
-            yield self._build_auxliary_rule(name, arity, aux_name)
+            yield self._build_auxliary_rule(name, arity, aux_name, reification)
 
-    def _build_auxliary_rule(self, name: str, arity: int, aux_name: str) -> ast.AST:
+    def _build_auxliary_rule(
+        self, name: str, arity: int, aux_name: str, reification: bool
+    ) -> ast.AST:
         """
         Returns a rule of the form:
             aux_name(X1, ..., Xn) :- -name(X1, ... , Xn).
@@ -87,7 +93,18 @@ class StrongNegationReplacement(Set[Tuple[str, int, str]]):
         head = astutil.atom(location, True, aux_name, arguments)
         head = ast.Literal(location, ast.Sign.NoSign, head)
         body_atom = astutil.atom(location, False, name, arguments)
+
+        if reification:
+            body_atom = reify_symbolic_atoms(
+                body_atom, prefixes.U_NAME, reify_strong_negation=True
+            )
+
+            head = reify_symbolic_atoms(
+                head, prefixes.U_NAME, reify_strong_negation=True
+            )
+
         body = [ast.Literal(location, ast.Sign.NoSign, body_atom)]
+
         return ast.Rule(location, head, body)
 
 
@@ -131,7 +148,6 @@ def _make_default_negation_auxiliar(
     if stm.sign == ast.Sign.NoSign or stm.atom.ast_type != ast.ASTType.SymbolicAtom:
         return stm
     if reification:
-        print(ast_reify.symbolic_literal_to_term(stm))
         aux_atom = ast_reify.symbolic_literal_to_term(stm)
     else:
         if stm.sign == ast.Sign.Negation:
@@ -144,7 +160,6 @@ def _make_default_negation_auxiliar(
         external = stm.atom.symbol.external
         aux_atom = ast.Function(location, aux_name, arguments, external)
 
-    # Something going on here
     aux_atom = ast.SymbolicAtom(aux_atom)
     new_stm = ast.Literal(location, ast.Sign.NoSign, aux_atom)
 

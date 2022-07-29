@@ -22,7 +22,6 @@ def flatten(lst):
 
 def parse_program(stm, parameters=[], name="base"):
     ret = []
-    print("THE STATEMENT")
     parser.parse_program(
         stm,
         ret.append,
@@ -30,7 +29,6 @@ def parse_program(stm, parameters=[], name="base"):
         name,
         config=AppConfig(semantics="c19-1", verbose=0, use_reification=True),
     )
-    print("END OF STATEMENT")
     return flatten(ret)
 
 
@@ -53,7 +51,6 @@ class TestCase(unittest.TestCase):
 
 class Test(TestCase):
 
-    
     def test_non_epistemic_rules(self):
         self.assert_equal_program(
             parse_program("a :- b, c, not d, not not e."),
@@ -68,17 +65,15 @@ class Test(TestCase):
         self.assert_equal_program(
             parse_program(":- &k{a}."), ":- k(u(a)). {k(u(a))} :- u(a)."
         )
-    """
+        
     def test_epistemic_atom_with_strong_negation(self):
-        # Deal with the negated symbols -> Maybe on the reify_symbolic_atoms we have to deal for the case when storn negation of literal
         self.assert_equal_program(
             parse_program(":- &k{-a}."),
-            ":- k_u(sn_a). sn_a :- -a. {k_u(sn_a)} :- u(sn_a).",
+            ":- k(u(-a)). u(-a) :- u(-a). {k(u(-a))} :- u(-a).",
         )
         self.assert_equal_program(
-            parse_program(":- &k{- -a}."), ":- k_u(a). {k_u(a)} :- u(a)."
+            parse_program(":- &k{- -a}."), ":- k(u(a)). {k(u(a))} :- u(a)."
         )
-    """
     
     def test_epistemic_atom_with_default_negation(self):
         self.assert_equal_program(
@@ -95,17 +90,18 @@ class Test(TestCase):
             parse_program(":- &k{ not not a}."),
             ":- k(not2(u(a))). not2(u(a)) :- not not u(a). {k(not2(u(a)))} :- not2(u(a)).",
         )
-      
-    """
+  
     def test_epistemic_atom_with_both_negations(self):
-        pass
-        # self.assert_equal_program(parse_program(":- &k{ not -a}."), ":- k_not_sn_u(a). not_sn_u(a) :- not sn_u(a). {k_not_sn_u(a)} :- not_sn_u(a). sn_u(a) :- -u(a).")
-        # self.assert_equal_program(parse_program(":- &k{ not not -a}."), ":- k_not2_sn_u_a. not2_sn_u_a :- not not sn_u_a.  {k_not2_sn_u_a} :- not2_sn_u_a. sn_u_a :- -u_a.")
-    """
-    # Changed above
-    ######################################################
-    # Not changed below
-    
+        self.assert_equal_program(
+            parse_program(":- &k{ not -a}."), 
+            ":- k(not1(u(-a))). not1(u(-a)) :- not u(-a). {k(not1(u(-a)))} :- not1(u(-a)). u(-a) :- u(-a)."
+            )
+        
+        self.assert_equal_program(
+            parse_program(":- &k{ not not -a}."),
+            ":- k(not2(u(-a))). not2(u(-a)) :- not not u(-a).  {k(not2(u(-a)))} :- not2(u(-a)). u(-a) :- u(-a)."
+            )
+
     def test_epistemic_with_variables(self):
         self.assert_equal_program(
             parse_program(":- &k{a(V0)}."), ":- k(u(a(V0))). {k(u(a(V0)))} :- u(a(V0))."
@@ -121,18 +117,19 @@ class Test(TestCase):
         self.assert_equal_program(
             parse_program(":- &k{ not not a(V0)}."), 
             ":- k(not2(u(a(V0)))). not2(u(a(V0))) :- not not u(a(V0)). {k(not2(u(a(V0))))} :- not2(u(a(V0))).")
-    '''
+    
         self.assert_equal_program(
             parse_program(":- &k{-a(V0)}."),
-            ":- k_u(sn_a(V0)). sn_a(V0) :- -a(V0). {k_u(sn_a(V0))} :- u(sn_a(V0)).",
+            ":- k(u(-a(V0))). u(-a(V0)) :- u(-a(V0)). {k(u(-a(V0)))} :- u(-a(V0)).",
         )
-    
         
-        """
-        self.assert_equal_program(parse_program(":- &k{ not -a(V0)}."), ":- k_not_sn_u(a(V0)). not_sn_u(a(V0)) :- not sn_u(a(V0)). {k_not_sn_u(a(V0))} :- not_sn_u(a(V0)). sn_u(a(V0)) :- -u(a(V0)).")
-        self.assert_equal_program(parse_program(":- &k{ not not -a(V0)}."), ":- k_not2_sn_u(a(V0)). not2_sn_u(a(V0)) :- not not sn_u(a(V0)).  {k_not2_sn_u(a(V0))} :- not2_sn_u(a(V0)). sn_u(a(V0)) :- -u(a(V0)).")
-        """
-    '''
+        self.assert_equal_program(
+            parse_program(":- &k{ not -a(V0)}."),
+            ":- k(not1(u(-a(V0)))). not1(u(-a(V0))) :- not u(-a(V0)). {k(not1(u(-a(V0))))} :- not1(u(-a(V0))). u(-a(V0)) :- u(-a(V0)).")
+        
+        self.assert_equal_program(
+            parse_program(":- &k{ not not -a(V0)}."),
+            ":- k(not2(u(-a(V0)))). not2(u(-a(V0))) :- not not u(-a(V0)). {k(not2(u(-a(V0))))} :- not2(u(-a(V0))). u(-a(V0)) :- u(-a(V0)).")    
     
     def test_epistemic_with_variables_safety01(self):
         self.assert_equal_program(
@@ -196,7 +193,6 @@ class Test(TestCase):
             {k(u(b(V0)))} :- u(b(V0)).
             """,
         )
-
     
     def test_weighted_rules(self):
         self.assert_equal_program(parse_program(":-{a} = 0."), ":-{u(a)} = 0.")
@@ -217,4 +213,3 @@ class Test(TestCase):
             parse_program("#heuristic a. [1,sign]", [], "base"),
             "#heuristic u(a). [1,sign]",
         )
-    

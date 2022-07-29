@@ -229,8 +229,6 @@ class EClingoTransformer(Transformer):
             aux_atom = prefix_symbolic_atoms(
                 nested_literal.atom, prefixes.EPISTEMIC_PREFIX
             )
-
-        # aux_atom = prefix_symbolic_atoms(nested_literal.atom, prefixes.EPISTEMIC_PREFIX)
         self.epistemic_replacements.append((nested_literal, aux_atom))
         return aux_atom
 
