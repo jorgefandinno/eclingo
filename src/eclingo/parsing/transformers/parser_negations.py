@@ -47,9 +47,9 @@ class StrongNegationToAuxiliarTransformer(Transformer):
             aux_name = "-" + name
         else:
             aux_name = self.strong_negation_prefix + "_" + name
+            self.replacement.add((name, len(arguments), aux_name))
 
         atom = ast.Function(location, aux_name, arguments, external)
-        self.replacement.add((name, len(arguments), aux_name))
         return atom
 
 
