@@ -95,10 +95,6 @@ class StrongNegationReplacement(Set[Tuple[str, int, str]]):
         body_atom = astutil.atom(location, False, name, arguments)
 
         if reification:
-            body_atom = reify_symbolic_atoms(
-                body_atom, prefixes.U_NAME, reify_strong_negation=True
-            )
-
             head = reify_symbolic_atoms(
                 head, prefixes.U_NAME, reify_strong_negation=True
             )
