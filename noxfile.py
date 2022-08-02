@@ -46,5 +46,5 @@ def pylint(session):
 
 @nox.session
 def lint_flake8(session):
-    session.install("flake8", "flake8-black", "flake8-isort")
+    session.install("flake8", "flake8-black")
     session.run("flake8", "src/eclingo")
