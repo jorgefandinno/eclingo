@@ -5,7 +5,7 @@ import nox
 
 @nox.session
 def format(session):
-    session.install("black", "isort")
+    session.install("black", "isort", "flake8-isort")
     args = session.posargs if session.posargs else ["src/eclingo"]
     session.run("isort", "--profile", "black", "src/eclingo")
     session.run("black", *args)
