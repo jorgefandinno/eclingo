@@ -5,7 +5,7 @@ import nox
 
 @nox.session
 def format(session):
-    session.install("black", "isort", "flake8-isort")
+    session.install("black", "isort")
     args = session.posargs if session.posargs else ["src/eclingo"]
     session.run("isort", "--profile", "black", "src/eclingo")
     session.run("black", *args)
@@ -46,5 +46,5 @@ def pylint(session):
 
 @nox.session
 def lint_flake8(session):
-    session.install("flake8", "flake8-black")
+    session.install("flake8", "flake8-black", "flake8-isort")
     session.run("flake8", "src/eclingo")
