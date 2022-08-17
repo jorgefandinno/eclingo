@@ -29,7 +29,7 @@ from .parser_negations import (
 
 
 class ApplyToEpistemicAtomsElementsTransformer(Transformer):
-    def __init__(self, reification, fun, update_fun=None):
+    def __init__(self, fun, reification, update_fun=None):
         self.fun = fun
         self.update_fun = update_fun
         self.reification = reification
@@ -58,9 +58,9 @@ def _theory_term_to_literal_adapter(reification: bool, element: AST) -> AST:
     return new_element
 
 
-def parse_epistemic_literals_elements(rule):
+def parse_epistemic_literals_elements(rule, reification):
     return ApplyToEpistemicAtomsElementsTransformer(
-        False, _theory_term_to_literal_adapter
+        _theory_term_to_literal_adapter, reification=False
     )(rule)
 
 
@@ -82,7 +82,7 @@ def make_strong_negation_auxiliar_in_epistemic_literals(
     """
     replacement: SnReplacementType = set()
     trn = ApplyToEpistemicAtomsElementsTransformer(
-        use_reification, make_strong_negations_auxiliar, replacement.update
+        make_strong_negations_auxiliar, use_reification, replacement.update
     )
     stm = trn.visit_sequence(cast(ASTSequence, stm))
     return (stm, replacement)
@@ -105,8 +105,8 @@ def make_default_negation_auxiliar_in_epistemic_literals(
     """
     replacement: Set[ast.AST] = set()
     trn = ApplyToEpistemicAtomsElementsTransformer(
-        use_reification,
         make_default_negation_auxiliar,
+        use_reification,
         lambda x: replacement.add(x) if x is not None else None,
     )
     stm = trn.visit_sequence(cast(ASTSequence, stm))

@@ -83,7 +83,7 @@ class _ProgramParser(object):
 
     def _parse_statement(self, statement: ast.AST) -> None:
         statement = self.theory_parser(statement)
-        statement = parse_epistemic_literals_elements(statement)
+        statement = parse_epistemic_literals_elements(statement, self.reification)
 
         if self.reification:
             statement = reify_symbolic_atoms(
