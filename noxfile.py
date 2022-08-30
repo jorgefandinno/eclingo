@@ -13,20 +13,23 @@ def format(session):
 
 @nox.session(python=None)
 def typecheck(session):
-    session.install("-r", "requirements.txt", "mypy")
+    session.install("mypy")
+    session.install("-r", "requirements.txt")
     session.run("mypy", "src/eclingo")
 
 
 @nox.session(python=None)
 def tests(session):
+    session.install("coverage")
     session.install("-r", "requirements.txt")
     session.install("-e", ".")
-    session.run("coverage", "run", "-m", "unittest")
+    session.run("coverage", "run", "-m", "unittest", "tests/test_reification4.py", "-v")
     session.notify("coverage")
 
 
 @nox.session(python=None)
 def coverage(session):
+    session.install("coverage")
     omit = ["src/eclingo/__main__.py", "tests/*", "helper_test/*"]
     session.run(
         "coverage",
