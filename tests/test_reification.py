@@ -7,6 +7,8 @@ from eclingo.parsing import parser
 from eclingo.parsing.transformers import ast_reify
 from tests.test_reification2 import parse_literal
 
+from clingox.testing.ast import ASTTestCase, parse_statement
+from clingox.pprint import pprint
 
 def flatten(lst):
     result = []
@@ -92,6 +94,18 @@ class Test(TestCase):
         )
   
     def test_epistemic_atom_with_both_negations(self):
+        '''
+        stat = parse_statement(":- k(not1(u(-a))).")
+        print()
+        pprint(stat)
+        print()
+        
+        print()
+        print(type(parse_program(":- &k{ not -a}.")[1]))
+        pprint(parse_program(":- &k{ not -a}.")[1])
+        print()
+        '''
+        
         self.assert_equal_program(
             parse_program(":- &k{ not -a}."), 
             ":- k(not1(u(-a))). not1(u(-a)) :- not u(-a). {k(not1(u(-a)))} :- not1(u(-a))."
