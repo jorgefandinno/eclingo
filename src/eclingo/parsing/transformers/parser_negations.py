@@ -7,6 +7,7 @@ from typing import Iterable, Iterator, List, Optional, Set, Tuple
 from clingo import ast
 from clingo.ast import Location, Position, Transformer
 from clingox.ast import reify_symbolic_atoms
+from clingox.pprint import pprint
 
 from eclingo import prefixes
 
@@ -50,6 +51,9 @@ class StrongNegationToAuxiliarTransformer(Transformer):
             self.replacement.add((name, len(arguments), aux_name))
 
         atom = ast.Function(location, aux_name, arguments, external)
+        # print()
+        # print("aux_name = ", aux_name)
+        # pprint(atom)
         return atom
 
 
