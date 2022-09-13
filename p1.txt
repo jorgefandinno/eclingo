@@ -1,0 +1,304 @@
+All done! ✨ 🍰 ✨
+27 files left unchanged.
+Success: no issues found in 27 source files
+test_epistemic_atom_with_default_negation (tests.test_reification.Test) ... 
+The expected program
+ [ast.Rule(Location(begin=Position(filename='<string>', line=1, column=43), end=Position(filename='<string>', line=1, column=73)), ast.Aggregate(Location(begin=Position(filename='<string>', line=1, column=43), end=Position(filename='<string>', line=1, column=58)), None, [ast.ConditionalLiteral(Location(begin=Position(filename='<string>', line=1, column=44), end=Position(filename='<string>', line=1, column=57)), ast.Literal(Location(begin=Position(filename='<string>', line=1, column=44), end=Position(filename='<string>', line=1, column=57)), 0, ast.SymbolicAtom(ast.Function(Location(begin=Position(filename='<string>', line=1, column=44), end=Position(filename='<string>', line=1, column=57)), 'k', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=46), end=Position(filename='<string>', line=1, column=56)), 'not1', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=51), end=Position(filename='<string>', line=1, column=55)), 'u', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=53), end=Position(filename='<string>', line=1, column=54)), 'a', [], 0)], 0)], 0)], 0))), [])], None), [ast.Literal(Location(begin=Position(filename='<string>', line=1, column=62), end=Position(filename='<string>', line=1, column=72)), 0, ast.SymbolicAtom(ast.Function(Location(begin=Position(filename='<string>', line=1, column=62), end=Position(filename='<string>', line=1, column=72)), 'not1', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=67), end=Position(filename='<string>', line=1, column=71)), 'u', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=69), end=Position(filename='<string>', line=1, column=70)), 'a', [], 0)], 0)], 0)))]), ast.Rule(Location(begin=Position(filename='<string>', line=1, column=19), end=Position(filename='<string>', line=1, column=42)), ast.Literal(Location(begin=Position(filename='<string>', line=1, column=19), end=Position(filename='<string>', line=1, column=29)), 0, ast.SymbolicAtom(ast.Function(Location(begin=Position(filename='<string>', line=1, column=19), end=Position(filename='<string>', line=1, column=29)), 'not1', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=24), end=Position(filename='<string>', line=1, column=28)), 'u', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=26), end=Position(filename='<string>', line=1, column=27)), 'a', [], 0)], 0)], 0))), [ast.Literal(Location(begin=Position(filename='<string>', line=1, column=33), end=Position(filename='<string>', line=1, column=41)), 1, ast.SymbolicAtom(ast.Function(Location(begin=Position(filename='<string>', line=1, column=37), end=Position(filename='<string>', line=1, column=41)), 'u', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=39), end=Position(filename='<string>', line=1, column=40)), 'a', [], 0)], 0)))]), ast.Rule(Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=18)), ast.Literal(Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=18)), 0, ast.BooleanConstant(0)), [ast.Literal(Location(begin=Position(filename='<string>', line=1, column=4), end=Position(filename='<string>', line=1, column=17)), 0, ast.SymbolicAtom(ast.Function(Location(begin=Position(filename='<string>', line=1, column=4), end=Position(filename='<string>', line=1, column=17)), 'k', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=6), end=Position(filename='<string>', line=1, column=16)), 'not1', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=11), end=Position(filename='<string>', line=1, column=15)), 'u', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=13), end=Position(filename='<string>', line=1, column=14)), 'a', [], 0)], 0)], 0)], 0)))]), ast.Program(Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=1)), 'base', [])]
+
+The parsed program
+ FAIL
+test_multiple_variables_symbolic_literal_to_term (tests.test_reification2.Test) ... ok
+test_non_ground_symbolic_literal_to_term (tests.test_reification2.Test) ... ok
+test_symbolic_literal_to_term (tests.test_reification2.Test) ... ok
+test_theory_atom_symbolic_literal_to_term (tests.test_reification2.Test) ... ok
+test_theory_atom (tests.test_reification3.Test) ... ok
+test_theory_atom_negation (tests.test_reification4.Test) ... ok
+test_eligible_g94 (tests.test_app.TestExamples) ... <string>:2:16-27: info: atom does not occur in any rule head:
+  u_minority(X)
+
+<string>:3:17-28: info: atom does not occur in any rule head:
+  (-u_fairGPA(X))
+
+<string>:3:30-41: info: atom does not occur in any rule head:
+  (-u_highGPA(X))
+
+<string>:3:17-28: info: atom does not occur in any rule head:
+  (-u_fairGPA(X))
+
+<string>:3:30-41: info: atom does not occur in any rule head:
+  (-u_highGPA(X))
+
+<string>:3:17-28: info: atom does not occur in any rule head:
+  (-u_fairGPA(X))
+
+<string>:3:30-41: info: atom does not occur in any rule head:
+  (-u_highGPA(X))
+
+<string>:3:17-28: info: atom does not occur in any rule head:
+  (-u_fairGPA(X))
+
+<string>:3:30-41: info: atom does not occur in any rule head:
+  (-u_highGPA(X))
+
+<string>:3:17-28: info: atom does not occur in any rule head:
+  (-u_fairGPA(X))
+
+<string>:3:30-41: info: atom does not occur in any rule head:
+  (-u_highGPA(X))
+
+<string>:3:17-28: info: atom does not occur in any rule head:
+  (-u_fairGPA(X))
+
+<string>:3:30-41: info: atom does not occur in any rule head:
+  (-u_highGPA(X))
+
+<string>:3:17-28: info: atom does not occur in any rule head:
+  (-u_fairGPA(X))
+
+<string>:3:30-41: info: atom does not occur in any rule head:
+  (-u_highGPA(X))
+
+<string>:3:17-28: info: atom does not occur in any rule head:
+  (-u_fairGPA(X))
+
+<string>:3:30-41: info: atom does not occur in any rule head:
+  (-u_highGPA(X))
+
+ok
+test_prog_g94 (tests.test_app.TestExamples) ... <string>:1:13-14: info: atom does not occur in any rule head:
+  u_b
+
+<string>:1:13-14: info: atom does not occur in any rule head:
+  u_b
+
+ok
+test_yale_g94 (tests.test_app.TestExamples) ... ok
+test_ground_programs (tests.test_eclingo.TestEclingoAggregates) ... ok
+test_ground_programs (tests.test_eclingo.TestEclingoCommontToAllSemantics) ... ok
+test_ground_programs (tests.test_eclingo.TestEclingoCommontTo_G11_FAEEL) ... ok
+test_ground_programs (tests.test_eclingo.TestEclingoCommontTo_G94_G11_FAEEL) ... ok
+test_objective_programs (tests.test_eclingo.TestEclingoGround) ... ok
+test_positive_programs (tests.test_eclingo.TestEclingoGround) ... ok
+test_programs_with_default_negation (tests.test_eclingo.TestEclingoGround) ... ok
+test_programs_with_strong_negation (tests.test_eclingo.TestEclingoGround) ... ok
+test_grounding_simplifications (tests.test_eclingo.TestEclingoNonGround) ... ok
+test_objective_programs (tests.test_eclingo.TestEclingoNonGround) ... ok
+test_positive_programs (tests.test_eclingo.TestEclingoNonGround) ... ok
+test_programs_with_default_negation (tests.test_eclingo.TestEclingoNonGround) ... ok
+test_programs_with_strong_negation (tests.test_eclingo.TestEclingoNonGround) ... ok
+test_ground_programs (tests.test_eclingo.TestEclingoUnfounded) ... ok
+test_eligible_g94 (tests.test_eclingo_examples.TestExamples) ... <string>:2:16-27: info: atom does not occur in any rule head:
+  u_minority(X)
+
+<string>:3:17-28: info: atom does not occur in any rule head:
+  (-u_fairGPA(X))
+
+<string>:3:30-41: info: atom does not occur in any rule head:
+  (-u_highGPA(X))
+
+<string>:3:17-28: info: atom does not occur in any rule head:
+  (-u_fairGPA(X))
+
+<string>:3:30-41: info: atom does not occur in any rule head:
+  (-u_highGPA(X))
+
+<string>:3:17-28: info: atom does not occur in any rule head:
+  (-u_fairGPA(X))
+
+<string>:3:30-41: info: atom does not occur in any rule head:
+  (-u_highGPA(X))
+
+<string>:3:17-28: info: atom does not occur in any rule head:
+  (-u_fairGPA(X))
+
+<string>:3:30-41: info: atom does not occur in any rule head:
+  (-u_highGPA(X))
+
+<string>:3:17-28: info: atom does not occur in any rule head:
+  (-u_fairGPA(X))
+
+<string>:3:30-41: info: atom does not occur in any rule head:
+  (-u_highGPA(X))
+
+<string>:3:17-28: info: atom does not occur in any rule head:
+  (-u_fairGPA(X))
+
+<string>:3:30-41: info: atom does not occur in any rule head:
+  (-u_highGPA(X))
+
+<string>:3:17-28: info: atom does not occur in any rule head:
+  (-u_fairGPA(X))
+
+<string>:3:30-41: info: atom does not occur in any rule head:
+  (-u_highGPA(X))
+
+<string>:3:17-28: info: atom does not occur in any rule head:
+  (-u_fairGPA(X))
+
+<string>:3:30-41: info: atom does not occur in any rule head:
+  (-u_highGPA(X))
+
+ok
+test_prog_g94 (tests.test_eclingo_examples.TestExamples) ... <string>:1:13-14: info: atom does not occur in any rule head:
+  u_b
+
+ok
+test_yale_g94 (tests.test_eclingo_examples.TestExamples) ... ok
+test_parsing_ground_programs (tests.test_g94.Test) ... ok
+test_epistemic_atom (tests.test_grounder.Test) ... ok
+test_epistemic_atom0 (tests.test_grounder.Test) ... ok
+test_epistemic_atom_with_both_negations01 (tests.test_grounder.Test) ... ok
+test_epistemic_atom_with_both_negations01b (tests.test_grounder.Test) ... ok
+test_epistemic_atom_with_both_negations02 (tests.test_grounder.Test) ... ok
+test_epistemic_atom_with_default_negation01 (tests.test_grounder.Test) ... ok
+test_epistemic_atom_with_default_negation02 (tests.test_grounder.Test) ... ok
+test_epistemic_atom_with_default_negation03 (tests.test_grounder.Test) ... ok
+test_epistemic_atom_with_strong_negation01 (tests.test_grounder.Test) ... ok
+test_epistemic_atom_with_strong_negation02 (tests.test_grounder.Test) ... ok
+test_epistemic_with_variables01 (tests.test_grounder.Test) ... ok
+test_epistemic_with_variables02 (tests.test_grounder.Test) ... ok
+test_epistemic_with_variables03 (tests.test_grounder.Test) ... ok
+test_epistemic_with_variables04 (tests.test_grounder.Test) ... ok
+test_epistemic_with_variables05 (tests.test_grounder.Test) ... ok
+test_negated_epistemic_literals01 (tests.test_grounder.Test) ... ok
+test_parameters (tests.test_grounder.Test) ... ok
+test_show01 (tests.test_grounder.Test) ... ok
+test_show02 (tests.test_grounder.Test) ... ok
+test_show03 (tests.test_grounder.Test) ... ok
+test_repr (tests.test_literals.Test) ... ok
+test_str (tests.test_literals.Test) ... ok
+test_parsing_theory_atoms (tests.test_internal_control_ground_program.Test) ... ok
+test_prg01 (tests.test_internal_control_ground_program.Test)
+Checks that the models of program are models. ... ok
+test_prg01_pretty_ground_program (tests.test_internal_control_ground_program.Test) ... ok
+test_prg01_pretty_ground_program_add (tests.test_internal_control_ground_program.Test) ... ok
+test_epistemic_atom (tests.test_parsing.Test) ... ok
+test_epistemic_atom_with_both_negations (tests.test_parsing.Test) ... ok
+test_epistemic_atom_with_default_negation (tests.test_parsing.Test) ... ok
+test_epistemic_atom_with_strong_negation (tests.test_parsing.Test) ... ok
+test_epistemic_with_variables (tests.test_parsing.Test) ... ok
+test_epistemic_with_variables_safety01 (tests.test_parsing.Test) ... ok
+test_epistemic_with_variables_safety02 (tests.test_parsing.Test) ... ok
+test_epistemic_with_variables_safety03 (tests.test_parsing.Test) ... ok
+test_epistemic_with_variables_safety04 (tests.test_parsing.Test) ... ok
+test_heuristic (tests.test_parsing.Test) ... ok
+test_negated_epistemic_literals (tests.test_parsing.Test) ... ok
+test_parameters01 (tests.test_parsing.Test) ... ok
+test_parameters02 (tests.test_parsing.Test) ... ok
+test_weighted_rules (tests.test_parsing.Test) ... ok
+test_show01c (tests.test_show.Test) ... ok
+test_show02c (tests.test_show.Test) ... ok
+test_show03_not_supported (tests.test_show.Test) ... ok
+test_show04 (tests.test_show.Test) ... ok
+test_show05 (tests.test_show.Test) ... ok
+test_show05b (tests.test_show.Test) ... ok
+test_show05c (tests.test_show.Test) ... ok
+test_show05d (tests.test_show.Test) ... ok
+test_show06 (tests.test_show.Test) ... ok
+test_show06b (tests.test_show.Test) ... ok
+test_show06c (tests.test_show.Test) ... ok
+test_show07 (tests.test_show.Test) ... ok
+test_show08 (tests.test_show.Test) ... ok
+test_show09 (tests.test_show.Test) ... ok
+test_show10_positive_programs (tests.test_show.Test) ... ok
+test_show11_programs_with_strong_negation (tests.test_show.Test) ... ok
+test_show12_programs_with_default_negation (tests.test_show.Test) ... ok
+test_show13_non_ground_programs (tests.test_show.Test) ... ok
+test_show14_non_ground_programs_with_default_negation (tests.test_show.Test) ... ok
+test_show15_planning (tests.test_show.Test) ... ok
+test_clingox (tests.test_tester.TesterCase) ... ok
+test_init_control (tests.test_tester.TesterCase) ... ok
+test_theory_parse (tests.test_theory_atom_parser.TesterCase) ... ok
+test_theory_parse_element (tests.test_theory_atom_parser.TesterCase) ... ok
+test_theory_parse_term (tests.test_theory_atom_parser.TesterCase) ... ok
+test_theory_parse_with_clingox_theory (tests.test_theory_atom_parser.TesterCase) ... ok
+test_theory_parse_with_theory (tests.test_theory_atom_parser.TesterCase) ... ok
+test_epistemic_atom (tests.test_transformers.Test) ... ok
+
+======================================================================
+FAIL: test_epistemic_atom_with_default_negation (tests.test_reification.Test)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/lutelillo/Desktop/lute_eclingo/eclingo/tests/test_reification.py", line 111, in test_epistemic_atom_with_default_negation
+    self.assert_equal_program(
+  File "/Users/lutelillo/Desktop/lute_eclingo/eclingo/tests/test_reification.py", line 68, in assert_equal_program
+    self.assertListEqual(sorted_program, expected_program)
+AssertionError: Lists differ: [ast.Program(Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=1)), 'base', []), ast.Rule(Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=15)), ast.Literal(Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=15)), 0, ast.BooleanConstant(0)), [ast.Literal(Location(begin=Position(filename='<string>', line=1, column=4), end=Position(filename='<string>', line=1, column=14)), 0, ast.SymbolicAtom(ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'k', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'not1', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'u', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'a', [], 0)], 0)], 0)], 0)))]), ast.Rule(Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=15)), ast.Aggregate(Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=15)), None, [ast.ConditionalLiteral(Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=15)), ast.Literal(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 0, ast.SymbolicAtom(ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'k', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'not1', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'u', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'a', [], 0)], 0)], 0)], 0))), [])], None), [ast.Literal(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 0, ast.SymbolicAtom(ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'not1', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'u', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'a', [], 0)], 0)], 0)))]), ast.Rule(Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=15)), ast.Literal(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 0, ast.SymbolicAtom(ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'not1', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'u', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'a', [], 0)], 0)], 0))), [ast.Literal(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 1, ast.SymbolicAtom(ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'u', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'a', [], 0)], 0)))])] != [ast.Rule(Location(begin=Position(filename='<string>', line=1, column=43), end=Position(filename='<string>', line=1, column=73)), ast.Aggregate(Location(begin=Position(filename='<string>', line=1, column=43), end=Position(filename='<string>', line=1, column=58)), None, [ast.ConditionalLiteral(Location(begin=Position(filename='<string>', line=1, column=44), end=Position(filename='<string>', line=1, column=57)), ast.Literal(Location(begin=Position(filename='<string>', line=1, column=44), end=Position(filename='<string>', line=1, column=57)), 0, ast.SymbolicAtom(ast.Function(Location(begin=Position(filename='<string>', line=1, column=44), end=Position(filename='<string>', line=1, column=57)), 'k', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=46), end=Position(filename='<string>', line=1, column=56)), 'not1', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=51), end=Position(filename='<string>', line=1, column=55)), 'u', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=53), end=Position(filename='<string>', line=1, column=54)), 'a', [], 0)], 0)], 0)], 0))), [])], None), [ast.Literal(Location(begin=Position(filename='<string>', line=1, column=62), end=Position(filename='<string>', line=1, column=72)), 0, ast.SymbolicAtom(ast.Function(Location(begin=Position(filename='<string>', line=1, column=62), end=Position(filename='<string>', line=1, column=72)), 'not1', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=67), end=Position(filename='<string>', line=1, column=71)), 'u', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=69), end=Position(filename='<string>', line=1, column=70)), 'a', [], 0)], 0)], 0)))]), ast.Rule(Location(begin=Position(filename='<string>', line=1, column=19), end=Position(filename='<string>', line=1, column=42)), ast.Literal(Location(begin=Position(filename='<string>', line=1, column=19), end=Position(filename='<string>', line=1, column=29)), 0, ast.SymbolicAtom(ast.Function(Location(begin=Position(filename='<string>', line=1, column=19), end=Position(filename='<string>', line=1, column=29)), 'not1', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=24), end=Position(filename='<string>', line=1, column=28)), 'u', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=26), end=Position(filename='<string>', line=1, column=27)), 'a', [], 0)], 0)], 0))), [ast.Literal(Location(begin=Position(filename='<string>', line=1, column=33), end=Position(filename='<string>', line=1, column=41)), 1, ast.SymbolicAtom(ast.Function(Location(begin=Position(filename='<string>', line=1, column=37), end=Position(filename='<string>', line=1, column=41)), 'u', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=39), end=Position(filename='<string>', line=1, column=40)), 'a', [], 0)], 0)))]), ast.Rule(Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=18)), ast.Literal(Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=18)), 0, ast.BooleanConstant(0)), [ast.Literal(Location(begin=Position(filename='<string>', line=1, column=4), end=Position(filename='<string>', line=1, column=17)), 0, ast.SymbolicAtom(ast.Function(Location(begin=Position(filename='<string>', line=1, column=4), end=Position(filename='<string>', line=1, column=17)), 'k', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=6), end=Position(filename='<string>', line=1, column=16)), 'not1', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=11), end=Position(filename='<string>', line=1, column=15)), 'u', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=13), end=Position(filename='<string>', line=1, column=14)), 'a', [], 0)], 0)], 0)], 0)))]), ast.Program(Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=1)), 'base', [])]
+
+First differing element 0:
+ast.Program(Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=1)), 'base', [])
+ast.Rule(Location(begin=Position(filename='<string>', line=1, column=43), end=Position(filename='<string>', line=1, column=73)), ast.Aggregate(Location(begin=Position(filename='<string>', line=1, column=43), end=Position(filename='<string>', line=1, column=58)), None, [ast.ConditionalLiteral(Location(begin=Position(filename='<string>', line=1, column=44), end=Position(filename='<string>', line=1, column=57)), ast.Literal(Location(begin=Position(filename='<string>', line=1, column=44), end=Position(filename='<string>', line=1, column=57)), 0, ast.SymbolicAtom(ast.Function(Location(begin=Position(filename='<string>', line=1, column=44), end=Position(filename='<string>', line=1, column=57)), 'k', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=46), end=Position(filename='<string>', line=1, column=56)), 'not1', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=51), end=Position(filename='<string>', line=1, column=55)), 'u', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=53), end=Position(filename='<string>', line=1, column=54)), 'a', [], 0)], 0)], 0)], 0))), [])], None), [ast.Literal(Location(begin=Position(filename='<string>', line=1, column=62), end=Position(filename='<string>', line=1, column=72)), 0, ast.SymbolicAtom(ast.Function(Location(begin=Position(filename='<string>', line=1, column=62), end=Position(filename='<string>', line=1, column=72)), 'not1', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=67), end=Position(filename='<string>', line=1, column=71)), 'u', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=69), end=Position(filename='<string>', line=1, column=70)), 'a', [], 0)], 0)], 0)))])
+
+Diff is 8490 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 96 tests in 10.035s
+
+FAILED (failures=1)
+[ast.Program(Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=1)), 'base', []), ast.Rule(Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=15)), ast.Literal(Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=15)), 0, ast.BooleanConstant(0)), [ast.Literal(Location(begin=Position(filename='<string>', line=1, column=4), end=Position(filename='<string>', line=1, column=14)), 0, ast.SymbolicAtom(ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'k', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'not1', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'u', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'a', [], 0)], 0)], 0)], 0)))]), ast.Rule(Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=15)), ast.Aggregate(Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=15)), None, [ast.ConditionalLiteral(Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=15)), ast.Literal(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 0, ast.SymbolicAtom(ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'k', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'not1', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'u', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'a', [], 0)], 0)], 0)], 0))), [])], None), [ast.Literal(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 0, ast.SymbolicAtom(ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'not1', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'u', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'a', [], 0)], 0)], 0)))]), ast.Rule(Location(begin=Position(filename='<string>', line=1, column=1), end=Position(filename='<string>', line=1, column=15)), ast.Literal(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 0, ast.SymbolicAtom(ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'not1', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'u', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'a', [], 0)], 0)], 0))), [ast.Literal(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 1, ast.SymbolicAtom(ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'u', [ast.Function(Location(begin=Position(filename='<string>', line=1, column=12), end=Position(filename='<string>', line=1, column=13)), 'a', [], 0)], 0)))])]
+sorted program:  #program base.
+expect program:  { k(not1(u(a))) } :- not1(u(a)).
+sorted program:  #false :- k(not1(u(a))).
+expect program:  not1(u(a)) :- not u(a).
+sorted program:  { k(not1(u(a))) } :- not1(u(a)).
+expect program:  #false :- k(not1(u(a))).
+sorted program:  not1(u(a)) :- not u(a).
+expect program:  #program base.
+{a}. b :- &k{a}.
+{a}.
+{-a}. b :- &k{ not -a}.
+b :- &k{ not -a}.
+{-a}. b:- &k{ not not -a}.
+{a}. b :- &k{ not a}.
+b :- &k{ not a}.
+{a}. b :- &k{ not not a}.
+{-a}. b :- &k{-a}.
+{a}. b :- &k{- -a}.
+{a(1..2)}. b :- &k{a(V0)}.
+{-a(1..2)}. b :- &k{-a(V0)}.
+{a(1)}. b :- &k{- -a(V0)}.
+{a(1)}. dom(1). b :- &k{ not a(V0)}, dom(V0).
+{a(1)}. dom(1). b :- &k{ not not a(V0)}, dom(V0).
+{a(1..2)}. {b(1)}. c :- not &k{a(V0)}, &k{b(V0)}.
+a. b. #show a/0.
+a. b. #show a/0. #show b/0.
+-a. b. #show -a/0.
+Name                                                          Stmts   Miss  Cover   Missing
+-------------------------------------------------------------------------------------------
+src/eclingo/parsing/transformers/parser_negations.py             85      2    98%   48, 55
+src/eclingo/__init__.py                                           1      0   100%
+src/eclingo/config.py                                             5      0   100%
+src/eclingo/control.py                                           45      0   100%
+src/eclingo/grounder.py                                          20      0   100%
+src/eclingo/internal_states/__init__.py                           0      0   100%
+src/eclingo/internal_states/internal_control.py                  89      0   100%
+src/eclingo/internal_states/mappings.py                          49      0   100%
+src/eclingo/literals.py                                          38      0   100%
+src/eclingo/main.py                                              40      0   100%
+src/eclingo/parsing/__init__.py                                   0      0   100%
+src/eclingo/parsing/parser.py                                    69      0   100%
+src/eclingo/parsing/transformers/__init__.py                      0      0   100%
+src/eclingo/parsing/transformers/ast_reify.py                    28      0   100%
+src/eclingo/parsing/transformers/astutil.py                       7      0   100%
+src/eclingo/parsing/transformers/function_transformer.py         14      0   100%
+src/eclingo/parsing/transformers/theory_parser_epistemic.py     112      0   100%
+src/eclingo/prefixes.py                                          35      0   100%
+src/eclingo/solver/__init__.py                                    1      0   100%
+src/eclingo/solver/candidate.py                                   5      0   100%
+src/eclingo/solver/generator.py                                  26      0   100%
+src/eclingo/solver/preprocessor.py                               23      0   100%
+src/eclingo/solver/solvers.py                                    23      0   100%
+src/eclingo/solver/tester.py                                     55      0   100%
+src/eclingo/solver/world_view.py                                  6      0   100%
+src/eclingo/solver/world_view_builder.py                         67      0   100%
+-------------------------------------------------------------------------------------------
+TOTAL                                                           843      2    99%
+Coverage failure: total of 99 is less than fail-under=100
+************* Module eclingo.parsing.transformers.function_transformer
+src/eclingo/parsing/transformers/function_transformer.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+src/eclingo/parsing/transformers/function_transformer.py:14:4: C0116: Missing function or method docstring (missing-function-docstring)
+src/eclingo/parsing/transformers/function_transformer.py:14:4: C0103: Method name "visit_SymbolicTerm" doesn't conform to snake_case naming style (invalid-name)
+
+------------------------------------------------------------------
+Your code has been rated at 9.36/10 (previous run: 9.36/10, +0.00)
+

@@ -1,7 +1,5 @@
-from typing import Iterable, List, Set, Tuple, Union, cast
-
 from clingo import ast
-from clingo.ast import AST, Transformer
+from clingo.ast import Transformer
 
 
 def _rule_to_symbolic_term_adapter(rules):
@@ -11,12 +9,13 @@ def _rule_to_symbolic_term_adapter(rules):
 
 
 class SymbolicTermToFunctionTransformer(Transformer):
+    """Transforms a SymbolicTerm AST into a Function AST"""
+
     def visit_SymbolicTerm(self, term):
         location = term.location
         symbol = term.symbol
         name = symbol.name
         arguments = symbol.arguments
 
-        # Create Function from SymbolicTerm
         function = ast.Function(location, name, arguments, False)
         return function

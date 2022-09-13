@@ -45,15 +45,15 @@ class StrongNegationToAuxiliarTransformer(Transformer):
         external = x.argument.external
 
         if self.reification:
-            aux_name = "-" + name
+            aux_name = name
         else:
             aux_name = self.strong_negation_prefix + "_" + name
             self.replacement.add((name, len(arguments), aux_name))
 
         atom = ast.Function(location, aux_name, arguments, external)
-        # print()
-        # print("aux_name = ", aux_name)
-        # pprint(atom)
+        if self.reification:
+            return ast.UnaryOperation(location, 0, atom)
+
         return atom
 
 
