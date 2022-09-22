@@ -44,32 +44,21 @@ class TestCase(ASTTestCase):
     def assert_equal_program(self, program, expected):
         expected_program = clingo_parse_program(expected)
         expected_program = function_transformer._rule_to_symbolic_term_adapter(expected_program)
-        
-        #print("\nThe expected program\n", expected_program)
-        #print("\nThe parsed program\n", program)
-        
-        
+    
         sorted_program = sorted(program)
         expected_program.sort()
-        
-        print("\nThe expected program\n", expected_program)
-        print("\nThe parsed program\n", program)
-        
-        
+      
         if len(sorted_program) != len(expected_program):
             self.fail(
                 f"Lists differ (different lenghts {len(sorted_program)} and {len(expected_program)}"
             )
         for e1, e2 in zip(sorted_program, expected_program):
-            print("sorted program: ", e1)
-            print("expect program: ", e2)
-            #self.assertEqual(e1, e2)
-        #self.assertListEqual(sorted_program, expected_program)
+            self.assertEqual(e1, e2)
+        self.assertListEqual(sorted_program, expected_program)
         
         
 
 class Test(TestCase):
-    '''
     def test_non_epistemic_rules(self):
         self.assert_equal_program(
             parse_program("a :- b, c, not d, not not e."),
@@ -85,7 +74,6 @@ class Test(TestCase):
             parse_program("-a :- b, -c, not -d, not not -e."),
             "u(-a) :- u(b), u(-c), not u(-d), not not u(-e).",
         )
-
     
     def test_epistemic_atom(self):
         self.assert_equal_program(
@@ -103,9 +91,7 @@ class Test(TestCase):
         self.assert_equal_program(
             parse_program(":- &k{- -a}."), ":- k(u(a)). {k(u(a))} :- u(a)."
         )
-    '''
     
-    # Fail
     def test_epistemic_atom_with_default_negation(self):
         self.assert_equal_program(
             parse_program(":- &k{ not a}."),
@@ -121,9 +107,7 @@ class Test(TestCase):
             parse_program(":- &k{ not not a}."),
             ":- k(not2(u(a))). not2(u(a)) :- not not u(a). {k(not2(u(a)))} :- not2(u(a)).",
         )
-        
-    '''
-    # Fail
+
     def test_epistemic_atom_with_both_negations(self):
 
         self.assert_equal_program(
@@ -136,7 +120,6 @@ class Test(TestCase):
             ":- k(not2(u(-a))). not2(u(-a)) :- not not u(-a).  {k(not2(u(-a)))} :- not2(u(-a))."
             )
     
-    # Fail
     def test_epistemic_with_variables(self):
         self.assert_equal_program(
             parse_program(":- &k{a(V0)}."), ":- k(u(a(V0))). {k(u(a(V0)))} :- u(a(V0))."
@@ -165,8 +148,7 @@ class Test(TestCase):
         self.assert_equal_program(
             parse_program(":- &k{ not not -a(V0)}."),
             ":- k(not2(u(-a(V0)))). not2(u(-a(V0))) :- not not u(-a(V0)). {k(not2(u(-a(V0))))} :- not2(u(-a(V0))).")
-    '''
-    '''
+ 
     def test_epistemic_with_variables_safety01(self):
         self.assert_equal_program(
             parse_program(":- &k{a(V0)}, not b(V0)."),
@@ -175,9 +157,7 @@ class Test(TestCase):
             { k(u(a(V0))) :  } :- u(a(V0)).
             """,
         )
-    '''
-    '''
-    # Fail
+
     def test_epistemic_with_variables_safety02(self):
         self.assert_equal_program(
             parse_program(":- a(V0), &k{not b(V0)}."),
@@ -188,8 +168,6 @@ class Test(TestCase):
             """,
         )
 
-    # Fail
-    
     def test_epistemic_with_variables_safety03(self):
         self.assert_equal_program(
             parse_program(":- &k{a(V0)}, &k{not b(V0)}."),
@@ -232,7 +210,7 @@ class Test(TestCase):
             {k(u(b(V0)))} :- u(b(V0)).
             """,
         )
-    '''
+    
     '''
     def test_weighted_rules(self):
         self.assert_equal_program(
