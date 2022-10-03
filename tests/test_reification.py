@@ -47,7 +47,7 @@ class TestCase(ASTTestCase):
     
         sorted_program = sorted(program)
         expected_program.sort()
-      
+        
         if len(sorted_program) != len(expected_program):
             self.fail(
                 f"Lists differ (different lenghts {len(sorted_program)} and {len(expected_program)}"
@@ -211,13 +211,12 @@ class Test(TestCase):
             """,
         )
     
-    '''
     def test_weighted_rules(self):
         self.assert_equal_program(
             parse_program(":-{a} = 0."),
             ":-{u(a)} = 0."
         )
-
+    
     def test_parameters01(self):
         self.assert_equal_program(
             parse_program("a(1..n).", ["n"], "parametrized"),
@@ -229,7 +228,7 @@ class Test(TestCase):
             parse_program("a(1..n).", ["n"], "base"), "#program base(n). u(a(1..n))."
         )
 
-    
+    '''
     def test_heuristic(self):
         self.assert_equal_program(
             parse_program("#heuristic a. [1,sign]", [], "base"),

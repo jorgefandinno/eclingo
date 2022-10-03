@@ -1,6 +1,7 @@
 """Module providing an AST function Trasnformer"""
+import clingo
 from clingo import ast
-from clingo.ast import Transformer
+from clingo.ast import ASTType, Transformer
 
 
 def _rule_to_symbolic_term_adapter(rules):
@@ -13,8 +14,19 @@ def _rule_to_symbolic_term_adapter(rules):
 class SymbolicTermToFunctionTransformer(Transformer):
     """Transforms a SymbolicTerm AST into a Function AST"""
 
-    def visit_SymbolicTerm(self, term):
+    def visit_Interval(self, term):  # pylint disable=invalid-name
+        """Visit AST to ensure right Interval element is SymbolicTerm"""
+
+        assert term.right.ast_type == ASTType.SymbolicTerm
+
+        return term
+
+    def visit_SymbolicTerm(self, term):  # pylint disable=invalid-name
         """Visit AST to find SymbolicTerm"""
+
+        if term.symbol.type != clingo.SymbolType.Function:
+            return term
+
         location = term.location
         symbol = term.symbol
         name = symbol.name
