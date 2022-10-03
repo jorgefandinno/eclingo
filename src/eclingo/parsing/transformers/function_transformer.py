@@ -14,14 +14,14 @@ def _rule_to_symbolic_term_adapter(rules):
 class SymbolicTermToFunctionTransformer(Transformer):
     """Transforms a SymbolicTerm AST into a Function AST"""
 
-    def visit_Interval(self, term):  # pylint disable=invalid-name
+    def visit_Interval(self, term):  # pylint: disable=invalid-name
         """Visit AST to ensure right Interval element is SymbolicTerm"""
 
         assert term.right.ast_type == ASTType.SymbolicTerm
 
         return term
 
-    def visit_Heuristic(self, term):  # pylint disable=invalid-name
+    def visit_Heuristic(self, term):  # pylint: disable=invalid-name
         """Visit AST to ensure modifier Heuristic element is SymbolicTerm"""
 
         new_args = []
@@ -49,7 +49,7 @@ class SymbolicTermToFunctionTransformer(Transformer):
 
         return fin_heur
 
-    def visit_SymbolicTerm(self, term):  # pylint disable=invalid-name
+    def visit_SymbolicTerm(self, term):  # pylint: disable=invalid-name
         """Visit AST to find SymbolicTerm"""
 
         if term.symbol.type != clingo.SymbolType.Function:
