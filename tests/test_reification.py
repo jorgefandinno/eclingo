@@ -45,6 +45,8 @@ class TestCase(ASTTestCase):
         expected_program = clingo_parse_program(expected)
         expected_program = function_transformer._rule_to_symbolic_term_adapter(expected_program)
     
+        program = function_transformer._rule_to_symbolic_term_adapter(program)
+    
         sorted_program = sorted(program)
         expected_program.sort()
         
