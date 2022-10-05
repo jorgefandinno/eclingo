@@ -1,0 +1,1 @@
+#  u(a) :- u(b), k(c) | --output=reify
