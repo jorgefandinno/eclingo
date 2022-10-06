@@ -4,6 +4,13 @@ from clingo import ast
 from clingo.ast import Transformer
 
 
+def rule_to_symbolic_term_adapter(rules):
+    """Helper function"""
+    rule_trans = SymbolicTermToFunctionTransformer()
+    rule = rule_trans.visit_sequence(rules)
+    return rule
+
+
 class SymbolicTermToFunctionTransformer(Transformer):
     """Transforms a SymbolicTerm AST into a Function AST"""
 

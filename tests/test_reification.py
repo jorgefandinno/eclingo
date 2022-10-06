@@ -37,21 +37,15 @@ def clingo_parse_program(stm):
     ret = [rule for rule in ret]
     return ret
 
-def _rule_to_symbolic_term_adapter(rules):
-    """Helper function"""
-    rule_trans = function_transformer.SymbolicTermToFunctionTransformer()
-    rule = rule_trans.visit_sequence(rules)
-    return rule
-
 class TestCase(ASTTestCase):
     def setUp(self):
         self.print = False
 
     def assert_equal_program(self, program, expected):
         expected_program = clingo_parse_program(expected)
-        expected_program = _rule_to_symbolic_term_adapter(expected_program)
+        expected_program = function_transformer.rule_to_symbolic_term_adapter(expected_program)
     
-        program = _rule_to_symbolic_term_adapter(program)
+        program = function_transformer.rule_to_symbolic_term_adapter(program)
     
         sorted_program = sorted(program)
         expected_program.sort()
