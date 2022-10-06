@@ -6,12 +6,12 @@ from clingo.ast import Transformer
 
 def rule_to_symbolic_term_adapter(rules):
     """Helper function"""
-    rule_trans = SymbolicTermToFunctionTransformer()
+    rule_trans = _SymbolicTermToFunctionTransformer()
     rule = rule_trans.visit_sequence(rules)
     return rule
 
 
-class SymbolicTermToFunctionTransformer(Transformer):
+class _SymbolicTermToFunctionTransformer(Transformer):
     """Transforms a SymbolicTerm AST into a Function AST"""
 
     def visit_SymbolicTerm(self, term):  # pylint: disable=invalid-name
