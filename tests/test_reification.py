@@ -1,5 +1,6 @@
 import unittest
 from typing import cast
+
 from clingo import ast
 from clingox.pprint import pprint
 from clingox.testing.ast import ASTTestCase, parse_statement
@@ -8,6 +9,7 @@ from eclingo.config import AppConfig
 from eclingo.parsing import parser
 from eclingo.parsing.transformers import ast_reify, function_transformer
 from tests.test_reification2 import parse_literal
+
 
 def flatten(lst):
     result = []
@@ -20,6 +22,7 @@ def flatten(lst):
 
     return result
 
+
 def parse_program(stm, parameters=[], name="base"):
     ret = []
     parser.parse_program(
@@ -31,11 +34,13 @@ def parse_program(stm, parameters=[], name="base"):
     )
     return flatten(ret)
 
+
 def clingo_parse_program(stm):
     ret = []
     ast.parse_string(stm, ret.append)
     ret = [rule for rule in ret]
     return ret
+
 
 class TestCase(ASTTestCase):
     def setUp(self):
@@ -43,13 +48,16 @@ class TestCase(ASTTestCase):
 
     def assert_equal_program(self, program, expected):
         expected_program = clingo_parse_program(expected)
-        expected_program = function_transformer.rule_to_symbolic_term_adapter(expected_program)
-    
+        expected_program = [
+            function_transformer.rule_to_symbolic_term_adapter(stm)
+            for stm in expected_program
+        ]
+
         program = function_transformer.rule_to_symbolic_term_adapter(program)
-    
+
         sorted_program = sorted(program)
         expected_program.sort()
-        
+
         if len(sorted_program) != len(expected_program):
             self.fail(
                 f"Lists differ (different lenghts {len(sorted_program)} and {len(expected_program)}"
@@ -57,8 +65,7 @@ class TestCase(ASTTestCase):
         for e1, e2 in zip(sorted_program, expected_program):
             self.assertEqual(e1, e2)
         self.assertListEqual(sorted_program, expected_program)
-        
-        
+
 
 class Test(TestCase):
     def test_non_epistemic_rules(self):
@@ -66,7 +73,7 @@ class Test(TestCase):
             parse_program("a :- b, c, not d, not not e."),
             "u(a) :- u(b), u(c), not u(d), not not u(e).",
         )
-        
+
         self.assert_equal_program(
             parse_program("a :- b."),
             "u(a) :- u(b).",
@@ -76,24 +83,22 @@ class Test(TestCase):
             parse_program("-a :- b, -c, not -d, not not -e."),
             "u(-a) :- u(b), u(-c), not u(-d), not not u(-e).",
         )
-    
+
     def test_epistemic_atom(self):
         self.assert_equal_program(
             parse_program(":- &k{a}."), ":- k(u(a)). {k(u(a))} :- u(a)."
         )
-        
-    
+
     def test_epistemic_atom_with_strong_negation(self):
         self.assert_equal_program(
             parse_program(":- &k{-a}."),
             ":- k(u(-a)). {k(u(-a))} :- u(-a).",
         )
-    
- 
+
         self.assert_equal_program(
             parse_program(":- &k{- -a}."), ":- k(u(a)). {k(u(a))} :- u(a)."
         )
-    
+
     def test_epistemic_atom_with_default_negation(self):
         self.assert_equal_program(
             parse_program(":- &k{ not a}."),
@@ -114,29 +119,32 @@ class Test(TestCase):
 
         self.assert_equal_program(
             parse_program(":- &k{ not -a}."),
-            ":- k(not1(u(-a))). not1(u(-a)) :- not u(-a). {k(not1(u(-a)))} :- not1(u(-a))."
-            )
+            ":- k(not1(u(-a))). not1(u(-a)) :- not u(-a). {k(not1(u(-a)))} :- not1(u(-a)).",
+        )
 
         self.assert_equal_program(
             parse_program(":- &k{ not not -a}."),
-            ":- k(not2(u(-a))). not2(u(-a)) :- not not u(-a).  {k(not2(u(-a)))} :- not2(u(-a))."
-            )
-    
+            ":- k(not2(u(-a))). not2(u(-a)) :- not not u(-a).  {k(not2(u(-a)))} :- not2(u(-a)).",
+        )
+
     def test_epistemic_with_variables(self):
         self.assert_equal_program(
             parse_program(":- &k{a(V0)}."), ":- k(u(a(V0))). {k(u(a(V0)))} :- u(a(V0))."
         )
         self.assert_equal_program(
             parse_program(":- &k{- -a(V0)}."),
-            ":- k(u(a(V0))). {k(u(a(V0)))} :- u(a(V0)).")
+            ":- k(u(a(V0))). {k(u(a(V0)))} :- u(a(V0)).",
+        )
 
         self.assert_equal_program(
             parse_program(":- &k{ not a(V0)}."),
-            ":- k(not1(u(a(V0)))). not1(u(a(V0))) :- not u(a(V0)). {k(not1(u(a(V0))))} :- not1(u(a(V0))).")
+            ":- k(not1(u(a(V0)))). not1(u(a(V0))) :- not u(a(V0)). {k(not1(u(a(V0))))} :- not1(u(a(V0))).",
+        )
 
         self.assert_equal_program(
             parse_program(":- &k{ not not a(V0)}."),
-            ":- k(not2(u(a(V0)))). not2(u(a(V0))) :- not not u(a(V0)). {k(not2(u(a(V0))))} :- not2(u(a(V0))).")
+            ":- k(not2(u(a(V0)))). not2(u(a(V0))) :- not not u(a(V0)). {k(not2(u(a(V0))))} :- not2(u(a(V0))).",
+        )
 
         self.assert_equal_program(
             parse_program(":- &k{-a(V0)}."),
@@ -145,12 +153,14 @@ class Test(TestCase):
 
         self.assert_equal_program(
             parse_program(":- &k{ not -a(V0)}."),
-            ":- k(not1(u(-a(V0)))). not1(u(-a(V0))) :- not u(-a(V0)). {k(not1(u(-a(V0))))} :- not1(u(-a(V0))).")
+            ":- k(not1(u(-a(V0)))). not1(u(-a(V0))) :- not u(-a(V0)). {k(not1(u(-a(V0))))} :- not1(u(-a(V0))).",
+        )
 
         self.assert_equal_program(
             parse_program(":- &k{ not not -a(V0)}."),
-            ":- k(not2(u(-a(V0)))). not2(u(-a(V0))) :- not not u(-a(V0)). {k(not2(u(-a(V0))))} :- not2(u(-a(V0))).")
- 
+            ":- k(not2(u(-a(V0)))). not2(u(-a(V0))) :- not not u(-a(V0)). {k(not2(u(-a(V0))))} :- not2(u(-a(V0))).",
+        )
+
     def test_epistemic_with_variables_safety01(self):
         self.assert_equal_program(
             parse_program(":- &k{a(V0)}, not b(V0)."),
@@ -181,11 +191,13 @@ class Test(TestCase):
             { k(u(a(V0))) :  } :- u(a(V0)).
             """,
         )
-    '''
+
+    """
     # # Note that the last two rules appear repeated. The second copy apears when processing the rules
     # # not_u_b(V0) :- &k{u_a(V0)}, not u_b(V0).
     # # An improvement would removing those unecessary rules
-    '''
+    """
+
     def test_epistemic_with_variables_safety04(self):
         self.assert_equal_program(
             parse_program("b :- not not &k{a(X)}."),
@@ -212,13 +224,10 @@ class Test(TestCase):
             {k(u(b(V0)))} :- u(b(V0)).
             """,
         )
-    
+
     def test_weighted_rules(self):
-        self.assert_equal_program(
-            parse_program(":-{a} = 0."),
-            ":-{u(a)} = 0."
-        )
-    
+        self.assert_equal_program(parse_program(":-{a} = 0."), ":-{u(a)} = 0.")
+
     def test_parameters01(self):
         self.assert_equal_program(
             parse_program("a(1..n).", ["n"], "parametrized"),
