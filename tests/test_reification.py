@@ -52,8 +52,11 @@ class TestCase(ASTTestCase):
             function_transformer.rule_to_symbolic_term_adapter(stm)
             for stm in expected_program
         ]
-
-        program = function_transformer.rule_to_symbolic_term_adapter(program)
+        
+        program = [
+            function_transformer.rule_to_symbolic_term_adapter(stm)
+            for stm in program
+        ]
 
         sorted_program = sorted(program)
         expected_program.sort()
