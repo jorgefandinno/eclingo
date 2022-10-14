@@ -28,6 +28,7 @@ def tests(session):
                 "tests/test_reification2.py",
                 "tests/test_reification3.py",
                 "tests/test_reification4.py", 
+                "tests/test_reification5.py",
                 "tests/test_app.py",
                 "tests/test_eclingo.py",
                 "tests/test_eclingo_examples.py",
