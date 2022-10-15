@@ -1,5 +1,5 @@
 #  u(a) :- u(b), k(c) | --output=reify
-# echo "a :- b. k{b}." | clingo --output=reify  
+# echo "a :- b. &k{b}." | clingo --output=reify  
 
 import unittest
 from typing import cast
@@ -11,7 +11,8 @@ from eclingo.config import AppConfig
 from eclingo.parsing import parser
 from eclingo.parsing.transformers import ast_reify, function_transformer
 from tests.test_reification2 import parse_literal
-from clingox.reify import reify_program
+from clingox.reify import reify_program, ReifiedTheory
+from clingox.theory import evaluate
 
 def flatten(lst):
     result = []
@@ -49,15 +50,23 @@ class TestCase(ASTTestCase):
     
         # Split and strip whitespaces on '.' based on string given
         expected_program = [x.strip() for x in expected.split('.') if x]
-        reified_program = [str(sym) for sym in program]
         
-        # Delete tag
-        del reified_program[0]
-    
+        program = [
+            function_transformer.rule_to_symbolic_term_adapter(stm)
+            for stm in program
+        ]
+        
+        temp = []
+        for e1, e2 in zip(program, expected_program):
+            temp.append(str(e1))
+            
+        reif = ' '.join(temp)
+        print("This is after list:", reif)
+        reif= reify_program(reif)
+        reified_program = [str(sym) for sym in reif]
+        
         print("The reified program:\n", reified_program)
         print("The expected program:\n", expected_program)
-        
-        
         
         if len(reified_program) != len(expected_program):
             self.fail(
@@ -69,6 +78,9 @@ class TestCase(ASTTestCase):
 
 class Test(TestCase):
     def test_epistemic_rules(self):
+        # self.assert_equal_program(
+        #     parse_program("a :- b. &k{b}."), "atom_tuple(0). atom_tuple(0,1). literal_tuple(0). rule(disjunction(0),normal(0)). atom_tuple(1). literal_tuple(1). literal_tuple(1,1). rule(disjunction(1),normal(1))."
+        # )
         self.assert_equal_program(
-            reify_program("a :- b. k{b}."), "atom_tuple(0). atom_tuple(0,1). literal_tuple(0). rule(disjunction(0),normal(0)). atom_tuple(1). literal_tuple(1). literal_tuple(1,1). rule(disjunction(1),normal(1))."
+            parse_program(":- &k{-a}. -a."), "tag(incremental). atom_tuple(0). atom_tuple(0,1). literal_tuple(0). rule(disjunction(0),normal(0)). atom_tuple(1). atom_tuple(1,2). rule(choice(1),normal(0)). atom_tuple(2). literal_tuple(1). literal_tuple(1,2). rule(disjunction(2),normal(1)). output(k(u(-a)),1). output(u(-a),0)."
         )
