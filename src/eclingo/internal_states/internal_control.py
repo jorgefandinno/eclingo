@@ -66,6 +66,8 @@ class InternalStateControl(object):
         self.control.register_observer(
             clingox_program.ProgramObserver(self.ground_program)
         )
+        
+        # HERE add the new observer for the Reifier
 
         self.show_signature: set[ShowStatement] = set()
 
