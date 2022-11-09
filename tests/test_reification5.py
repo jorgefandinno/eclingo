@@ -14,9 +14,6 @@ from tests.test_reification2 import parse_literal
 from clingox.reify import reify_program, Reifier
 from clingox.theory import evaluate
 
-
-from clingox.program import Program, ProgramObserver
-
 from clingo.control import Control
 
 def flatten(lst):
@@ -48,6 +45,15 @@ def clingo_parse_program(stm):
     return ret
 
 
+
+def program_pr(program, expected):
+    prg_string = []
+    for e1, e2 in zip(program, expected):
+        prg_string.append(str(e1))
+            
+    program = ' '.join(prg_string)
+    return program
+        
 class TestCase(ASTTestCase):
     def setUp(self):
         self.print = False
@@ -64,11 +70,12 @@ class TestCase(ASTTestCase):
         ]
         
         # THIS block could be an aux function given to the Reifier as the callback to reify the whole thing
-        prg_string = []
-        for e1, e2 in zip(program, expected):
-            prg_string.append(str(e1))
+        # prg_string = []
+        # for e1, e2 in zip(program, expected):
+        #     prg_string.append(str(e1))
             
-        program = ' '.join(prg_string)
+        # program = ' '.join(prg_string)
+        program = program_pr(program, expected)
         
         # Register Reifier and apply to the reified epistemic program - > Should add to internal states. Internal Control
         ctl_a = Control()
@@ -79,6 +86,7 @@ class TestCase(ASTTestCase):
         ctl_a.add('base', [], program)
         ctl_a.ground([('base', [])])
         
+        print("THE TYPE:", type(temp[0]))
         temp = [str(e) for e in temp]
         
         # Debugging print

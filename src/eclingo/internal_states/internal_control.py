@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import Any, Callable, Iterable, Iterator, Sequence, Tuple, Union
+from typing import Any, Callable, Iterable, Iterator, List, Sequence, Tuple, Union
 
 import clingo
 import clingox
@@ -8,7 +8,9 @@ from clingo import MessageCode, Symbol, SymbolicAtom, ast
 from clingo.ast import parse_string
 from clingox import program as clingox_program
 from clingox.backend import SymbolicBackend
+from clingox.reify import Reifier
 
+from eclingo.config import AppConfig
 from eclingo.prefixes import atom_user_name
 
 from .mappings import (
@@ -55,7 +57,8 @@ class InternalStateControl(object):
         logger: Callable[[MessageCode, str], None] = None,
         message_limit: int = 20,
         *,
-        control: clingo.Control = None
+        control: clingo.Control = None,
+        config: AppConfig = AppConfig(semantics="c19-1"),
     ):
 
         if control is None:
@@ -66,8 +69,12 @@ class InternalStateControl(object):
         self.control.register_observer(
             clingox_program.ProgramObserver(self.ground_program)
         )
-        
+
         # HERE add the new observer for the Reifier
+        self.reification = config.eclingo_reification
+        reify_terms: List[Symbol]
+        if self.reification:
+            self.control.register_observer(Reifier(reify_terms.append))
 
         self.show_signature: set[ShowStatement] = set()
 

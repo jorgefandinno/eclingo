@@ -11,6 +11,11 @@ from eclingo.parsing.transformers import ast_reify, function_transformer
 from tests.test_reification2 import parse_literal
 
 
+from json import dumps
+from clingo.ast import parse_string
+from clingox.ast import ast_to_dict
+
+
 def flatten(lst):
     result = []
     for lst2 in lst:
@@ -51,13 +56,13 @@ class TestCase(ASTTestCase):
         expected_program = [
             function_transformer.rule_to_symbolic_term_adapter(stm)
             for stm in expected_program
-        ]
+        ]   
         
         program = [
             function_transformer.rule_to_symbolic_term_adapter(stm)
             for stm in program
         ]
-
+        
         sorted_program = sorted(program)
         expected_program.sort()
 
