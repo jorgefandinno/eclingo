@@ -15,7 +15,7 @@ def format(session):
 def typecheck(session):
     session.install("mypy")
     session.install("-r", "requirements.txt")
-    session.run("mypy", "src/eclingo")
+    session.run("mypy", "--implicit-optional", "src/eclingo")
 
 
 @nox.session(python=None)

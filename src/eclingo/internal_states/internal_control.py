@@ -71,10 +71,10 @@ class InternalStateControl(object):
         )
 
         # HERE add the new observer for the Reifier
-        self.reification = config.eclingo_reification
-        reify_terms: List[Symbol]
-        if self.reification:
-            self.control.register_observer(Reifier(reify_terms.append))
+        # self.reification = config.eclingo_reification
+        # reify_terms: List[Symbol]
+        # if self.reification:
+        #     self.control.register_observer(Reifier(reify_terms.append))
 
         self.show_signature: set[ShowStatement] = set()
 
