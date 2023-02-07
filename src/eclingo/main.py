@@ -12,6 +12,8 @@ from eclingo.control import Control
 from eclingo.internal_states import internal_control
 from eclingo.internal_states.internal_control import InternalStateControl
 
+from . import __version__
+
 # from clingo.application import Flag
 
 _FALSE = ["0", "no", "false"]
@@ -25,6 +27,8 @@ class Application(internal_control.Application):
     """
 
     def __init__(self):
+        self.program_name = "eclingo"
+        self.version = __version__
         self.config = AppConfig()
 
     def _parse_int(self, config, attr, min_value=None, max_value=None):

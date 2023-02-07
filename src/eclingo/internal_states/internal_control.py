@@ -153,67 +153,15 @@ class Application(object):
 class ApplicationWrapper(clingo.Application):
     def __init__(self, application):
         self.application = application
-        self.config = self.application.config
-        
-    def _parse_int(self, config, attr, min_value=None, max_value=None):
-        """
-        Parse integer and store result in `config.attr`.
-
-        Here `attr` has to be the name of an attribute. Optionally, a minimum
-        and maximum value can be given for the integer.
-        """
-
-        def parse(value):
-            num = int(value)
-            if min_value is not None and num < min_value:
-                return False
-            if max_value is not None and num > max_value:
-                return False
-            setattr(config, attr, num)
-            return True
-
-        return parse
-
-    def _parse_string(self, config, attr):
-        def parse(value):
-            setattr(config, attr, value)
-            return True
-
-        return parse
-
-    def register_options(self, options) -> None:
-        """
-        Register eclingo related options.
-        """
-        group = "Eclingo Options"
-
-        # Copy-Pasted Example
-        # Commented out as parse_int was left out too.
-        options.add(
-            group,
-            "eclingo-verbose@2",
-            "Set verbosity level of eclingo to <n>",
-            self._parse_int(self.config, "eclingo_verbose"),
-            argument="<n>",
-        )
-
-        group = "App Options"
-        options.add(
-            group,
-            "output-file",
-            "Write output to <file>",
-            self._parse_string(self.config, "outputfile"),
-            argument="<file>",
-        )
+        self.program_name = self.application.program_name
+        self.version = self.application.version
 
     def main(self, control: clingo.Control, files: Sequence[str]) -> None:
         internal_control = InternalStateControl(control=control)
         return self.application.main(internal_control, files)
 
-    # def __getattr__(self, attr):
-    #     #if attr in self.__dict__:
-    #     #    return getattr(self, attr)  # pragma: no cover
-    #     return getattr(self.application, attr)
+    def register_options(self, options) -> None:
+        return self.application.register_options(options)
 
 
 def clingo_main(application: Application, files: Sequence[str] = ()) -> int:
