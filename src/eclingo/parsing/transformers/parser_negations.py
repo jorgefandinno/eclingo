@@ -17,6 +17,7 @@ from . import ast_reify, astutil
 
 ####################################################################################
 
+
 # Unused class
 class SimplifyStrongNegationsTransformer(Transformer):
     pass
@@ -61,7 +62,6 @@ class StrongNegationToAuxiliarTransformer(Transformer):
 
 
 class StrongNegationReplacement(Set[Tuple[str, int, str]]):
-
     location = Location(
         begin=Position(
             filename="<replace_strong_negation_by_auxiliary_atoms>", line=1, column=1

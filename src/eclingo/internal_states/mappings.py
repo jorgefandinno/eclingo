@@ -8,7 +8,7 @@ from eclingo import prefixes
 from eclingo.literals import EpistemicLiteral, Literal
 
 
-class EpistemicSymbolToTestSymbolMapping(dict[Symbol, Symbol]):
+class EpistemicSymbolToTestSymbolMapping(Dict[Symbol, Symbol]):
     def __init__(self, symbolic_atoms: SymbolicAtoms = None) -> None:
         super().__init__()
         if symbolic_atoms is not None:

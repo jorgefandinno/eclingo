@@ -206,7 +206,7 @@ class EClingoTransformer(Transformer):
             x = copy(x)
             x.head = head
             x.body = body
-            for (nested_literal, aux_atom) in self.epistemic_replacements:
+            for nested_literal, aux_atom in self.epistemic_replacements:
                 conditional_literal = ast.ConditionalLiteral(
                     x.location, ensure_literal(aux_atom), []
                 )

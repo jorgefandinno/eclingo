@@ -42,7 +42,6 @@ def parse_theory(s: str) -> TheoryParser:
 
 
 class _ProgramParser(object):
-
     eclingo_theory = """
     #theory eclingo {
     term { not : 0, unary;

@@ -44,8 +44,6 @@ def clingo_parse_program(stm):
     ret = [rule for rule in ret]
     return ret
 
-
-
 def program_pr(program, expected):
     prg_string = []
     for e1, e2 in zip(program, expected):
@@ -86,13 +84,15 @@ class TestCase(ASTTestCase):
         ctl_a.add('base', [], program)
         ctl_a.ground([('base', [])])
         
-        print("THE TYPE:", type(temp[0]))
+        
         temp = [str(e) for e in temp]
         
         # Debugging print
-        print("Reified program:", temp)
+        print("REIFIED program:", temp)
+        print("EXPECTED program:", expected_program)
+        
         print("\n")
-        print("Expected program:", expected_program)
+        print("\n")
     
         if len(temp) != len(expected_program):
             self.fail(
