@@ -29,6 +29,5 @@ class Solver:
 
     def solve(self) -> Iterator[Candidate]:
         for candidate in self.generate_candidates():
-            print("Candidate: ", candidate)
             if self.test_candidate(candidate):
                 yield self._build_world_view(candidate)

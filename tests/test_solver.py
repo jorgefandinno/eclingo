@@ -45,4 +45,4 @@ class TestEclingoSolver(TestCase):
 
     def test_positive_programs_solver(self):
         self.assert_models(solve("a. b :- &k{a}."), [["&k{a}"]])
-        # self.assert_models(solve("{a}. :- not a. b :- &k{a}."), [["&k{a}"]])
+        self.assert_models(solve("{a}. :- not a. b :- &k{a}."), [["&k{a}"]])
