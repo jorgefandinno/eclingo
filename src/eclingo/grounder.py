@@ -2,6 +2,7 @@ from typing import Dict, Iterable, List, NamedTuple, Sequence, Tuple, Union
 
 from clingo import Symbol
 from clingox import program as clingox_program
+from clingox.reify import Reifier, reify_program
 
 from eclingo.config import AppConfig
 from eclingo.internal_states.internal_control import InternalStateControl

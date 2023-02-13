@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import Any, Callable, Iterable, Iterator, List, Sequence, Tuple, Union
+from typing import Any, Callable, Iterable, Iterator, List, Sequence, Set, Tuple, Union
 
 import clingo
 import clingox
@@ -32,7 +32,7 @@ ASTObject = Union[ShowStatement, ast.AST]
 
 
 class ProgramBuilder:
-    def __init__(self, control, show_signature: set[ShowStatement]):
+    def __init__(self, control, show_signature: Set[ShowStatement]):
         self.control = control
         self.show_signature = show_signature
         self.bulider = clingo.ast.ProgramBuilder(self.control)
@@ -60,7 +60,6 @@ class InternalStateControl(object):
         control: clingo.Control = None,
         config: AppConfig = AppConfig(semantics="c19-1"),
     ):
-
         if control is None:
             control = clingo.Control(arguments, logger, message_limit)
         self.control = control
@@ -70,13 +69,7 @@ class InternalStateControl(object):
             clingox_program.ProgramObserver(self.ground_program)
         )
 
-        # HERE add the new observer for the Reifier
-        # self.reification = config.eclingo_reification
-        # reify_terms: List[Symbol]
-        # if self.reification:
-        #     self.control.register_observer(Reifier(reify_terms.append))
-
-        self.show_signature: set[ShowStatement] = set()
+        self.show_signature: Set[ShowStatement] = set()
 
         self.epistemic_to_test_mapping = EpistemicSymbolToTestSymbolMapping()
         self.show_mapping = SymbolToEpistemicLiteralMapping()
@@ -154,15 +147,15 @@ class Application(object):
 class ApplicationWrapper(clingo.Application):
     def __init__(self, application):
         self.application = application
+        self.program_name = self.application.program_name
+        self.version = self.application.version
 
     def main(self, control: clingo.Control, files: Sequence[str]) -> None:
         internal_control = InternalStateControl(control=control)
         return self.application.main(internal_control, files)
 
-    def __getattr__(self, attr):
-        if attr in self.__dict__:
-            return getattr(self, attr)  # pragma: no cover
-        return getattr(self.application, attr)
+    def register_options(self, options) -> None:
+        return self.application.register_options(options)
 
 
 def clingo_main(application: Application, files: Sequence[str] = ()) -> int:
