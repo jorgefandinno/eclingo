@@ -88,15 +88,15 @@ class TestCase(ASTTestCase):
         temp = [str(e) for e in temp]
         
         # Debugging print
-        print("REIFIED program:", temp)
-        print("EXPECTED program:", expected_program)
+        # print("REIFIED program:", temp)
+        # print("EXPECTED program:", expected_program)
         
         print("\n")
         print("\n")
     
         if len(temp) != len(expected_program):
             self.fail(
-                f"Lists differ (different lenghts {len(sorted_program)} and {len(expected_program)}"
+                f"Lists differ (different lenghts {len(temp)} and {len(expected_program)}"
             )
         for e1, e2 in zip(temp, expected_program):
             self.assertEqual(e1, e2)

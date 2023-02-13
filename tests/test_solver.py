@@ -31,11 +31,6 @@ def solve(program):
             world_views.append(world_view)
             print(sorted(world_views))
         return sorted(world_views)
-
-
-        
-# TODO: Write a test solver that once the flag eclingo-reification is passed,
-# sets it to true, and uses reified terms as input for solver.
             
 class TestCase(unittest.TestCase):
     def assert_models(self, models, expected):

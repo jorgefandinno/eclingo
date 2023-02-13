@@ -69,12 +69,6 @@ class InternalStateControl(object):
             clingox_program.ProgramObserver(self.ground_program)
         )
 
-        # HERE add the new observer for the Reifier
-        # self.reification = config.eclingo_reification
-        # reify_terms: List[Symbol]
-        # if self.reification:
-        #     self.control.register_observer(Reifier(reify_terms.append))
-
         self.show_signature: Set[ShowStatement] = set()
 
         self.epistemic_to_test_mapping = EpistemicSymbolToTestSymbolMapping()

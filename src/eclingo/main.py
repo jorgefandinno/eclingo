@@ -31,25 +31,6 @@ class Application(internal_control.Application):
         self.version = __version__
         self.config = AppConfig()
 
-    def _parse_int(self, config, attr, min_value=None, max_value=None):
-        """
-        Parse integer and store result in `config.attr`.
-
-        Here `attr` has to be the name of an attribute. Optionally, a minimum
-        and maximum value can be given for the integer.
-        """
-
-        def parse(value):
-            num = int(value)
-            if min_value is not None and num < min_value:
-                return False
-            if max_value is not None and num > max_value:
-                return False
-            setattr(config, attr, num)
-            return True
-
-        return parse
-
     def _parse_string(self, config, attr):
         def parse(value):
             setattr(config, attr, value)
@@ -70,6 +51,16 @@ class Application(internal_control.Application):
             target=reification_flag,
         )
 
+        group = "Semantics Options"
+
+        options.add(
+            group=group,
+            option="semantics",
+            description="Sets Eclingo to use specified semantics",
+            parser=self._parse_string(self.config, "eclingo_semantics"),
+            argument="<ELP_semantics>",
+        )
+
     def _read(self, path):
         if path == "-":
             return sys.stdin.read()
@@ -85,7 +76,6 @@ class Application(internal_control.Application):
             files = ["-"]
 
         self.config.eclingo_reification = reification_flag.flag
-        # print("The config bool value is:" + str(self.config.eclingo_reification))
 
         eclingo_control = Control(control, self.config)
 
