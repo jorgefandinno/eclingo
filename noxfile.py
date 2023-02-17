@@ -53,6 +53,7 @@ def tests(session):
 #     session.run("coverage", "run", "-m", "unittest",
 #                 "tests/test_solver.py",
 #                 "tests/test_reification5.py",
+#                 "tests/test_generator.py",
 #                 "-v")
 #     session.notify("coverage")
 

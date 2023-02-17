@@ -21,6 +21,9 @@ class CandidateGenerator:
         with self.control.symbolic_backend() as backend:
             backend.add_project(self._epistemic_literals)
 
+    # TODO: Idea, create a subclass that will call the generator_reification
+    # and it will add the rules needed before grounding the new metaprogram + reified terms
+    # and later solve
     def __call__(self) -> Iterator[Candidate]:
         with self.control.solve(yield_=True) as handle:
             for model in handle:
@@ -36,3 +39,9 @@ class CandidateGenerator:
             else:
                 candidate_neg.append(epistemic_literal)
         return Candidate(candidate_pos, candidate_neg)
+
+
+# class CandidateGeneratorReification(CandidateGenerator):
+# Function to add meta-programming rules
+
+# Function to call the super of call and solve

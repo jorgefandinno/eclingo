@@ -14,22 +14,16 @@ def solve(program):
         
         # Registering the eclingo control
         econtrol = Control(control=control, config=config)
-        
-        # Create the Candidate generator
-        generate_candidate = CandidateGenerator(config, control)
 
         # Add control
         econtrol.add_program(program)
-        print("Program: " + program)
-        
+    
         # World view list for generated candidates
         world_views = []
         
-        # world_views = []
         for world_view in econtrol.solve():
             world_view = sorted(str(symbol) for symbol in world_view.symbols)
             world_views.append(world_view)
-            print(sorted(world_views))
         return sorted(world_views)
             
 class TestCase(unittest.TestCase):
