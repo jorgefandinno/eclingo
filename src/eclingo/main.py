@@ -5,13 +5,19 @@ Main module providing the application logic.
 import sys
 from typing import Sequence
 
+from clingo.application import Flag
+
 from eclingo.config import AppConfig
 from eclingo.control import Control
 from eclingo.internal_states import internal_control
 from eclingo.internal_states.internal_control import InternalStateControl
 
+from . import __version__
+
 _FALSE = ["0", "no", "false"]
 _TRUE = ["1", "yes", "true"]
+
+reification_flag = Flag(False)
 
 
 class Application(internal_control.Application):
@@ -21,26 +27,39 @@ class Application(internal_control.Application):
     """
 
     def __init__(self):
+        self.program_name = "eclingo"
+        self.version = __version__
         self.config = AppConfig()
 
-    '''
-    def _parse_int(self, config, attr, min_value=None, max_value=None):
-        """
-        Parse integer and store result in `config.attr`.
-
-        Here `attr` has to be the name of an attribute. Optionally, a minimum
-        and maximum value can be given for the integer.
-        """
+    def _parse_string(self, config, attr):
         def parse(value):
-            num = int(value)
-            if min_value is not None and num < min_value:
-                return False
-            if max_value is not None and num > max_value:
-                return False
-            setattr(config, attr, num)
+            setattr(config, attr, value)
             return True
+
         return parse
-    '''
+
+    def register_options(self, options) -> None:
+        """
+        Register eclingo related options.
+        """
+        group = "Eclingo Options"
+
+        options.add_flag(
+            group=group,
+            option="reification",
+            description="Applies reification to the program",
+            target=reification_flag,
+        )
+
+        group = "Semantics Options"
+
+        options.add(
+            group=group,
+            option="semantics",
+            description="Sets Eclingo to use specified semantics",
+            parser=self._parse_string(self.config, "eclingo_semantics"),
+            argument="<ELP_semantics>",
+        )
 
     def _read(self, path):
         if path == "-":
@@ -55,6 +74,8 @@ class Application(internal_control.Application):
         """
         if not files:
             files = ["-"]
+
+        self.config.eclingo_reification = reification_flag.flag
 
         eclingo_control = Control(control, self.config)
 

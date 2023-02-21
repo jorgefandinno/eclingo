@@ -10,6 +10,7 @@ from .ast_tester import ASTTestCase
 
 class Test(ASTTestCase):
     def test_theory_atom(self):
+    
         self.assertEqual(
             ast_reify.theory_atom_to_term(parse_literal("&k{ p(X) }")),
             parse_term("k(p(X))"),
@@ -24,3 +25,4 @@ class Test(ASTTestCase):
             ast_reify.theory_atom_to_term(parse_literal("&k{ b(c) }")),
             parse_term("k(b(c))"),
         )
+

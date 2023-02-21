@@ -42,7 +42,6 @@ def parse_theory(s: str) -> TheoryParser:
 
 
 class _ProgramParser(object):
-
     eclingo_theory = """
     #theory eclingo {
     term { not : 0, unary;
@@ -76,12 +75,14 @@ class _ProgramParser(object):
 
     def __call__(self) -> None:
         ast.parse_string(self.program, self._parse_statement)
-        for aux_rule in self.strong_negation_replacements.get_auxiliary_rules():
+        for aux_rule in self.strong_negation_replacements.get_auxiliary_rules(
+            self.reification
+        ):
             self.callback(aux_rule)
 
     def _parse_statement(self, statement: ast.AST) -> None:
         statement = self.theory_parser(statement)
-        statement = parse_epistemic_literals_elements(statement)
+        statement = parse_epistemic_literals_elements(statement, self.reification)
 
         if self.reification:
             statement = reify_symbolic_atoms(
@@ -113,11 +114,13 @@ class _ProgramParser(object):
         (
             rules,
             sn_replacement,
-        ) = replace_negations_by_auxiliary_atoms_in_epistemic_literals(rule)
+        ) = replace_negations_by_auxiliary_atoms_in_epistemic_literals(
+            rule, self.reification
+        )
         self.strong_negation_replacements.update(sn_replacement)
 
         return replace_epistemic_literals_by_auxiliary_atoms(
-            rules, prefixes.EPISTEMIC_PREFIX
+            rules, self.reification, prefixes.EPISTEMIC_PREFIX
         )
 
     def _parse_program_statement(self, statement: ast.AST) -> List[ast.AST]:
