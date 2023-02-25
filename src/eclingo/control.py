@@ -57,7 +57,6 @@ class Control(object):
             self.prepare_solver()
 
         for model in self.solver.solve():
-            # ISSUE: When reification is call, model is empty, and not printed the world view
             self.models += 1
             yield model
             if self.models >= self.max_models:

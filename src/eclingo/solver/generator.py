@@ -26,8 +26,9 @@ class CandidateGenerator:
     def __call__(self) -> Iterator[Candidate]:
         with self.control.solve(yield_=True) as handle:
             for model in handle:
-                print("This is the generated model: " + str(model))
+                # print("This is the generated model: " + str(model))
                 candidate = self._model_to_candidate(model)
+                print(candidate)
                 yield candidate
 
     def _model_to_candidate(self, model: clingo.Model) -> Candidate:
@@ -40,6 +41,7 @@ class CandidateGenerator:
                 candidate_neg.append(epistemic_literal)
         return Candidate(candidate_pos, candidate_neg)
 
+
 # echo ":- &k{a}. a." | eclingo --output=reify --reification --semantics c19-1
 # echo ":- k(u(a)). u(a). {k(u(a))} :- u(a)." | clingo --output=reify
 # echo "a. b :- &k{a}." | eclingo  --semantics c19-1 --reification
@@ -48,6 +50,8 @@ class CandidateGenerator:
 # eclingo pr1.lp --semantics c19-1 --reification Still works, but gives me no world views, nor the whole generated models.
 
 
+# Once we have the same subclass for the TESTER,
+# WE NEED to call this generator instead of the normal one on the solver
 class GeneratorReification(CandidateGenerator):
     def __call__(self) -> Iterator[Candidate]:
         program2 = """  conjunction(B) :- literal_tuple(B), hold(L) : literal_tuple(B, L), L > 0;
@@ -69,18 +73,20 @@ class GeneratorReification(CandidateGenerator):
 
         self.control.add("base", [], program2)
         self.control.ground([("base", [])])
-
         return super().__call__()
 
     def _model_to_candidate(self, model: clingo.Model) -> Candidate:
         candidate_pos = []
         candidate_neg = []
 
-        print(model.symbols(shown=True))
+
         for symbol in model.symbols(shown=True):
-            if symbol.name == "k":
+            print(symbol)
+            if symbol.name == "u":
+                print("Candidate symbol: ", symbol)
                 candidate_pos.append(symbol)
-            if symbol.name == "not1":
+            if symbol.name == "not1" or symbol.name == "not2":
+                print("Candidate symbol: ", symbol)
                 candidate_neg.append(symbol.arguments[0])
 
         return Candidate(candidate_pos, candidate_neg)

@@ -107,3 +107,25 @@ class WorldWiewBuilderWithShow(WorldWiewBuilder):
         return super().world_view_from_candidate(
             Candidate(new_candidate_pos, new_candidate_neg)
         )
+
+
+# class WorldWiewBuilderReification(WorldWiewBuilderWithShow):
+
+#     def world_view_from_candidate(self, candidate: Candidate):
+#         epistemic_literals = []
+#         processed_symbols = []
+#         for epistemic_literal in candidate.pos:
+#             if epistemic_literal in self._epistemic_show_pos_mapping:
+#                 show_literal = self._epistemic_show_pos_mapping[epistemic_literal]
+#                 epistemic_literals.append(show_literal)
+#                 processed_symbols.append(show_literal.objective_literal)
+
+#         processed_symbols_set = frozenset(processed_symbols)
+
+#         for epistemic_literal in candidate.neg:
+#             if epistemic_literal in self._epistemic_show_neg_mapping:
+#                 show_literal = self._epistemic_show_neg_mapping[epistemic_literal]
+#                 if show_literal.objective_literal not in processed_symbols_set:
+#                     epistemic_literals.append(show_literal)
+
+#         return WorldView(epistemic_literals)

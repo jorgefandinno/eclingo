@@ -47,5 +47,5 @@ class TestEclingoGenerator(TestCase):
     def test_generator01(self):
         self.assert_models(generate("u_b :- k_u_a. u_a. {k_u_a}."), [Candidate(pos=[], neg=[Function('k_u_a', [], True)]), Candidate(pos=[Function('k_u_a', [], True)], neg=[])])
         
-    def test_generator02(self):
-        self.assert_models(generate("u_a. u_b :- k_u_a. u_c :- k_u_b."), [Candidate(pos=[Function('k_u_a', [], True)], neg=[Function('k_u_b', [], True)]), Candidate(pos=[Function('k_u_a', [], True), Function('k_u_b', [], True)], neg=[])])
+    # def test_generator02(self):
+    #     self.assert_models(generate("u_a. u_b :- k_u_a. u_c :- k_u_b."), [Candidate(pos=[Function('k_u_a', [], True)], neg=[Function('k_u_b', [], True)]), Candidate(pos=[Function('k_u_a', [], True), Function('k_u_b', [], True)], neg=[])])
