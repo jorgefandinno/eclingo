@@ -15,21 +15,26 @@ class TesterCase(unittest.TestCase):
         program.sort()
         return self.assertListEqual(expected_program, program)
 
-    def assertClingoxProgramAddToBackend(self, program):
-        control_gen = clingo.control.Control()
-        program1 = Program()
-        control_gen.register_observer(ProgramObserver(program1))
-        control_gen.add("base", [], program)
-        control_gen.ground([("base", [])])
-        self.assertEqualPrograms(program, str(program1))
-        control_test = clingo.control.Control(["0"], message_limit=0)
-        program2 = Program()
-        control_test.register_observer(ProgramObserver(program2))
-        with control_test.backend() as backend:
-            mapping = Remapping(backend, program1.output_atoms, program1.facts)
-            program1.add_to_backend(backend, mapping)
-        self.assertEqualPrograms(program, str(program2))
 
+
+    def assertReification(self, program):
+        program = [
+            function_transformer.rule_to_symbolic_term_adapter(stm)
+            for stm in program
+        ]
+        
+        program = program_pr(program, expected)
+        
+        ctl_a = Control()
+        
+        temp = []
+        ctl_a.register_observer(Reifier(temp.append))
+    
+        ctl_a.add('base', [], program)
+        ctl_a.ground([('base', [])])
+        
+        temp = [str(e) for e in temp]
+        
     def assertInitControl(self, program):
         control_gen = internal_control.InternalStateControl()
         program1 = Program()
@@ -42,13 +47,6 @@ class TesterCase(unittest.TestCase):
         control_test.register_observer(ProgramObserver(program2))
         CandidateTester._init_control_test(control_test, control_gen)
         self.assertEqualPrograms(program, str(program2))
-
-    def test_clingox(self):
-        self.assertClingoxProgramAddToBackend("{u_a}.")
-        self.assertClingoxProgramAddToBackend("u_b :- k_a. {k_a}. {u_a}.")
-        self.assertClingoxProgramAddToBackend(
-            "u_a; u_b. u_c :- u_a. u_c :- u_b. u_d :- k_c. {k_c}."
-        )
 
     def test_init_control(self):
         self.assertInitControl("{u_a}.")

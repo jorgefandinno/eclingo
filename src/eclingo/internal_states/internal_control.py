@@ -63,6 +63,7 @@ class InternalStateControl(object):
         if control is None:
             control = clingo.Control(arguments, logger, message_limit)
         self.control = control
+        self.config = config
 
         self.ground_program = clingox_program.Program()
         self.control.register_observer(
@@ -71,8 +72,8 @@ class InternalStateControl(object):
 
         self.show_signature: Set[ShowStatement] = set()
 
-        self.epistemic_to_test_mapping = EpistemicSymbolToTestSymbolMapping()
-        self.show_mapping = SymbolToEpistemicLiteralMapping()
+        self.epistemic_to_test_mapping = EpistemicSymbolToTestSymbolMapping(self.config.eclingo_reification)
+        self.show_mapping = SymbolToEpistemicLiteralMapping(self.config.eclingo_reification)
 
     def add_program(self, program: str) -> None:
         with self.builder() as builder:
@@ -108,22 +109,29 @@ class InternalStateControl(object):
             )
 
     def ground(
-        self, parts: Sequence[Tuple[str, Sequence[Symbol]]], context: Any = None
+        self, parts: Sequence[Tuple[str, Sequence[Symbol]]], reification: bool, context: Any = None
     ) -> None:
         self.control.ground(parts, context)
+        
+        ## HERE is where the epistemic mapping happens, we should be doing the same for reified terms
+        self.config.eclingo_reification = reification
+        
         self.epistemic_to_test_mapping = EpistemicSymbolToTestSymbolMapping(
-            self.control.symbolic_atoms
+            self.config.eclingo_reification, self.control.symbolic_atoms
         )
+        print(self.epistemic_to_test_mapping)
         self.show_mapping = self._generate_show_mapping()
 
     def _generate_show_mapping(self) -> SymbolToEpistemicLiteralMapping:
         if self.show_signature:
+            print("Show YES")
             return SymbolToEpistemicLiteralMappingUsingShowStatements(
                 self.show_symbols()
             )
         else:
+            print("Show NO")
             return SymbolToEpistemicLiteralMappingUsingProgramLiterals(
-                self.epistemic_to_test_mapping.epistemic_literals()
+                self.config.eclingo_reification, self.epistemic_to_test_mapping.epistemic_literals()
             )
 
     def symbolic_backend(self) -> SymbolicBackend:

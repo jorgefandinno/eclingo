@@ -14,6 +14,7 @@ class Grounder:
     def __init__(self, control: InternalStateControl, config: AppConfig = AppConfig()):
         self.control = control
         self.config = config
+        self.reification = self.config.eclingo_reification
         self.facts: List[Symbol] = []
         self.epistemic_facts: List[Symbol] = []
         self.atom_to_symbol: Dict[int, Symbol] = dict()
@@ -31,4 +32,4 @@ class Grounder:
     def ground(
         self, parts: Sequence[Tuple[str, Sequence[Symbol]]] = (("base", []),)
     ) -> None:  # pylint: disable=dangerous-default-value
-        self.control.ground(parts)
+        self.control.ground(parts, self.reification)

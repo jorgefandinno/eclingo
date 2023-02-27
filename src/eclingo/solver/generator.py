@@ -17,18 +17,18 @@ class CandidateGenerator:
         self._config = config
         self.control = control
 
-        self._epistemic_literals = (
-            self.control.epistemic_to_test_mapping.epistemic_literals()
-        )
-        with self.control.symbolic_backend() as backend:
-            backend.add_project(self._epistemic_literals)
+        if not self._config.eclingo_reification:
+            self._epistemic_literals = (
+                self.control.epistemic_to_test_mapping.epistemic_literals()
+            )
+            with self.control.symbolic_backend() as backend:
+                backend.add_project(self._epistemic_literals)
 
     def __call__(self) -> Iterator[Candidate]:
         with self.control.solve(yield_=True) as handle:
             for model in handle:
-                # print("This is the generated model: " + str(model))
+                print("This is the generated model: " + str(model))
                 candidate = self._model_to_candidate(model)
-                print(candidate)
                 yield candidate
 
     def _model_to_candidate(self, model: clingo.Model) -> Candidate:
@@ -45,6 +45,7 @@ class CandidateGenerator:
 # echo ":- &k{a}. a." | eclingo --output=reify --reification --semantics c19-1
 # echo ":- k(u(a)). u(a). {k(u(a))} :- u(a)." | clingo --output=reify
 # echo "a. b :- &k{a}." | eclingo  --semantics c19-1 --reification
+# echo "a. b :- &k{a}. {a}." | eclingo  --semantics c19-1 --reification -> Generator test equivalence
 
 # eclingo pr1.lp --semantics c19-1
 # eclingo pr1.lp --semantics c19-1 --reification Still works, but gives me no world views, nor the whole generated models.
@@ -72,21 +73,22 @@ class GeneratorReification(CandidateGenerator):
                         #show T : show(T)."""
 
         self.control.add("base", [], program2)
-        self.control.ground([("base", [])])
+        self.control.ground([("base", [])], self._config.eclingo_reification)
         return super().__call__()
 
     def _model_to_candidate(self, model: clingo.Model) -> Candidate:
         candidate_pos = []
         candidate_neg = []
 
-
+        # So, when a normal positive epistemic program is passed, it reifies, then gets call to the generator, once it hits the generator,
+        # then is gorunded again and then it hits it Bacause of the show in the program ahhh
+        
         for symbol in model.symbols(shown=True):
-            print(symbol)
-            if symbol.name == "u":
-                print("Candidate symbol: ", symbol)
+            if symbol.name == "k":
+                # print("Candidate symbol: ", symbol)
                 candidate_pos.append(symbol)
             if symbol.name == "not1" or symbol.name == "not2":
-                print("Candidate symbol: ", symbol)
+                # print("Candidate symbol: ", symbol)
                 candidate_neg.append(symbol.arguments[0])
 
         return Candidate(candidate_pos, candidate_neg)

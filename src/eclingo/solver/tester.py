@@ -53,23 +53,22 @@ class CandidateTester:
         candidate_neg = []
         candidate_assumptions = []
 
-
         ## TODO: Whenever a candidate with K is sent, it has to do a mapping to u(a) like it does on normal candidates
         print("This the candidate", candidate)
         for literal in candidate[0]:
-            print("no reif", literal)
+            #print("no reif", literal)
             assumption = (literal, True)
             candidate_assumptions.append(assumption)
             literal = self._epistemic_to_test[literal]
             candidate_pos.append(literal)
-            print("after no reif", literal) # Gets his ua removedddddd
+            #print("after no reif", literal)  # Gets his u_a removed
+
         for literal in candidate[1]:
-            print("no reif", literal)
             assumption = (literal, False)
             candidate_assumptions.append(assumption)
             literal = self._epistemic_to_test[literal]
-
             candidate_neg.append(literal)
+
         self.control.configuration.solve.models = 0
         self.control.configuration.solve.project = "no"
 
@@ -78,9 +77,9 @@ class CandidateTester:
         ) as handle:
             model = None
             for model in handle:
-                print(model)
+                print("The model", model)
                 for atom in candidate_pos:
-                    print(atom)
+                    # print(atom)
                     if not model.contains(atom):
                         return False
 
@@ -99,7 +98,6 @@ class CandidateTesterReification(CandidateTester):
         candidate_assumptions = []
 
         print("This the candidate", candidate)
-
 
         ## TODO: Whenever a candidate with K is sent, it has to do a mapping to u(a) like it does on normal candidates
         for literal in candidate[0]:  # Positive
@@ -122,7 +120,7 @@ class CandidateTesterReification(CandidateTester):
         ) as handle:
             model = None
             for model in handle:
-                #print("The model", model)
+                print("The model", model)
                 for atom in candidate_pos:
                     if not model.contains(atom):
                         return False
@@ -134,7 +132,7 @@ class CandidateTesterReification(CandidateTester):
             #     print(a.name)
 
             for atom in candidate_neg:
-                #print("The negative candidates: ", candidate_neg)
+                # print("The negative candidates: ", candidate_neg)
 
                 if model.contains(atom):
                     return False

@@ -9,19 +9,33 @@ from eclingo.literals import EpistemicLiteral, Literal
 
 
 class EpistemicSymbolToTestSymbolMapping(Dict[Symbol, Symbol]):
-    def __init__(self, symbolic_atoms: SymbolicAtoms = None) -> None:
+    def __init__(self, reification: bool, symbolic_atoms: SymbolicAtoms = None) -> None:
         super().__init__()
         if symbolic_atoms is not None:
             for atom in symbolic_atoms:
                 symbol = atom.symbol
-                symbol_is_epistemic_literal = symbol.name.startswith(
-                    prefixes.EPISTEMIC_PREFIX
-                )
-                if symbol_is_epistemic_literal:
-                    test_symbol = self._generate_test_symbol_from_epistemic_symbol(
-                        symbol
+                if reification:
+                    if symbol.name == "k":
+                        test_symbol = self._generate_test_symbol_from_epistemic_reified_symbol(
+                            symbol
+                        )
+                        self.update({symbol: test_symbol})
+                        
+                else:
+                    symbol_is_epistemic_literal = symbol.name.startswith(
+                        prefixes.EPISTEMIC_PREFIX
                     )
-                    self.update({symbol: test_symbol})
+                    if symbol_is_epistemic_literal:
+                        test_symbol = self._generate_test_symbol_from_epistemic_symbol(
+                            symbol
+                        )
+                        self.update({symbol: test_symbol})
+                
+                    
+    def _generate_test_symbol_from_epistemic_reified_symbol(self, symbol: Symbol) -> Symbol:
+        symbol = symbol.arguments[0]
+        test_symbol_name = symbol.name
+        return Function(test_symbol_name, symbol.arguments, symbol.positive)       
 
     def _generate_test_symbol_from_epistemic_symbol(self, symbol: Symbol) -> Symbol:
         test_symbol_name = symbol.name[len(prefixes.EPISTEMIC_PREFIX) :]
@@ -32,28 +46,42 @@ class EpistemicSymbolToTestSymbolMapping(Dict[Symbol, Symbol]):
 
 
 class SymbolToEpistemicLiteralMapping:
-    def __init__(self, symbols: Iterable[Symbol] = ()) -> None:
+    def __init__(self, reification: bool, symbols: Iterable[Symbol] = (), ) -> None:
         self.positive: Dict[Symbol, EpistemicLiteral] = dict()
         self.negative: Dict[Symbol, EpistemicLiteral] = dict()
-        self._generate_mappings(symbols)
+        self.reification = reification
+        self._generate_mappings(symbols, reification)
 
-    def _generate_mappings(self, symbols: Iterable[Symbol]) -> None:
+    def _generate_mappings(self, symbols: Iterable[Symbol], reification: bool) -> None:
         pass
 
 
 class SymbolToEpistemicLiteralMappingUsingProgramLiterals(
     SymbolToEpistemicLiteralMapping
 ):
-    def _generate_mappings(self, symbols: Iterable[Symbol]) -> None:
+    def _generate_mappings(self, symbols: Iterable[Symbol], reification: bool) -> None:
         for epistemic_symbol in symbols:
-            show_symbol = prefixes.symbol_to_epistemic_literal(epistemic_symbol)
-            if show_symbol.objective_literal.sign != Sign.Negation:
-                self.positive.update({epistemic_symbol: show_symbol})
+            print("\nThis are epistemic symbol: ", epistemic_symbol)
+            if not reification: 
+                show_symbol = prefixes.symbol_to_epistemic_literal(epistemic_symbol)
+                if show_symbol.objective_literal.sign != Sign.Negation:
+                    self.positive.update({epistemic_symbol: show_symbol})
+                else:
+                    show_symbol = self._generate_m_show_symbol_from_epistemic_symbol(
+                        show_symbol
+                    )
+                    self.negative.update({epistemic_symbol: show_symbol})
             else:
-                show_symbol = self._generate_m_show_symbol_from_epistemic_symbol(
-                    show_symbol
-                )
-                self.negative.update({epistemic_symbol: show_symbol})
+                show_symbol = prefixes.symbol_to_epistemic_reified_literal(epistemic_symbol)
+                print("The show symbol: ", show_symbol.objective_literal)
+                print()
+                if show_symbol.objective_literal.sign != Sign.Negation:
+                    self.positive.update({epistemic_symbol: show_symbol})
+                else:
+                    show_symbol = self._generate_m_show_symbol_from_epistemic_symbol(
+                        show_symbol
+                    )
+                    self.negative.update({epistemic_symbol: show_symbol})
 
     def _generate_m_show_symbol_from_epistemic_symbol(
         self, show_symbol: EpistemicLiteral
