@@ -59,14 +59,18 @@ class CandidateTester:
             #print("no reif", literal)
             assumption = (literal, True)
             candidate_assumptions.append(assumption)
+            print("B :", literal)
             literal = self._epistemic_to_test[literal]
+            print("A :", literal)
             candidate_pos.append(literal)
             #print("after no reif", literal)  # Gets his u_a removed
 
         for literal in candidate[1]:
             assumption = (literal, False)
             candidate_assumptions.append(assumption)
+            print("B :", literal)
             literal = self._epistemic_to_test[literal]
+            print("A :", literal)
             candidate_neg.append(literal)
 
         self.control.configuration.solve.models = 0
@@ -103,13 +107,16 @@ class CandidateTesterReification(CandidateTester):
         for literal in candidate[0]:  # Positive
             print("Positive: ", literal)
             assumption = (literal, True)
+            print("Rif: ", literal)
             candidate_assumptions.append(assumption)
+            #literal = literal.arguments[0]
             candidate_pos.append(literal)
 
         for literal in candidate[1]:  # Negative
             print("Negative: ", literal)
             assumption = (literal, False)
             candidate_assumptions.append(assumption)
+            #literal = literal.arguments[0]
             candidate_neg.append(literal)
 
         self.control.configuration.solve.models = 0

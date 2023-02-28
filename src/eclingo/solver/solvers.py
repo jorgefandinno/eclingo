@@ -37,7 +37,7 @@ class Solver:
     def solve(self) -> Iterator[Candidate]:
         if self._config.eclingo_reification:
             for candidate in self.generate_candidates_reification():
-                if self.test_candidate(candidate):
+                if self.test_candidate_reification(candidate):
                     yield self._build_world_view(candidate)
         #         if self.test_candidate_reification(candidate):
         #             print("Using candidate")

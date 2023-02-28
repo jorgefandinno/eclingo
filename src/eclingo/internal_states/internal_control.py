@@ -116,10 +116,11 @@ class InternalStateControl(object):
         ## HERE is where the epistemic mapping happens, we should be doing the same for reified terms
         self.config.eclingo_reification = reification
         
-        self.epistemic_to_test_mapping = EpistemicSymbolToTestSymbolMapping(
-            self.config.eclingo_reification, self.control.symbolic_atoms
-        )
-        print(self.epistemic_to_test_mapping)
+        if not self.config.eclingo_reification:
+            self.epistemic_to_test_mapping = EpistemicSymbolToTestSymbolMapping(
+                self.config.eclingo_reification, self.control.symbolic_atoms
+            )
+            print(self.epistemic_to_test_mapping)
         self.show_mapping = self._generate_show_mapping()
 
     def _generate_show_mapping(self) -> SymbolToEpistemicLiteralMapping:
