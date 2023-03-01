@@ -135,7 +135,7 @@ class _ProgramParser(object):
             return [statement]
 
         new_statement = ast.Program(statement.location, self.name, self.parameters)
-        
+
         return [statement, new_statement]
 
     def _parse_show_signature_statement(

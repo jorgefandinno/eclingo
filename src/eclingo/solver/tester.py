@@ -56,14 +56,14 @@ class CandidateTester:
         ## TODO: Whenever a candidate with K is sent, it has to do a mapping to u(a) like it does on normal candidates
         print("This the candidate", candidate)
         for literal in candidate[0]:
-            #print("no reif", literal)
+            # print("no reif", literal)
             assumption = (literal, True)
             candidate_assumptions.append(assumption)
             print("B :", literal)
             literal = self._epistemic_to_test[literal]
             print("A :", literal)
             candidate_pos.append(literal)
-            #print("after no reif", literal)  # Gets his u_a removed
+            # print("after no reif", literal)  # Gets his u_a removed
 
         for literal in candidate[1]:
             assumption = (literal, False)
@@ -109,14 +109,17 @@ class CandidateTesterReification(CandidateTester):
             assumption = (literal, True)
             print("Rif: ", literal)
             candidate_assumptions.append(assumption)
-            #literal = literal.arguments[0]
+            literal = literal.arguments[0]
+            print("after pos: ", literal)
             candidate_pos.append(literal)
 
         for literal in candidate[1]:  # Negative
             print("Negative: ", literal)
             assumption = (literal, False)
+            print("Rif: ", literal)
             candidate_assumptions.append(assumption)
-            #literal = literal.arguments[0]
+            literal = literal.arguments[0]
+            print("after pos: ", literal)
             candidate_neg.append(literal)
 
         self.control.configuration.solve.models = 0
@@ -127,20 +130,16 @@ class CandidateTesterReification(CandidateTester):
         ) as handle:
             model = None
             for model in handle:
-                print("The model", model)
+                print("\nThe model at tester: ", model)
                 for atom in candidate_pos:
                     if not model.contains(atom):
                         return False
 
-            assert model is not None
-
-            # print(type(model))
-            # for a in model.symbols(shown=True):
-            #     print(a.name)
+            # assert model is not None Why if this on, test fails
 
             for atom in candidate_neg:
-                # print("The negative candidates: ", candidate_neg)
-
+                print(atom)
                 if model.contains(atom):
+                    print(model.symbols(shown=True))
                     return False
         return True

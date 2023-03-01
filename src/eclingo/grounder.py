@@ -32,4 +32,4 @@ class Grounder:
     def ground(
         self, parts: Sequence[Tuple[str, Sequence[Symbol]]] = (("base", []),)
     ) -> None:  # pylint: disable=dangerous-default-value
-        self.control.ground(parts, self.reification)
+        self.control.ground(parts)

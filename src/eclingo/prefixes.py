@@ -56,6 +56,7 @@ def symbol_to_epistemic_literal(symbol: Symbol) -> EpistemicLiteral:
     literal = Literal(new_symbol, sign)
     return EpistemicLiteral(literal, Sign.NoSign)
 
+
 def symbol_to_epistemic_reified_literal(symbol: Symbol) -> EpistemicLiteral:
     assert symbol.name == "k"
     temp_symbol = symbol.arguments[0]
@@ -65,12 +66,12 @@ def symbol_to_epistemic_reified_literal(symbol: Symbol) -> EpistemicLiteral:
     if name == "not1":
         name = temp_symbol.arguments[0].name
         sign = Sign.Negation
-        
+
     # if symbol is of the form &k{not not L} with L an explicit literal
     elif name == "not2":
         name = temp_symbol.arguments[0].name
         sign = Sign.DoubleNegation
-        
+
     # if symbol is of the form &k{L} with L an explicit literal
     else:
         sign = Sign.NoSign
@@ -80,15 +81,17 @@ def symbol_to_epistemic_reified_literal(symbol: Symbol) -> EpistemicLiteral:
     symbol_is_explicitely_negated = name.startswith(SN_PREFIX)
     if symbol_is_explicitely_negated:
         name = name[len(SN_PREFIX) :]
-        
+
     name = temp_symbol.arguments[0].name
     print("\nThe temp_symbol name: ", temp_symbol.name)
-    
+
     # TODO: do we want the world view to look like &k{u(a)} or do we want it to look like &k{u(a)} ???
 
-    new_symbol = Function(temp_symbol.name, temp_symbol.arguments, not symbol_is_explicitely_negated)
+    new_symbol = Function(
+        temp_symbol.name, temp_symbol.arguments, not symbol_is_explicitely_negated
+    )
     literal = Literal(new_symbol, sign)
-    
+
     print("\nThe literal: ", literal)
     print()
     return EpistemicLiteral(literal, Sign.NoSign)

@@ -73,7 +73,7 @@ class GeneratorReification(CandidateGenerator):
                         #show T : show(T)."""
 
         self.control.add("base", [], program2)
-        self.control.ground([("base", [])], self._config.eclingo_reification)
+        self.control.ground([("base", [])])
         return super().__call__()
 
     def _model_to_candidate(self, model: clingo.Model) -> Candidate:
@@ -82,7 +82,7 @@ class GeneratorReification(CandidateGenerator):
 
         # So, when a normal positive epistemic program is passed, it reifies, then gets call to the generator, once it hits the generator,
         # then is gorunded again and then it hits it Bacause of the show in the program ahhh
-        
+
         for symbol in model.symbols(shown=True):
             if symbol.name == "k":
                 print("Candidate symbol: ", symbol)

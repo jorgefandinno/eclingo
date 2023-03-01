@@ -52,7 +52,7 @@ def tests(session):
     session.install("-r", "requirements.txt")
     session.install("-e", ".")
     session.run("coverage", "run", "-m", "unittest",
-                "tests/test_generator_reification.py",
+                "tests/test_tester_reification.py",
                 "-v")
     session.notify("coverage")
 

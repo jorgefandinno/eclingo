@@ -56,7 +56,7 @@ class Control(object):
         if self.solver is None:
             self.prepare_solver()
 
-        for model in self.solver.solve():
+        for model in self.solver.solve_reif(): # Should be solve(), if reif signed passed, the call solve(reif)
             self.models += 1
             yield model
             if self.models >= self.max_models:
