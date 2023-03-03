@@ -54,7 +54,7 @@ class CandidateTester:
         candidate_assumptions = []
 
         ## TODO: Whenever a candidate with K is sent, it has to do a mapping to u(a) like it does on normal candidates
-        print("This the candidate", candidate)
+        # print("This the candidate", candidate)
         for literal in candidate[0]:
             # print("no reif", literal)
             assumption = (literal, True)
@@ -101,25 +101,25 @@ class CandidateTesterReification(CandidateTester):
         candidate_neg = []
         candidate_assumptions = []
 
-        print("This the candidate", candidate)
+        # print("This the candidate", candidate)
 
         ## TODO: Whenever a candidate with K is sent, it has to do a mapping to u(a) like it does on normal candidates
         for literal in candidate[0]:  # Positive
-            print("Positive: ", literal)
+            # print("Positive: ", literal)
             assumption = (literal, True)
-            print("Rif: ", literal)
+            # print("Rif: ", literal)
             candidate_assumptions.append(assumption)
             literal = literal.arguments[0]
-            print("after pos: ", literal)
+            # print("after pos: ", literal)
             candidate_pos.append(literal)
 
         for literal in candidate[1]:  # Negative
-            print("Negative: ", literal)
+            # print("Negative: ", literal)
             assumption = (literal, False)
-            print("Rif: ", literal)
+            # print("Rif: ", literal)
             candidate_assumptions.append(assumption)
             literal = literal.arguments[0]
-            print("after pos: ", literal)
+            # print("after pos: ", literal)
             candidate_neg.append(literal)
 
         self.control.configuration.solve.models = 0
@@ -130,16 +130,14 @@ class CandidateTesterReification(CandidateTester):
         ) as handle:
             model = None
             for model in handle:
-                print("\nThe model at tester: ", model)
                 for atom in candidate_pos:
                     if not model.contains(atom):
                         return False
 
-            # assert model is not None Why if this on, test fails
+                # print("The model after pos on tester: ", model)
+                assert model is not None  # Why if this on, test fails
 
-            for atom in candidate_neg:
-                print(atom)
-                if model.contains(atom):
-                    print(model.symbols(shown=True))
-                    return False
+                for atom in candidate_neg:
+                    if model.contains(atom):
+                        return False
         return True
