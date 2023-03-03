@@ -18,43 +18,46 @@ def typecheck(session):
     session.run("mypy", "--implicit-optional", "src/eclingo")
 
 
-# @nox.session(python=None)
-# def tests(session):
-#     session.install("coverage")
-#     session.install("-r", "requirements.txt")
-#     session.install("-e", ".")
-#     session.run("coverage", "run", "-m", "unittest",
-#                 "tests/test_reification.py",
-#                 "tests/test_reification2.py",
-#                 "tests/test_reification3.py",
-#                 "tests/test_reification4.py", 
-#                 "tests/test_reification5.py",
-#                 "tests/test_app.py",
-#                 "tests/test_eclingo.py",
-#                 "tests/test_eclingo_examples.py",
-#                 "tests/test_g94.py",
-#                 "tests/test_grounder.py",
-#                 "tests/test_generator.py",
-#                 "tests/test_literals.py",
-#                 "tests/test_internal_control_ground_program.py",
-#                 "tests/test_parsing.py",
-#                 "tests/test_show.py",
-#                 "tests/test_solver.py",
-#                 "tests/test_tester.py",
-#                 "tests/test_theory_atom_parser.py",
-#                 "tests/test_transformers.py",
-#                 "-v")
-#     session.notify("coverage")
-    
 @nox.session(python=None)
 def tests(session):
     session.install("coverage")
     session.install("-r", "requirements.txt")
     session.install("-e", ".")
     session.run("coverage", "run", "-m", "unittest",
+                "tests/test_reification.py",
+                "tests/test_reification2.py",
+                "tests/test_reification3.py",
+                "tests/test_reification4.py", 
+                "tests/test_reification5.py",
+                "tests/test_app.py",
+                "tests/test_eclingo.py",
+                "tests/test_eclingo_examples.py",
+                "tests/test_g94.py",
+                "tests/test_grounder.py",
+                "tests/test_generator.py",
+                "tests/test_generator_reification.py",
+                "tests/test_literals.py",
+                "tests/test_internal_control_ground_program.py",
+                "tests/test_parsing.py",
+                "tests/test_show.py",
+                "tests/test_solver.py",
+                "tests/test_tester.py",
                 "tests/test_tester_reification.py",
+                "tests/test_theory_atom_parser.py",
+                "tests/test_transformers.py",
                 "-v")
     session.notify("coverage")
+    
+# Session for individual new test implementation
+# @nox.session(python=None)
+# def tests(session):
+#     session.install("coverage")
+#     session.install("-r", "requirements.txt")
+#     session.install("-e", ".")
+#     session.run("coverage", "run", "-m", "unittest",
+#                 "tests/test_tester_reification.py",
+#                 "-v")
+#     session.notify("coverage")
 
 
 @nox.session(python=None)
