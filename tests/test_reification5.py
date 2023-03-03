@@ -69,7 +69,6 @@ class TestCase(ASTTestCase):
         
         program = program_pr(program, expected)
         
-        # Register Reifier and apply to the reified epistemic program - > Should add to internal states. Internal Control
         ctl_a = Control()
         
         temp = []
@@ -78,13 +77,8 @@ class TestCase(ASTTestCase):
         ctl_a.add('base', [], program)
         ctl_a.ground([('base', [])])
         
-        
         temp = [str(e) for e in temp]
         
-        # Debugging print
-        # print("REIFIED program:", temp)
-        # print("EXPECTED program:", expected_program)
-  
         if len(temp) != len(expected_program):
             self.fail(
                 f"Lists differ (different lenghts {len(temp)} and {len(expected_program)}"

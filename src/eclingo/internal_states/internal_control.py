@@ -63,6 +63,7 @@ class InternalStateControl(object):
         if control is None:
             control = clingo.Control(arguments, logger, message_limit)
         self.control = control
+        self.config = config
 
         self.ground_program = clingox_program.Program()
         self.control.register_observer(
@@ -74,9 +75,9 @@ class InternalStateControl(object):
         self.epistemic_to_test_mapping = EpistemicSymbolToTestSymbolMapping()
         self.show_mapping = SymbolToEpistemicLiteralMapping()
 
-    # def add_program(self, program: str) -> None:
-    #     with self.builder() as builder:
-    #         parse_string(program, builder.add)
+    def add_program(self, program: str) -> None:
+        with self.builder() as builder:
+            parse_string(program, builder.add)
 
     def builder(self) -> ProgramBuilder:
         return ProgramBuilder(self.control, self.show_signature)
@@ -111,6 +112,7 @@ class InternalStateControl(object):
         self, parts: Sequence[Tuple[str, Sequence[Symbol]]], context: Any = None
     ) -> None:
         self.control.ground(parts, context)
+
         self.epistemic_to_test_mapping = EpistemicSymbolToTestSymbolMapping(
             self.control.symbolic_atoms
         )

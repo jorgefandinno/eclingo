@@ -32,7 +32,10 @@ class EpistemicSymbolToTestSymbolMapping(Dict[Symbol, Symbol]):
 
 
 class SymbolToEpistemicLiteralMapping:
-    def __init__(self, symbols: Iterable[Symbol] = ()) -> None:
+    def __init__(
+        self,
+        symbols: Iterable[Symbol] = (),
+    ) -> None:
         self.positive: Dict[Symbol, EpistemicLiteral] = dict()
         self.negative: Dict[Symbol, EpistemicLiteral] = dict()
         self._generate_mappings(symbols)
