@@ -3,7 +3,6 @@ from typing import Iterator
 
 import clingo
 
-import eclingo
 from eclingo.config import AppConfig
 from eclingo.internal_states import internal_control
 
@@ -55,11 +54,11 @@ class GeneratorReification(CandidateGenerator):
                         
                         {hold(A) : atom_tuple(H,A)} :- rule(choice(H), B), body(B). 
                         
-                        show(k(A)) :- output(k(A), B), conjunction(B).
-                        show(not1(k(A))) :- output(k(A), B), not conjunction(B).
+                        epistemic(k(A)) :- output(k(A), B), conjunction(B).
+                        epistemic(not1(k(A))) :- output(k(A), B), not conjunction(B).
                         
                         #show.
-                        #show T : show(T)."""
+                        #show T : epistemic(T)."""
 
         self.control.add("base", [], program2)
         self.control.ground([("base", [])])

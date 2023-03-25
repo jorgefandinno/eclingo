@@ -10,7 +10,7 @@ from eclingo.solver.tester import CandidateTesterReification
 from .candidate import Candidate
 from .preprocessor import Preprocessor
 from .tester import CandidateTester
-from .world_view_builder import WorldWiewBuilderWithShow
+from .world_view_builder import WorldWiewBuilderReification, WorldWiewBuilderWithShow
 
 
 class Solver:
@@ -21,15 +21,15 @@ class Solver:
         self._config = config
 
         self._build_world_view = WorldWiewBuilderWithShow(self._control)
-
         self.test_candidate = CandidateTester(self._config, self._control)
         self.generate_candidates = CandidateGenerator(self._config, self._control)
 
+        # reification classes
         self.generate_candidates_reification = GeneratorReification(
             self._config, self._control
         )
-
         self.test_candidate_reification = CandidateTesterReification(config, control)
+        self._build_world_view_reification = WorldWiewBuilderReification(self._control)
 
         self._preprocesor = Preprocessor(self._config, self._control)
         self._preprocesor()
@@ -38,7 +38,7 @@ class Solver:
         # if self._config.eclingo_reification:
         #     for candidate in self.generate_candidates_reification():
         #         if self.test_candidate_reification(candidate):
-        #             yield self._build_world_view(candidate)
+        #             yield self._build_world_view_reification(candidate)
 
         for candidate in self.generate_candidates():
             if self.test_candidate(candidate):

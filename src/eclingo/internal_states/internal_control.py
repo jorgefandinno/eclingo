@@ -69,6 +69,7 @@ class InternalStateControl(object):
         self.control.register_observer(
             clingox_program.ProgramObserver(self.ground_program)
         )
+        self.reified_terms: List = []
 
         self.show_signature: Set[ShowStatement] = set()
 
@@ -111,8 +112,10 @@ class InternalStateControl(object):
     def ground(
         self, parts: Sequence[Tuple[str, Sequence[Symbol]]], context: Any = None
     ) -> None:
+        # self.control.register_observer(Reifier())
         self.control.ground(parts, context)
 
+        # print(str(st) for st in self.reified_terms)
         self.epistemic_to_test_mapping = EpistemicSymbolToTestSymbolMapping(
             self.control.symbolic_atoms
         )
