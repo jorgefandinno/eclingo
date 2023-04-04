@@ -1,8 +1,8 @@
-from typing import Dict, Iterable, List, NamedTuple, Sequence, Tuple, Union
+from typing import Dict, List, Sequence, Tuple
 
 from clingo import Symbol
 from clingox import program as clingox_program
-from clingox.reify import Reifier, reify_program
+from clingox.reify import Reifier
 
 from eclingo.config import AppConfig
 from eclingo.internal_states.internal_control import InternalStateControl
@@ -22,6 +22,16 @@ class Grounder:
         self.control.register_observer(
             clingox_program.ProgramObserver(self.ground_program)
         )
+        self.temp = []
+
+    def program_pr(self, program, expected):
+        prg_string = []
+        for e1, e2 in zip(program, expected):
+            prg_string.append(str(e1))
+
+        program = ". ".join(prg_string)
+        program = program + "."
+        return program
 
     def add_program(
         self, program: str, parameters: Sequence[str] = (), name: str = "base"
@@ -33,3 +43,15 @@ class Grounder:
         self, parts: Sequence[Tuple[str, Sequence[Symbol]]] = (("base", []),)
     ) -> None:  # pylint: disable=dangerous-default-value
         self.control.ground(parts)
+
+    def reification_process(self, program):
+        self.add_program(program)
+        self.control.register_observer(Reifier(self.temp.append))
+
+        self.ground()
+        self.temp = [str(e) for e in self.temp]
+        ppp = self.program_pr(self.temp, self.temp)
+
+        print(ppp)
+
+        return ppp

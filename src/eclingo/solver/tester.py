@@ -91,6 +91,7 @@ class CandidateTesterReification(CandidateTester):
         candidate_neg = []
         candidate_assumptions = []
 
+        print("The tester: ", candidate)
         for literal in candidate[0]:  # Positive
             assumption = (literal, True)
             candidate_assumptions.append(assumption)

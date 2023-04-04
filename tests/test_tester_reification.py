@@ -31,7 +31,8 @@ def tester(program):
         tested = []
         for candidate in candidates:
             if test_candidate(candidate):
-                tested.append(candidate)
+                if candidate not in tested:
+                    tested.append(candidate)
                 # print("Candidate on tester generator: ", candidate)
         
         # print(sorted(tested))
@@ -76,8 +77,6 @@ class TestEclingoTesterrReification(TestCase):
                                   output(u(a),4). output(not1(u(a)),2). output(k(u(a)),1)."""),
                           
                            [Candidate(pos=[], neg=[Function('k', [Function('u', [Function('a', [], True)], True)], True)]),
-                            Candidate(pos=[], neg=[Function('k', [Function('u', [Function('a', [], True)], True)], True)]),
-                            Candidate(pos=[Function('k', [Function('u', [Function('a', [], True)], True)], True)], neg=[]),
                              Candidate(pos=[Function('k', [Function('u', [Function('a', [], True)], True)], True)], neg=[])])
         
     def test_tester_reification_double_negation(self):

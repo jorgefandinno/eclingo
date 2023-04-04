@@ -25,7 +25,7 @@ class CandidateGenerator:
     def __call__(self) -> Iterator[Candidate]:
         with self.control.solve(yield_=True) as handle:
             for model in handle:
-                # print("This is the generated model: " + str(model))
+                print("This is the generated model: " + str(model))
                 candidate = self._model_to_candidate(model)
                 yield candidate
 
