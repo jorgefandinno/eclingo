@@ -44,6 +44,7 @@ class Control(object):
         program = program_to_str(program)
 
         program = self.grounder.create_reified_facts(program)
+        self.grounded = True
         return program
 
     def add_program(self, program):

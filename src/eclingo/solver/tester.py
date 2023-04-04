@@ -28,6 +28,30 @@ class CandidateTester:
             CandidateTester._add_choices_to(
                 self.control, self._epistemic_to_test.keys()
             )
+        else:
+            program_meta_encoding = """ conjunction(B) :- literal_tuple(B), hold(L) : literal_tuple(B, L), L > 0;
+                                                        not hold(L) : literal_tuple(B, -L), L > 0. 
+                                                      
+                                    body(normal(B)) :- rule(_, normal(B)), conjunction (B).
+                        
+                                    body(sum(B, G)) :- rule (_sum(B,G)), 
+                                    #sum { 
+                                        W,L : hold(L), weighted_literal_tuple(B, L,W), L>0;
+                                        W,L : not hold(L), weighted_literal_tuple(B, -L,W), L>0} >= G. 
+                                           
+                                    hold(A) : atom_tuple(H,A) :- rule(disjunction(H), B), body(B). 
+                        
+                                    {hold(A) : atom_tuple(H,A)} :- rule(choice(H), B), body(B). 
+    
+                                    {hold(A)} :- output(k(A), B).     
+                                                   
+                                    epistemic(k(A)) :- output(k(A), B), conjunction(B).
+                                    epistemic(not1(k(A))) :- output(k(A), B), not conjunction(B).
+                                    
+                                    #show epistemic/1."""
+
+            self.control.add("base", [], program_meta_encoding)
+            self.control.ground([("base", [])])
 
         # TODO: Create program and ground like in generator
 
@@ -97,30 +121,6 @@ class CandidateTester:
 
 class CandidateTesterReification(CandidateTester):
     def __call__(self, candidate: Candidate) -> bool:
-        program_meta_encoding = """  conjunction(B) :- literal_tuple(B), hold(L) : literal_tuple(B, L), L > 0;
-                                                        not hold(L) : literal_tuple(B, -L), L > 0. 
-                                                      
-                                    body(normal(B)) :- rule(_, normal(B)), conjunction (B).
-                        
-                                    body(sum(B, G)) :- rule (_sum(B,G)), 
-                                    #sum { 
-                                        W,L : hold(L), weighted_literal_tuple(B, L,W), L>0;
-                                        W,L : not hold(L), weighted_literal_tuple(B, -L,W), L>0} >= G. 
-                                           
-                                    hold(A) : atom_tuple(H,A) :- rule(disjunction(H), B), body(B). 
-                        
-                                    {hold(A) : atom_tuple(H,A)} :- rule(choice(H), B), body(B). 
-    
-                                    {hold(A)} :- output(k(A), B).     
-                                                   
-                                    epistemic(k(A)) :- output(k(A), B), conjunction(B).
-                                    epistemic(not1(k(A))) :- output(k(A), B), not conjunction(B).
-                                    
-                                    #show epistemic/1."""
-
-        self.control.add("base", [], program_meta_encoding)
-        self.control.ground([("base", [])])
-
         candidate_pos = []
         candidate_neg = []
         candidate_assumptions = []
@@ -150,9 +150,9 @@ class CandidateTesterReification(CandidateTester):
                     if not model.contains(atom):
                         return False
 
-            assert model is not None
+                assert model is not None
 
-            for atom in candidate_neg:
-                if model.contains(atom):
-                    return False
-        return True
+                for atom in candidate_neg:
+                    if model.contains(atom):
+                        return False
+            return True
