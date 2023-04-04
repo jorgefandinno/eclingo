@@ -11,6 +11,8 @@ from eclingo.grounder import Grounder
 from eclingo.parsing.transformers import function_transformer
 from eclingo.solver import Solver
 
+from .parsing.transformers.ast_reify import program_to_str
+
 
 class Control(object):
     def __init__(self, control, config=None):
@@ -35,28 +37,22 @@ class Control(object):
         self.grounded = False
         self.solver = None
 
-    # Added later
-    def program_pr(self, program, expected):
-        prg_string = []
-        for e1, e2 in zip(program, expected):
-            prg_string.append(str(e1))
+    def reification_parse_program(self, program):
+        p = []
+        parse_string(program, p.append)
+        program = [function_transformer.rule_to_symbolic_term_adapter(stm) for stm in p]
+        program = program_to_str(program)
 
-        program = " ".join(prg_string)
+        program = self.grounder.create_reified_facts(program)
         return program
 
     def add_program(self, program):
-        # Parsing program TODO: Probably better to add an independent function
-        program_org = program
-        p = []
-        parse_string(program, p.append)
-        # print("this is p: ", p)
-        program = [function_transformer.rule_to_symbolic_term_adapter(stm) for stm in p]
-        # print("\nthis is program: ", program)
-        program = self.program_pr(program, program_org)
+        if self.config.eclingo_reification:
+            program = self.reification_parse_program(program)
+            self.control.add_program(program)
 
-        program = self.grounder.reification_process(program)
-
-        self.control.add_program(program)  # Originally self.grounder
+        else:
+            self.grounder.add_program(program)
 
     # Meaning that:
 
@@ -66,6 +62,7 @@ class Control(object):
     # 4. Parse the temp list (TODO: Porbably better create a callback function independently)
     # 5. the returned program containing the reified facts is added to self.control.add.program and not to the self.grounder.add_program
     # 6. Again, now only one model is being generated. Is missing the rest.
+    # {hold(k(A))} :- output(k(A))
 
     def load(self, input_path):
         with open(input_path, "r") as program:

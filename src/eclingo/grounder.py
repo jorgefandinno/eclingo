@@ -8,6 +8,7 @@ from eclingo.config import AppConfig
 from eclingo.internal_states.internal_control import InternalStateControl
 
 from .parsing.parser import parse_program
+from .parsing.transformers.ast_reify import reification_program_to_str
 
 
 class Grounder:
@@ -24,15 +25,6 @@ class Grounder:
         )
         self.temp = []
 
-    def program_pr(self, program, expected):
-        prg_string = []
-        for e1, e2 in zip(program, expected):
-            prg_string.append(str(e1))
-
-        program = ". ".join(prg_string)
-        program = program + "."
-        return program
-
     def add_program(
         self, program: str, parameters: Sequence[str] = (), name: str = "base"
     ) -> None:
@@ -44,14 +36,16 @@ class Grounder:
     ) -> None:  # pylint: disable=dangerous-default-value
         self.control.ground(parts)
 
-    def reification_process(self, program):
+    # TODO: Make this function look better.
+    # Probable create a callback function rather than a list
+    def create_reified_facts(self, program):
         self.add_program(program)
         self.control.register_observer(Reifier(self.temp.append))
 
         self.ground()
         self.temp = [str(e) for e in self.temp]
-        ppp = self.program_pr(self.temp, self.temp)
+        reified_facts = reification_program_to_str(self.temp)
 
-        print(ppp)
+        print("The reified facts are: ", reified_facts)
 
-        return ppp
+        return reified_facts

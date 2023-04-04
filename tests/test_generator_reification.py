@@ -33,9 +33,10 @@ class TestCase(unittest.TestCase):
 
 
 class TestEclingoGeneratorReification(TestCase): 
-    # echo ":- k(u(a)). u(a). {k(u(a))} :- u(a)." | clingo --output=reify
+    # "a. b :- &k{a}."
+    # echo "u(a). u(b) :- k(u(a)). { k(u(a)) } :- u(a)." | clingo --output=reify
     def test_generator01_reification(self):
-        self.assert_models(generate("""atom_tuple(0). atom_tuple(0,1). literal_tuple(0).
+        self.assert_models(generate("""tag(incremental). atom_tuple(0). atom_tuple(0,1). literal_tuple(0).
                                     rule(disjunction(0),normal(0)). atom_tuple(1).
                                     atom_tuple(1,2). rule(choice(1),normal(0)). atom_tuple(2).
                                     atom_tuple(2,3). literal_tuple(1). literal_tuple(1,2).

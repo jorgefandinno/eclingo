@@ -19,10 +19,17 @@ class CandidateTester:
         self, config: AppConfig, control_gen: internal_control.InternalStateControl
     ):
         self._config = config
-        self._epistemic_to_test = control_gen.epistemic_to_test_mapping
         self.control = internal_control.InternalStateControl(["0"], message_limit=0)
-        CandidateTester._init_control_test(self.control, control_gen)
-        CandidateTester._add_choices_to(self.control, self._epistemic_to_test.keys())
+
+        if not self._config.eclingo_reification:
+            self._epistemic_to_test = control_gen.epistemic_to_test_mapping
+
+            CandidateTester._init_control_test(self.control, control_gen)
+            CandidateTester._add_choices_to(
+                self.control, self._epistemic_to_test.keys()
+            )
+
+        # TODO: Create program and ground like in generator
 
     @staticmethod
     def _init_control_test(
@@ -36,6 +43,9 @@ class CandidateTester:
 
         control_test.control.configuration.solve.enum_mode = "cautious"  # type: ignore
 
+    # TODO: Create new add choice to method with
+    # {hold(k(A))} :- output(k(A))
+    # for reification
     @staticmethod
     def _add_choices_to(
         control_test: internal_control.InternalStateControl, literals: Iterable[Symbol]
@@ -87,6 +97,30 @@ class CandidateTester:
 
 class CandidateTesterReification(CandidateTester):
     def __call__(self, candidate: Candidate) -> bool:
+        program_meta_encoding = """  conjunction(B) :- literal_tuple(B), hold(L) : literal_tuple(B, L), L > 0;
+                                                        not hold(L) : literal_tuple(B, -L), L > 0. 
+                                                      
+                                    body(normal(B)) :- rule(_, normal(B)), conjunction (B).
+                        
+                                    body(sum(B, G)) :- rule (_sum(B,G)), 
+                                    #sum { 
+                                        W,L : hold(L), weighted_literal_tuple(B, L,W), L>0;
+                                        W,L : not hold(L), weighted_literal_tuple(B, -L,W), L>0} >= G. 
+                                           
+                                    hold(A) : atom_tuple(H,A) :- rule(disjunction(H), B), body(B). 
+                        
+                                    {hold(A) : atom_tuple(H,A)} :- rule(choice(H), B), body(B). 
+    
+                                    {hold(A)} :- output(k(A), B).     
+                                                   
+                                    epistemic(k(A)) :- output(k(A), B), conjunction(B).
+                                    epistemic(not1(k(A))) :- output(k(A), B), not conjunction(B).
+                                    
+                                    #show epistemic/1."""
+
+        self.control.add("base", [], program_meta_encoding)
+        self.control.ground([("base", [])])
+
         candidate_pos = []
         candidate_neg = []
         candidate_assumptions = []
@@ -116,9 +150,9 @@ class CandidateTesterReification(CandidateTester):
                     if not model.contains(atom):
                         return False
 
-                assert model is not None  # Why if this on, test fails
+            assert model is not None
 
-                for atom in candidate_neg:
-                    if model.contains(atom):
-                        return False
-            return True
+            for atom in candidate_neg:
+                if model.contains(atom):
+                    return False
+        return True

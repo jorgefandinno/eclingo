@@ -57,8 +57,7 @@ class GeneratorReification(CandidateGenerator):
                         epistemic(k(A)) :- output(k(A), B), conjunction(B).
                         epistemic(not1(k(A))) :- output(k(A), B), not conjunction(B).
                         
-                        #show.
-                        #show T : epistemic(T)."""
+                        #show epistemic/1."""
 
         self.control.add("base", [], program2)
         self.control.ground([("base", [])])
@@ -69,6 +68,7 @@ class GeneratorReification(CandidateGenerator):
         candidate_neg = []
 
         for symbol in model.symbols(shown=True):
+            symbol = symbol.arguments[0]
             if symbol.name == "k":
                 # print("Candidate symbol: ", symbol)
                 candidate_pos.append(symbol)
