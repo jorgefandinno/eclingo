@@ -20,7 +20,7 @@ def generate(program):
         candidate_generator = GeneratorReification(config, control)
         
         candidates = list(candidate_generator())
-        
+        print(sorted(candidates))
         return sorted(candidates)
             
             
@@ -55,6 +55,28 @@ class TestEclingoGeneratorReification(TestCase):
                            
                            [Candidate(pos=[], neg=[Function('k', [Function('u', [Function('a', [], True)], True)], True)]),
                             Candidate(pos=[Function('k', [Function('u', [Function('a', [], True)], True)], True)], neg=[])])
+        
+        # echo "u(-a). u(b) :- k(u(-a)). u(c) :- k(u(b)). {k(u(-a))}. {k(u(b))}." | clingo --output=reify
+        self.assert_models(generate("""atom_tuple(0). atom_tuple(0,1). literal_tuple(0). rule(disjunction(0),normal(0)).
+                                  atom_tuple(1). atom_tuple(1,2). rule(choice(1),normal(0)). atom_tuple(2).
+                                  atom_tuple(2,3). rule(choice(2),normal(0)). atom_tuple(3). atom_tuple(3,4). literal_tuple(1).
+                                  literal_tuple(1,2). rule(disjunction(3),normal(1)). atom_tuple(4). atom_tuple(4,5).
+                                  literal_tuple(2). literal_tuple(2,3). rule(disjunction(4),normal(2)). output(k(u(b)),1). 
+                                  output(k(u(-a)),2). output(u(-a),0). literal_tuple(3). literal_tuple(3,4). 
+                                  output(u(c),3). literal_tuple(4). literal_tuple(4,5). output(u(b),4)."""),
+                           
+                           [Candidate(pos=[], neg=[Function('k', [Function('u', [Function('b', [], True)], True)], True),
+                                                   Function('k', [Function('u', [Function('a', [], False)], True)], True)]),
+                            
+                            Candidate(pos=[Function('k', [Function('u', [Function('b', [], True)], True)], True)],
+                                      neg=[Function('k', [Function('u', [Function('a', [], False)], True)], True)]),
+                            
+                            Candidate(pos=[Function('k', [Function('u', [Function('b', [], True)], True)], True),
+                                           Function('k', [Function('u', [Function('a', [], False)], True)], True)], neg=[]),
+                            
+                            Candidate(pos=[Function('k', [Function('u', [Function('a', [], False)], True)], True)],
+                                      neg=[Function('k', [Function('u', [Function('b', [], True)], True)], True)])])
+    
         
         
         

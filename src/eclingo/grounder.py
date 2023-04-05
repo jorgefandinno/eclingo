@@ -17,13 +17,13 @@ class Grounder:
         self.config = config
         self.reification = self.config.eclingo_reification
         self.facts: List[Symbol] = []
+        self.reified_facts: List[Symbol] = []
         self.epistemic_facts: List[Symbol] = []
         self.atom_to_symbol: Dict[int, Symbol] = dict()
         self.ground_program = clingox_program.Program()
         self.control.register_observer(
             clingox_program.ProgramObserver(self.ground_program)
         )
-        self.temp = []
 
     def add_program(
         self, program: str, parameters: Sequence[str] = (), name: str = "base"
@@ -36,16 +36,15 @@ class Grounder:
     ) -> None:  # pylint: disable=dangerous-default-value
         self.control.ground(parts)
 
-    # TODO: Make this function look better.
-    # Probable create a callback function rather than a list
+
     def create_reified_facts(self, program):
         self.add_program(program)
-        self.control.register_observer(Reifier(self.temp.append))
-
+        self.control.register_observer(Reifier(self.reified_facts.append))
         self.ground()
-        self.temp = [str(e) for e in self.temp]
-        reified_facts = reification_program_to_str(self.temp)
+        
+        self.reified_facts = [str(e) for e in self.reified_facts]
+        reified_facts_str = reification_program_to_str(self.reified_facts)
 
-        #print("The reified facts are: ", reified_facts)
+        # print("The reified facts are: ", reified_facts_str)
 
-        return reified_facts
+        return reified_facts_str

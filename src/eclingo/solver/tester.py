@@ -1,14 +1,10 @@
-import sys
-from typing import Iterable, Sequence
+from typing import Iterable
 
-import clingo
 from clingo import Symbol
 from clingox.backend import SymbolicBackend
 from clingox.program import Remapping
-from clingox.reify import reify_program
 
 import eclingo.internal_states.internal_control as internal_control
-from eclingo import internal_states
 from eclingo.config import AppConfig
 
 from .candidate import Candidate
@@ -53,8 +49,6 @@ class CandidateTester:
             self.control.add("base", [], program_meta_encoding)
             self.control.ground([("base", [])])
 
-        # TODO: Create program and ground like in generator
-
     @staticmethod
     def _init_control_test(
         control_test: internal_control.InternalStateControl,
@@ -67,9 +61,6 @@ class CandidateTester:
 
         control_test.control.configuration.solve.enum_mode = "cautious"  # type: ignore
 
-    # TODO: Create new add choice to method with
-    # {hold(k(A))} :- output(k(A))
-    # for reification
     @staticmethod
     def _add_choices_to(
         control_test: internal_control.InternalStateControl, literals: Iterable[Symbol]
@@ -125,7 +116,6 @@ class CandidateTesterReification(CandidateTester):
         candidate_neg = []
         candidate_assumptions = []
 
-        print("The tester: ", candidate)
         for literal in candidate[0]:  # Positive
             assumption = (literal, True)
             candidate_assumptions.append(assumption)
@@ -155,4 +145,4 @@ class CandidateTesterReification(CandidateTester):
                 for atom in candidate_neg:
                     if model.contains(atom):
                         return False
-            return True
+        return True

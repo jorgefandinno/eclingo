@@ -46,7 +46,6 @@ class Solver:
         if self._config.eclingo_reification:
             for candidate in self.generate_candidates_reification():
                 if self.test_candidate_reification(candidate):
-                    print(candidate)
                     yield self._build_world_view_reification(candidate)
         else:
             for candidate in self.generate_candidates():
