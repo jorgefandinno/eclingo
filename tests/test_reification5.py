@@ -1,20 +1,17 @@
 #  u(a) :- u(b), k(c) | --output=reify
 # echo "a :- b. &k{b}." | clingo --output=reify  
 
-import unittest
-from typing import cast
 from clingo import ast
-from clingox.pprint import pprint
-from clingox.testing.ast import ASTTestCase, parse_statement
+from clingox.testing.ast import ASTTestCase
 
 from eclingo.config import AppConfig
 from eclingo.parsing import parser
-from eclingo.parsing.transformers import ast_reify, function_transformer
-from tests.test_reification2 import parse_literal
-from clingox.reify import reify_program, Reifier
-from clingox.theory import evaluate
+from eclingo.parsing.transformers import function_transformer
 
+from clingox.reify import Reifier
 from clingo.control import Control
+from eclingo.parsing.transformers.ast_reify import program_to_str
+
 
 def flatten(lst):
     result = []
@@ -43,14 +40,6 @@ def clingo_parse_program(stm):
     ast.parse_string(stm, ret.append)
     ret = [rule for rule in ret]
     return ret
-
-def program_pr(program, expected):
-    prg_string = []
-    for e1, e2 in zip(program, expected):
-        prg_string.append(str(e1))
-            
-    program = ' '.join(prg_string)
-    return program
         
 class TestCase(ASTTestCase):
     def setUp(self):
@@ -67,7 +56,7 @@ class TestCase(ASTTestCase):
             for stm in program
         ]
         
-        program = program_pr(program, expected)
+        program = program_to_str(program)
         
         ctl_a = Control()
         

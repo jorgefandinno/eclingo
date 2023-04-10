@@ -112,10 +112,8 @@ class InternalStateControl(object):
     def ground(
         self, parts: Sequence[Tuple[str, Sequence[Symbol]]], context: Any = None
     ) -> None:
-        # self.control.register_observer(Reifier())
         self.control.ground(parts, context)
 
-        # print(str(st) for st in self.reified_terms)
         self.epistemic_to_test_mapping = EpistemicSymbolToTestSymbolMapping(
             self.control.symbolic_atoms
         )

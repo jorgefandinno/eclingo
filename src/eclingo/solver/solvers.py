@@ -20,26 +20,34 @@ class Solver:
         self._control = control
         self._config = config
 
-        self._build_world_view = WorldWiewBuilderWithShow(self._control)
-        self.test_candidate = CandidateTester(self._config, self._control)
-        self.generate_candidates = CandidateGenerator(self._config, self._control)
+        if self._config.eclingo_reification:
+            self._build_world_view_reification = WorldWiewBuilderReification(
+                self._control
+            )
+            self.test_candidate_reification = CandidateTesterReification(
+                self._config, self._control
+            )
+            self.generate_candidates_reification = GeneratorReification(
+                self._config, self._control
+            )
 
-        # reification classes
-        self.generate_candidates_reification = GeneratorReification(
-            self._config, self._control
-        )
-        self.test_candidate_reification = CandidateTesterReification(config, control)
-        self._build_world_view_reification = WorldWiewBuilderReification(self._control)
+        else:
+            self._build_world_view = WorldWiewBuilderWithShow(self._control)
+            self.test_candidate = CandidateTester(self._config, self._control)
+            self.generate_candidates = CandidateGenerator(self._config, self._control)
+            self._preprocesor = Preprocessor(self._config, self._control)
+            self._preprocesor()
 
-        self._preprocesor = Preprocessor(self._config, self._control)
-        self._preprocesor()
+        # (?) Does it need to only be added if using reification?
+        # self._preprocesor = Preprocessor(self._config, self._control)
+        # self._preprocesor()
 
     def solve(self) -> Iterator[Candidate]:
-        # if self._config.eclingo_reification:
-        #     for candidate in self.generate_candidates_reification():
-        #         if self.test_candidate_reification(candidate):
-        #             yield self._build_world_view_reification(candidate)
-
-        for candidate in self.generate_candidates():
-            if self.test_candidate(candidate):
-                yield self._build_world_view(candidate)
+        if self._config.eclingo_reification:
+            for candidate in self.generate_candidates_reification():
+                if self.test_candidate_reification(candidate):
+                    yield self._build_world_view_reification(candidate)
+        else:
+            for candidate in self.generate_candidates():
+                if self.test_candidate(candidate):
+                    yield self._build_world_view(candidate)

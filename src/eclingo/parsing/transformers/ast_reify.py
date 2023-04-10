@@ -84,3 +84,28 @@ def symbolic_literal_to_term(
     sign_name = negation_name if lit.sign == Sign.Negation else double_negation_name
 
     return ast.Function(lit.location, sign_name, [symbol], False)
+
+
+def reification_program_to_str(program):
+    """
+    Helper function to convert a reified fact program into a string.
+    """
+    prg_string = []
+    for e1 in program:
+        prg_string.append(str(e1))
+
+    program = ". ".join(prg_string)
+    program = program + "."
+    return program
+
+
+def program_to_str(program):
+    """
+    Helper function to parse a given program into string.
+    """
+    prg_string = []
+    for e1 in program:
+        prg_string.append(str(e1))
+
+    program = " ".join(prg_string)
+    return program
