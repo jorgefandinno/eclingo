@@ -4,7 +4,6 @@ import clingo
 
 from eclingo.config import AppConfig
 from eclingo.internal_states import internal_control
-
 from .candidate import Candidate
 
 
@@ -14,7 +13,13 @@ class CandidateGenerator:
     ) -> None:
         self._config = config
         self.control = control
-
+        
+        if self._config.eclingo_reification:
+            generator_control = internal_control.InternalStateControl(config=self._config)
+            self.reified_program = self.control.reified_program
+            generator_control.add("base", [], self.reified_program)
+            self.control = generator_control
+        
         self._epistemic_literals = (
             self.control.epistemic_to_test_mapping.epistemic_literals()
         )
@@ -24,7 +29,7 @@ class CandidateGenerator:
     def __call__(self) -> Iterator[Candidate]:
         with self.control.solve(yield_=True) as handle:
             for model in handle:
-                # print("This is the generated model: " + str(model))
+                print("This is the generated model: " + str(model))
                 candidate = self._model_to_candidate(model)
                 yield candidate
 
@@ -47,7 +52,8 @@ class GeneratorReification(CandidateGenerator):
                         body(normal(B)) :- rule(_, normal(B)), conjunction (B).
                         
                         body(sum(B, G)) :- rule (_sum(B,G)), 
-                                           #sum { W,L : hold(L), weighted_literal_tuple(B, L,W), L>0; W,L : not hold(L), weighted_literal_tuple(B, -L,W), L>0} >= G. 
+                                           #sum { W,L : hold(L), weighted_literal_tuple(B, L,W), L>0;
+                                           W,L : not hold(L), weighted_literal_tuple(B, -L,W), L>0} >= G. 
                                            
                         hold(A) : atom_tuple(H,A) :- rule(disjunction(H), B), body(B). 
                         
@@ -74,5 +80,6 @@ class GeneratorReification(CandidateGenerator):
             if symbol.name == "not1":
                 # print("Candidate symbol Negative: ", symbol)
                 candidate_neg.append(symbol.arguments[0])
-
+                
+        print(Candidate(candidate_pos, candidate_neg))
         return Candidate(candidate_pos, candidate_neg)

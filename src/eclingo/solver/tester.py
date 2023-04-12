@@ -16,6 +16,8 @@ class CandidateTester:
     ):
         self._config = config
         self.control = internal_control.InternalStateControl(["0"], message_limit=0)
+        self.control_generator = control_gen
+        self.reified_program = self.control_generator.reified_program
 
         if not self._config.eclingo_reification:
             self._epistemic_to_test = control_gen.epistemic_to_test_mapping
@@ -25,7 +27,7 @@ class CandidateTester:
                 self.control, self._epistemic_to_test.keys()
             )
         else:
-            program_meta_encoding = """ conjunction(B) :- literal_tuple(B), hold(L) : literal_tuple(B, L), L > 0;
+            program_meta_encoding = """conjunction(B) :- literal_tuple(B), hold(L) : literal_tuple(B, L), L > 0;
                                                         not hold(L) : literal_tuple(B, -L), L > 0. 
                                                       
                                     body(normal(B)) :- rule(_, normal(B)), conjunction (B).
@@ -39,13 +41,13 @@ class CandidateTester:
                         
                                     {hold(A) : atom_tuple(H,A)} :- rule(choice(H), B), body(B). 
     
-                                    {hold(A)} :- output(k(A), B).     
+                                    {hold(k(A))} :- output(k(A), B).     
                                                    
                                     epistemic(k(A)) :- output(k(A), B), conjunction(B).
                                     epistemic(not1(k(A))) :- output(k(A), B), not conjunction(B).
                                     
                                     #show epistemic/1."""
-
+            self.control.add("base", [], self.reified_program)
             self.control.add("base", [], program_meta_encoding)
             self.control.ground([("base", [])])
 
@@ -103,10 +105,11 @@ class CandidateTester:
                         return False
 
             assert model is not None
-
+            
             for atom in candidate_neg:
                 if model.contains(atom):
                     return False
+        print(candidate_pos, candidate_neg)
         return True
 
 
@@ -140,9 +143,11 @@ class CandidateTesterReification(CandidateTester):
                     if not model.contains(atom):
                         return False
 
-                assert model is not None
-
-                for atom in candidate_neg:
-                    if model.contains(atom):
-                        return False
+            assert model is not None
+            
+            for atom in candidate_neg:
+                if model.contains(atom):
+                    return False
+        
+        print(candidate_pos, candidate_neg)
         return True

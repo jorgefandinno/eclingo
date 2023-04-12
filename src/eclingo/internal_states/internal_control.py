@@ -64,12 +64,13 @@ class InternalStateControl(object):
             control = clingo.Control(arguments, logger, message_limit)
         self.control = control
         self.config = config
-
+        
         self.ground_program = clingox_program.Program()
         self.control.register_observer(
             clingox_program.ProgramObserver(self.ground_program)
         )
         self.reified_terms: List = []
+        self.reified_program: str = ''
 
         self.show_signature: Set[ShowStatement] = set()
 
@@ -79,6 +80,12 @@ class InternalStateControl(object):
     def add_program(self, program: str) -> None:
         with self.builder() as builder:
             parse_string(program, builder.add)
+            
+    def add_reified_program(self, program) -> None:
+        self.reified_program = program
+        
+    def get_reified_program(self) -> str:
+        return self.reified_program
 
     def builder(self) -> ProgramBuilder:
         return ProgramBuilder(self.control, self.show_signature)
