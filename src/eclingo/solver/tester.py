@@ -134,9 +134,7 @@ class CandidateTesterReification(CandidateTester):
 
                                 {hold(L)} :- output(k(A), B), literal_tuple(B, L).
 
-                                u(A) :- output(u(A), B), conjunction(B).
-
-                                %#show epistemic/1."""
+                                u(A) :- output(u(A), B), conjunction(B)."""
         self.control.add("base", [], reifyied_program)
         self.control.add("base", [], program_meta_encoding)
         self.control.ground([("base", [])])
