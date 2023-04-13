@@ -28,25 +28,25 @@ class CandidateTester:
             )
         else:
             program_meta_encoding = """conjunction(B) :- literal_tuple(B), hold(L) : literal_tuple(B, L), L > 0;
-                                                        not hold(L) : literal_tuple(B, -L), L > 0. 
-                                                      
+                                                        not hold(L) : literal_tuple(B, -L), L > 0.
+
                                     body(normal(B)) :- rule(_, normal(B)), conjunction (B).
-                        
-                                    body(sum(B, G)) :- rule (_sum(B,G)), 
-                                    #sum { 
+
+                                    body(sum(B, G)) :- rule (_sum(B,G)),
+                                    #sum {
                                         W,L : hold(L), weighted_literal_tuple(B, L,W), L>0;
-                                        W,L : not hold(L), weighted_literal_tuple(B, -L,W), L>0} >= G. 
-                                           
-                                    hold(A) : atom_tuple(H,A) :- rule(disjunction(H), B), body(B). 
-                        
-                                    {hold(A) : atom_tuple(H,A)} :- rule(choice(H), B), body(B). 
-    
-                                    {hold(k(A))} :- output(k(A), B).     
-                                                   
+                                        W,L : not hold(L), weighted_literal_tuple(B, -L,W), L>0} >= G.
+
+                                    hold(A) : atom_tuple(H,A) :- rule(disjunction(H), B), body(B).
+
+                                    {hold(A) : atom_tuple(H,A)} :- rule(choice(H), B), body(B).
+
+                                    {hold(k(A))} :- output(k(A), B).
+
                                     epistemic(k(A)) :- output(k(A), B), conjunction(B).
                                     epistemic(not1(k(A))) :- output(k(A), B), not conjunction(B).
-                                    
-                                    #show epistemic/1."""
+
+                                    %#show epistemic/1."""
             self.control.add("base", [], self.reified_program)
             self.control.add("base", [], program_meta_encoding)
             self.control.ground([("base", [])])
@@ -105,7 +105,7 @@ class CandidateTester:
                         return False
 
             assert model is not None
-            
+
             for atom in candidate_neg:
                 if model.contains(atom):
                     return False
@@ -114,6 +114,33 @@ class CandidateTester:
 
 
 class CandidateTesterReification(CandidateTester):
+    def __init__(self, config: AppConfig, reifyied_program: str):
+        self._config = config
+        self.control = internal_control.InternalStateControl(["0"], message_limit=0)
+
+        program_meta_encoding = """conjunction(B) :- literal_tuple(B), hold(L) : literal_tuple(B, L), L > 0;
+                                                    not hold(L) : literal_tuple(B, -L), L > 0.
+
+                                body(normal(B)) :- rule(_, normal(B)), conjunction (B).
+
+                                body(sum(B, G)) :- rule (_sum(B,G)),
+                                #sum {
+                                    W,L : hold(L), weighted_literal_tuple(B, L,W), L>0;
+                                    W,L : not hold(L), weighted_literal_tuple(B, -L,W), L>0} >= G.
+
+                                hold(A) : atom_tuple(H,A) :- rule(disjunction(H), B), body(B).
+
+                                {hold(A) : atom_tuple(H,A)} :- rule(choice(H), B), body(B).
+
+                                {hold(L)} :- output(k(A), B), literal_tuple(B, L).
+
+                                u(A) :- output(u(A), B), conjunction(B).
+
+                                %#show epistemic/1."""
+        self.control.add("base", [], reifyied_program)
+        self.control.add("base", [], program_meta_encoding)
+        self.control.ground([("base", [])])
+
     def __call__(self, candidate: Candidate) -> bool:
         candidate_pos = []
         candidate_neg = []
@@ -135,7 +162,8 @@ class CandidateTesterReification(CandidateTester):
         self.control.configuration.solve.project = "no"
 
         with self.control.solve(
-            yield_=True, assumptions=candidate_assumptions
+            yield_=True,
+            # assumptions=candidate_assumptions
         ) as handle:
             model = None
             for model in handle:
@@ -144,10 +172,10 @@ class CandidateTesterReification(CandidateTester):
                         return False
 
             assert model is not None
-            
+
             for atom in candidate_neg:
                 if model.contains(atom):
                     return False
-        
+
         print(candidate_pos, candidate_neg)
         return True
