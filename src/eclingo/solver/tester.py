@@ -84,24 +84,6 @@ class CandidateTester:
         return True
 
 
-"""
-tag(incremental). atom_tuple(0). atom_tuple(0,1). literal_tuple(0).
-                                    rule(disjunction(0),normal(0)). atom_tuple(1).
-                                    atom_tuple(1,2). rule(choice(1),normal(0)). atom_tuple(2).
-                                    atom_tuple(2,3). literal_tuple(1). literal_tuple(1,2).
-                                    rule(disjunction(2),normal(1)). output(k(u(a)),1).
-                                    output(u(a),0). literal_tuple(2). literal_tuple(2,3). output(u(b),2).
-                                    
-                                    
-tag(incremental). atom_tuple(0). atom_tuple(0,1). literal_tuple(0).
-                                    rule(disjunction(0),normal(0)). atom_tuple(1).
-                                    atom_tuple(1,2). rule(choice(1),normal(0)). atom_tuple(2).
-                                    atom_tuple(2,3). literal_tuple(1). literal_tuple(1,2).
-                                    rule(disjunction(2),normal(1)). output(k(u(a)),1).
-                                    output(u(a),0). literal_tuple(2). literal_tuple(2,3). output(u(b),2).
-"""
-
-
 class CandidateTesterReification(CandidateTester):
     def __init__(self, config: AppConfig, reified_program: str):
         self._config = config

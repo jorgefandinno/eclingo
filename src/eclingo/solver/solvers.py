@@ -21,9 +21,7 @@ class Solver:
         self._config = config
 
         if self._config.eclingo_reification:
-            self._build_world_view_reification = WorldWiewBuilderReification(
-                self._control
-            )
+            self._build_world_view_reification = WorldWiewBuilderReification()
             self.test_candidate_reification = CandidateTesterReification(
                 self._config, self._control.reified_program
             )

@@ -110,6 +110,10 @@ class WorldWiewBuilderWithShow(WorldWiewBuilder):
 
 
 class WorldWiewBuilderReification(WorldWiewBuilder):
+    def __init__(self):
+        self.control = internal_control.InternalStateControl(["0"], message_limit=0)
+        self.control.configuration.solve.models = 0
+        
     def generate_show_symbol(self, epistemic_literal):
         ep_args = epistemic_literal.arguments[0]
         epistemic_name = ep_args.name  # not1, not2 or u

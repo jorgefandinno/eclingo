@@ -67,6 +67,18 @@ class TestEclingoGeneratorReification(TestCase):
                             
                             Candidate(pos=[Function('k', [Function('u', [Function('a', [], False)], True)], True)],
                                       neg=[Function('k', [Function('u', [Function('b', [], True)], True)], True)])])
+        
+        # def test_generator02_reification(self):
+        # # echo "-a. b :- &k{-a}. c :- &k{b}." | eclingo --semantics c19-1 --reification --output=reify
+        #     self.assert_models(generate("""tag(incremental). atom_tuple(0). atom_tuple(0,1). literal_tuple(0).
+        #                             rule(disjunction(0),normal(0)). atom_tuple(1).
+        #                             atom_tuple(1,2). rule(choice(1),normal(0)). atom_tuple(2).
+        #                             atom_tuple(2,3). literal_tuple(1). literal_tuple(1,2).
+        #                             rule(disjunction(2),normal(1)). output(k(u(a)),1).
+        #                             output(u(a),0). literal_tuple(2). literal_tuple(2,3). output(u(b),2)."""),
+                           
+        #                    [Candidate(pos=[], neg=[Function('k', [Function('u', [Function('a', [], True)], True)], True)]),
+        #                     Candidate(pos=[Function('k', [Function('u', [Function('a', [], True)], True)], True)], neg=[])])
     
         
         
