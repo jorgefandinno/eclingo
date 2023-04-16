@@ -135,7 +135,7 @@ class CandidateTesterReification(CandidateTester):
 
         with self.control.solve(
             yield_=True,
-            # assumptions=candidate_assumptions
+            #assumptions=candidate_assumptions
         ) as handle:
             model = None
             for model in handle:
