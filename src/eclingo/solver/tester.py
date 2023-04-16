@@ -16,40 +16,11 @@ class CandidateTester:
     ):
         self._config = config
         self.control = internal_control.InternalStateControl(["0"], message_limit=0)
-        self.control_generator = control_gen
-        self.reified_program = self.control_generator.reified_program
 
-        if not self._config.eclingo_reification:
-            self._epistemic_to_test = control_gen.epistemic_to_test_mapping
+        self._epistemic_to_test = control_gen.epistemic_to_test_mapping
 
-            CandidateTester._init_control_test(self.control, control_gen)
-            CandidateTester._add_choices_to(
-                self.control, self._epistemic_to_test.keys()
-            )
-        else:
-            program_meta_encoding = """conjunction(B) :- literal_tuple(B), hold(L) : literal_tuple(B, L), L > 0;
-                                                        not hold(L) : literal_tuple(B, -L), L > 0.
-
-                                    body(normal(B)) :- rule(_, normal(B)), conjunction (B).
-
-                                    body(sum(B, G)) :- rule (_sum(B,G)),
-                                    #sum {
-                                        W,L : hold(L), weighted_literal_tuple(B, L,W), L>0;
-                                        W,L : not hold(L), weighted_literal_tuple(B, -L,W), L>0} >= G.
-
-                                    hold(A) : atom_tuple(H,A) :- rule(disjunction(H), B), body(B).
-
-                                    {hold(A) : atom_tuple(H,A)} :- rule(choice(H), B), body(B).
-
-                                    {hold(k(A))} :- output(k(A), B).
-
-                                    epistemic(k(A)) :- output(k(A), B), conjunction(B).
-                                    epistemic(not1(k(A))) :- output(k(A), B), not conjunction(B).
-
-                                    %#show epistemic/1."""
-            self.control.add("base", [], self.reified_program)
-            self.control.add("base", [], program_meta_encoding)
-            self.control.ground([("base", [])])
+        CandidateTester._init_control_test(self.control, control_gen)
+        CandidateTester._add_choices_to(self.control, self._epistemic_to_test.keys())
 
     @staticmethod
     def _init_control_test(
@@ -113,10 +84,30 @@ class CandidateTester:
         return True
 
 
+"""
+tag(incremental). atom_tuple(0). atom_tuple(0,1). literal_tuple(0).
+                                    rule(disjunction(0),normal(0)). atom_tuple(1).
+                                    atom_tuple(1,2). rule(choice(1),normal(0)). atom_tuple(2).
+                                    atom_tuple(2,3). literal_tuple(1). literal_tuple(1,2).
+                                    rule(disjunction(2),normal(1)). output(k(u(a)),1).
+                                    output(u(a),0). literal_tuple(2). literal_tuple(2,3). output(u(b),2).
+                                    
+                                    
+tag(incremental). atom_tuple(0). atom_tuple(0,1). literal_tuple(0).
+                                    rule(disjunction(0),normal(0)). atom_tuple(1).
+                                    atom_tuple(1,2). rule(choice(1),normal(0)). atom_tuple(2).
+                                    atom_tuple(2,3). literal_tuple(1). literal_tuple(1,2).
+                                    rule(disjunction(2),normal(1)). output(k(u(a)),1).
+                                    output(u(a),0). literal_tuple(2). literal_tuple(2,3). output(u(b),2).
+"""
+
+
 class CandidateTesterReification(CandidateTester):
-    def __init__(self, config: AppConfig, reifyied_program: str):
+    def __init__(self, config: AppConfig, reified_program: str):
         self._config = config
         self.control = internal_control.InternalStateControl(["0"], message_limit=0)
+        self.reified_program = reified_program
+        # print("This is the reified program NO TEST: ", reified_program)
 
         program_meta_encoding = """conjunction(B) :- literal_tuple(B), hold(L) : literal_tuple(B, L), L > 0;
                                                     not hold(L) : literal_tuple(B, -L), L > 0.
@@ -135,7 +126,8 @@ class CandidateTesterReification(CandidateTester):
                                 {hold(L)} :- output(k(A), B), literal_tuple(B, L).
 
                                 u(A) :- output(u(A), B), conjunction(B)."""
-        self.control.add("base", [], reifyied_program)
+
+        self.control.add("base", [], self.reified_program)
         self.control.add("base", [], program_meta_encoding)
         self.control.ground([("base", [])])
 
@@ -175,5 +167,5 @@ class CandidateTesterReification(CandidateTester):
                 if model.contains(atom):
                     return False
 
-        print(candidate_pos, candidate_neg)
+        print("The tested candidates: ", candidate_pos, candidate_neg)
         return True

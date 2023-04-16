@@ -27,7 +27,7 @@ class Control(object):
         if config is None:
             config = AppConfig()
         self.config = config
-        
+
         if self.max_models == 0:
             self.max_models = sys.maxsize
 
@@ -35,8 +35,8 @@ class Control(object):
         self.models = 0
         self.grounded = False
         self.solver = None
-        #self.reified_program = ''
-        
+        # self.reified_program = ''
+
     def reification_parse_program(self, program):
         p = []
         parse_string(program, p.append)
@@ -46,7 +46,7 @@ class Control(object):
         program = self.grounder.create_reified_facts(program)
         self.grounded = True
         return program
-    
+
     def add_program(self, program):
         if self.config.eclingo_reification:
             program = self.reification_parse_program(program)

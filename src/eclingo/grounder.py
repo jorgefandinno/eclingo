@@ -36,15 +36,14 @@ class Grounder:
     ) -> None:  # pylint: disable=dangerous-default-value
         self.control.ground(parts)
 
-
     def create_reified_facts(self, program):
         self.add_program(program)
         self.control.register_observer(Reifier(self.reified_facts.append))
         self.ground()
-        
+
         self.reified_facts = [str(e) for e in self.reified_facts]
         reified_facts_str = reification_program_to_str(self.reified_facts)
 
-        #print("The reified facts are: ", reified_facts_str)
+        # print("The reified facts are: ", reified_facts_str)
 
         return reified_facts_str

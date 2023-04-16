@@ -25,10 +25,10 @@ class Solver:
                 self._control
             )
             self.test_candidate_reification = CandidateTesterReification(
-                self._config, self._control
+                self._config, self._control.reified_program
             )
             self.generate_candidates_reification = GeneratorReification(
-                self._config, self._control
+                self._config, self._control.reified_program
             )
 
         else:
@@ -46,6 +46,7 @@ class Solver:
         if self._config.eclingo_reification:
             for candidate in self.generate_candidates_reification():
                 if self.test_candidate_reification(candidate):
+                    print("???")
                     yield self._build_world_view_reification(candidate)
         else:
             for candidate in self.generate_candidates():

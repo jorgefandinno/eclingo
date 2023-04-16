@@ -4,6 +4,7 @@ import clingo
 
 from eclingo.config import AppConfig
 from eclingo.internal_states import internal_control
+
 from .candidate import Candidate
 
 
@@ -13,13 +14,7 @@ class CandidateGenerator:
     ) -> None:
         self._config = config
         self.control = control
-        
-        if self._config.eclingo_reification:
-            generator_control = internal_control.InternalStateControl(config=self._config)
-            self.reified_program = self.control.reified_program
-            generator_control.add("base", [], self.reified_program)
-            self.control = generator_control
-        
+
         self._epistemic_literals = (
             self.control.epistemic_to_test_mapping.epistemic_literals()
         )
@@ -45,6 +40,11 @@ class CandidateGenerator:
 
 
 class GeneratorReification(CandidateGenerator):
+    def __init__(self, config: AppConfig, reified_program: str):
+        self._config = config
+        self.control = internal_control.InternalStateControl(["0"], message_limit=0)
+        self.reified_program = reified_program
+
     def __call__(self) -> Iterator[Candidate]:
         program2 = """  conjunction(B) :- literal_tuple(B), hold(L) : literal_tuple(B, L), L > 0;
                                                         not hold(L) : literal_tuple(B, -L), L > 0. 
@@ -62,8 +62,10 @@ class GeneratorReification(CandidateGenerator):
                         epistemic(k(A)) :- output(k(A), B), conjunction(B).
                         epistemic(not1(k(A))) :- output(k(A), B), not conjunction(B).
                         
+                        %#show output/2.
                         #show epistemic/1."""
 
+        self.control.add("base", [], self.reified_program)
         self.control.add("base", [], program2)
         self.control.ground([("base", [])])
         return super().__call__()
@@ -80,6 +82,6 @@ class GeneratorReification(CandidateGenerator):
             if symbol.name == "not1":
                 # print("Candidate symbol Negative: ", symbol)
                 candidate_neg.append(symbol.arguments[0])
-                
-        print(Candidate(candidate_pos, candidate_neg))
+
+        print("Generated candidates: ", Candidate(candidate_pos, candidate_neg))
         return Candidate(candidate_pos, candidate_neg)

@@ -1,5 +1,4 @@
 import unittest
-from eclingo.internal_states.internal_control import InternalStateControl
 from eclingo.solver.candidate import Candidate
 from clingo.symbol import Function
 from eclingo.solver.generator import GeneratorReification
@@ -9,15 +8,10 @@ import eclingo as _eclingo
 """ Helper function to generate candidates for a given program """
 def generate(program):
 
-        control = InternalStateControl(message_limit=0)
-        control.configuration.solve.models = 0
         config = _eclingo.config.AppConfig()
         config.eclingo_semantics = "c19-1"
-        
-        control.add_program(program)
-        control.ground([("base", [])])
-        
-        candidate_generator = GeneratorReification(config, control)
+    
+        candidate_generator = GeneratorReification(config, program)
         
         candidates = list(candidate_generator())
         print(sorted(candidates))
@@ -27,9 +21,6 @@ def generate(program):
 class TestCase(unittest.TestCase):
     def assert_models(self, models, expected):
         self.assertEqual(models, expected)
-
-# "a. b :- &k{a}."
-# "u(a). u(b) :- k(u(a)). { k(u(a)) } :- u(a)."
 
 
 class TestEclingoGeneratorReification(TestCase): 
