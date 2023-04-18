@@ -4,6 +4,7 @@ from clingo.symbol import Function
 from eclingo.solver.generator import GeneratorReification
 import eclingo as _eclingo
 
+# python -m unittest tests.test_generator_reification.TestEclingoGeneratorReification
 
 """ Helper function to generate candidates for a given program """
 def generate(program):
@@ -93,6 +94,32 @@ class TestEclingoGeneratorReification(TestCase):
                                          neg=[Function('k', [Function('u', [Function('b', [], True)], True)], True)])
                            ]
                            )
+    def test_generator03_reification(self):
+        # echo "{a}. :- not a. b :- &k{a}. c :- &k{b}." | eclingo --semantics c19-1 --reification --output=reify
+        self.maxDiff = None
+        self.assert_models(generate("""tag(incremental). atom_tuple(0). atom_tuple(0,1). literal_tuple(0).
+                                         rule(choice(0),normal(0)). atom_tuple(1). atom_tuple(1,2). literal_tuple(1).
+                                         literal_tuple(1,1). rule(choice(1),normal(1)). atom_tuple(2). atom_tuple(2,3). 
+                                         literal_tuple(2). literal_tuple(2,2). rule(disjunction(2),normal(2)). atom_tuple(3). 
+                                         atom_tuple(3,4). literal_tuple(3). literal_tuple(3,3). rule(choice(3),normal(3)). 
+                                         atom_tuple(4). atom_tuple(4,5). literal_tuple(4). literal_tuple(4,4).
+                                         rule(disjunction(4),normal(4)). atom_tuple(5). literal_tuple(5). literal_tuple(5,-1).
+                                         rule(disjunction(5),normal(5)). output(u(a),1). output(u(b),3). literal_tuple(6). 
+                                         literal_tuple(6,5). output(u(c),6). output(k(u(a)),2). output(k(u(b)),4). 
+                                         rule(choice(0),normal(0)). rule(choice(1),normal(1)). rule(disjunction(2),normal(2)).
+                                         rule(choice(3),normal(3)). rule(disjunction(4),normal(4)). rule(disjunction(5),normal(5))."""),
+                           
+                           [
+                            Candidate(pos=[], neg=[Function('k', [Function('u', [Function('a', [], True)], True)], True),
+                                                   Function('k', [Function('u', [Function('b', [], True)], True)], True)]) ,
+                            Candidate(pos=[Function('k', [Function('u', [Function('a', [], True)], True)], True)],
+                                      neg=[Function('k', [Function('u', [Function('b', [], True)], True)], True)]) ,
+                            Candidate(pos=[Function('k', [Function('u', [Function('a', [], True)], True)], True),
+                                           Function('k', [Function('u', [Function('b', [], True)], True)], True)], neg=[]) 
+                            ]
+                           )
+            
+        
     
         
         

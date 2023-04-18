@@ -1,6 +1,6 @@
 from typing import Iterable
 
-from clingo import Symbol
+from clingo import Symbol, Function
 from clingox.backend import SymbolicBackend
 from clingox.program import Remapping
 
@@ -106,8 +106,12 @@ class CandidateTesterReification(CandidateTester):
                                 {hold(A) : atom_tuple(H,A)} :- rule(choice(H), B), body(B).
 
                                 {hold(L)} :- output(k(A), B), literal_tuple(B, L).
-
-                                u(A) :- output(u(A), B), conjunction(B)."""
+                                
+                                u(A) :- output(u(A), B), conjunction(B).
+                                
+                                """
+                                # not1(u(A)) :- output(not1(u(A)), B), not conjunction(B).
+                                # not2(u(A)) :- output(not2(u(A)), B), not conjunction(B).
 
         self.control.add("base", [], self.reified_program)
         self.control.add("base", [], program_meta_encoding)
@@ -118,7 +122,8 @@ class CandidateTesterReification(CandidateTester):
         candidate_neg = []
         candidate_assumptions = []
 
-        for literal in candidate[0]:  # Positive
+        
+        for literal in candidate[0]:
             assumption = (literal, True)
             candidate_assumptions.append(assumption)
             literal = literal.arguments[0]
@@ -129,25 +134,47 @@ class CandidateTesterReification(CandidateTester):
             candidate_assumptions.append(assumption)
             literal = literal.arguments[0]
             candidate_neg.append(literal)
+        
+        # TESTER might be wrong now on assuming candidates, it still appends whole literal, but that's
+        # why it might be failing for deafault negation
+        # for literal in candidate[0]:
+        #     args = literal.arguments[0] # Positive
+        #     literal = Function(args.name, [args.arguments[0]], positive=True)
+        #     print("The new positive literal: ", literal)
+        #     assumption = (literal, True)
+        #     candidate_assumptions.append(assumption)
+        #     candidate_pos.append(literal)
+
+        # for literal in candidate[1]:  # Negative
+        #     args = literal.arguments[0] # Positive
+        #     literal = Function(args.name, [args.arguments[0]], positive=False)
+        #     assumption = (literal, False)
+        #     print("The new negative literal: ", literal)
+        #     candidate_assumptions.append(assumption)
+        #     candidate_neg.append(literal)
 
         self.control.configuration.solve.models = 0
         self.control.configuration.solve.project = "no"
 
+        # TODO: if assumptions given, and loop of candidate neg included of model in handle,
+        # solves for but tests candidates wrong.
         with self.control.solve(
             yield_=True,
             #assumptions=candidate_assumptions
         ) as handle:
             model = None
             for model in handle:
+                print(model)
                 for atom in candidate_pos:
                     if not model.contains(atom):
                         return False
 
             assert model is not None
-
+            #print("The model after assert: ", model, '\n')
+            
             for atom in candidate_neg:
                 if model.contains(atom):
                     return False
-
+            
         print("The tested candidates: ", candidate_pos, candidate_neg)
         return True

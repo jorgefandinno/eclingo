@@ -35,7 +35,6 @@ class Control(object):
         self.models = 0
         self.grounded = False
         self.solver = None
-        # self.reified_program = ''
 
     def reification_parse_program(self, program):
         p = []
@@ -74,7 +73,7 @@ class Control(object):
     def solve(self):
         if self.solver is None:
             self.prepare_solver()
-
+            
         for model in self.solver.solve():
             self.models += 1
             yield model

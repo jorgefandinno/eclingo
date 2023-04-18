@@ -62,7 +62,8 @@ class GeneratorReification(CandidateGenerator):
                         epistemic(k(A)) :- output(k(A), B), conjunction(B).
                         epistemic(not1(k(A))) :- output(k(A), B), not conjunction(B).
                         
-                        #show epistemic/1."""
+                        #show epistemic/1.
+                        #show output/2."""
 
         self.control.add("base", [], self.reified_program)
         self.control.add("base", [], program2)
