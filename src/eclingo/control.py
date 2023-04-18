@@ -7,7 +7,7 @@ from clingo.ast import parse_string
 from eclingo.config import AppConfig
 from eclingo.grounder import Grounder
 from eclingo.parsing.transformers import function_transformer
-from eclingo.solver import Solver
+from eclingo.solver import Solver, SolverReification
 
 from .parsing.transformers.ast_reify import program_to_str
 
@@ -35,6 +35,7 @@ class Control(object):
         self.models = 0
         self.grounded = False
         self.solver = None
+        self.reified_program = ''
 
     def reification_parse_program(self, program):
         p = []
@@ -49,6 +50,7 @@ class Control(object):
     def add_program(self, program):
         if self.config.eclingo_reification:
             program = self.reification_parse_program(program)
+            self.reified_program = program
             self.control.add_reified_program(program)
         else:
             self.grounder.add_program(program)
@@ -68,12 +70,15 @@ class Control(object):
         if not self.grounded:
             self.ground()
 
-        self.solver = Solver(self.control, self.config)
+        if self.config.eclingo_reification:
+            self.solver = SolverReification(self.reified_program, self.config)
+        else:
+            self.solver = Solver(self.control, self.config)
 
     def solve(self):
         if self.solver is None:
             self.prepare_solver()
-            
+
         for model in self.solver.solve():
             self.models += 1
             yield model

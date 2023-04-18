@@ -211,8 +211,6 @@ class TestEclingoTesterReification(TestCase):
             ],
         )
 
-    # TODO: Why does this not generate any test candidate to be tested?
-    # Does it have to do with the fact that the world view has 2 models?
     def test_tester_reification_explicit_negation03(self):
         self.maxDiff = None
         # echo "-a. b :- &k{-a}. c :- &k{b}." | eclingo --semantics c19-1 --reification --output=reify

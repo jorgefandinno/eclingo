@@ -20,35 +20,17 @@ class Solver:
         self._control = control
         self._config = config
 
-        if self._config.eclingo_reification:
-            self._build_world_view_reification = WorldWiewBuilderReification()
-            self.test_candidate_reification = CandidateTesterReification(
-                self._config, self._control.reified_program
-            )
-            self.generate_candidates_reification = GeneratorReification(
-                self._config, self._control.reified_program
-            )
+        self._build_world_view = WorldWiewBuilderWithShow(self._control)
+        self.test_candidate = CandidateTester(self._config, self._control)
+        self.generate_candidates = CandidateGenerator(self._config, self._control)
+        self._preprocesor = Preprocessor(self._config, self._control)
+        self._preprocesor()
 
-        else:
-            self._build_world_view = WorldWiewBuilderWithShow(self._control)
-            self.test_candidate = CandidateTester(self._config, self._control)
-            self.generate_candidates = CandidateGenerator(self._config, self._control)
-            self._preprocesor = Preprocessor(self._config, self._control)
-            self._preprocesor()
-
-        # (?) Does it need to only be added if using reification?
-        # self._preprocesor = Preprocessor(self._config, self._control)
-        # self._preprocesor()
 
     def solve(self) -> Iterator[Candidate]:
-        if self._config.eclingo_reification:
-            for candidate in self.generate_candidates_reification():
-                if self.test_candidate_reification(candidate):
-                    yield self._build_world_view_reification(candidate)
-        else:
-            for candidate in self.generate_candidates():
-                if self.test_candidate(candidate):
-                    yield self._build_world_view(candidate)
+        for candidate in self.generate_candidates():
+            if self.test_candidate(candidate):
+                yield self._build_world_view(candidate)
 
 
 class SolverReification:
@@ -62,3 +44,8 @@ class SolverReification:
         self.generate_candidates_reification = GeneratorReification(
             self._config, reified_program
         )
+        
+    def solve(self) -> Iterator[Candidate]:
+        for candidate in self.generate_candidates_reification():
+            if self.test_candidate_reification(candidate):
+                yield self._build_world_view_reification(candidate)
