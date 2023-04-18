@@ -49,3 +49,16 @@ class Solver:
             for candidate in self.generate_candidates():
                 if self.test_candidate(candidate):
                     yield self._build_world_view(candidate)
+
+
+class SolverReification:
+    def __init__(self, reified_program: str, config: AppConfig) -> None:
+        self._config = config
+
+        self._build_world_view_reification = WorldWiewBuilderReification()
+        self.test_candidate_reification = CandidateTesterReification(
+            self._config, reified_program
+        )
+        self.generate_candidates_reification = GeneratorReification(
+            self._config, reified_program
+        )
