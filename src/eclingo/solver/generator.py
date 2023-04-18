@@ -24,7 +24,7 @@ class CandidateGenerator:
     def __call__(self) -> Iterator[Candidate]:
         with self.control.solve(yield_=True) as handle:
             for model in handle:
-                # print("This is the generated model: " + str(model))
+                #print("This is the generated model: " + str(model))
                 candidate = self._model_to_candidate(model)
                 yield candidate
 
@@ -40,6 +40,11 @@ class CandidateGenerator:
 
 
 class GeneratorReification(CandidateGenerator):
+    def __init__(self, config: AppConfig, reified_program: str):
+        self._config = config
+        self.control = internal_control.InternalStateControl(["0"], message_limit=0)
+        self.reified_program = reified_program
+
     def __call__(self) -> Iterator[Candidate]:
         program2 = """  conjunction(B) :- literal_tuple(B), hold(L) : literal_tuple(B, L), L > 0;
                                                         not hold(L) : literal_tuple(B, -L), L > 0. 
@@ -47,7 +52,8 @@ class GeneratorReification(CandidateGenerator):
                         body(normal(B)) :- rule(_, normal(B)), conjunction (B).
                         
                         body(sum(B, G)) :- rule (_sum(B,G)), 
-                                           #sum { W,L : hold(L), weighted_literal_tuple(B, L,W), L>0; W,L : not hold(L), weighted_literal_tuple(B, -L,W), L>0} >= G. 
+                                           #sum { W,L : hold(L), weighted_literal_tuple(B, L,W), L>0;
+                                           W,L : not hold(L), weighted_literal_tuple(B, -L,W), L>0} >= G. 
                                            
                         hold(A) : atom_tuple(H,A) :- rule(disjunction(H), B), body(B). 
                         
@@ -58,6 +64,7 @@ class GeneratorReification(CandidateGenerator):
                         
                         #show epistemic/1."""
 
+        self.control.add("base", [], self.reified_program)
         self.control.add("base", [], program2)
         self.control.ground([("base", [])])
         return super().__call__()
@@ -75,4 +82,5 @@ class GeneratorReification(CandidateGenerator):
                 # print("Candidate symbol Negative: ", symbol)
                 candidate_neg.append(symbol.arguments[0])
 
+        #print("Generated candidates: ", Candidate(candidate_pos, candidate_neg), "\n")
         return Candidate(candidate_pos, candidate_neg)

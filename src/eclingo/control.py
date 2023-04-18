@@ -3,13 +3,11 @@ from typing import Iterable, Tuple
 
 from clingo import Symbol
 from clingo.ast import parse_string
-from clingox.reify import Reifier
 
-from eclingo import internal_states
 from eclingo.config import AppConfig
 from eclingo.grounder import Grounder
 from eclingo.parsing.transformers import function_transformer
-from eclingo.solver import Solver
+from eclingo.solver import Solver, SolverReification
 
 from .parsing.transformers.ast_reify import program_to_str
 
@@ -29,6 +27,7 @@ class Control(object):
         if config is None:
             config = AppConfig()
         self.config = config
+
         if self.max_models == 0:
             self.max_models = sys.maxsize
 
@@ -36,6 +35,7 @@ class Control(object):
         self.models = 0
         self.grounded = False
         self.solver = None
+        self.reified_program = ''
 
     def reification_parse_program(self, program):
         p = []
@@ -50,20 +50,10 @@ class Control(object):
     def add_program(self, program):
         if self.config.eclingo_reification:
             program = self.reification_parse_program(program)
-            self.control.add_program(program)
-
+            self.reified_program = program
+            self.control.add_reified_program(program)
         else:
             self.grounder.add_program(program)
-
-    # Meaning that:
-
-    # 1. Parse program using Function Transform (Currently on add_program on control.py)
-    # 2. Register Observer (on grounder.py on new reification_process function)
-    # 3. We call control.ground of the observed reified facts.
-    # 4. Parse the temp list (TODO: Porbably better create a callback function independently)
-    # 5. the returned program containing the reified facts is added to self.control.add.program and not to the self.grounder.add_program
-    # 6. Again, now only one model is being generated. Is missing the rest.
-    # {hold(k(A))} :- output(k(A))
 
     def load(self, input_path):
         with open(input_path, "r") as program:
@@ -80,7 +70,10 @@ class Control(object):
         if not self.grounded:
             self.ground()
 
-        self.solver = Solver(self.control, self.config)
+        if self.config.eclingo_reification:
+            self.solver = SolverReification(self.reified_program, self.config)
+        else:
+            self.solver = Solver(self.control, self.config)
 
     def solve(self):
         if self.solver is None:

@@ -42,13 +42,15 @@ def tests(session):
                 "tests/test_show.py",
                 "tests/test_solver.py",
                 "tests/test_tester.py",
-                "tests/test_tester_reification.py",
                 "tests/test_worldview_builder_reification.py",
+                "tests/test_tester_reification.py",
                 "tests/test_theory_atom_parser.py",
                 "tests/test_transformers.py",
                 "-v")
     session.notify("coverage")
     
+# MISSING FOR FAILURE: "tests/test_worldview_builder_reification.py",
+
 # Session for individual new test implementation
 # @nox.session(python=None)
 # def tests(session):
@@ -56,7 +58,7 @@ def tests(session):
 #     session.install("-r", "requirements.txt")
 #     session.install("-e", ".")
 #     session.run("coverage", "run", "-m", "unittest",
-#                 "tests/test_tester_reification.py",
+#                 "tests/test_worldview_builder_reification.py",
 #                 "-v")
 #     session.notify("coverage")
 
