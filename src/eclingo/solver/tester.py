@@ -1,6 +1,6 @@
 from typing import Iterable
 
-from clingo import Symbol, Function
+from clingo import Function, Symbol
 from clingox.backend import SymbolicBackend
 from clingox.program import Remapping
 
@@ -105,13 +105,14 @@ class CandidateTesterReification(CandidateTester):
 
                                 {hold(A) : atom_tuple(H,A)} :- rule(choice(H), B), body(B).
 
-                                {hold(L)} :- output(k(A), B), literal_tuple(B, L).
-                                
                                 u(A) :- output(u(A), B), conjunction(B).
-                                
+
+                                {k(A)} :- output(k(A), _).
+
+                                hold(L) :- k(A), output(k(A), B), literal_tuple(B, L).
                                 """
-                                # not1(u(A)) :- output(not1(u(A)), B), not conjunction(B).
-                                # not2(u(A)) :- output(not2(u(A)), B), not conjunction(B).
+        # not1(u(A)) :- output(not1(u(A)), B), not conjunction(B).
+        # not2(u(A)) :- output(not2(u(A)), B), not conjunction(B).
 
         self.control.add("base", [], self.reified_program)
         self.control.add("base", [], program_meta_encoding)
@@ -122,9 +123,9 @@ class CandidateTesterReification(CandidateTester):
         candidate_neg = []
         candidate_assumptions = []
 
-        
         for literal in candidate[0]:
             assumption = (literal, True)
+            print(f"Literal: {literal}")
             candidate_assumptions.append(assumption)
             literal = literal.arguments[0]
             candidate_pos.append(literal)
@@ -134,7 +135,7 @@ class CandidateTesterReification(CandidateTester):
             candidate_assumptions.append(assumption)
             literal = literal.arguments[0]
             candidate_neg.append(literal)
-        
+
         # TESTER might be wrong now on assuming candidates, it still appends whole literal, but that's
         # why it might be failing for deafault negation
         # for literal in candidate[0]:
@@ -155,26 +156,30 @@ class CandidateTesterReification(CandidateTester):
 
         self.control.configuration.solve.models = 0
         self.control.configuration.solve.project = "no"
+        self.control.control.configuration.solve.enum_mode = "cautious"
 
         # TODO: if assumptions given, and loop of candidate neg included of model in handle,
         # solves for but tests candidates wrong.
         with self.control.solve(
-            yield_=True,
-            #assumptions=candidate_assumptions
+            yield_=True, assumptions=candidate_assumptions
         ) as handle:
             model = None
             for model in handle:
-                print(model)
+                # print("\n\nModel:")
+                # print(" ".join(sorted(str(s) for s in model.symbols(shown=True))))
+                # print("\n\n")
                 for atom in candidate_pos:
                     if not model.contains(atom):
                         return False
 
             assert model is not None
-            #print("The model after assert: ", model, '\n')
-            
+            # print("\n\nThe model after assert:")
+            # print(" ".join(sorted(str(s) for s in model.symbols(shown=True))))
+            # print("\n\n")
+
             for atom in candidate_neg:
                 if model.contains(atom):
                     return False
-            
-        print("The tested candidates: ", candidate_pos, candidate_neg)
+
+        # print("The tested candidates: ", candidate_pos, candidate_neg)
         return True
