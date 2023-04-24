@@ -7,6 +7,8 @@ from eclingo.literals import Literal
 from eclingo.solver.candidate import Candidate
 from clingo.ast import Sign
 
+# python -m unittest tests.test_worldview_builder_reification.TestEclingoWViewReification
+
 """ Helper function to generate candidates for a given program and test them"""
 def world_view_builder(tested_candidates):
 
@@ -119,5 +121,64 @@ class TestEclingoWViewReification(TestCase):
                                 )
                                 ]
                             )
+        
+    def test_wview_reification4(self):
+        # echo "-a. b :- &k{-a}. c :- &k{b}." | eclingo --semantics c19-1 --reification
+        self.assert_models(world_view_builder(
+                            [
+                            Candidate(
+                                pos=[
+                                    Function(
+                                        "k", [Function("u", [Function("b", [], True)], True)], True
+                                    ),
+                                    Function(
+                                        "k", [Function("u", [Function("a", [], False)], True)], True
+                                    ),
+                                ],
+                                neg=[],
+                            ),
+                            ]
+                            ),
+                           
+                            [
+                                WorldView(
+                                    [EpistemicLiteral(
+                                        Function(
+                                            'b', [], True), Sign.NoSign, False
+                                        ), 
+                                    EpistemicLiteral(
+                                        Function(
+                                            'a', [], False), 0, False
+                                        )
+                                    ]
+                                    )
+                                ]
+                            )
+        
+    def test_wview_reification5(self):
+        # echo "-a. b :- &k{-a}." | eclingo --semantics c19-1 --reification
+        self.assert_models(world_view_builder(
+                            [
+                                Candidate(
+                                    pos=[
+                                        Function(
+                                            "k", [Function("u", [Function("a", [], False)], True)], True
+                                        )
+                                    ],
+                                    neg=[],
+                                )
+                            ]
+                            ),
+                            [
+                               WorldView(
+                                   [EpistemicLiteral(
+                                       Function(
+                                           'a', [], False), 0, False
+                                       )
+                                    ]
+                                )
+                            ]
+                            )
+        
         
         
