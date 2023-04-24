@@ -205,7 +205,7 @@ def default_negation_auxiliary_rule_replacement(
         aux_literal :- gard, original_literal
     for each tuple in replacement
     """
-    for original_literal, aux_literal in replacement:
+    for original_literal, aux_literal in replacement:  # type: ignore
         yield default_negation_auxiliary_rule(
             location, aux_literal, original_literal, gard
         )

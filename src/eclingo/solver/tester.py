@@ -88,6 +88,7 @@ class CandidateTesterReification(CandidateTester):
         self._config = config
         self.control = internal_control.InternalStateControl(["0"], message_limit=0)
         self.reified_program = reified_program
+        self.control.control.configuration.solve.enum_mode = "cautious"  # type: ignore
 
         program_meta_encoding = """conjunction(B) :- literal_tuple(B), hold(L) : literal_tuple(B, L), L > 0;
                                                     not hold(L) : literal_tuple(B, -L), L > 0.
@@ -133,7 +134,6 @@ class CandidateTesterReification(CandidateTester):
 
         self.control.configuration.solve.models = 0
         self.control.configuration.solve.project = "no"
-        self.control.control.configuration.solve.enum_mode = "cautious"
 
         with self.control.solve(
             yield_=True, assumptions=candidate_assumptions
