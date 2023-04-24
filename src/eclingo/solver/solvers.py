@@ -26,7 +26,6 @@ class Solver:
         self._preprocesor = Preprocessor(self._config, self._control)
         self._preprocesor()
 
-
     def solve(self) -> Iterator[Candidate]:
         for candidate in self.generate_candidates():
             if self.test_candidate(candidate):
@@ -44,7 +43,7 @@ class SolverReification:
         self.generate_candidates_reification = GeneratorReification(
             self._config, reified_program
         )
-        
+
     def solve(self) -> Iterator[Candidate]:
         for candidate in self.generate_candidates_reification():
             if self.test_candidate_reification(candidate):

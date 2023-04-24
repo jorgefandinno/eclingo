@@ -77,15 +77,9 @@ class InternalStateControl(object):
         self.epistemic_to_test_mapping = EpistemicSymbolToTestSymbolMapping()
         self.show_mapping = SymbolToEpistemicLiteralMapping()
 
-    def add_program(self, program: str) -> None:
-        with self.builder() as builder:
-            parse_string(program, builder.add)
-
-    def add_reified_program(self, program) -> None:
-        self.reified_program = program
-
-    def get_reified_program(self) -> str:
-        return self.reified_program
+    # def add_program(self, program: str) -> None:
+    #     with self.builder() as builder:
+    #         parse_string(program, builder.add)
 
     def builder(self) -> ProgramBuilder:
         return ProgramBuilder(self.control, self.show_signature)

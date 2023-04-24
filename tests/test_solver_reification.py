@@ -157,3 +157,33 @@ class TestEclingoSolverReification(TestCase):
                                 )
                             ]
                            )  
+        
+    def test_solver_reification_negation(self):
+        # echo "b :- &k{ not a }. c :- &k{ b }." | eclingo --semantics c19-1 --reification
+        self.assert_models(solve("""atom_tuple(0). atom_tuple(0,1). literal_tuple(0). rule(disjunction(0),normal(0)).
+                                 atom_tuple(1). atom_tuple(1,2). rule(choice(1),normal(0)). atom_tuple(2). 
+                                 atom_tuple(2,3). literal_tuple(1). literal_tuple(1,2). rule(disjunction(2),normal(1)). 
+                                 atom_tuple(3). atom_tuple(3,4). literal_tuple(2). literal_tuple(2,3). rule(choice(3),normal(2)). 
+                                 atom_tuple(4). atom_tuple(4,5). literal_tuple(3). literal_tuple(3,4). rule(disjunction(4),normal(3)). 
+                                 output(k(not1(u(a))),1). output(k(u(b)),3). output(u(b),2). literal_tuple(4). 
+                                 literal_tuple(4,5). output(u(c),4). output(not1(u(a)),0). rule(choice(1),normal(0)). 
+                                 rule(disjunction(2),normal(1)). rule(choice(3),normal(2)). rule(disjunction(4),normal(3))."""),
+                            [
+                                WorldView(
+                                    [EpistemicLiteral(
+                                        Literal(
+                                            Function('a', [], True), Sign.Negation), 0, False
+                                        ), 
+                                    EpistemicLiteral(
+                                        Literal(
+                                            Function('b', [], True), Sign.NoSign), 0, False
+                                        )
+                                    ]
+                                    )
+                                ]
+                           ) 
+        
+        
+        
+        
+        

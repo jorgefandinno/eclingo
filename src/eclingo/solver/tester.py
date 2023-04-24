@@ -109,7 +109,7 @@ class CandidateTesterReification(CandidateTester):
 
                                 hold(L) :- k(A), output(k(A), B), literal_tuple(B, L).
                                 """
-    
+
         self.control.add("base", [], self.reified_program)
         self.control.add("base", [], program_meta_encoding)
         self.control.ground([("base", [])])
@@ -125,7 +125,7 @@ class CandidateTesterReification(CandidateTester):
             literal = literal.arguments[0]
             candidate_pos.append(literal)
 
-        for literal in candidate[1]:  
+        for literal in candidate[1]:
             assumption = (literal, False)
             candidate_assumptions.append(assumption)
             literal = literal.arguments[0]
