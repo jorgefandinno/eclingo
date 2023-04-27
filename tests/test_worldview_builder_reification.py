@@ -222,7 +222,7 @@ class TestEclingoWViewReification(TestCase):
             ],
         )
 
-    def test_wview_reification6(self):
+    def test_wview_reification7(self):
         # echo "b :- &k{ not a }. c :- &k{ b }. {a}." | eclingo --semantics c19-1 --reification
         self.assert_models(
             world_view_builder(
@@ -264,7 +264,7 @@ class TestEclingoWViewReification(TestCase):
             ],
         )
 
-    def test_wview_reification7(self):
+    def test_wview_reification8(self):
         # echo "b :- &k{ not a }. c :- &k{ a }. a." | eclingo --semantics c19-1 --reification
         self.assert_models(
             world_view_builder(
