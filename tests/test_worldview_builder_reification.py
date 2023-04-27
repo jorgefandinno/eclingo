@@ -180,5 +180,38 @@ class TestEclingoWViewReification(TestCase):
                             ]
                             )
         
+    def test_wview_reification6(self):
+        # echo "b :- &k{ not a }. c :- &k{ b }." | eclingo --semantics c19-1 --reification
+        self.assert_models(world_view_builder(
+            [
+                                Candidate(
+                                    pos=[
+                                        Function(
+                                        "k", [Function("u", [Function("b", [], True)], True)], True
+                                        ),
+                                        Function(
+                                            "k", [Function("not1", [Function("u", [Function("a", [], True)], True)], True)]
+                                        )
+                    
+                                    ],
+                                    neg=[],
+                                )
+                            ]
+        ),
+                           [
+                                WorldView(
+                                    [EpistemicLiteral(
+                                        Literal(
+                                            Function('a', [], True), Sign.Negation), 0, False
+                                        ), 
+                                    EpistemicLiteral(
+                                        Literal(
+                                            Function('b', [], True), Sign.NoSign), 0, False
+                                        )
+                                    ]
+                                    )
+                                ]
+        )
+            
         
         

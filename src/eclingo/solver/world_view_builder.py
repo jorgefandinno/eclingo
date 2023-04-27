@@ -116,6 +116,7 @@ class WorldWiewBuilderReification(WorldWiewBuilder):
 
     def generate_show_symbol(self, epistemic_literal):
         ep_args = epistemic_literal.arguments[0]
+        print(epistemic_literal)
         epistemic_name = ep_args.name  # not1, not2 or u
 
         # if symbol is of the form &k{not L} with L an explicit literal
