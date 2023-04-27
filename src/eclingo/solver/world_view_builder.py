@@ -127,7 +127,6 @@ class WorldWiewBuilderReification(WorldWiewBuilder):
         elif epistemic_name == "not2":
             literal_symbol = ep_args.arguments[0].arguments[0]  # not2(u(X))
             sign = Sign.DoubleNegation
-
         # if symbol is of the form &k{L} with L an explicit literal
         else:
             literal_symbol = ep_args.arguments[0]  # literal symbol is L
