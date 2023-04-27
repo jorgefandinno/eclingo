@@ -43,25 +43,26 @@ class GeneratorReification(CandidateGenerator):
     def __init__(self, config: AppConfig, reified_program: str):
         self._config = config
         self.control = internal_control.InternalStateControl(["0"], message_limit=0)
+        # self.control.configuration.solve.project = "auto,3"
         self.reified_program = reified_program
 
     def __call__(self) -> Iterator[Candidate]:
         program2 = """  conjunction(B) :- literal_tuple(B), hold(L) : literal_tuple(B, L), L > 0;
-                                                        not hold(L) : literal_tuple(B, -L), L > 0. 
-                                                      
+                                                        not hold(L) : literal_tuple(B, -L), L > 0.
+
                         body(normal(B)) :- rule(_, normal(B)), conjunction (B).
-                        
-                        body(sum(B, G)) :- rule (_sum(B,G)), 
+
+                        body(sum(B, G)) :- rule (_sum(B,G)),
                                            #sum { W,L : hold(L), weighted_literal_tuple(B, L,W), L>0;
-                                           W,L : not hold(L), weighted_literal_tuple(B, -L,W), L>0} >= G. 
-                                           
-                        hold(A) : atom_tuple(H,A) :- rule(disjunction(H), B), body(B). 
-                        
-                        {hold(A) : atom_tuple(H,A)} :- rule(choice(H), B), body(B). 
-                        
+                                           W,L : not hold(L), weighted_literal_tuple(B, -L,W), L>0} >= G.
+
+                        hold(A) : atom_tuple(H,A) :- rule(disjunction(H), B), body(B).
+
+                        {hold(A) : atom_tuple(H,A)} :- rule(choice(H), B), body(B).
+
                         epistemic(k(A)) :- output(k(A), B), conjunction(B).
                         epistemic(not1(k(A))) :- output(k(A), B), not conjunction(B).
-                        
+
                         #show epistemic/1."""
 
         self.control.add("base", [], self.reified_program)
