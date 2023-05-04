@@ -1,0 +1,20 @@
+
+echo "a :- &k{b}. {b}." | eclingo --semantics c19-1 --reification 0
+
+Should it not also generate u(b) on the model for atom u(b) coming from the positive candidate k(u(b)).
+And form a world view &m{b}, because it is false that b is false for all stable models, therefore is true for some?
+
+The same way that "a :- &k{not b}. {b}.
+
+
+
+- Project parameter:
+
+    Test1: echo "b :- &k{ not a }. c :- &k{ b }. {a}." | eclingo --semantics c19-1 --reification
+
+    World view is &m{a}
+    Gets repeated if not configured project="auto,3"
+
+    Write tests that avoid this kind of behavior
+
+    Test2: echo "a :- &k{not b}. {b}." | eclingo --semantics c19-1 --reification 0

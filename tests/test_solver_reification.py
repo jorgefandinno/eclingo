@@ -75,7 +75,7 @@ class TestEclingoSolverReification(TestCase):
                             )
         
     def test_solver_reification_double_negation(self):
-        # echo "a. b :- &k{ not not a }." | eclingo --output=reify --semantics c19-1 
+        # echo "a. b :- &k{ not not a }." | eclingo --output=reify --semantics c19-1 --reification
         self.assert_models(solve("""tag(incremental). atom_tuple(0). atom_tuple(0,1). literal_tuple(0). rule(disjunction(0),normal(0)).
                         atom_tuple(1). atom_tuple(1,2). rule(disjunction(1),normal(0)). atom_tuple(2). atom_tuple(2,3).
                         rule(choice(2),normal(0)). atom_tuple(3). atom_tuple(3,4). literal_tuple(1). literal_tuple(1,3).
@@ -172,12 +172,8 @@ class TestEclingoSolverReification(TestCase):
                                 WorldView(
                                     [EpistemicLiteral(
                                         Literal(
-                                            Function('a', [], True), Sign.Negation), 0, False
-                                        ), 
-                                    EpistemicLiteral(
-                                        Literal(
-                                            Function('b', [], True), Sign.NoSign), 0, False
-                                        )
+                                            Function('a', [], True), Sign.NoSign), 0, True
+                                        ),
                                     ]
                                     )
                                 ]

@@ -125,7 +125,7 @@ class WorldWiewBuilderReification(WorldWiewBuilder):
             return None
         # if symbol is of the form &k{not not L} with L an explicit literal
         elif epistemic_name == "not2":
-            literal_symbol = ep_args.arguments[0].arguments[0]  # not2(u(X))
+            literal_symbol = ep_args.arguments[0].arguments[0]
             sign = Sign.DoubleNegation
         # if symbol is of the form &k{L} with L an explicit literal
         else:
@@ -143,7 +143,6 @@ class WorldWiewBuilderReification(WorldWiewBuilder):
     def generate_m_symbol(self, epistemic_literal):
         ep_args = epistemic_literal.arguments[0]
         epistemic_name = ep_args.name  # not1, not2 or u
-
         # if symbol is of the form &k{not L} with L an explicit literal
         if epistemic_name == "not1":
             literal_symbol = ep_args.arguments[0].arguments[0]
@@ -163,9 +162,9 @@ class WorldWiewBuilderReification(WorldWiewBuilder):
         epistemic_literals = []
         k_symbols = []
 
-        print(candidate)
+        #print("WView candidates: ", candidate.pos, candidate.neg, "\n")
         for epistemic_literal in candidate.pos:
-            # print("Pos candidate (epistemic_lit): ", epistemic_literal)
+            #print("Pos candidate (epistemic_lit): ", epistemic_literal)
             show_literal = self.generate_k_symbol(epistemic_literal)
             # print("The show literal returned: ", show_literal)
             if show_literal is not None:
@@ -173,10 +172,9 @@ class WorldWiewBuilderReification(WorldWiewBuilder):
                 k_symbols.append(show_literal.objective_literal)
 
         for epistemic_literal in candidate.neg:
-            # print("Neg candidate (epistemic_lit): ", epistemic_literal)
+            #print("Neg candidate (epistemic_lit): ", epistemic_literal)
             show_literal = self.generate_m_symbol(epistemic_literal)
             # print("The show literal returned: ", show_literal)
-            # if show_literal.objective_literal not in processed_symbols_set:
             if (
                 show_literal is not None
                 and show_literal.objective_literal not in k_symbols

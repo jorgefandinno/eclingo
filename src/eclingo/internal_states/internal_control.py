@@ -69,17 +69,11 @@ class InternalStateControl(object):
         self.control.register_observer(
             clingox_program.ProgramObserver(self.ground_program)
         )
-        self.reified_terms: List = []
-        self.reified_program: str = ""
 
         self.show_signature: Set[ShowStatement] = set()
 
         self.epistemic_to_test_mapping = EpistemicSymbolToTestSymbolMapping()
         self.show_mapping = SymbolToEpistemicLiteralMapping()
-
-    # def add_program(self, program: str) -> None:
-    #     with self.builder() as builder:
-    #         parse_string(program, builder.add)
 
     def builder(self) -> ProgramBuilder:
         return ProgramBuilder(self.control, self.show_signature)
