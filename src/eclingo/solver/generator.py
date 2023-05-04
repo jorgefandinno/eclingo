@@ -44,7 +44,7 @@ class GeneratorReification(CandidateGenerator):
     def __init__(self, config: AppConfig, reified_program: str):
         self._config = config
         self.control = internal_control.InternalStateControl(["0"], message_limit=0)
-        #self.control.configuration.solve.project = "auto,3"
+        self.control.configuration.solve.project = "auto,3"
         self.reified_program = reified_program
 
     def __call__(self) -> Iterator[Candidate]:

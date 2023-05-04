@@ -1,5 +1,11 @@
 
-echo "a :- &k{b}. {b}." | eclingo --semantics c19-1 --reification 0
+echo "a :- &k{b}. {b}." | eclingo --semantics c19-1  0
+self.control.control.configuration.solve.enum_mode = "brave"
+Provides -> &k{b}
+Because is true in some.
+
+self.control.control.configuration.solve.enum_mode = "cautious"
+Provides -> nothing (?)
 
 Should it not also generate u(b) on the model for atom u(b) coming from the positive candidate k(u(b)).
 And form a world view &m{b}, because it is false that b is false for all stable models, therefore is true for some?
