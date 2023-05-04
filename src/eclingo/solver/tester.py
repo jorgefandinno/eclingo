@@ -105,7 +105,10 @@ class CandidateTesterReification(CandidateTester):
 
                                 {hold(A) : atom_tuple(H,A)} :- rule(choice(H), B), body(B).
 
-                                u(A) :- output(u(A), B), conjunction(B).
+                                u(A)    :- output(u(A), B), conjunction(B).
+                                not1(A) :- output(not1(A), B), conjunction(B).
+                                not2(A) :- output(not2(A), B), conjunction(B).
+
                                 %not1(u(A)) :- output(u(A), B), not conjunction(B).
 
                                 {k(A)} :- output(k(A), _).
@@ -118,10 +121,10 @@ class CandidateTesterReification(CandidateTester):
         self.control.add("base", [], self.reified_program)
         self.control.add("base", [], program_meta_encoding)
         self.control.ground([("base", [])])
-        
+
         # for f in self.control.facts():
         #     print(f)
-        #print(self.control.facts())
+        # print(self.control.facts())
 
     def __call__(self, candidate: Candidate) -> bool:
         candidate_pos = []
@@ -148,9 +151,9 @@ class CandidateTesterReification(CandidateTester):
         ) as handle:
             model = None
             for model in handle:
-                #print("This is the model: ", model)
+                # print("This is the model:\n", model)
                 for atom in candidate_pos:
-                   # print(atom, "\n")
+                    # print(atom, "\n")
                     if not model.contains(atom):
                         return False
 
