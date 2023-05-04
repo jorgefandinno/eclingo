@@ -14,12 +14,10 @@ def project(reified_program):
         config.eclingo_semantics = "c19-1"
         
         # We have no way of testing this, unless we make that parameter part of the configuration.
-        config.control.configuration.solve.project = "auto,3"
+        # Or we will have to make a call to the generator, tester, and wv_builder one by one to access the 
+        # control value of the generator.
         
-        # control = internal_control.InternalStateControl(["0"], message_limit=0)
-        # control.configuration.solve.project = "auto,3"
-        
-        solver = SolverReification(reified_program, config)
+        solver = SolverReification(reified_program, config)  
         
         wviews = []
         for model in solver.solve():
@@ -36,7 +34,7 @@ class TestCase(unittest.TestCase):
 
 class TestEclingoProject(TestCase): 
     
-    # Given auto,3 should not give 2 world views.
+    # Given auto,3 as project parameter should not give 2 world views.
     def test_project0(self):
         self.maxDiff = None
         #echo "b :- &k{ not a }. c :- &k{ b }. {a}." | eclingo --semantics c19-1 --reification
