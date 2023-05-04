@@ -91,8 +91,7 @@ class TestEclingoTesterReification(TestCase):
                         rule(disjunction(3),normal(1)).""",
                 [
                     Candidate(
-                        pos=[],
-                        neg=[
+                        pos=[
                             Function(
                                 "k",
                                 [
@@ -107,8 +106,8 @@ class TestEclingoTesterReification(TestCase):
                                     )
                                 ],
                                 True,
-                            )
-                        ],
+                            )],
+                        neg=[],
                     )
                 ],
             ),

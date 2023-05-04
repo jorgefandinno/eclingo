@@ -87,5 +87,5 @@ class GeneratorReification(CandidateGenerator):
                 # print("Generated Candidate symbol Negative: ", symbol)
                 candidate_neg.append(symbol.arguments[0])
 
-        #print("Generated candidates: ", Candidate(candidate_pos, candidate_neg), "\n")
+        print("Generated candidates: ", Candidate(candidate_pos, candidate_neg), "\n")
         return Candidate(candidate_pos, candidate_neg)

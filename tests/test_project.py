@@ -54,12 +54,5 @@ class TestEclingoProject(TestCase):
                                         )
                                     ]
                                 ),
-                                WorldView(
-                                    [
-                                        EpistemicLiteral(
-                                            Literal(Function("b", [], True), Sign.NoSign), 0, True
-                                        )
-                                    ]
-                                )
                             ]
         )
