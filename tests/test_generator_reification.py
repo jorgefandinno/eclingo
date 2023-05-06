@@ -69,9 +69,9 @@ class TestEclingoGeneratorReification(TestCase):
                             Candidate(pos=[Function('k', [Function('u', [Function('a', [], False)], True)], True)],
                                       neg=[Function('k', [Function('u', [Function('b', [], True)], True)], True)])])
         
-    # IS this correct (?)
+    
     def test_generator02_reification(self):
-        self.maxDiff = None
+  
         # echo "-a. b :- &k{-a}. c :- &k{b}." | eclingo --semantics c19-1 --reification --output=reify
         self.assert_models(generate("""tag(incremental). 
                                     atom_tuple(0). atom_tuple(0,1). literal_tuple(0). rule(disjunction(0),normal(0)).
@@ -96,7 +96,6 @@ class TestEclingoGeneratorReification(TestCase):
                            )
     def test_generator03_reification(self):
         # echo "{a}. :- not a. b :- &k{a}. c :- &k{b}." | eclingo --semantics c19-1 --reification --output=reify
-        self.maxDiff = None
         self.assert_models(generate("""tag(incremental). atom_tuple(0). atom_tuple(0,1). literal_tuple(0).
                                          rule(choice(0),normal(0)). atom_tuple(1). atom_tuple(1,2). literal_tuple(1).
                                          literal_tuple(1,1). rule(choice(1),normal(1)). atom_tuple(2). atom_tuple(2,3). 

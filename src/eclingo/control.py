@@ -35,7 +35,7 @@ class Control(object):
         self.models = 0
         self.grounded = False
         self.solver = None
-        self.reified_program = ''
+        self.reified_program = ""
 
     def reification_parse_program(self, program):
         p = []
@@ -51,7 +51,6 @@ class Control(object):
         if self.config.eclingo_reification:
             program = self.reification_parse_program(program)
             self.reified_program = program
-            self.control.add_reified_program(program)
         else:
             self.grounder.add_program(program)
 

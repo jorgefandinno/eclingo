@@ -41,6 +41,7 @@ def tests(session):
                 "tests/test_parsing.py",
                 "tests/test_show.py",
                 "tests/test_solver.py",
+                "tests/test_solver_reification.py",
                 "tests/test_tester.py",
                 "tests/test_worldview_builder_reification.py",
                 "tests/test_tester_reification.py",

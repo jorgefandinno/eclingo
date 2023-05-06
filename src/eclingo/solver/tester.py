@@ -88,6 +88,7 @@ class CandidateTesterReification(CandidateTester):
         self._config = config
         self.control = internal_control.InternalStateControl(["0"], message_limit=0)
         self.reified_program = reified_program
+        self.control.control.configuration.solve.enum_mode = "cautious"  # type: ignore
 
         program_meta_encoding = """conjunction(B) :- literal_tuple(B), hold(L) : literal_tuple(B, L), L > 0;
                                                     not hold(L) : literal_tuple(B, -L), L > 0.
@@ -103,13 +104,15 @@ class CandidateTesterReification(CandidateTester):
 
                                 {hold(A) : atom_tuple(H,A)} :- rule(choice(H), B), body(B).
 
-                                u(A) :- output(u(A), B), conjunction(B).
+                                u(A)    :- output(u(A), B), conjunction(B).
+                                not1(A) :- output(not1(A), B), conjunction(B).
+                                not2(A) :- output(not2(A), B), conjunction(B).
 
                                 {k(A)} :- output(k(A), _).
 
                                 hold(L) :- k(A), output(k(A), B), literal_tuple(B, L).
                                 """
-    
+
         self.control.add("base", [], self.reified_program)
         self.control.add("base", [], program_meta_encoding)
         self.control.ground([("base", [])])
@@ -125,7 +128,7 @@ class CandidateTesterReification(CandidateTester):
             literal = literal.arguments[0]
             candidate_pos.append(literal)
 
-        for literal in candidate[1]:  
+        for literal in candidate[1]:
             assumption = (literal, False)
             candidate_assumptions.append(assumption)
             literal = literal.arguments[0]
@@ -133,7 +136,6 @@ class CandidateTesterReification(CandidateTester):
 
         self.control.configuration.solve.models = 0
         self.control.configuration.solve.project = "no"
-        self.control.control.configuration.solve.enum_mode = "cautious"
 
         with self.control.solve(
             yield_=True, assumptions=candidate_assumptions
