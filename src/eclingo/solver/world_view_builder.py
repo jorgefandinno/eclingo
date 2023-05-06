@@ -120,8 +120,6 @@ class WorldWiewBuilderReification(WorldWiewBuilder):
 
         # if symbol is of the form &k{not L} with L an explicit literal
         if epistemic_name == "not1":
-            # literal_symbol = ep_args.arguments[0].arguments[0]
-            # sign = Sign.Negation
             return None
         # if symbol is of the form &k{not not L} with L an explicit literal
         elif epistemic_name == "not2":
@@ -162,19 +160,14 @@ class WorldWiewBuilderReification(WorldWiewBuilder):
         epistemic_literals = []
         k_symbols = []
 
-        #print("WView candidates: ", candidate.pos, candidate.neg, "\n")
         for epistemic_literal in candidate.pos:
-            #print("Pos candidate (epistemic_lit): ", epistemic_literal)
             show_literal = self.generate_k_symbol(epistemic_literal)
-            # print("The show literal returned: ", show_literal)
             if show_literal is not None:
                 epistemic_literals.append(show_literal)
                 k_symbols.append(show_literal.objective_literal)
 
         for epistemic_literal in candidate.neg:
-            #print("Neg candidate (epistemic_lit): ", epistemic_literal)
             show_literal = self.generate_m_symbol(epistemic_literal)
-            # print("The show literal returned: ", show_literal)
             if (
                 show_literal is not None
                 and show_literal.objective_literal not in k_symbols

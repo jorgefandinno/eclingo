@@ -24,7 +24,7 @@ class CandidateGenerator:
     def __call__(self) -> Iterator[Candidate]:
         with self.control.solve(yield_=True) as handle:
             for model in handle:
-                #print("This is the generated model: " + str(model))
+                # print("This is the generated model: " + str(model))
                 candidate = self._model_to_candidate(model)
                 yield candidate
 
@@ -36,7 +36,6 @@ class CandidateGenerator:
                 candidate_pos.append(epistemic_literal)
             else:
                 candidate_neg.append(epistemic_literal)
-        # print("Generated candidates: ", Candidate(candidate_pos, candidate_neg), "\n")
         return Candidate(candidate_pos, candidate_neg)
 
 
@@ -70,8 +69,6 @@ class GeneratorReification(CandidateGenerator):
         self.control.add("base", [], program2)
         self.control.ground([("base", [])])
 
-        # print([n for n in self.control.facts()])
-
         return super().__call__()
 
     def _model_to_candidate(self, model: clingo.Model) -> Candidate:
@@ -87,5 +84,5 @@ class GeneratorReification(CandidateGenerator):
                 # print("Generated Candidate symbol Negative: ", symbol)
                 candidate_neg.append(symbol.arguments[0])
 
-        print("Generated candidates: ", Candidate(candidate_pos, candidate_neg), "\n")
+        # print("Generated candidates: ", Candidate(candidate_pos, candidate_neg), "\n")
         return Candidate(candidate_pos, candidate_neg)
