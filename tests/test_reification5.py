@@ -12,7 +12,6 @@ from clingox.reify import Reifier
 from clingo.control import Control
 from eclingo.parsing.transformers.ast_reify import program_to_str
 
-
 def flatten(lst):
     result = []
     for lst2 in lst:
@@ -57,7 +56,6 @@ class TestCase(ASTTestCase):
         ]
         
         program = program_to_str(program)
-        
         ctl_a = Control()
         
         temp = []
@@ -67,7 +65,6 @@ class TestCase(ASTTestCase):
         ctl_a.ground([('base', [])])
         
         temp = [str(e) for e in temp]
-        
         if len(temp) != len(expected_program):
             self.fail(
                 f"Lists differ (different lenghts {len(temp)} and {len(expected_program)}"

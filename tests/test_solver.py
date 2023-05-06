@@ -24,6 +24,7 @@ def solve(program):
         for world_view in econtrol.solve():
             world_view = sorted(str(symbol) for symbol in world_view.symbols)
             world_views.append(world_view)
+
         return sorted(world_views)
             
 class TestCase(unittest.TestCase):
