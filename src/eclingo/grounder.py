@@ -36,7 +36,7 @@ class Grounder:
     ) -> None:  # pylint: disable=dangerous-default-value
         self.control.ground(parts)
 
-    def create_reified_facts(self, program):
+    def create_reified_facts(self, program):  # pragma: no cover
         self.add_program(program)
         self.control.register_observer(Reifier(self.reified_facts.append))
         self.ground()

@@ -86,7 +86,7 @@ def symbolic_literal_to_term(
     return ast.Function(lit.location, sign_name, [symbol], False)
 
 
-def reification_program_to_str(program):
+def reification_program_to_str(program):  # pragma: no cover
     """
     Helper function to convert a reified fact program into a string.
     """
