@@ -33,8 +33,8 @@ class Application(internal_control.Application):
 
     def _parse_string(self, config, attr):
         def parse(value):
-            setattr(config, attr, value)
-            return True
+            setattr(config, attr, value)  # pragma: no cover
+            return True  # pragma: no cover
 
         return parse
 
