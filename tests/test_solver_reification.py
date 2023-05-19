@@ -21,9 +21,10 @@ def solve(reified_program):
 
     wviews = []
     for model in solver.solve():
-        if model not in wviews:
-            wviews.append(model)
+        #if model not in wviews:
+        wviews.append(model)
     return sorted(wviews)
+    #return wviews
 
 
 class TestCase(unittest.TestCase):

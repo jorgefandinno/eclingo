@@ -113,6 +113,7 @@ class WorldWiewBuilderReification(WorldWiewBuilder):
     def __init__(self):
         self.control = internal_control.InternalStateControl(["0"], message_limit=0)
         self.control.configuration.solve.models = 0
+        self.control.configuration.solve.project = "auto,3"
 
     def generate_k_symbol(self, epistemic_literal):
         ep_args = epistemic_literal.arguments[0]
@@ -160,6 +161,8 @@ class WorldWiewBuilderReification(WorldWiewBuilder):
         epistemic_literals = []
         k_symbols = []
 
+        print("Candidate WV: ", candidate)
+
         for epistemic_literal in candidate.pos:
             show_literal = self.generate_k_symbol(epistemic_literal)
             if show_literal is not None:
@@ -168,10 +171,12 @@ class WorldWiewBuilderReification(WorldWiewBuilder):
 
         for epistemic_literal in candidate.neg:
             show_literal = self.generate_m_symbol(epistemic_literal)
+
             if (
                 show_literal is not None
                 and show_literal.objective_literal not in k_symbols
             ):
                 epistemic_literals.append(show_literal)
 
+        print(WorldView(epistemic_literals))
         return WorldView(epistemic_literals)
