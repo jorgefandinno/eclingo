@@ -85,7 +85,7 @@ class _ProgramParser(object):
         statement = parse_epistemic_literals_elements(statement, self.reification)
 
         statement = reify_symbolic_atoms(
-                statement, prefixes.U_NAME, reify_strong_negation=True
+            statement, prefixes.U_NAME, reify_strong_negation=True
         )
 
         # this avoids collitions between user predicates and auxiliary predicates

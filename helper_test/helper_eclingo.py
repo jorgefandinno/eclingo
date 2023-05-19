@@ -14,6 +14,7 @@ class EclingoTestHelper(helper.TestHelper):
         control = internal_control.InternalStateControl(message_limit=0)
         config = _config.AppConfig()
         config.eclingo_semantics = "c19-1"
+        config.eclingo_reification = True
         eclingo_control = _control.Control(control=control, config=config)
         eclingo_control.add_program(program)
         eclingo_control.ground()
