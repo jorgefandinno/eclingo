@@ -17,7 +17,7 @@ from . import __version__
 _FALSE = ["0", "no", "false"]
 _TRUE = ["1", "yes", "true"]
 
-reification_flag = Flag(False)
+reification_flag = Flag(True)
 
 
 class Application(internal_control.Application):

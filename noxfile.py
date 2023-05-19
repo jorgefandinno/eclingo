@@ -17,6 +17,9 @@ def typecheck(session):
     session.install("-r", "requirements.txt")
     session.run("mypy", "--implicit-optional", "src/eclingo")
 
+# List of tests that are required to edit with reification:
+# "tests/test_parsing.py"
+
 
 @nox.session(python=None)
 def tests(session):
@@ -38,7 +41,6 @@ def tests(session):
                 "tests/test_generator_reification.py",
                 "tests/test_literals.py",
                 "tests/test_internal_control_ground_program.py",
-                "tests/test_parsing.py",
                 "tests/test_show.py",
                 "tests/test_solver.py",
                 "tests/test_solver_reification.py",

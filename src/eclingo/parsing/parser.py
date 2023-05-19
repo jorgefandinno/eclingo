@@ -84,12 +84,9 @@ class _ProgramParser(object):
         statement = self.theory_parser(statement)
         statement = parse_epistemic_literals_elements(statement, self.reification)
 
-        if self.reification:
-            statement = reify_symbolic_atoms(
+        statement = reify_symbolic_atoms(
                 statement, prefixes.U_NAME, reify_strong_negation=True
-            )
-        else:
-            statement = prefix_symbolic_atoms(statement, prefixes.U_PREFIX)
+        )
 
         # this avoids collitions between user predicates and auxiliary predicates
         if statement.ast_type == ast.ASTType.Rule:
