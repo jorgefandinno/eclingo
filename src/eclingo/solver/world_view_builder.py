@@ -1,5 +1,5 @@
 import itertools
-from typing import Dict, Iterator
+from typing import Dict, Iterator, Sequence
 
 from clingo import Function, Symbol, SymbolicAtom
 from clingo.ast import Sign
@@ -134,7 +134,15 @@ class WorldWiewBuilderReification(WorldWiewBuilder):
         # Check for explicit negation
         is_explicit = literal_symbol.positive
 
-        new_symbol = Function(literal_symbol.name, [], is_explicit)
+        # Check for arguments of literal
+        arguments: Sequence[Symbol] = []
+        if literal_symbol.arguments:
+            for args in literal_symbol.arguments:
+                arguments.append(args)
+
+        # print("The args: ", literal_symbol.arguments[0])
+
+        new_symbol = Function(literal_symbol.name, arguments, is_explicit)
         literal = Literal(new_symbol, sign)
 
         return EpistemicLiteral(literal, Sign.NoSign)
@@ -142,7 +150,7 @@ class WorldWiewBuilderReification(WorldWiewBuilder):
     def generate_m_symbol(self, epistemic_literal):
         ep_args = epistemic_literal.arguments[0]
         epistemic_name = ep_args.name  # not1, not2 or u
-        
+
         # if symbol is of the form &k{not L} with L an explicit literal
         if epistemic_name == "not1":
             literal_symbol = ep_args.arguments[0].arguments[0]
@@ -152,6 +160,11 @@ class WorldWiewBuilderReification(WorldWiewBuilder):
             return None
         # Check for explicit negation
         is_explicit = literal_symbol.positive
+
+        arguments: Sequence[Symbol] = []
+        if literal_symbol.arguments:
+            for args in literal_symbol.arguments:
+                arguments.append(args)
 
         new_symbol = Function(literal_symbol.name, [], is_explicit)
         literal = Literal(new_symbol, sign)
