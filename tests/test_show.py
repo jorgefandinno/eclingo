@@ -35,10 +35,10 @@ class Test(ParsingTestHelper, WorldWiewBuilderWithShowTestHelper):
         )
 
     def test_show05(self):
-        self.assert_equal_show_symbols("a.  #show a/0.", ["u_a"])
+        self.assert_equal_show_symbols("a.  #show a/0.", ["u(a)"])
 
     def test_show05b(self):
-        self.assert_equal_show_symbols("a. b.  #show a/0.", ["u_a"])
+        self.assert_equal_show_symbols("a. b.  #show a/0.", ["u(a)"])
 
     def test_show05c(self):
         self.assert_equal_show_symbols("-a. b.  #show -a/0.", ["-u_a"])
@@ -47,11 +47,11 @@ class Test(ParsingTestHelper, WorldWiewBuilderWithShowTestHelper):
         self.assert_equal_show_symbols("#show a/0.", [])
 
     def test_show06(self):
-        self.assert_equal_show_program("a.  #show a/0.", ["__x1.", "__x2.", "u_a."])
+        self.assert_equal_show_program("a.  #show a/0.", ["__x1.", "__x2.", "u(a)."])
 
     def test_show06b(self):
         self.assert_equal_show_program(
-            "{a}.  #show a/0.", ["{u_a}.", "not_u_a :- not u_a."]
+            "{a}.  #show a/0.", ["{u(a)}.", "not1(u(a)) :- not u(a)."]
         )
 
     def test_show06c(self):

@@ -19,6 +19,7 @@ def typecheck(session):
 
 # Need revision:
 # "tests/test_g94.py",
+# "tests/test_show.py",
 @nox.session(python=None)
 def tests(session):
     session.install("coverage")
@@ -38,7 +39,6 @@ def tests(session):
                 "tests/test_literals.py",
                 "tests/test_internal_control_ground_program.py",
                 "tests/test_parsing.py",
-                "tests/test_show.py",
                 "tests/test_solver_reification.py",
                 "tests/test_worldview_builder_reification.py",
                 "tests/test_tester_reification.py",

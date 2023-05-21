@@ -58,7 +58,7 @@ class InternalStateControl(object):
         message_limit: int = 20,
         *,
         control: clingo.Control = None,
-        config: AppConfig = AppConfig(semantics="c19-1"),
+        config: AppConfig = AppConfig(semantics="c19-1", use_reification=True),
     ):
         if control is None:
             control = clingo.Control(arguments, logger, message_limit)
