@@ -166,7 +166,7 @@ class WorldWiewBuilderReification(WorldWiewBuilder):
             for args in literal_symbol.arguments:
                 arguments.append(args)
 
-        new_symbol = Function(literal_symbol.name, [], is_explicit)
+        new_symbol = Function(literal_symbol.name, arguments, is_explicit)
         literal = Literal(new_symbol, sign)
 
         return EpistemicLiteral(literal, Sign.NoSign, True)
