@@ -142,6 +142,7 @@ class WorldWiewBuilderReification(WorldWiewBuilder):
     def generate_m_symbol(self, epistemic_literal):
         ep_args = epistemic_literal.arguments[0]
         epistemic_name = ep_args.name  # not1, not2 or u
+        
         # if symbol is of the form &k{not L} with L an explicit literal
         if epistemic_name == "not1":
             literal_symbol = ep_args.arguments[0].arguments[0]
@@ -161,8 +162,6 @@ class WorldWiewBuilderReification(WorldWiewBuilder):
         epistemic_literals = []
         k_symbols = []
 
-        print("Candidate WV: ", candidate)
-
         for epistemic_literal in candidate.pos:
             show_literal = self.generate_k_symbol(epistemic_literal)
             if show_literal is not None:
@@ -178,5 +177,4 @@ class WorldWiewBuilderReification(WorldWiewBuilder):
             ):
                 epistemic_literals.append(show_literal)
 
-        print(WorldView(epistemic_literals))
         return WorldView(epistemic_literals)
