@@ -5,15 +5,12 @@ from copy import copy
 from typing import Iterable, List, Set, Tuple, Union, cast
 
 from clingo import ast
-from clingo.ast import AST, ASTSequence, ASTType, Sign, Transformer
+from clingo.ast import AST, ASTSequence, Sign, Transformer
 from clingox.ast import (
     filter_body_literals,
-    prefix_symbolic_atoms,
     reify_symbolic_atoms,
     theory_term_to_literal,
 )
-
-from eclingo import config, prefixes
 
 from .parser_negations import (
     SnReplacementType,

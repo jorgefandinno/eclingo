@@ -1,19 +1,9 @@
-import unittest
-from typing import cast
-
 from clingo import ast
-from clingox.pprint import pprint
-from clingox.testing.ast import ASTTestCase, parse_statement
+from clingox.testing.ast import ASTTestCase
 
 from eclingo.config import AppConfig
 from eclingo.parsing import parser
-from eclingo.parsing.transformers import ast_reify, function_transformer
-from tests.test_reification2 import parse_literal
-
-
-from json import dumps
-from clingo.ast import parse_string
-from clingox.ast import ast_to_dict
+from eclingo.parsing.transformers import function_transformer
 
 
 def flatten(lst):

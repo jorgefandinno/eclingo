@@ -1,0 +1,108 @@
+LOGS of ERRORS while adapting tests to reification version.
+
+Error 1:
+
+    File: test_eclingo.py
+
+    Test: TestEclingoCommontToAllSemantics
+
+    Program: "a :- not &k{b}. b :- not &k{a}."
+
+    Old solution: [["&k{a}"], ["&k{b}"]]
+
+    Current solution given reification: [[], ["&k{a}"], ["&k{b}"]]
+
+    Hypothesis: semantics c19-1 gives an extra empty world view.
+
+Error 2:
+
+    File: test_eclingo.py
+
+    Test: TestEclingoAggregates
+
+    Program:  """a :- not &k{ not a}. b :- a. c :- &k{b}. d :- &k{c}."""
+
+    Old solution: [[], ["&m{a}", "&k{b}", "&k{c}"]]
+
+    Current solution given reification: [[], ["&m{a}"]]
+
+    Hypothesis: based on new implementation
+
+Error 3:
+
+    File: test_eclingo.py
+
+    Test: TestEclingoAggregates
+
+    Program:  """{fact}.
+            :- not fact.
+            a :- not &k{ not a}.
+            b :- #sum{1:fact; 25:a} >= 24.
+            c :- &k{b}.
+            d :- &k{c}."""
+
+    Old solution: [[], ["&m{a}", "&k{b}", "&k{c}"]]
+
+    Current solution given reification: [[], ["&m{a}"]]
+
+    Hypothesis: based on new implementation, does this new implementation account for aggregates (?)
+
+
+Error 4:
+
+    File: test_eclingo.py
+
+    Test: TestEclingoNonGround.test_positive_programs
+
+    Program:  "a(1). b :- &k{a(X)}."
+
+    Old solution: [["&k{a(1)}"]]
+
+    Current solution given reification: [["&k{a}"]]
+
+    Hypothesis: Should we show arguments also (?)
+
+Error 5:
+
+    File: test_eclingo.py
+
+    Test: TestEclingoNonGround.test_programs_with_default_negation
+
+    Program:  """
+            a(1) :- not c(1).
+            c(1) :- not a(1).
+            b(X) :- not &k{ not a(X) }, dom(X).
+            dom(1..2).
+            d(X) :- &k{ b(X) }.
+            """
+
+    Old solution: [["&m{a(1)}", "&k{b(1)}"]]
+
+    Current solution given reification: [["&m{a(1)}"]]
+
+    Hypothesis: new implementation (?)
+
+Error 6:
+
+    File: test_eclingo.py
+
+    Test: TestEclingoNonGround.test_programs_with_default_negation
+
+    Program:  
+            """
+                a(1), c(1).
+                b(X) :- not &k{ not a(X) }, dom(X).
+                dom(1..2).
+                d(X) :- &k{ b(X) }.     
+            """
+
+    Old solution: [["&m{a(1)}", "&k{b(1)}"]]
+
+    Current solution given reification: [["&m{a(1)}"]]
+
+    Hypothesis: new implementation (?)
+
+
+
+
+

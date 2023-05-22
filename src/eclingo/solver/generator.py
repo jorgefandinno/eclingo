@@ -7,40 +7,23 @@ from eclingo.internal_states import internal_control
 
 from .candidate import Candidate
 
+# class CandidateGenerator:
+#     def __init__(
+#         self, config: AppConfig, control: internal_control.InternalStateControl
+#     ) -> None:
+#         self._config = config
+#         self.control = control
 
-class CandidateGenerator:
-    def __init__(
-        self, config: AppConfig, control: internal_control.InternalStateControl
-    ) -> None:
-        self._config = config
-        self.control = control
-
-        self._epistemic_literals = (
-            self.control.epistemic_to_test_mapping.epistemic_literals()
-        )
-        with self.control.symbolic_backend() as backend:
-            backend.add_project(self._epistemic_literals)
-
-    def __call__(self) -> Iterator[Candidate]:
-        with self.control.solve(yield_=True) as handle:
-            for model in handle:
-                # print("This is the generated model: " + str(model))
-                candidate = self._model_to_candidate(model)
-                yield candidate
-
-    def _model_to_candidate(self, model: clingo.Model) -> Candidate:
-        candidate_pos = []
-        candidate_neg = []
-        for epistemic_literal in self._epistemic_literals:
-            if model.contains(epistemic_literal):
-                candidate_pos.append(epistemic_literal)
-            else:
-                candidate_neg.append(epistemic_literal)
-        return Candidate(candidate_pos, candidate_neg)
+#     def __call__(self) -> Iterator[Candidate]:
+#         with self.control.solve(yield_=True) as handle:
+#             for model in handle:
+#                 # print("This is the generated model: " + str(model))
+#                 candidate = self._model_to_candidate(model)
+#                 yield candidate
 
 
-class GeneratorReification(CandidateGenerator):
-    def __init__(self, config: AppConfig, reified_program: str):
+class GeneratorReification:
+    def __init__(self, config: AppConfig, reified_program: str) -> None:
         self._config = config
         self.control = internal_control.InternalStateControl(["0"], message_limit=0)
         self.control.configuration.solve.project = "auto,3"
@@ -69,7 +52,11 @@ class GeneratorReification(CandidateGenerator):
         self.control.add("base", [], program2)
         self.control.ground([("base", [])])
 
-        return super().__call__()
+        with self.control.solve(yield_=True) as handle:
+            for model in handle:
+                # print("This is the generated model: " + str(model))
+                candidate = self._model_to_candidate(model)
+                yield candidate
 
     def _model_to_candidate(self, model: clingo.Model) -> Candidate:
         candidate_pos = []

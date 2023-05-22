@@ -5,6 +5,7 @@ from clingo import Number
 
 from eclingo import control as _control
 from eclingo.internal_states import internal_control
+import eclingo as _eclingo
 
 INPUT_PROG_PATH = "prog/input/"
 OUTPUT_PROG_PATH = "prog/output/"
@@ -22,8 +23,10 @@ class TestExamples(unittest.TestCase):
     def test_prog_g94(self):
         for i in range(1, 11):
             control = internal_control.InternalStateControl()
+            config = _eclingo.config.AppConfig()
             control.configuration.solve.models = 0
-            eclingo_control = _control.Control(control=control)
+            control.configuration.solve.project = "auto,3"
+            eclingo_control = _control.Control(control=control, config=config)
             path = os.path.dirname(os.path.realpath(__file__))
             input_path = os.path.join(path, INPUT_PROG_PATH)
             input_path = os.path.join(input_path, f"prog{i:02d}.lp")
@@ -76,7 +79,9 @@ class TestExamples(unittest.TestCase):
             if i != 6:
                 control = internal_control.InternalStateControl()
                 control.configuration.solve.models = 0
-                eclingo_control = _control.Control(control=control)
+                config = _eclingo.config.AppConfig()
+                control.configuration.solve.project = "auto,3"
+                eclingo_control = _control.Control(control=control, config=config)
                 # eclingo_control.config.eclingo_verbose = 10
 
                 path = os.path.dirname(os.path.realpath(__file__))

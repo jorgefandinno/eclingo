@@ -2,16 +2,12 @@
 Module to replace strong and default negations by auxiliary atoms.
 """
 from copy import copy
-from typing import Iterable, Iterator, List, Optional, Set, Tuple
+from typing import List, Optional, Set, Tuple
 
 from clingo import ast
 from clingo.ast import Location, Position, Transformer
-from clingox.ast import reify_symbolic_atoms
-from clingox.pprint import pprint
 
-from eclingo import prefixes
-
-from . import ast_reify, astutil
+from . import ast_reify
 
 # pylint: disable=all
 
@@ -62,36 +58,6 @@ class StrongNegationReplacement(Set[Tuple[str, int, str]]):
             filename="<replace_strong_negation_by_auxiliary_atoms>", line=1, column=1
         ),
     )
-
-    def get_auxiliary_rules(self, reification) -> Iterator[ast.AST]:
-        """
-        Returns a rule of the form:
-            aux_name(X1, ..., Xn) :- -name(X1, ... , Xn).
-        for each tuple in replacement
-        """
-        for name, arity, aux_name in self:
-            yield self._build_auxliary_rule(name, arity, aux_name, reification)
-
-    def _build_auxliary_rule(
-        self, name: str, arity: int, aux_name: str, reification: bool
-    ) -> ast.AST:
-        """
-        Returns a rule of the form:
-            aux_name(X1, ..., Xn) :- -name(X1, ... , Xn).
-        where n = arity
-        """
-        location = StrongNegationReplacement.location
-        arguments = []
-        for i in range(0, arity):
-            var_name = "V" + str(i)
-            var = ast.Variable(location, var_name)
-            arguments.append(var)
-        head = astutil.atom(location, True, aux_name, arguments)
-        head = ast.Literal(location, ast.Sign.NoSign, head)
-        body_atom = astutil.atom(location, False, name, arguments)
-        body = [ast.Literal(location, ast.Sign.NoSign, body_atom)]
-
-        return ast.Rule(location, head, body)
 
 
 SnReplacementType = Set[Tuple[str, int, str]]

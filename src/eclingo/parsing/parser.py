@@ -3,7 +3,6 @@ from typing import Callable, Iterable, List, Sequence, cast
 from clingo import ast
 from clingo.ast import Location, Position
 
-from eclingo import prefixes
 from eclingo.config import AppConfig
 from eclingo.internal_states.internal_control import ASTObject, ShowStatement
 
@@ -24,6 +23,8 @@ from clingox.ast import (
     reify_symbolic_atoms,
     theory_parser_from_definition,
 )
+
+U_NAME = "u"
 
 
 def parse_theory(s: str) -> TheoryParser:
@@ -75,18 +76,16 @@ class _ProgramParser(object):
 
     def __call__(self) -> None:
         ast.parse_string(self.program, self._parse_statement)
-        for aux_rule in self.strong_negation_replacements.get_auxiliary_rules(
-            self.reification
-        ):
-            self.callback(aux_rule)
+        # for aux_rule in self.strong_negation_replacements.get_auxiliary_rules(
+        #     self.reification
+        # ):
+        #     self.callback(aux_rule)
 
     def _parse_statement(self, statement: ast.AST) -> None:
         statement = self.theory_parser(statement)
         statement = parse_epistemic_literals_elements(statement, self.reification)
 
-        statement = reify_symbolic_atoms(
-            statement, prefixes.U_NAME, reify_strong_negation=True
-        )
+        statement = reify_symbolic_atoms(statement, U_NAME, reify_strong_negation=True)
 
         # this avoids collitions between user predicates and auxiliary predicates
         if statement.ast_type == ast.ASTType.Rule:
@@ -98,10 +97,13 @@ class _ProgramParser(object):
         elif statement.ast_type == ast.ASTType.ShowSignature:
             for stm in self._parse_show_signature_statement(statement):
                 self.callback(stm)
-        elif statement.ast_type == ast.ASTType.ShowTerm:
-            raise RuntimeError(
-                'syntax error: only show statements of the form "#show atom/n." are allowed.'
-            )
+
+        # No show staments currently supported by reification version
+        # elif statement.ast_type == ast.ASTType.ShowTerm:
+        #     raise RuntimeError(
+        #         'syntax error: only show statements of the form "#show atom/n." are allowed.'
+        #     )
+
         else:
             self.callback(statement)
 
@@ -117,7 +119,7 @@ class _ProgramParser(object):
         self.strong_negation_replacements.update(sn_replacement)
 
         return replace_epistemic_literals_by_auxiliary_atoms(
-            rules, self.reification, prefixes.EPISTEMIC_PREFIX
+            rules, self.reification, "k_"
         )
 
     def _parse_program_statement(self, statement: ast.AST) -> List[ast.AST]:

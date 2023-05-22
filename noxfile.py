@@ -2,7 +2,6 @@ import nox
 
 # If using conda, then be sure to be in the nox environment different from "base" before running this file.
 
-
 @nox.session
 def format(session):
     session.install("black", "isort")
