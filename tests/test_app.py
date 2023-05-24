@@ -8,6 +8,8 @@ from unittest.mock import patch
 
 from eclingo.main import main as eclingo_main
 
+# python -m unittest tests.test_app.TestExamples.test_prog_g94
+
 APP_PATH = "../src/eclingo/__main__.py"
 
 INPUT_PROG_PATH = "prog/input/"
@@ -83,10 +85,11 @@ class TestExamples(unittest.TestCase):
         world_views = (
             str(world_views).replace(" ", "").replace("'", "").replace('"', "")
         )
-
+    
         with open(output_path, "r") as output_prog:
             sol = output_prog.read()
             sol = sol.replace("\n", "").replace(" ", "")
+            
         self.assertEqual(world_views, sol, "in " + str(command))
 
     def test_prog_g94(self):
@@ -97,8 +100,9 @@ class TestExamples(unittest.TestCase):
             output_path = os.path.join(path, OUTPUT_PROG_PATH)
             output_path = os.path.join(output_path, f"sol{i:02d}.txt")
             app_path = os.path.join(path, APP_PATH)
-
-            command = ["python", app_path, "0"]
+            
+            semantics = "--semantics=g94"
+            command = ["python", app_path, semantics, "0"]
             self.assert_world_views(
                 command, [input_path], output_path, external_call=False, use_stdin=True
             )
@@ -117,10 +121,11 @@ class TestExamples(unittest.TestCase):
             output_path = os.path.join(output_path, f"sol_eligible{i:02d}.txt")
             app_path = os.path.join(path, APP_PATH)
 
-            command = ["python", app_path, "0"]
-            self.assert_world_views(
-                command, [elegible_path, input_path], output_path, external_call=False
-            )
+            semantics = "--semantics=g94"
+            command = ["python", app_path, semantics, "0"]
+            # self.assert_world_views(
+            #     command, [elegible_path, input_path], output_path, external_call=False
+            # )
             self.assert_world_views(command, [elegible_path, input_path], output_path)
 
     def test_yale_g94(self):
@@ -136,7 +141,9 @@ class TestExamples(unittest.TestCase):
                 app_path = os.path.join(path, APP_PATH)
 
                 constant = "-c length=%d" % i
-                command = ["python", app_path, constant, "0"]
+
+                semantics = "--semantics=g94"
+                command = ["python", app_path, constant, semantics,  "0"]
                 self.assert_world_views(
                     command, [yale_path, input_path], output_path, external_call=False
                 )

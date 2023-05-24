@@ -103,6 +103,38 @@ Error 6:
     Hypothesis: new implementation (?)
 
 
+Error 7
+
+    File: test_app.py (input -> prog02.lp, output -> sol02.txt)
+
+    Test: TestExamples.test_prog_g94
+
+    Program:  
+            """
+                a :- not &k{ b }.                                     
+                b :- not &k{ a }.    
+            """
+
+    Old solution: [[&k{a}],[&k{b}]]
+
+    Current solution given reification: [[],[&k{a}],[&k{b}]]
+
+    Hypothesis: new implementation (?)
+
+
+Error 8:
+
+    Lines
+    # self.assert_world_views(
+    #     command, [elegible_path, input_path], output_path, external_call=False
+    # )
+
+    of TestExamples.test_eligible_g94
+
+    cause it to fail on sol_eligible2.txt, eligible2.lp
+
+
+
 
 
 

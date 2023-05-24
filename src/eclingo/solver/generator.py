@@ -7,20 +7,6 @@ from eclingo.internal_states import internal_control
 
 from .candidate import Candidate
 
-# class CandidateGenerator:
-#     def __init__(
-#         self, config: AppConfig, control: internal_control.InternalStateControl
-#     ) -> None:
-#         self._config = config
-#         self.control = control
-
-#     def __call__(self) -> Iterator[Candidate]:
-#         with self.control.solve(yield_=True) as handle:
-#             for model in handle:
-#                 # print("This is the generated model: " + str(model))
-#                 candidate = self._model_to_candidate(model)
-#                 yield candidate
-
 
 class GeneratorReification:
     def __init__(self, config: AppConfig, reified_program: str) -> None:
