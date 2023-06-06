@@ -1,6 +1,6 @@
 LOGS of ERRORS while adapting tests to reification version.
 
-Error 1:
+Error 1: (PROPOSED SOLUTION)
 
     File: test_eclingo.py
 
@@ -12,9 +12,9 @@ Error 1:
 
     Current solution given reification: [[], ["&k{a}"], ["&k{b}"]]
 
-    Hypothesis: semantics c19-1 gives an extra empty world view.
+    Hypothesis: cautious yields the empty set as solution. Brave does not.
 
-Error 2:
+Error 2: (PROPOSED SOLUTION)
 
     File: test_eclingo.py
 
@@ -26,7 +26,7 @@ Error 2:
 
     Current solution given reification: [[], ["&m{a}"]]
 
-    Hypothesis: based on new implementation
+    Hypothesis: since not k(not a) must be in some answer set. it does not derive b all the time. Therefore c and d are not derived.
 
 Error 3:
 
@@ -45,22 +45,7 @@ Error 3:
 
     Current solution given reification: [[], ["&m{a}"]]
 
-    Hypothesis: based on new implementation, does this new implementation account for aggregates (?)
-
-
-Error 4:
-
-    File: test_eclingo.py
-
-    Test: TestEclingoNonGround.test_positive_programs
-
-    Program:  "a(1). b :- &k{a(X)}."
-
-    Old solution: [["&k{a(1)}"]]
-
-    Current solution given reification: [["&k{a}"]]
-
-    Hypothesis: Should we show arguments also (?)
+    Hypothesis: Does the new implementation account for aggregates (?)
 
 Error 5:
 
@@ -80,7 +65,7 @@ Error 5:
 
     Current solution given reification: [["&m{a(1)}"]]
 
-    Hypothesis: new implementation (?)
+    Hypothesis: b(X) is only true for some answer sets, therefore k(b(X)) not true for all.
 
 Error 6:
 
@@ -103,7 +88,7 @@ Error 6:
     Hypothesis: new implementation (?)
 
 
-Error 7
+Error 7 (SAME as error 1)
 
     File: test_app.py (input -> prog02.lp, output -> sol02.txt)
 
@@ -119,7 +104,7 @@ Error 7
 
     Current solution given reification: [[],[&k{a}],[&k{b}]]
 
-    Hypothesis: new implementation (?)
+    Hypothesis: CHECK LOG FOR ERROR 1
 
 
 Error 8:

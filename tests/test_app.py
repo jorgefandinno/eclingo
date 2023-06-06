@@ -123,6 +123,7 @@ class TestExamples(unittest.TestCase):
 
             semantics = "--semantics=g94"
             command = ["python", app_path, semantics, "0"]
+            # TODO: Check out why fails if next lines are added (?)
             # self.assert_world_views(
             #     command, [elegible_path, input_path], output_path, external_call=False
             # )
