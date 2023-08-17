@@ -370,3 +370,70 @@ class TestEclingoTesterReification(TestCase):
                 )
             ],
         )
+
+    def test_tester_cycle(self):
+        self.maxDiff = None
+        # echo "a :- not &k{b}. b :- not &k{a}." | eclingo --semantics c19-1 --reification --output=reify
+        self.assert_models(
+            tester(
+                """ tag(incremental).
+                    atom_tuple(0).
+                    atom_tuple(0,1).
+                    literal_tuple(0).
+                    literal_tuple(0,-2).
+                    rule(disjunction(0),normal(0)).
+                    atom_tuple(1).
+                    atom_tuple(1,3).
+                    literal_tuple(1).
+                    literal_tuple(1,1).
+                    rule(choice(1),normal(1)).
+                    atom_tuple(2).
+                    atom_tuple(2,4).
+                    literal_tuple(2).
+                    literal_tuple(2,-3).
+                    rule(disjunction(2),normal(2)).
+                    atom_tuple(3).
+                    atom_tuple(3,2).
+                    literal_tuple(3).
+                    literal_tuple(3,4).
+                    rule(choice(3),normal(3)).
+                    literal_tuple(4).
+                    literal_tuple(4,2).
+                    output(k(u(b)),4).
+                    literal_tuple(5).
+                    literal_tuple(5,3).
+                    output(k(u(a)),5).
+                    output(u(a),1).
+                    output(u(b),3).""",
+                [
+                    Candidate(
+                        pos=[],
+                        neg=[
+                            Function(
+                                "k",
+                                [Function("u", [Function("b", [], True)], True)],
+                                True,
+                            ),
+                            Function(
+                                "k",
+                                [Function("u", [Function("a", [], True)], True)],
+                                True,
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            [
+                # Candidate(
+                #     pos=[
+                #         Function(
+                #             "k", [Function("u", [Function("a", [], True)], True)], True
+                #         ),
+                #         Function(
+                #             "k", [Function("u", [Function("b", [], True)], True)], True
+                #         ),
+                #     ],
+                #     neg=[],
+                # )
+            ],
+        )

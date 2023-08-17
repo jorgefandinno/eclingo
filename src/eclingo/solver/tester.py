@@ -11,7 +11,8 @@ class CandidateTesterReification:
         self.reified_program = reified_program
         self.control.control.configuration.solve.enum_mode = "cautious"  # type: ignore
 
-        program_meta_encoding = """conjunction(B) :- literal_tuple(B), hold(L) : literal_tuple(B, L), L > 0;
+        program_meta_encoding = """conjunction(B) :- literal_tuple(B),
+                                                        hold(L) : literal_tuple(B,  L), L > 0;
                                                     not hold(L) : literal_tuple(B, -L), L > 0.
 
                                 body(normal(B)) :- rule(_, normal(B)), conjunction (B).
@@ -32,6 +33,7 @@ class CandidateTesterReification:
                                 {k(A)} :- output(k(A), _).
 
                                 hold(L) :- k(A), output(k(A), B), literal_tuple(B, L).
+                                :- hold(L) , not k(A), output(k(A), B), literal_tuple(B, L).
                                 """
 
         self.control.add("base", [], self.reified_program)
@@ -58,11 +60,18 @@ class CandidateTesterReification:
         self.control.configuration.solve.models = 0
         self.control.configuration.solve.project = "no"
 
+        print("Candidate assumptions:\n", candidate_assumptions)
+        print(
+            "Candidate assumptions:\n",
+            "\n".join(str((str(a), v)) for a, v in candidate_assumptions),
+        )
+
         with self.control.solve(
             yield_=True, assumptions=candidate_assumptions
         ) as handle:
             model = None
             for model in handle:
+                print("Model:\n", model, "\n\n")
                 for atom in candidate_pos:
                     if not model.contains(atom):
                         return False
@@ -71,7 +80,7 @@ class CandidateTesterReification:
 
             for atom in candidate_neg:
                 print("The atom of negative candidates: ", atom)
-                print("The model: ", model, "\n\n")
+                print("Cautious:\n", model, "\n\n")
                 if model.contains(atom):
                     return False
         return True
