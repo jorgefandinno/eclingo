@@ -80,6 +80,8 @@ class WorldWiewBuilderReification:
         epistemic_literals = []
         k_symbols = []
 
+        print("The candidate: ", candidate)
+
         for epistemic_literal in candidate.pos:
             show_literal = self.generate_k_symbol(epistemic_literal)
             if show_literal is not None:
@@ -89,6 +91,7 @@ class WorldWiewBuilderReification:
         for epistemic_literal in candidate.neg:
             show_literal = self.generate_m_symbol(epistemic_literal)
 
+            print("The show literal: ", show_literal)
             if (
                 show_literal is not None
                 and show_literal.objective_literal not in k_symbols

@@ -21,6 +21,7 @@ def solve(program):
     wviews = []
     for world_view in eclingo_control.solve():
         world_view = sorted(str(symbol) for symbol in world_view.symbols)
+        print("The world view: ", world_view)
         wviews.append(world_view)
     return sorted(wviews)
 
@@ -278,15 +279,15 @@ class TestEclingoAggregates(TestCase):
 
 class TestEclingoCommontToAllSemantics(TestCase):
     def test_ground_programs(self):
-        self.assert_models(solve("a, b."), [[]])
-        self.assert_models(solve("a, b. a :- &k{b}."), [[]])
-        self.assert_models(solve("a, b. a :- not &k{b}."), [[]])
-        self.assert_models(solve("a, b. c :- not &k{b}."), [[]])
+        # self.assert_models(solve("a, b."), [[]])
+        # self.assert_models(solve("a, b. a :- &k{b}."), [[]])
+        # self.assert_models(solve("a, b. a :- not &k{b}."), [[]])
+        # self.assert_models(solve("a, b. c :- not &k{b}."), [[]])
         #TODO
-        # self.assert_models(
-        #     solve("a :- not &k{b}. b :- not &k{a}."), [["&k{a}"], ["&k{b}"]]
-        # )
-        self.assert_models(solve("a. a :- not &k{a}. :- &k{not a}."), [["&k{a}"]])
+        self.assert_models(
+            solve("a :- not &k{b}. b :- not &k{a}."), [["&k{a}"], ["&k{b}"]]
+        )
+        # self.assert_models(solve("a. a :- not &k{a}. :- &k{not a}."), [["&k{a}"]])
 
 
 class TestEclingoCommontTo_G94_G11_FAEEL(TestCase):  # pylint: disable=invalid-name

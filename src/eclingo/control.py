@@ -44,11 +44,11 @@ class Control(object):
         program = program_to_str(program)
 
         program = self.grounder.create_reified_facts(program)
-        self.grounded = True
         return program
 
     def add_program(self, program):
         program = self.reification_parse_program(program)
+        print(program)
         self.reified_program = program
 
     def load(self, input_path):

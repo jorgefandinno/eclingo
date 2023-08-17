@@ -3,7 +3,7 @@ import unittest
 
 from clingo import Number
 
-from eclingo import control as _control
+from eclingo.control import Control
 from eclingo.internal_states import internal_control
 import eclingo as _eclingo
 
@@ -26,7 +26,7 @@ class TestExamples(unittest.TestCase):
             config = _eclingo.config.AppConfig()
             control.configuration.solve.models = 0
             control.configuration.solve.project = "auto,3"
-            eclingo_control = _control.Control(control=control, config=config)
+            eclingo_control = Control(control=control, config=config)
             path = os.path.dirname(os.path.realpath(__file__))
             input_path = os.path.join(path, INPUT_PROG_PATH)
             input_path = os.path.join(input_path, f"prog{i:02d}.lp")
@@ -50,7 +50,7 @@ class TestExamples(unittest.TestCase):
         for i in range(1, 17):
             control = internal_control.InternalStateControl()
             control.configuration.solve.models = 0
-            eclingo_control = _control.Control(control=control)
+            eclingo_control = Control(control=control)
             # eclingo_control.config.eclingo_verbose = 2
             path = os.path.dirname(os.path.realpath(__file__))
             elegible_path = os.path.join(path, KB_ELIGIBLE_PATH)
@@ -77,11 +77,15 @@ class TestExamples(unittest.TestCase):
     def test_yale_g94(self):
         for i in range(1, 9):
             if i != 6:
-                control = internal_control.InternalStateControl()
-                control.configuration.solve.models = 0
+                control = internal_control.InternalStateControl(
+                    message_limit=0
+                )
                 config = _eclingo.config.AppConfig()
+                config.eclingo_semantics = "g94"
                 control.configuration.solve.project = "auto,3"
-                eclingo_control = _control.Control(control=control, config=config)
+                control.configuration.solve.models = 0
+                
+                eclingo_control = Control(control=control, config=config)
                 # eclingo_control.config.eclingo_verbose = 10
 
                 path = os.path.dirname(os.path.realpath(__file__))
@@ -96,15 +100,29 @@ class TestExamples(unittest.TestCase):
                 parts.append(("base", []))
                 parts.append(("base", [Number(i)]))
                 eclingo_control.ground(parts)
-
-                result = [
-                    [str(symbol) for symbol in model.symbols]
-                    for model in eclingo_control.solve()
-                ]
-                result = [sorted(model) for model in result]
-                result = str(sorted(result)).replace(" ", "").replace("'", "")
-
+                    
+                wviews = []
+                for world_view in eclingo_control.solve():
+                    world_view = sorted(str(symbol) for symbol in world_view.symbols)
+                    print("The world view: ", world_view)
+                    wviews.append(world_view)
+                    
+                wviews = [sorted(model) for model in wviews]
+                wviews = str(sorted(wviews)).replace(" ", "").replace("'", "")
+                
                 with open(output_path, "r") as output_prog:
                     sol = output_prog.read()
                     sol = sol.replace("\n", "").replace(" ", "")
-                self.assertEqual(result, sol, "in " + input_path)
+                self.assertEqual(wviews, sol, "in " + input_path)
+                
+                # result = [
+                #     [str(symbol) for symbol in model.symbols]
+                #     for model in eclingo_control.solve()
+                # ]
+                # result = [sorted(model) for model in result]
+                # result = str(sorted(result)).replace(" ", "").replace("'", "")
+
+                # with open(output_path, "r") as output_prog:
+                #     sol = output_prog.read()
+                #     sol = sol.replace("\n", "").replace(" ", "")
+                # self.assertEqual(result, sol, "in " + input_path)

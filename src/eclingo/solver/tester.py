@@ -70,6 +70,8 @@ class CandidateTesterReification:
             assert model is not None
 
             for atom in candidate_neg:
+                print("The atom of negative candidates: ", atom)
+                print("The model: ", model, "\n\n")
                 if model.contains(atom):
                     return False
         return True

@@ -144,6 +144,7 @@ class TestExamples(unittest.TestCase):
                 constant = "-c length=%d" % i
 
                 semantics = "--semantics=g94"
+                
                 command = ["python", app_path, constant, semantics,  "0"]
                 self.assert_world_views(
                     command, [yale_path, input_path], output_path, external_call=False
