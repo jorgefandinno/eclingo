@@ -195,9 +195,6 @@ class TestEclingoSolverReification(TestCase):
             ),
             [
                 WorldView(
-                    []
-                ),
-                WorldView(
                     [
                         EpistemicLiteral(
                             Literal(Function("a", [], True), Sign.NoSign), 0, is_m=False
