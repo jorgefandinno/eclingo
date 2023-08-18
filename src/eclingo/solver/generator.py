@@ -40,7 +40,6 @@ class GeneratorReification:
 
         with self.control.solve(yield_=True) as handle:
             for model in handle:
-                print("\nGenerated model: ", model)
                 candidate = self._model_to_candidate(model)
                 yield candidate
 
@@ -57,5 +56,5 @@ class GeneratorReification:
                 # print("Generated Candidate symbol Negative: ", symbol.arguments[0])
                 candidate_neg.append(symbol.arguments[0])
 
-        print("Generated candidates: ", Candidate(candidate_pos, candidate_neg), "\n")
+        # print("Generated candidates: ", Candidate(candidate_pos, candidate_neg), "\n")
         return Candidate(candidate_pos, candidate_neg)

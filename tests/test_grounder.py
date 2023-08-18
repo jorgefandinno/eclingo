@@ -34,7 +34,6 @@ class TestCase(unittest.TestCase):
 
     def ground_program(self, program, parameters=None, arguments=None):
         if parameters is None and arguments is None:
-            print(program)
             self.grounder.add_program(program)
             self.grounder.ground()
         else:

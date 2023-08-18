@@ -104,7 +104,6 @@ class TestExamples(unittest.TestCase):
                 wviews = []
                 for world_view in eclingo_control.solve():
                     world_view = sorted(str(symbol) for symbol in world_view.symbols)
-                    print("The world view: ", world_view)
                     wviews.append(world_view)
                     
                 wviews = [sorted(model) for model in wviews]

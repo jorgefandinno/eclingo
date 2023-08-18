@@ -26,7 +26,6 @@ def world_view_builder(tested_candidates):
         wview = world_view_builder(candidate)
         if wview not in wviews:
             wviews.append(wview)
-            print("World View of candidate generated: ", wview)
 
     return sorted(wviews)
 

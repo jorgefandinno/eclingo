@@ -44,6 +44,4 @@ class Grounder:
         self.reified_facts = [str(e) for e in self.reified_facts]
         reified_facts_str = reification_program_to_str(self.reified_facts)
 
-        # print("The reified facts are: ", reified_facts_str)
-
         return reified_facts_str

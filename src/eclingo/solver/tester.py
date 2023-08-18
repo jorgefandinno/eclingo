@@ -11,11 +11,7 @@ class CandidateTesterReification:
         self.reified_program = reified_program
         self.control.control.configuration.solve.enum_mode = "cautious"  # type: ignore
 
-<<<<<<< HEAD
-        program_meta_encoding = """conjunction(B) :- literal_tuple(B), 
-=======
         program_meta_encoding = """conjunction(B) :- literal_tuple(B),
->>>>>>> 0546667bae7b4e33930d0e90eba86f346f05c91c
                                                         hold(L) : literal_tuple(B,  L), L > 0;
                                                     not hold(L) : literal_tuple(B, -L), L > 0.
 
@@ -37,11 +33,7 @@ class CandidateTesterReification:
                                 {k(A)} :- output(k(A), _).
 
                                 hold(L) :- k(A), output(k(A), B), literal_tuple(B, L).
-<<<<<<< HEAD
-                                :- hold(L), not k(A), output(k(A), B), literal_tuple(B, L).
-=======
                                 :- hold(L) , not k(A), output(k(A), B), literal_tuple(B, L).
->>>>>>> 0546667bae7b4e33930d0e90eba86f346f05c91c
                                 """
 
         self.control.add("base", [], self.reified_program)
@@ -61,7 +53,6 @@ class CandidateTesterReification:
 
         for literal in candidate[1]:
             assumption = (literal, False)
-            print(literal)
             candidate_assumptions.append(assumption)
             literal = literal.arguments[0]
             candidate_neg.append(literal)
@@ -69,18 +60,17 @@ class CandidateTesterReification:
         self.control.configuration.solve.models = 0
         self.control.configuration.solve.project = "no"
 
-        print("Candidate assumptions:\n", candidate_assumptions)
-        print(
-            "Candidate assumptions:\n",
-            "\n".join(str((str(a), v)) for a, v in candidate_assumptions),
-        )
+        # print("Candidate assumptions:\n", candidate_assumptions)
+        # print(
+        #     "Candidate assumptions:\n",
+        #     "\n".join(str((str(a), v)) for a, v in candidate_assumptions),
+        # )
 
         with self.control.solve(
             yield_=True, assumptions=candidate_assumptions
         ) as handle:
             model = None
             for model in handle:
-                print("Model:\n", model, "\n\n")
                 for atom in candidate_pos:
                     if not model.contains(atom):
                         return False
@@ -88,13 +78,6 @@ class CandidateTesterReification:
             assert model is not None
 
             for atom in candidate_neg:
-<<<<<<< HEAD
-                # print("The atom of negative candidates: ", atom)
-                # print("The model: ", model, "\n\n")
-=======
-                print("The atom of negative candidates: ", atom)
-                print("Cautious:\n", model, "\n\n")
->>>>>>> 0546667bae7b4e33930d0e90eba86f346f05c91c
                 if model.contains(atom):
                     return False
         return True
