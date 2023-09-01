@@ -82,6 +82,13 @@ class _ProgramParser(object):
         #     self.callback(aux_rule)
 
     def _parse_statement(self, statement: ast.AST) -> None:
+        # print(50 * "*")
+        # print(repr(statement))
+        # print(50 * "*")
+        # statement = function_transformer.rule_to_symbolic_term_adapter(statement)
+        # print(50 * "*")
+        # print(repr(statement))
+        # print(50 * "*")
         statement = self.theory_parser(statement)
         statement = parse_epistemic_literals_elements(statement, self.reification)
 

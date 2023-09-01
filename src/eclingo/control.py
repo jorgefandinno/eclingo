@@ -35,20 +35,9 @@ class Control(object):
         self.models = 0
         self.grounded = False
         self.solver = None
-        self.reified_program = ""
-
-    def reification_parse_program(self, program):
-        p = []
-        parse_string(program, p.append)
-        program = [function_transformer.rule_to_symbolic_term_adapter(stm) for stm in p]
-        program = program_to_str(program)
-
-        program = self.grounder.create_reified_facts(program)
-        return program
 
     def add_program(self, program):
-        program = self.reification_parse_program(program)
-        self.reified_program = program
+        self.grounder.add_program(program)
 
     def load(self, input_path):
         with open(input_path, "r") as program:
@@ -65,7 +54,7 @@ class Control(object):
         if not self.grounded:
             self.ground()
 
-        self.solver = SolverReification(self.reified_program, self.config)
+        self.solver = SolverReification(self.grounder.reified_facts, self.config)
 
     def solve(self):
         if self.solver is None:

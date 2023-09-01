@@ -17,7 +17,7 @@ class Grounder:
         self.config = config
         self.reification = self.config.eclingo_reification
         self.facts: List[Symbol] = []
-        self.reified_facts: List[Symbol] = []
+        self.reified_facts: str
         self.epistemic_facts: List[Symbol] = []
         self.atom_to_symbol: Dict[int, Symbol] = dict()
         self.ground_program = clingox_program.Program()
@@ -34,14 +34,8 @@ class Grounder:
     def ground(
         self, parts: Sequence[Tuple[str, Sequence[Symbol]]] = (("base", []),)
     ) -> None:  # pylint: disable=dangerous-default-value
+        reified_facts: List[Symbol] = []
+        self.control.register_observer(Reifier(reified_facts.append))
         self.control.ground(parts)
-
-    def create_reified_facts(self, program):  # pragma: no cover
-        self.add_program(program)
-        self.control.register_observer(Reifier(self.reified_facts.append))
-        self.ground()
-
-        self.reified_facts = [str(e) for e in self.reified_facts]
-        reified_facts_str = reification_program_to_str(self.reified_facts)
-
-        return reified_facts_str
+        reified_facts = [e for e in reified_facts]
+        self.reified_facts = reification_program_to_str(reified_facts)
