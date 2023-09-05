@@ -35,7 +35,10 @@ class CandidateTesterReification:
                                 hold(L) :- k(A), output(k(A), B), literal_tuple(B, L).
                                 :- hold(L) , not k(A), output(k(A), B), literal_tuple(B, L).
 
-                                #project hold(L) :  output(k(A), B), literal_tuple(B, L).
+                                %% symbolic_atom(SA, A) :- output(SA,LT), #count{LL : literal_tuple(LT, LL)} = 1, literal_tuple(LT, A).
+                                %% show_statement(SA) :- symbolic_atom(show_statement(SA), _).
+                                %% #project hold(L) :  output(k(A), B), literal_tuple(B, L).
+                                %% #project hold(L) :  show_statment(A,N), output(k(A), B), literal_tuple(B, L).
                                 """
 
         self.control.add("base", [], self.reified_program)
@@ -60,7 +63,7 @@ class CandidateTesterReification:
             candidate_neg.append(literal)
 
         self.control.configuration.solve.models = 0
-        self.control.configuration.solve.project = "project"
+        self.control.configuration.solve.project = "no"
 
         # print("Candidate assumptions:\n", candidate_assumptions)
         # print(

@@ -144,10 +144,23 @@ class _ProgramParser(object):
 
         return [statement, new_statement]
 
-    def _parse_show_signature_statement(
-        self, statement: ast.AST
-    ) -> List[ShowStatement]:
-        return [ShowStatement(statement.name, statement.arity, statement.positive)]
+    def _parse_show_signature_statement(self, statement: ast.AST) -> List[ast.AST]:
+        args = [
+            ast.Variable(statement.location, f"X{i}") for i in range(0, statement.arity)
+        ]
+        fun = ast.Function(statement.location, statement.name, args, False)
+        literal = ast.Literal(
+            statement.location,
+            ast.Sign.NoSign,
+            ast.SymbolicAtom(ast.Function(statement.location, U_NAME, [fun], False)),
+        )
+        hfun = ast.Function(statement.location, "show_statement", [fun], False)
+        hliteral = ast.Literal(
+            statement.location, ast.Sign.NoSign, ast.SymbolicAtom(hfun)
+        )
+        rule = ast.Rule(statement.location, hliteral, [literal])
+        print(rule)
+        return [rule]
 
 
 #######################################################################################################
