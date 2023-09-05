@@ -36,6 +36,7 @@ class CandidateTesterReification:
                                 :- hold(L) , not k(A), output(k(A), B), literal_tuple(B, L).
 
                                 %% symbolic_atom(SA, A) :- output(SA,LT), #count{LL : literal_tuple(LT, LL)} = 1, literal_tuple(LT, A).
+                                %% epistemic_atom_info(SKA, KA, SA, A) :- symbolic_atom(SA, A), SKA=k(SA), symbolic_atom(SKA, KA).
                                 %% show_statement(SA) :- symbolic_atom(show_statement(SA), _).
                                 %% #project hold(L) :  output(k(A), B), literal_tuple(B, L).
                                 %% #project hold(L) :  show_statment(A,N), output(k(A), B), literal_tuple(B, L).
