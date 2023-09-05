@@ -34,6 +34,8 @@ class CandidateTesterReification:
 
                                 hold(L) :- k(A), output(k(A), B), literal_tuple(B, L).
                                 :- hold(L) , not k(A), output(k(A), B), literal_tuple(B, L).
+
+                                #project hold(L) :  output(k(A), B), literal_tuple(B, L).
                                 """
 
         self.control.add("base", [], self.reified_program)
@@ -58,7 +60,7 @@ class CandidateTesterReification:
             candidate_neg.append(literal)
 
         self.control.configuration.solve.models = 0
-        self.control.configuration.solve.project = "no"
+        self.control.configuration.solve.project = "project"
 
         # print("Candidate assumptions:\n", candidate_assumptions)
         # print(
