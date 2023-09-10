@@ -159,7 +159,7 @@ class _ProgramParser(object):
             statement.location, ast.Sign.NoSign, ast.SymbolicAtom(hfun)
         )
         rule = ast.Rule(statement.location, hliteral, [literal])
-        print(rule)
+        print("The show statement rule: ", rule)
         return [rule]
 
 

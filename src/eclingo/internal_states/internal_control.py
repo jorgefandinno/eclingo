@@ -52,13 +52,15 @@ class InternalStateControl(object):
             control = clingo.Control(arguments, logger, message_limit)
         self.control = control
         self.config = config
-
+        self.show_statements: Sequence[Symbol] = []
+        
         self.ground_program = clingox_program.Program()
         self.control.register_observer(
             clingox_program.ProgramObserver(self.ground_program)
         )
 
         self.show_signature: Set[ShowStatement] = set()
+
 
     def builder(self) -> ProgramBuilder:
         return ProgramBuilder(self.control, self.show_signature)

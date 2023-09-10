@@ -2,6 +2,7 @@ import sys
 from typing import Iterable, Tuple
 
 from clingo import Symbol
+from typing import Sequence
 from clingo.ast import parse_string
 
 from eclingo.config import AppConfig
@@ -35,6 +36,7 @@ class Control(object):
         self.models = 0
         self.grounded = False
         self.solver = None
+        self.show_statements: Sequence[Symbol] = []
 
     def add_program(self, program):
         self.grounder.add_program(program)

@@ -1,4 +1,5 @@
 from typing import Iterator
+import eclingo.internal_states.internal_control as internal_control
 
 from eclingo.config import AppConfig
 from eclingo.solver.generator import GeneratorReification

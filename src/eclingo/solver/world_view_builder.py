@@ -16,6 +16,7 @@ class WorldWiewBuilderReification:
         self.control = internal_control.InternalStateControl(["0"], message_limit=0)
         self.control.configuration.solve.models = 0
         self.control.configuration.solve.project = "auto,3"
+        print("WORLD_VIEW_BUILDER")
 
     def __call__(self, candidate: Candidate):
         return self.world_view_from_candidate(candidate)
@@ -81,6 +82,7 @@ class WorldWiewBuilderReification:
         k_symbols = []
 
         for epistemic_literal in candidate.pos:
+            print("\n The epistemic literal: ", epistemic_literal)
             show_literal = self.generate_k_symbol(epistemic_literal)
             if show_literal is not None:
                 epistemic_literals.append(show_literal)

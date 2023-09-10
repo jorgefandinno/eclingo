@@ -2,7 +2,7 @@ from eclingo.internal_states.internal_control import ShowStatement
 from helper_test.helper_parsing import ParsingTestHelper
 from helper_test.helper_wv_builder_show import WorldWiewBuilderWithShowTestHelper
 
-
+# python -m unittest tests.test_show.Test.test_show10_positive_programs
 class Test(ParsingTestHelper, WorldWiewBuilderWithShowTestHelper):
     def setUp(self):
         super().setUp()

@@ -59,8 +59,6 @@ class TestEclingoWViewReification(TestCase):
             [WorldView([EpistemicLiteral(Function("a", [], True), 0, False)])],
         )
 
-    # TODO: Should be generating a positive candidate of not2, but it does generate a negative.
-    # Problem in Generator
     def test_wview_reification2(self):
         # echo "a. b :- &k{ not not a }." | eclingo --output=reify --semantics c19-1 --reification
         self.assert_models(
