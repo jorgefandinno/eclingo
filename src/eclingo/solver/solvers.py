@@ -1,9 +1,8 @@
 from typing import Iterator
-import eclingo.internal_states.internal_control as internal_control
 
 from eclingo.config import AppConfig
 from eclingo.solver.generator import GeneratorReification
-from eclingo.solver.tester import CandidateTesterReification
+from eclingo.solver.tester import CandidateTesterReificationWithShow
 
 from .candidate import Candidate
 from .world_view_builder import WorldWiewBuilderReification
@@ -14,7 +13,7 @@ class SolverReification:
         self._config = config
 
         self._build_world_view_reification = WorldWiewBuilderReification()
-        self.test_candidate_reification = CandidateTesterReification(
+        self.test_candidate_reification = CandidateTesterReificationWithShow(
             self._config, reified_program
         )
         self.generate_candidates_reification = GeneratorReification(
