@@ -1,8 +1,7 @@
 import sys
-from typing import Iterable, Tuple
+from typing import Iterable, Sequence, Tuple
 
 from clingo import Symbol
-from typing import Sequence
 from clingo.ast import parse_string
 
 from eclingo.config import AppConfig

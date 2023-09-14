@@ -2,7 +2,7 @@ from typing import Iterator
 
 from eclingo.config import AppConfig
 from eclingo.solver.generator import GeneratorReification
-from eclingo.solver.tester import CandidateTesterReificationWithShow
+from eclingo.solver.tester import CandidateTesterReification, CandidateTesterReificationWithShow
 
 from .candidate import Candidate
 from .world_view_builder import WorldWiewBuilderReification

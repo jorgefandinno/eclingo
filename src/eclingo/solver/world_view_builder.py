@@ -19,6 +19,7 @@ class WorldWiewBuilderReification:
         print("WORLD_VIEW_BUILDER")
 
     def __call__(self, candidate: Candidate):
+        print("Received candidates: ", candidate)
         return self.world_view_from_candidate(candidate)
 
     def generate_k_symbol(self, epistemic_literal):
@@ -82,14 +83,14 @@ class WorldWiewBuilderReification:
         k_symbols = []
 
         for epistemic_literal in candidate.pos:
-            print("\n The epistemic literal: ", epistemic_literal)
+            #print("\n The epistemic literal POS: ", epistemic_literal)
             show_literal = self.generate_k_symbol(epistemic_literal)
             if show_literal is not None:
                 epistemic_literals.append(show_literal)
                 k_symbols.append(show_literal.objective_literal)
 
         for epistemic_literal in candidate.neg:
-            print("\n The epistemic literal: ", epistemic_literal)
+            #print("\n The epistemic literal NEG: ", epistemic_literal)
             show_literal = self.generate_m_symbol(epistemic_literal)
 
             if (
