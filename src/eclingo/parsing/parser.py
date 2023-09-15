@@ -82,13 +82,6 @@ class _ProgramParser(object):
         #     self.callback(aux_rule)
 
     def _parse_statement(self, statement: ast.AST) -> None:
-        # print(50 * "*")
-        # print(repr(statement))
-        # print(50 * "*")
-        # statement = function_transformer.rule_to_symbolic_term_adapter(statement)
-        # print(50 * "*")
-        # print(repr(statement))
-        # print(50 * "*")
         statement = self.theory_parser(statement)
         statement = parse_epistemic_literals_elements(statement, self.reification)
 
@@ -126,7 +119,7 @@ class _ProgramParser(object):
         self.strong_negation_replacements.update(sn_replacement)
 
         return replace_epistemic_literals_by_auxiliary_atoms(
-            rules, self.reification, "k_"
+            rules, self.reification, "k"
         )
 
     def _parse_program_statement(self, statement: ast.AST) -> List[ast.AST]:

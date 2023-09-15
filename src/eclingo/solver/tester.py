@@ -1,8 +1,8 @@
 from typing import Sequence
 
+from clingo import ast
 from clingo.symbol import Function, Symbol
 from clingox.program import Fact
-from clingo import ast
 
 import eclingo.internal_states.internal_control as internal_control
 from eclingo.config import AppConfig
@@ -39,12 +39,12 @@ from .candidate import Candidate
         3. (?)
 """
 
+
 class CandidateTesterReification:
     def __init__(self, config: AppConfig, reified_program: str):
         self._config = config
         self.control = internal_control.InternalStateControl(["0"], message_limit=0)
         self.reified_program = reified_program
-        # self.show_statements: Sequence[Symbol] = []
         self.control.control.configuration.solve.enum_mode = "cautious"  # type: ignore
 
         program_meta_encoding = """conjunction(B) :- literal_tuple(B),
@@ -72,7 +72,6 @@ class CandidateTesterReification:
                                 show_statement(SA) :- symbolic_atom(show_statement(SA), _).
                                 
                                 {k(A)} :- output(k(A), _).
-                                show_statement(k(A)) :- k(A).
                     
                                 hold(L) :- k(A), output(k(A), B), literal_tuple(B, L).
                                 :- hold(L) , not k(A), output(k(A), B), literal_tuple(B, L).
@@ -89,56 +88,7 @@ class CandidateTesterReification:
         self.control.add("base", [], program_meta_encoding)
         self.control.ground([("base", [])])
 
-    """ OLD BASE IMPLEMENTATION """
-    # def __call__(self, candidate: Candidate) -> bool:
-    #     candidate_pos = []
-    #     candidate_neg = []
-    #     candidate_assumptions = []
-
-    #     for literal in candidate[0]:
-    #         assumption = (literal, True)
-    #         candidate_assumptions.append(assumption)
-    #         literal = literal.arguments[0]
-    #         candidate_pos.append(literal)
-
-    #     for literal in candidate[1]:
-    #         assumption = (literal, False)
-    #         candidate_assumptions.append(assumption)
-    #         literal = literal.arguments[0]
-    #         candidate_neg.append(literal)
-
-    #     self.control.configuration.solve.models = 0
-    #     self.control.configuration.solve.project = "no"
-
-    #     print("\nTESTER")
-    #     print("Candidate assumptions:\n", candidate_assumptions)
-    #     print(
-    #         "Candidate assumptions:\n",
-    #         "\n".join(str((str(a), v)) for a, v in candidate_assumptions),
-    #     )
-
-    #     with self.control.solve(
-    #         yield_=True, assumptions=candidate_assumptions
-    #     ) as handle:
-    #         model = None
-    #         for model in handle:
-    #             print("the generated model: ", model)
-    #             for atom in candidate_pos:
-    #                 if not model.contains(atom):
-    #                     return False
-
-    #         assert model is not None
-
-    #         for atom in candidate_neg:
-    #             if model.contains(atom):
-    #                 return False
-    #     return True
-    
     def __call__(self, candidate: Candidate) -> bool:
-        return self.candidate_tester(candidate)
-
-    def candidate_tester(self, candidate: Candidate) -> bool:
-        print("Super Candidates ", candidate)
         candidate_pos = []
         candidate_neg = []
         candidate_assumptions = []
@@ -158,19 +108,18 @@ class CandidateTesterReification:
         self.control.configuration.solve.models = 0
         self.control.configuration.solve.project = "no"
 
-        print("\nTESTER")
-        print("Candidate assumptions:\n", candidate_assumptions)
-        print(
-            "Candidate assumptions:\n",
-            "\n".join(str((str(a), v)) for a, v in candidate_assumptions),
-        )
+        # print("\nTESTER")
+        # print("Candidate assumptions:\n", candidate_assumptions)
+        # print(
+        #     "Candidate assumptions:\n",
+        #     "\n".join(str((str(a), v)) for a, v in candidate_assumptions),
+        # )
 
         with self.control.solve(
             yield_=True, assumptions=candidate_assumptions
         ) as handle:
             model = None
             for model in handle:
-                #print("the generated model: ", model)
                 for atom in candidate_pos:
                     if not model.contains(atom):
                         return False
@@ -181,100 +130,3 @@ class CandidateTesterReification:
                 if model.contains(atom):
                     return False
         return True
-
-
-class CandidateTesterReificationWithShow(CandidateTesterReification):
-    def __init__(self, config: AppConfig, reified_program: str):
-        super().__init__(config, reified_program)
-
-    def __call__(self, candidate: Candidate) -> bool:
-        candidate_pos = []
-        candidate_neg = []
-        candidate_assumptions = []
-        print("Receiving Generator Candidates: ", candidate)
-
-        for literal in candidate[0]:
-            assumption = (literal, True)
-            candidate_assumptions.append(assumption)
-            literal = literal.arguments[0]
-            candidate_pos.append(literal)
-
-        for literal in candidate[1]:
-            assumption = (literal, False)
-            candidate_assumptions.append(assumption)
-            literal = literal.arguments[0]
-            candidate_neg.append(literal)
-            
-        print("The atom candidates: ", candidate_pos, candidate_neg)
-
-        self.control.configuration.solve.models = 0
-        self.control.configuration.solve.project = "no"
-
-        with self.control.solve(
-            yield_=True, assumptions=candidate_assumptions
-        ) as handle:
-            model = None
-            for model in handle:
-                pass
-
-            # assert model is not None
-            # print("Generated Model: ", model)
-            # self.epistemic_show_statements(model, candidates_show)
-                # print(model)
-                new_candidate_pos, new_candidate_neg = self.show_candidates(
-                    model, candidate_neg, candidate_pos
-                )
-                if new_candidate_neg != candidate_neg or new_candidate_pos != candidate_pos:
-                    candidate_pos = new_candidate_pos
-                    candidate_neg = new_candidate_neg
-
-        print("New: ", new_candidate_neg, "\nOld: ", candidate_neg)
-        return super().candidate_tester(Candidate(candidate_pos, candidate_neg))
-
-    # """
-    #     Generates show_statement(X) to check for in Wview based on a Control.py variable
-    # """
-    # def epistemic_show_statements(self, model, candidates_show):
-    #     show_name: str = "show_statement"
-
-    #     for atom in candidates_show:
-    #         arguments: Sequence[Symbol] = []
-    #         arguments.append(Function(atom.arguments[0].name, [], atom.arguments[0].positive))
-    #         show_stm = Function(show_name, arguments, True)
-    #         if model.contains(show_stm) and show_stm not in self.control.show_statements:
-    #             self.control.show_statements.append(show_stm)
-    #             print("The show statement: ", show_stm)
-
-    """
-        Creates new list of candidates based on show_statements.
-        Update new candidates based on given show_statements.
-    """
-    def show_candidates(self, model, cand_neg, cand_pos):
-        show_name: str = "show_statement"
-        c_pos = []
-        c_neg = []
-
-        for atom in cand_pos: # Create show_statement(X) for comparison
-            arguments: Sequence[Symbol] = []
-            arguments.append(
-                Function(atom.arguments[0].name, [], atom.arguments[0].positive)
-            )
-            show_stm = Function(show_name, arguments, True)
-            if model.contains(show_stm):
-                k_atom = Function("k", [atom], atom.arguments[0].positive)
-                c_pos.append(k_atom)
-                print("The show statement POS: ", show_stm)
-
-        for atom in cand_neg: # Create show_statement(X) for comparison
-            arguments: Sequence[Symbol] = []
-            arguments.append(
-                Function(atom.arguments[0].name, [], atom.arguments[0].positive)
-            )
-            show_stm = Function(show_name, arguments, True)
-            if model.contains(show_stm):
-                k_atom = Function("k", [atom], atom.arguments[0].positive)
-                c_neg.append(k_atom)
-                print("The show statement NEG: ", show_stm)
-
-        print("\nThe returning candidates are: ", c_pos, c_neg)
-        return c_pos, c_neg

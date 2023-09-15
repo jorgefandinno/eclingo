@@ -35,7 +35,6 @@ class Control(object):
         self.models = 0
         self.grounded = False
         self.solver = None
-        self.show_statements: Sequence[Symbol] = []
 
     def add_program(self, program):
         self.grounder.add_program(program)

@@ -5,6 +5,7 @@ from eclingo.config import AppConfig
 from eclingo.parsing import parser
 from eclingo.parsing.transformers import function_transformer
 
+# python -m unittest tests.test_reification.Test.test_epistemic_atom
 
 def flatten(lst):
     result = []
