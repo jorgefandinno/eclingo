@@ -14,10 +14,7 @@ from .world_view import EpistemicLiteral, WorldView
 class WorldWiewBuilderReification:
     def __init__(self):
         pass
-        # self.control = internal_control.InternalStateControl(["0"], message_limit=0)
-        # self.control.configuration.solve.models = 0
-        # self.control.configuration.solve.project = "auto,3"
-
+    
     def __call__(self, candidate: Candidate):
         return self.world_view_from_candidate(candidate)
 
@@ -80,6 +77,7 @@ class WorldWiewBuilderReification:
     def world_view_from_candidate(self, candidate: Candidate):
         epistemic_literals = []
         k_symbols = []
+        print(self.show_statements)
 
         for epistemic_literal in candidate.pos:
             print("\n The epistemic literal POS: ", epistemic_literal)
@@ -184,7 +182,7 @@ class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
             assert model is not None
             
             print("generated model:", model)
-            # self.epistemic_show_statements(model, cand_show)
+            self.epistemic_show_statements(model, cand_show)
             new_candidate_pos, new_candidate_neg = self.show_candidates(
                 model, candidate_neg, candidate_pos
             )
