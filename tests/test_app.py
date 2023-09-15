@@ -141,8 +141,9 @@ class TestExamples(unittest.TestCase):
 
                 app_path = os.path.join(path, APP_PATH)
 
+                semantics = "--semantics=g94"
                 constant = "-c length=%d" % i
-                command = ["python", app_path, constant,  "0"]
+                command = ["python", app_path, semantics, constant,  "0"]
                 self.assert_world_views(
                     command, [yale_path, input_path], output_path, external_call=False
                 )

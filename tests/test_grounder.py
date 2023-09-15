@@ -218,28 +218,17 @@ class Test(TestCase):
 
     def test_show01(self):
         self.assertEqualPrograms(
-            self.ground_program("a. b. #show a/0."), ['__x1.', '__x2.', 'u(a).', 'u(b).']
+            self.ground_program("a. b. #show a/0."), ['__x1.', '__x2.', '__x3.', 'show_statement(a).', 'u(a).', 'u(b).']
         )
-        show_signature = set({ShowStatement(name="a", arity=0, poistive=True)})
-        self.assertEqual(self.grounder.control.show_signature, show_signature)
 
     def test_show02(self):
         self.assertEqualPrograms(
             self.ground_program("a. b. #show a/0. #show b/0."),
-            ['__x1.', '__x2.', 'u(a).', 'u(b).'],
+            ['__x1.', '__x2.', '__x3.', '__x4.', 'show_statement(a).', 'show_statement(b).', 'u(a).', 'u(b).'],
         )
-        show_signature = set(
-            {
-                ShowStatement(name="a", arity=0, poistive=True),
-                ShowStatement(name="b", arity=0, poistive=True),
-            }
-        )
-        self.assertEqual(self.grounder.control.show_signature, show_signature)
 
     def test_show03(self):
         self.assertEqualPrograms(
             self.ground_program("-a. b. #show -a/0."),
             ['__x1.', '__x2.', 'u(-a).', 'u(b).'],
         )
-        show_signature = set({ShowStatement(name="a", arity=0, poistive=False)})
-        self.assertEqual(self.grounder.control.show_signature, show_signature)

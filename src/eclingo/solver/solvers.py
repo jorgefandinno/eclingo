@@ -5,14 +5,19 @@ from eclingo.solver.generator import GeneratorReification
 from eclingo.solver.tester import CandidateTesterReification
 
 from .candidate import Candidate
-from .world_view_builder import WorldWiewBuilderReificationWithShow, WorldWiewBuilderReification
+from .world_view_builder import (
+    WorldWiewBuilderReification,
+    WorldWiewBuilderReificationWithShow,
+)
 
 
 class SolverReification:
     def __init__(self, reified_program: str, config: AppConfig) -> None:
         self._config = config
 
-        self._build_world_view_reification = WorldWiewBuilderReificationWithShow(reified_program)
+        self._build_world_view_reification = WorldWiewBuilderReificationWithShow(
+            reified_program
+        )
         # self._build_world_view_reification = WorldWiewBuilderReification()
         self.test_candidate_reification = CandidateTesterReification(
             self._config, reified_program

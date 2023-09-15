@@ -7,6 +7,8 @@ from eclingo.control import Control
 from eclingo.internal_states import internal_control
 import eclingo as _eclingo
 
+# python -m unittest tests.test_eclingo_examples.TestExamples.test_yale_g94
+
 INPUT_PROG_PATH = "prog/input/"
 OUTPUT_PROG_PATH = "prog/output/"
 
@@ -101,27 +103,27 @@ class TestExamples(unittest.TestCase):
                 parts.append(("base", [Number(i)]))
                 eclingo_control.ground(parts)
                     
-                wviews = []
-                for world_view in eclingo_control.solve():
-                    world_view = sorted(str(symbol) for symbol in world_view.symbols)
-                    wviews.append(world_view)
+                # wviews = []
+                # for world_view in eclingo_control.solve():
+                #     world_view = sorted(str(symbol) for symbol in world_view.symbols)
+                #     wviews.append(world_view)
                     
-                wviews = [sorted(model) for model in wviews]
-                wviews = str(sorted(wviews)).replace(" ", "").replace("'", "")
+                # wviews = [sorted(model) for model in wviews]
+                # wviews = str(sorted(wviews)).replace(" ", "").replace("'", "")
                 
-                with open(output_path, "r") as output_prog:
-                    sol = output_prog.read()
-                    sol = sol.replace("\n", "").replace(" ", "")
-                self.assertEqual(wviews, sol, "in " + input_path)
-                
-                # result = [
-                #     [str(symbol) for symbol in model.symbols]
-                #     for model in eclingo_control.solve()
-                # ]
-                # result = [sorted(model) for model in result]
-                # result = str(sorted(result)).replace(" ", "").replace("'", "")
-
                 # with open(output_path, "r") as output_prog:
                 #     sol = output_prog.read()
                 #     sol = sol.replace("\n", "").replace(" ", "")
-                # self.assertEqual(result, sol, "in " + input_path)
+                # self.assertEqual(wviews, sol, "in " + input_path)
+                
+                result = [
+                    [str(symbol) for symbol in model.symbols]
+                    for model in eclingo_control.solve()
+                ]
+                result = [sorted(model) for model in result]
+                result = str(sorted(result)).replace(" ", "").replace("'", "")
+
+                with open(output_path, "r") as output_prog:
+                    sol = output_prog.read()
+                    sol = sol.replace("\n", "").replace(" ", "")
+                self.assertEqual(result, sol, "in " + input_path)

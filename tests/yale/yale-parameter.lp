@@ -28,6 +28,5 @@ occurs(S) :- &k{occurs(A,S)}, action(A), stepless(S).
 
 :- &k{occurs(A,S)}, &k{occurs(B,S)}, action(A), action(B), stepless(S), A!=B.
 
-
 %%%% show occurs/2 %%%%
 #show occurs/2.
