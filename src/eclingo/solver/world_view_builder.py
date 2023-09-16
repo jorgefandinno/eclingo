@@ -184,7 +184,6 @@ class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
                 pass
 
             assert model is not None
-
             self.epistemic_show_statements(model, cand_show)
 
         return super().world_view_from_candidate(
@@ -199,15 +198,30 @@ class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
         show_name: str = "show_statement"
 
         for atom in candidates_show:
-            arguments: Sequence[Symbol] = []
-            arguments.append(
-                Function(atom.arguments[0].name, [], atom.arguments[0].positive)
+            show_arguments: Sequence[Symbol] = []
+            atom_arguments: Sequence[Symbol] = []
+
+            if (
+                atom.name == "not1" or atom.name == "not2"
+            ):  # Check if it is a negative atom
+                atom_show = atom.arguments[0].arguments[0]
+            else:
+                atom_show = atom.arguments[0]
+
+            # Check for arguments of atom
+            if atom_show.arguments:
+                for args in atom_show.arguments:
+                    atom_arguments.append(args)
+
+            show_arguments.append(
+                Function(atom_show.name, atom_arguments, atom.arguments[0].positive)
             )
-            show_stm = Function(show_name, arguments, True)
+
+            show_stm = Function(show_name, show_arguments, True)
+
             k_atom = Function("k", [atom], atom.arguments[0].positive)
             if model.contains(show_stm) and k_atom not in self.show_statements:
                 self.show_statements.append(k_atom)
-                print("The show statement k_atom: ", k_atom)
 
     # """
     #     Creates new list of candidates based on show_statements.

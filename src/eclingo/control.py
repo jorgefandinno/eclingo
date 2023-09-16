@@ -61,7 +61,6 @@ class Control(object):
             self.prepare_solver()
 
         for model in self.solver.solve():
-            print(model)
             self.models += 1
             yield model
             if self.models >= self.max_models:
