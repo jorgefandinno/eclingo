@@ -12,7 +12,7 @@ class GeneratorReification:
     def __init__(self, config: AppConfig, reified_program: str) -> None:
         self._config = config
         self.control = internal_control.InternalStateControl(["0"], message_limit=0)
-        self.control.configuration.solve.project = "auto,3"
+        self.control.configuration.solve.project = "show,3"
         self.reified_program = reified_program
 
     def __call__(self) -> Iterator[Candidate]:
@@ -34,7 +34,8 @@ class GeneratorReification:
             negative_candidate(k(A)) :- output(k(A), B), not conjunction(B).
 
             #show positive_candidate/1.
-            #show negative_candidate/1."""
+            #show negative_candidate/1.
+            """
 
         fact_optimization_program = """
             % Propagate facts into epistemic facts
