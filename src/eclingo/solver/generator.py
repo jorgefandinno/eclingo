@@ -30,13 +30,9 @@ class GeneratorReification:
 
             {hold(A) : atom_tuple(H,A)} :- rule(choice(H), B), body(B).
 
-            epistemic(k(A)) :- output(k(A), B), conjunction(B).
-            epistemic(not1(k(A))) :- output(k(A), B), not conjunction(B).
-
             positive_candidate(k(A)) :- output(k(A), B), conjunction(B).
             negative_candidate(k(A)) :- output(k(A), B), not conjunction(B).
 
-            #show epistemic/1.
             #show positive_candidate/1.
             #show negative_candidate/1."""
 
