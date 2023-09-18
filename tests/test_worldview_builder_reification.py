@@ -1,9 +1,10 @@
 import unittest
-
+from typing import Sequence
 from clingo.ast import Sign
-from clingo.symbol import Function
+from clingo.symbol import Function, Symbol
 
 import eclingo as _eclingo
+import eclingo.internal_states.internal_control as internal_control
 from eclingo.literals import Literal
 from eclingo.solver.candidate import Candidate
 from eclingo.solver.world_view import EpistemicLiteral, WorldView
@@ -18,15 +19,18 @@ def world_view_builder(tested_candidates):
 
     config = _eclingo.config.AppConfig()
     config.eclingo_semantics = "c19-1"
+    control = internal_control.InternalStateControl(["0"], message_limit=0)
+    control.configuration.solve.models = 0
+    control.configuration.solve.project = "auto,3"
+    show_stm: Sequence[Symbol] = []
 
-    world_view_builder = WorldWiewBuilderReification()
+    world_view_builder = WorldWiewBuilderReification(control, show_stm)
 
     wviews = []
     for candidate in tested_candidates:
         wview = world_view_builder(candidate)
         if wview not in wviews:
             wviews.append(wview)
-            print("World View of candidate generated: ", wview)
 
     return sorted(wviews)
 
@@ -60,8 +64,6 @@ class TestEclingoWViewReification(TestCase):
             [WorldView([EpistemicLiteral(Function("a", [], True), 0, False)])],
         )
 
-    # TODO: Should be generating a positive candidate of not2, but it does generate a negative.
-    # Problem in Generator
     def test_wview_reification2(self):
         # echo "a. b :- &k{ not not a }." | eclingo --output=reify --semantics c19-1 --reification
         self.assert_models(

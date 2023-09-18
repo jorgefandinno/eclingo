@@ -1,0 +1,57 @@
+LOGS of ERRORS while adapting tests to reification version.
+
+
+Error 3:
+
+    File: test_eclingo.py
+
+    Test: TestEclingoAggregates
+
+    Program:  """{fact}.
+            :- not fact.
+            a :- not &k{ not a}.
+            b :- #sum{1:fact; 25:a} >= 24.
+            c :- &k{b}.
+            d :- &k{c}."""
+
+    Old solution: [[], ["&m{a}", "&k{b}", "&k{c}"]]
+
+    Current solution given reification: [[], ["&m{a}"]]
+
+    Hypothesis: Does the new implementation account for aggregates (?)
+
+Error 7 (SAME as error 1)
+
+    File: test_app.py (input -> prog02.lp, output -> sol02.txt)
+
+    Test: TestExamples.test_prog_g94
+
+    Program:  
+            """
+                a :- not &k{ b }.                                     
+                b :- not &k{ a }.    
+            """
+
+    Old solution: [[&k{a}],[&k{b}]]
+
+    Current solution given reification: [[],[&k{a}],[&k{b}]]
+
+    Hypothesis: CHECK LOG FOR ERROR 1
+
+
+Error 8:
+
+    Lines
+    # self.assert_world_views(
+    #     command, [elegible_path, input_path], output_path, external_call=False
+    # )
+
+    of TestExamples.test_eligible_g94
+
+    cause it to fail on sol_eligible2.txt, eligible2.lp
+
+
+
+
+
+

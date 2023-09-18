@@ -3,9 +3,8 @@ from typing import Callable, Iterable, List, Sequence, cast
 from clingo import ast
 from clingo.ast import Location, Position
 
-from eclingo import prefixes
 from eclingo.config import AppConfig
-from eclingo.internal_states.internal_control import ASTObject, ShowStatement
+from eclingo.internal_states.internal_control import ASTObject
 
 from .transformers.parser_negations import StrongNegationReplacement
 from .transformers.theory_parser_epistemic import (
@@ -20,10 +19,11 @@ _CallbackType = Callable[[ASTObject], None]
 from clingo.ast import ASTType, Location, Position, parse_string
 from clingox.ast import (
     TheoryParser,
-    prefix_symbolic_atoms,
     reify_symbolic_atoms,
     theory_parser_from_definition,
 )
+
+U_NAME = "u"
 
 
 def parse_theory(s: str) -> TheoryParser:
@@ -75,21 +75,16 @@ class _ProgramParser(object):
 
     def __call__(self) -> None:
         ast.parse_string(self.program, self._parse_statement)
-        for aux_rule in self.strong_negation_replacements.get_auxiliary_rules(
-            self.reification
-        ):
-            self.callback(aux_rule)
+        # for aux_rule in self.strong_negation_replacements.get_auxiliary_rules(
+        #     self.reification
+        # ):
+        #     self.callback(aux_rule)
 
     def _parse_statement(self, statement: ast.AST) -> None:
         statement = self.theory_parser(statement)
         statement = parse_epistemic_literals_elements(statement, self.reification)
 
-        if self.reification:
-            statement = reify_symbolic_atoms(
-                statement, prefixes.U_NAME, reify_strong_negation=True
-            )
-        else:
-            statement = prefix_symbolic_atoms(statement, prefixes.U_PREFIX)
+        statement = reify_symbolic_atoms(statement, U_NAME, reify_strong_negation=True)
 
         # this avoids collitions between user predicates and auxiliary predicates
         if statement.ast_type == ast.ASTType.Rule:
@@ -101,10 +96,13 @@ class _ProgramParser(object):
         elif statement.ast_type == ast.ASTType.ShowSignature:
             for stm in self._parse_show_signature_statement(statement):
                 self.callback(stm)
-        elif statement.ast_type == ast.ASTType.ShowTerm:
-            raise RuntimeError(
-                'syntax error: only show statements of the form "#show atom/n." are allowed.'
-            )
+
+        # No show staments currently supported by reification version
+        # elif statement.ast_type == ast.ASTType.ShowTerm:
+        #     raise RuntimeError(
+        #         'syntax error: only show statements of the form "#show atom/n." are allowed.'
+        #     )
+
         else:
             self.callback(statement)
 
@@ -120,7 +118,7 @@ class _ProgramParser(object):
         self.strong_negation_replacements.update(sn_replacement)
 
         return replace_epistemic_literals_by_auxiliary_atoms(
-            rules, self.reification, prefixes.EPISTEMIC_PREFIX
+            rules, self.reification, "k"
         )
 
     def _parse_program_statement(self, statement: ast.AST) -> List[ast.AST]:
@@ -138,10 +136,22 @@ class _ProgramParser(object):
 
         return [statement, new_statement]
 
-    def _parse_show_signature_statement(
-        self, statement: ast.AST
-    ) -> List[ShowStatement]:
-        return [ShowStatement(statement.name, statement.arity, statement.positive)]
+    def _parse_show_signature_statement(self, statement: ast.AST) -> List[ast.AST]:
+        args = [
+            ast.Variable(statement.location, f"X{i}") for i in range(0, statement.arity)
+        ]
+        fun = ast.Function(statement.location, statement.name, args, False)
+        literal = ast.Literal(
+            statement.location,
+            ast.Sign.NoSign,
+            ast.SymbolicAtom(ast.Function(statement.location, U_NAME, [fun], False)),
+        )
+        hfun = ast.Function(statement.location, "show_statement", [fun], False)
+        hliteral = ast.Literal(
+            statement.location, ast.Sign.NoSign, ast.SymbolicAtom(hfun)
+        )
+        rule = ast.Rule(statement.location, hliteral, [literal])
+        return [rule]
 
 
 #######################################################################################################

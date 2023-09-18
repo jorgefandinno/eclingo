@@ -19,7 +19,6 @@ def tester(program, candidates):
     test_candidate = CandidateTesterReification(config, program)
     tested = []
     for candidate in candidates:
-        print("Test Tested candidate: ", candidate)
         if test_candidate(candidate):
             if candidate not in tested:
                 tested.append(candidate)
@@ -370,3 +369,5 @@ class TestEclingoTesterReification(TestCase):
                 )
             ],
         )
+        
+ 

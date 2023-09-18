@@ -5,15 +5,12 @@ from copy import copy
 from typing import Iterable, List, Set, Tuple, Union, cast
 
 from clingo import ast
-from clingo.ast import AST, ASTSequence, ASTType, Sign, Transformer
+from clingo.ast import AST, ASTSequence, Sign, Transformer
 from clingox.ast import (
     filter_body_literals,
-    prefix_symbolic_atoms,
     reify_symbolic_atoms,
     theory_term_to_literal,
 )
-
-from eclingo import config, prefixes
 
 from .parser_negations import (
     SnReplacementType,
@@ -60,7 +57,7 @@ def _theory_term_to_literal_adapter(reification: bool, element: AST) -> AST:
 
 def parse_epistemic_literals_elements(rule, reification):
     return ApplyToEpistemicAtomsElementsTransformer(
-        _theory_term_to_literal_adapter, reification=False
+        _theory_term_to_literal_adapter, reification=True
     )(rule)
 
 
@@ -221,14 +218,10 @@ class EClingoTransformer(Transformer):
         assert atom.term.name == "k" and not atom.term.arguments
         nested_literal = atom.elements[0].terms[0]
 
-        if self.reification:
-            aux_atom = reify_symbolic_atoms(
-                nested_literal.atom, atom.term.name, reify_strong_negation=False
-            )
-        else:
-            aux_atom = prefix_symbolic_atoms(
-                nested_literal.atom, prefixes.EPISTEMIC_PREFIX
-            )
+        aux_atom = reify_symbolic_atoms(
+            nested_literal.atom, atom.term.name, reify_strong_negation=False
+        )
+
         self.epistemic_replacements.append((nested_literal, aux_atom))
         return aux_atom
 

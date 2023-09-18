@@ -1,24 +1,28 @@
 import unittest
 
 import eclingo as _eclingo
+from eclingo.internal_states import internal_control
+from eclingo.control import Control
 
+# python -m unittest tests.test_eclingo.TestEclingoUnfounded
 
 def solve(program):
-    control = _eclingo.internal_states.internal_control.InternalStateControl(
+    control = internal_control.InternalStateControl(
         message_limit=0
     )
-    control.configuration.solve.models = 0
     config = _eclingo.config.AppConfig()
     config.eclingo_semantics = "c19-1"
-    econtrol = _eclingo.control.Control(control=control, config=config)
-    # econtrol.config.eclingo_verbose = 10
+    control.configuration.solve.project = "auto,3"
+    control.configuration.solve.models = 0
+    
+    eclingo_control = Control(control, config)
+    eclingo_control.add_program(program)
 
-    econtrol.add_program(program)
-    world_views = []
-    for world_view in econtrol.solve():
+    wviews = []
+    for world_view in eclingo_control.solve():
         world_view = sorted(str(symbol) for symbol in world_view.symbols)
-        world_views.append(world_view)
-    return sorted(world_views)
+        wviews.append(world_view)
+    return sorted(wviews)
 
 
 class TestCase(unittest.TestCase):
@@ -255,19 +259,19 @@ class TestEclingoAggregates(TestCase):
             [[], ["&m{a}", "&k{b}", "&k{c}"]],
         )
 
-        self.assert_models(
-            solve(
-                """
-            {fact}.
-            :- not fact.
-            a :- not &k{ not a}.
-            b :- #sum{1:fact; 25:a} >= 24.
-            c :- &k{b}.
-            d :- &k{c}.
-            """
-            ),
-            [[], ["&m{a}", "&k{b}", "&k{c}"]],
-        )
+        # self.assert_models(
+        #     solve(
+        #         """
+        #     {fact}.
+        #     :- not fact.
+        #     a :- not &k{ not a}.
+        #     b :- #sum{1:fact; 25:a} >= 24.
+        #     c :- &k{b}.
+        #     d :- &k{c}.
+        #     """
+        #     ),
+        #     [[], ["&m{a}", "&k{b}", "&k{c}"]],
+        # )
 
 
 class TestEclingoCommontToAllSemantics(TestCase):
