@@ -33,7 +33,12 @@ class GeneratorReification:
             epistemic(k(A)) :- output(k(A), B), conjunction(B).
             epistemic(not1(k(A))) :- output(k(A), B), not conjunction(B).
 
-            #show epistemic/1."""
+            positive_candidate(k(A)) :- output(k(A), B), conjunction(B).
+            negative_candidate(k(A)) :- output(k(A), B), not conjunction(B).
+
+            #show epistemic/1.
+            #show positive_candidate/1.
+            #show negative_candidate/1."""
 
         fact_optimization_program = """
             % Propagate facts into epistemic facts
@@ -68,17 +73,27 @@ class GeneratorReification:
                 yield candidate
 
     def _model_to_candidate(self, model: clingo.Model) -> Candidate:
-        candidate_pos = []
-        candidate_neg = []
+        # positive_candidate = []
+        # negative_candidate = []
 
-        for symbol in model.symbols(shown=True):
-            symbol = symbol.arguments[0]
-            if symbol.name == "k":
-                # print("Generated Candidate symbol: ", symbol)
-                candidate_pos.append(symbol)
-            if symbol.name == "not1":
-                # print("Generated Candidate symbol Negative: ", symbol.arguments[0])
-                candidate_neg.append(symbol.arguments[0])
+        # for symbol in model.symbols(shown=True):
+        #     if symbol.name == "positive_candidate":
+        #         positive_candidate.append(symbol.arguments[0])
+        #     if symbol.name == "negative_candidate":
+        #         negative_candidate.append(symbol.arguments[0])
+
+        symbols = model.symbols(shown=True)
+        # We should be able to change this by tuples, but test currently fail if so
+        positive_candidate = [
+            symbol.arguments[0]
+            for symbol in symbols
+            if symbol.name == "positive_candidate"
+        ]
+        negative_candidate = [
+            symbol.arguments[0]
+            for symbol in symbols
+            if symbol.name == "negative_candidate"
+        ]
 
         # print("Generated candidates: ", Candidate(candidate_pos, candidate_neg), "\n")
-        return Candidate(candidate_pos, candidate_neg)
+        return Candidate(positive_candidate, negative_candidate)
