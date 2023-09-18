@@ -6,6 +6,8 @@ import eclingo as _eclingo
 from eclingo.solver.candidate import Candidate
 from eclingo.solver.generator import GeneratorReification
 
+from .programs import programs
+
 # python -m unittest tests.test_generator_reification.TestEclingoGeneratorReification
 
 """ Helper function to generate candidates for a given program """
@@ -35,25 +37,8 @@ class TestEclingoGeneratorReification(TestCase):
     # echo "u(a). u(b) :- k(u(a)). { k(u(a)) } :- u(a)." | clingo --output=reify
     def test_generator01_reification(self):
         self.assert_models(
-            generate(
-                """tag(incremental). atom_tuple(0). atom_tuple(0,1). literal_tuple(0).
-                                    rule(disjunction(0),normal(0)). atom_tuple(1).
-                                    atom_tuple(1,2). rule(choice(1),normal(0)). atom_tuple(2).
-                                    atom_tuple(2,3). literal_tuple(1). literal_tuple(1,2).
-                                    rule(disjunction(2),normal(1)). output(k(u(a)),1).
-                                    output(u(a),0). literal_tuple(2). literal_tuple(2,3). output(u(b),2)."""
-            ),
-            [
-                # Candidate(pos=[], neg=[Function('k', [Function('u', [Function('a', [], True)], True)], True)]),
-                Candidate(
-                    pos=[
-                        Function(
-                            "k", [Function("u", [Function("a", [], True)], True)], True
-                        )
-                    ],
-                    neg=[],
-                )
-            ],
+            generate(programs[0].ground_reification),
+            programs[0].candidates,
         )
 
         # "{a}. b :- &k{a}."
