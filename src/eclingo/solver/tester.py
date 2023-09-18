@@ -29,17 +29,17 @@ class CandidateTesterReification:
                                 u(A)    :- output(u(A), B), conjunction(B).
                                 not1(A) :- output(not1(A), B), conjunction(B).
                                 not2(A) :- output(not2(A), B), conjunction(B).
-                                
-                                
+
+
                                 symbolic_atom(SA, A) :- output(SA,LT), #count{LL : literal_tuple(LT, LL)} = 1, literal_tuple(LT, A).
                                 epistemic_atom_info(SKA, KA, SA, A) :- symbolic_atom(SA, A), SKA=k(SA), symbolic_atom(SKA, KA).
                                 show_statement(SA) :- symbolic_atom(show_statement(SA), _).
-                                
+
                                 {k(A)} :- output(k(A), _).
-                    
+
                                 hold(L) :- k(A), output(k(A), B), literal_tuple(B, L).
                                 :- hold(L) , not k(A), output(k(A), B), literal_tuple(B, L).
-                            
+
                                 %%symbolic_atom(SA, A) :- output(SA,LT), #count{LL : literal_tuple(LT, LL)} = 1, literal_tuple(LT, A).
                                 %%epistemic_atom_info(SKA, KA, SA, A) :- symbolic_atom(SA, A), SKA=k(SA), symbolic_atom(SKA, KA).
                                 %%show_statement(SA) :- symbolic_atom(show_statement(SA), _).
@@ -57,17 +57,25 @@ class CandidateTesterReification:
         candidate_neg = []
         candidate_assumptions = []
 
-        for literal in candidate[0]:
+        for literal in candidate.pos:
             assumption = (literal, True)
             candidate_assumptions.append(assumption)
             literal = literal.arguments[0]
             candidate_pos.append(literal)
 
-        for literal in candidate[1]:
+        for literal in candidate.extra_assumptions.pos:
+            assumption = (literal, True)
+            candidate_assumptions.append(assumption)
+
+        for literal in candidate.neg:
             assumption = (literal, False)
             candidate_assumptions.append(assumption)
             literal = literal.arguments[0]
             candidate_neg.append(literal)
+
+        for literal in candidate.extra_assumptions.neg:
+            assumption = (literal, False)
+            candidate_assumptions.append(assumption)
 
         self.control.configuration.solve.models = 0
         self.control.configuration.solve.project = "no"

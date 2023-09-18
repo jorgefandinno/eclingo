@@ -5,7 +5,7 @@ import clingo
 from eclingo.config import AppConfig
 from eclingo.internal_states import internal_control
 
-from .candidate import Candidate
+from .candidate import Assumptions, Candidate
 
 
 class GeneratorReification:
@@ -56,6 +56,12 @@ class GeneratorReification:
                 fact(SA).
 
             hold(KA) :- kp_hold(KA).
+
+            positive_extra_assumptions(A) :- epistemic_atom(k(A), KA), kp_hold(KA).
+            % negative_extra_assumptions(A) :- epistemic_atom(k(A), KA), kp_not_hold(KA).
+
+            #show positive_extra_assumptions/1.
+            #show negative_extra_assumptions/1.
             """
 
         self.control.add("base", [], self.reified_program)
@@ -90,6 +96,10 @@ class GeneratorReification:
             for symbol in symbols
             if symbol.name == "negative_candidate"
         ]
-
-        # print("Generated candidates: ", Candidate(candidate_pos, candidate_neg), "\n")
-        return Candidate(positive_candidate, negative_candidate)
+        positive_extra_assumptions = tuple(
+            symbol.arguments[0]
+            for symbol in symbols
+            if symbol.name == "positive_extra_assumptions"
+        )
+        extra_assumptions = Assumptions(positive_extra_assumptions, ())
+        return Candidate(positive_candidate, negative_candidate, extra_assumptions)
