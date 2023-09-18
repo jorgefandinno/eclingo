@@ -1,15 +1,11 @@
 import sys
-from typing import Iterable, Sequence, Tuple
+from typing import Iterable, Tuple
 
 from clingo import Symbol
-from clingo.ast import parse_string
 
 from eclingo.config import AppConfig
 from eclingo.grounder import Grounder
-from eclingo.parsing.transformers import function_transformer
 from eclingo.solver import SolverReification
-
-from .parsing.transformers.ast_reify import program_to_str
 
 
 class Control(object):

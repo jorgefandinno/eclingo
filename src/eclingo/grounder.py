@@ -18,7 +18,6 @@ class Grounder:
         self.reification = self.config.eclingo_reification
         self.facts: List[Symbol] = []
         self.reified_facts: str
-        self.epistemic_facts: List[Symbol] = []
         self.atom_to_symbol: Dict[int, Symbol] = dict()
         self.ground_program = clingox_program.Program()
         self.control.register_observer(

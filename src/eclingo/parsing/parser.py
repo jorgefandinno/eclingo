@@ -4,7 +4,7 @@ from clingo import ast
 from clingo.ast import Location, Position
 
 from eclingo.config import AppConfig
-from eclingo.internal_states.internal_control import ASTObject, ShowStatement
+from eclingo.internal_states.internal_control import ASTObject
 
 from .transformers.parser_negations import StrongNegationReplacement
 from .transformers.theory_parser_epistemic import (
@@ -19,7 +19,6 @@ _CallbackType = Callable[[ASTObject], None]
 from clingo.ast import ASTType, Location, Position, parse_string
 from clingox.ast import (
     TheoryParser,
-    prefix_symbolic_atoms,
     reify_symbolic_atoms,
     theory_parser_from_definition,
 )
@@ -152,7 +151,6 @@ class _ProgramParser(object):
             statement.location, ast.Sign.NoSign, ast.SymbolicAtom(hfun)
         )
         rule = ast.Rule(statement.location, hliteral, [literal])
-        print("The show statement rule: ", rule)
         return [rule]
 
 

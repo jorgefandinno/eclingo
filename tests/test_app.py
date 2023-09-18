@@ -85,7 +85,7 @@ class TestExamples(unittest.TestCase):
         world_views = (
             str(world_views).replace(" ", "").replace("'", "").replace('"', "")
         )
-    
+        # print(world_views)
         with open(output_path, "r") as output_prog:
             sol = output_prog.read()
             sol = sol.replace("\n", "").replace(" ", "")

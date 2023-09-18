@@ -1,9 +1,3 @@
-from typing import Sequence
-
-from clingo import ast
-from clingo.symbol import Function, Symbol
-from clingox.program import Fact
-
 import eclingo.internal_states.internal_control as internal_control
 from eclingo.config import AppConfig
 
