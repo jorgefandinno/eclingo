@@ -85,7 +85,6 @@ class TestExamples(unittest.TestCase):
         world_views = (
             str(world_views).replace(" ", "").replace("'", "").replace('"', "")
         )
-        # print(world_views)
         with open(output_path, "r") as output_prog:
             sol = output_prog.read()
             sol = sol.replace("\n", "").replace(" ", "")
@@ -130,7 +129,7 @@ class TestExamples(unittest.TestCase):
             self.assert_world_views(command, [elegible_path, input_path], output_path)
 
     def test_yale_g94(self):
-        for i in range(1, 7): # 7 and 8 test -> Not running in decent time.
+        for i in range(1, 9): # 7 and 8 test -> Not running in decent time.
             if i != 6:
                 path = os.path.dirname(os.path.realpath(__file__))
                 yale_path = os.path.join(path, KB_YALE_PATH)

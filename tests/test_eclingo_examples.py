@@ -77,8 +77,8 @@ class TestExamples(unittest.TestCase):
             self.assertEqual(result, sol, "in " + input_path)
 
     def test_yale_g94(self):
-        for i in range(1, 5):
-            if i != 6: # 5, 7 and 8 last forever
+        for i in range(1, 9):
+            if i != 6:
                 control = internal_control.InternalStateControl(
                     message_limit=0
                 )
