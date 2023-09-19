@@ -44,32 +44,8 @@ class TestEclingoGeneratorReification(TestCase):
         # "{a}. b :- &k{a}."
         # echo "{u(a)}. u(b) :- k(u(a)). { k(u(a)) } :- u(a)." | clingo --output=reify
         self.assert_models(
-            generate(
-                """atom_tuple(0). atom_tuple(0,1). literal_tuple(0). rule(choice(0),normal(0)).
-                                    atom_tuple(1). atom_tuple(1,2). literal_tuple(1). literal_tuple(1,1).
-                                    rule(choice(1),normal(1)). atom_tuple(2). atom_tuple(2,3).
-                                    literal_tuple(2). literal_tuple(2,2). rule(disjunction(2),normal(2)).
-                                    output(u(a),1). literal_tuple(3). literal_tuple(3,3).
-                                    output(u(b),3). output(k(u(a)),2)."""
-            ),
-            [
-                Candidate(
-                    pos=[],
-                    neg=[
-                        Function(
-                            "k", [Function("u", [Function("a", [], True)], True)], True
-                        )
-                    ],
-                ),
-                Candidate(
-                    pos=[
-                        Function(
-                            "k", [Function("u", [Function("a", [], True)], True)], True
-                        )
-                    ],
-                    neg=[],
-                ),
-            ],
+            generate(programs[1].ground_reification),
+            programs[1].candidates,
         )
 
         self.assert_models(
@@ -354,3 +330,8 @@ class TestEclingoGeneratorReification(TestCase):
                 ),
             ],
         )
+
+
+# class TestEclingoGeneratorReificationWithApproximation(TestCase):
+
+#     def
