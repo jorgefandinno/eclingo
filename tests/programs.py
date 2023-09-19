@@ -117,7 +117,6 @@ programs = [
         candidates=[
             "k(a)",
         ],
-        wv_candidates=[],
     ),
     Program(
         description="",
@@ -131,6 +130,5 @@ programs = [
             "k(a)",
             "not1(k(a))",
         ],
-        wv_candidates=[],
     ),
 ]
