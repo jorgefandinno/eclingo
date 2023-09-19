@@ -9,6 +9,7 @@ from eclingo.internal_states.internal_control import ShowStatement
 
 # python -m unittest tests.test_grounder.Test.
 
+
 def flatten(lst):
     result = []
     for lst2 in lst:
@@ -56,47 +57,47 @@ class Test(TestCase):
     def test_epistemic_atom(self):
         self.assertEqualPrograms(
             self.ground_program("{a}. b :- &k{a}."),
-            ['u(b) :- k(u(a)).', '{k(u(a))} :- u(a).', '{u(a)}.'],
+            ["u(b) :- k(u(a)).", "{k(u(a))} :- u(a).", "{u(a)}."],
         )
 
     def test_epistemic_atom_with_strong_negation01(self):
         self.assertEqualPrograms(
             self.ground_program("{-a}. b :- &k{-a}."),
-            ['u(b) :- k(u(-a)).', '{k(u(-a))} :- u(-a).', '{u(-a)}.'],
+            ["u(b) :- k(u(-a)).", "{k(u(-a))} :- u(-a).", "{u(-a)}."],
         )
 
     def test_epistemic_atom_with_strong_negation02(self):
         self.assertEqualPrograms(
             self.ground_program("{a}. b :- &k{- -a}."),
-            ['u(b) :- k(u(a)).', '{k(u(a))} :- u(a).', '{u(a)}.'],
+            ["u(b) :- k(u(a)).", "{k(u(a))} :- u(a).", "{u(a)}."],
         )
 
     def test_epistemic_atom_with_default_negation01(self):
         self.assertEqualPrograms(
             self.ground_program("{a}. b :- &k{ not a}."),
             [
-                'not1(u(a)) :- not u(a).',
-                'u(b) :- k(not1(u(a))).',
-                '{k(not1(u(a)))} :- not1(u(a)).',
-                '{u(a)}.'
+                "not1(u(a)) :- not u(a).",
+                "u(b) :- k(not1(u(a))).",
+                "{k(not1(u(a)))} :- not1(u(a)).",
+                "{u(a)}.",
             ],
         )
 
     def test_epistemic_atom_with_default_negation02(self):
         self.assertEqualPrograms(
             self.ground_program("b :- &k{ not a}."),
-            ['__x1.', 'not1(u(a)).', 'u(b) :- k(not1(u(a))).', '{k(not1(u(a)))}.'],
+            ["__x1.", "not1(u(a)).", "u(b) :- k(not1(u(a))).", "{k(not1(u(a)))}."],
         )
 
     def test_epistemic_atom_with_default_negation03(self):
         self.assertEqualPrograms(
             self.ground_program("{a}. b :- &k{ not not a}."),
             [
-                '__x2 :- not u(a).',
-                'not2(u(a)) :- not __x2.',
-                'u(b) :- k(not2(u(a))).',
-                '{k(not2(u(a)))} :- not2(u(a)).',
-                '{u(a)}.'
+                "__x2 :- not u(a).",
+                "not2(u(a)) :- not __x2.",
+                "u(b) :- k(not2(u(a))).",
+                "{k(not2(u(a)))} :- not2(u(a)).",
+                "{u(a)}.",
             ],
         )
 
@@ -104,28 +105,28 @@ class Test(TestCase):
         self.assertEqualPrograms(
             self.ground_program("{-a}. b :- &k{ not -a}."),
             [
-                'not1(u(-a)) :- not u(-a).',
-                'u(b) :- k(not1(u(-a))).',
-                '{k(not1(u(-a)))} :- not1(u(-a)).',
-                '{u(-a)}.'
+                "not1(u(-a)) :- not u(-a).",
+                "u(b) :- k(not1(u(-a))).",
+                "{k(not1(u(-a)))} :- not1(u(-a)).",
+                "{u(-a)}.",
             ],
         )
 
     def test_epistemic_atom_with_both_negations01b(self):
         self.assertEqualPrograms(
             self.ground_program("b :- &k{ not -a}."),
-            ['__x1.', 'not1(u(-a)).', 'u(b) :- k(not1(u(-a))).', '{k(not1(u(-a)))}.'],
+            ["__x1.", "not1(u(-a)).", "u(b) :- k(not1(u(-a))).", "{k(not1(u(-a)))}."],
         )
 
     def test_epistemic_atom_with_both_negations02(self):
         self.assertEqualPrograms(
             self.ground_program("{-a}. b:- &k{ not not -a}."),
             [
-                '__x2 :- not u(-a).',
-                'not2(u(-a)) :- not __x2.',
-                'u(b) :- k(not2(u(-a))).',
-                '{k(not2(u(-a)))} :- not2(u(-a)).',
-                '{u(-a)}.'
+                "__x2 :- not u(-a).",
+                "not2(u(-a)) :- not __x2.",
+                "u(b) :- k(not2(u(-a))).",
+                "{k(not2(u(-a)))} :- not2(u(-a)).",
+                "{u(-a)}.",
             ],
         )
 
@@ -133,12 +134,12 @@ class Test(TestCase):
         self.assertEqualPrograms(
             self.ground_program("{a(1..2)}. b :- &k{a(V0)}."),
             [
-                'u(b) :- k(u(a(1))).',
-                'u(b) :- k(u(a(2))).',
-                '{k(u(a(1)))} :- u(a(1)).',
-                '{k(u(a(2)))} :- u(a(2)).',
-                '{u(a(1))}.',
-                '{u(a(2))}.'
+                "u(b) :- k(u(a(1))).",
+                "u(b) :- k(u(a(2))).",
+                "{k(u(a(1)))} :- u(a(1)).",
+                "{k(u(a(2)))} :- u(a(2)).",
+                "{u(a(1))}.",
+                "{u(a(2))}.",
             ],
         )
 
@@ -146,31 +147,31 @@ class Test(TestCase):
         self.assertEqualPrograms(
             self.ground_program("{-a(1..2)}. b :- &k{-a(V0)}."),
             [
-                'u(b) :- k(u(-a(1))).',
-                'u(b) :- k(u(-a(2))).',
-                '{k(u(-a(1)))} :- u(-a(1)).',
-                '{k(u(-a(2)))} :- u(-a(2)).',
-                '{u(-a(1))}.',
-                '{u(-a(2))}.'
+                "u(b) :- k(u(-a(1))).",
+                "u(b) :- k(u(-a(2))).",
+                "{k(u(-a(1)))} :- u(-a(1)).",
+                "{k(u(-a(2)))} :- u(-a(2)).",
+                "{u(-a(1))}.",
+                "{u(-a(2))}.",
             ],
         )
 
     def test_epistemic_with_variables03(self):
         self.assertEqualPrograms(
             self.ground_program("{a(1)}. b :- &k{- -a(V0)}."),
-            ['u(b) :- k(u(a(1))).', '{k(u(a(1)))} :- u(a(1)).', '{u(a(1))}.'],
+            ["u(b) :- k(u(a(1))).", "{k(u(a(1)))} :- u(a(1)).", "{u(a(1))}."],
         )
 
     def test_epistemic_with_variables04(self):
         self.assertEqualPrograms(
             self.ground_program("{a(1)}. dom(1). b :- &k{ not a(V0)}, dom(V0)."),
             [
-                '__x1.',
-                'not1(u(a(1))) :- not u(a(1)).',
-                'u(b) :- k(not1(u(a(1)))).',
-                'u(dom(1)).',
-                '{k(not1(u(a(1))))} :- not1(u(a(1))).',
-                '{u(a(1))}.'
+                "__x1.",
+                "not1(u(a(1))) :- not u(a(1)).",
+                "u(b) :- k(not1(u(a(1)))).",
+                "u(dom(1)).",
+                "{k(not1(u(a(1))))} :- not1(u(a(1))).",
+                "{u(a(1))}.",
             ],
         )
 
@@ -178,13 +179,13 @@ class Test(TestCase):
         self.assertEqualPrograms(
             self.ground_program("{a(1)}. dom(1). b :- &k{ not not a(V0)}, dom(V0)."),
             [
-                '__x1.',
-                '__x3 :- not u(a(1)).',
-                'not2(u(a(1))) :- not __x3.',
-                'u(b) :- k(not2(u(a(1)))).',
-                'u(dom(1)).',
-                '{k(not2(u(a(1))))} :- not2(u(a(1))).',
-                '{u(a(1))}.'
+                "__x1.",
+                "__x3 :- not u(a(1)).",
+                "not2(u(a(1))) :- not __x3.",
+                "u(b) :- k(not2(u(a(1)))).",
+                "u(dom(1)).",
+                "{k(not2(u(a(1))))} :- not2(u(a(1))).",
+                "{u(a(1))}.",
             ],
         )
 
@@ -192,19 +193,19 @@ class Test(TestCase):
         self.assertEqualPrograms(
             self.ground_program("{a(1..2)}. {b(1)}. c :- not &k{a(V0)}, &k{b(V0)}."),
             [
-                'u(c) :- k(u(b(1))), not k(u(a(1))).',
-                '{k(u(a(1)))} :- u(a(1)).',
-                '{k(u(a(2)))} :- u(a(2)).',
-                '{k(u(b(1)))} :- u(b(1)).',
-                '{u(a(1))}.',
-                '{u(a(2))}.',
-                '{u(b(1))}.',
+                "u(c) :- k(u(b(1))), not k(u(a(1))).",
+                "{k(u(a(1)))} :- u(a(1)).",
+                "{k(u(a(2)))} :- u(a(2)).",
+                "{k(u(b(1)))} :- u(b(1)).",
+                "{u(a(1))}.",
+                "{u(a(2))}.",
+                "{u(b(1))}.",
             ],
         )
 
     # def test_negated_epistemic_literals02(self):
     #     self.assertEqualPrograms(
-    #         self.ground_program(":- not not &k{a(V0)}, &k{b(V0)}."), 
+    #         self.ground_program(":- not not &k{a(V0)}, &k{b(V0)}."),
     #         [
     #             ''
     #         ]
@@ -213,22 +214,32 @@ class Test(TestCase):
     def test_parameters(self):
         self.assertEqualPrograms(
             self.ground_program("a(1..n).", ["n"], [Number(3)]),
-            ['__x1.', '__x2.', '__x3.', 'u(a(1)).', 'u(a(2)).', 'u(a(3)).'],
+            ["__x1.", "__x2.", "__x3.", "u(a(1)).", "u(a(2)).", "u(a(3))."],
         )
 
     def test_show01(self):
         self.assertEqualPrograms(
-            self.ground_program("a. b. #show a/0."), ['__x1.', '__x2.', '__x3.', 'show_statement(a).', 'u(a).', 'u(b).']
+            self.ground_program("a. b. #show a/0."),
+            ["__x1.", "__x2.", "__x3.", "show_statement(a).", "u(a).", "u(b)."],
         )
 
     def test_show02(self):
         self.assertEqualPrograms(
             self.ground_program("a. b. #show a/0. #show b/0."),
-            ['__x1.', '__x2.', '__x3.', '__x4.', 'show_statement(a).', 'show_statement(b).', 'u(a).', 'u(b).'],
+            [
+                "__x1.",
+                "__x2.",
+                "__x3.",
+                "__x4.",
+                "show_statement(a).",
+                "show_statement(b).",
+                "u(a).",
+                "u(b).",
+            ],
         )
 
     def test_show03(self):
         self.assertEqualPrograms(
             self.ground_program("-a. b. #show -a/0."),
-            ['__x1.', '__x2.', 'u(-a).', 'u(b).'],
+            ["__x1.", "__x2.", "u(-a).", "u(b)."],
         )

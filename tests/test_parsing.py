@@ -4,7 +4,8 @@ from clingo import ast
 
 from eclingo.parsing import parser
 
-# python -m unittest tests.test_parsing.Test. 
+# python -m unittest tests.test_parsing.Test.
+
 
 def flatten(lst):
     result = []
@@ -41,7 +42,6 @@ class TestCase(unittest.TestCase):
 
 
 class Test(TestCase):
-    
     def test_epistemic_atom(self):
         self.assert_equal_program(
             parse_program(":- &k{a}."), ":- k(u(a)). {k(u(a))} :- u(a)."
@@ -82,14 +82,16 @@ class Test(TestCase):
 
     def test_epistemic_with_variables(self):
         self.assert_equal_program(
-            parse_program(":- &k{a(V0)}."), ":- k(u(a(V0))). { k(u(a(V0))) } :- u(a(V0))."
+            parse_program(":- &k{a(V0)}."),
+            ":- k(u(a(V0))). { k(u(a(V0))) } :- u(a(V0)).",
         )
         self.assert_equal_program(
             parse_program(":- &k{-a(V0)}."),
             ":- k(u(-a(V0))). { k(u(-a(V0))) } :- u(-a(V0)).",
         )
         self.assert_equal_program(
-            parse_program(":- &k{- -a(V0)}."), ":- k(u(a(V0))). { k(u(a(V0))) } :- u(a(V0))."
+            parse_program(":- &k{- -a(V0)}."),
+            ":- k(u(a(V0))). { k(u(a(V0))) } :- u(a(V0)).",
         )
         self.assert_equal_program(
             parse_program(":- &k{ not a(V0)}."),

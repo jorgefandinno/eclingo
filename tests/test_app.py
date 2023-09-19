@@ -88,7 +88,7 @@ class TestExamples(unittest.TestCase):
         with open(output_path, "r") as output_prog:
             sol = output_prog.read()
             sol = sol.replace("\n", "").replace(" ", "")
-            
+
         self.assertEqual(world_views, sol, "in " + str(command))
 
     def test_prog_g94(self):
@@ -99,7 +99,7 @@ class TestExamples(unittest.TestCase):
             output_path = os.path.join(path, OUTPUT_PROG_PATH)
             output_path = os.path.join(output_path, f"sol{i:02d}.txt")
             app_path = os.path.join(path, APP_PATH)
-            
+
             semantics = "--semantics=g94"
             command = ["python", app_path, semantics, "0"]
             self.assert_world_views(
@@ -129,7 +129,7 @@ class TestExamples(unittest.TestCase):
             self.assert_world_views(command, [elegible_path, input_path], output_path)
 
     def test_yale_g94(self):
-        for i in range(1, 9): # 7 and 8 test -> Not running in decent time.
+        for i in range(1, 9):  # 7 and 8 test -> Not running in decent time.
             if i != 6:
                 path = os.path.dirname(os.path.realpath(__file__))
                 yale_path = os.path.join(path, KB_YALE_PATH)
@@ -139,10 +139,10 @@ class TestExamples(unittest.TestCase):
                 output_path = os.path.join(output_path, f"sol_yale{i:02d}.txt")
 
                 app_path = os.path.join(path, APP_PATH)
-                
+
                 semantics = "--semantics=g94"
                 constant = "-c length=%d" % i
-                command = ["python", app_path, semantics, constant,  "0"]
+                command = ["python", app_path, semantics, constant, "0"]
                 self.assert_world_views(
                     command, [yale_path, input_path], output_path, external_call=False
                 )

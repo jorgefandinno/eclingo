@@ -18,16 +18,14 @@ class EclingoTestHelper(helper.TestHelper):
         eclingo_control.add_program(program)
         eclingo_control.ground()
         return eclingo_control
-    
+
     def control_solve(self, program):
-        control = internal_control.InternalStateControl(
-            message_limit=0
-        )
+        control = internal_control.InternalStateControl(message_limit=0)
         config = _config.AppConfig()
         config.eclingo_semantics = "c19-1"
         control.configuration.solve.project = "auto,3"
         control.configuration.solve.models = 0
-        
+
         eclingo_control = _control.Control(control, config)
         eclingo_control.add_program(program)
 
@@ -35,7 +33,7 @@ class EclingoTestHelper(helper.TestHelper):
         for world_view in eclingo_control.solve():
             world_view = sorted(str(symbol) for symbol in world_view.symbols)
             wviews.append(world_view)
-            
+
         return sorted(wviews)
 
     def assert_equal_world_views(self, program, expected):

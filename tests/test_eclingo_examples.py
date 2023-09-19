@@ -3,9 +3,9 @@ import unittest
 
 from clingo import Number
 
+import eclingo as _eclingo
 from eclingo.control import Control
 from eclingo.internal_states import internal_control
-import eclingo as _eclingo
 
 # python -m unittest tests.test_eclingo_examples.TestExamples.test_yale_g94
 
@@ -79,14 +79,12 @@ class TestExamples(unittest.TestCase):
     def test_yale_g94(self):
         for i in range(1, 9):
             if i != 6:
-                control = internal_control.InternalStateControl(
-                    message_limit=0
-                )
+                control = internal_control.InternalStateControl(message_limit=0)
                 config = _eclingo.config.AppConfig()
                 config.eclingo_semantics = "g94"
                 control.configuration.solve.project = "auto,3"
                 control.configuration.solve.models = 0
-                
+
                 eclingo_control = Control(control=control, config=config)
                 # eclingo_control.config.eclingo_verbose = 10
 
@@ -102,7 +100,7 @@ class TestExamples(unittest.TestCase):
                 parts.append(("base", []))
                 parts.append(("base", [Number(i)]))
                 eclingo_control.ground(parts)
-                
+
                 result = [
                     [str(symbol) for symbol in model.symbols]
                     for model in eclingo_control.solve()
