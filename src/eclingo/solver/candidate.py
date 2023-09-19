@@ -1,11 +1,11 @@
-from typing import List, NamedTuple
+from typing import List, NamedTuple, Sequence
 
 from clingo import Symbol
 
 
 class Assumptions(NamedTuple):
-    pos: List[Symbol]
-    neg: List[Symbol]
+    pos: Sequence[Symbol]
+    neg: Sequence[Symbol]
 
     def __str__(self):
         pos_s = ", ".join(str(s) for s in self.pos)
@@ -14,8 +14,8 @@ class Assumptions(NamedTuple):
 
 
 class Candidate(NamedTuple):
-    pos: List[Symbol]
-    neg: List[Symbol]
+    pos: Sequence[Symbol]
+    neg: Sequence[Symbol]
     extra_assumptions: Assumptions = Assumptions((), ())
 
     def __str__(self):

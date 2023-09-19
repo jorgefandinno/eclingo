@@ -1,7 +1,9 @@
 from typing import Iterator
 
 import clingo
+from clingox.solving import approximate
 
+from eclingo import util
 from eclingo.config import AppConfig
 from eclingo.internal_states import internal_control
 
@@ -14,8 +16,9 @@ class GeneratorReification:
         self.control = internal_control.InternalStateControl(["0"], message_limit=0)
         self.control.configuration.solve.project = "show,3"
         self.reified_program = reified_program
+        self.__initialeze_control(reified_program)
 
-    def __call__(self) -> Iterator[Candidate]:
+    def __initialeze_control(self, reified_program) -> None:
         base_program = """
             conjunction(B) :- literal_tuple(B), hold(L) : literal_tuple(B, L), L > 0;
                                             not hold(L) : literal_tuple(B, -L), L > 0.
@@ -65,42 +68,33 @@ class GeneratorReification:
             #show negative_extra_assumptions/1.
             """
 
-        self.control.add("base", [], self.reified_program)
+        self.control.add("base", [], reified_program)
         self.control.add("base", [], base_program)
         self.control.add("base", [], fact_optimization_program)
         self.control.ground([("base", [])])
 
+    def __call__(self) -> Iterator[Candidate]:
         with self.control.solve(yield_=True) as handle:
             for model in handle:
                 candidate = self._model_to_candidate(model)
                 yield candidate
 
     def _model_to_candidate(self, model: clingo.Model) -> Candidate:
-        # positive_candidate = []
-        # negative_candidate = []
-
-        # for symbol in model.symbols(shown=True):
-        #     if symbol.name == "positive_candidate":
-        #         positive_candidate.append(symbol.arguments[0])
-        #     if symbol.name == "negative_candidate":
-        #         negative_candidate.append(symbol.arguments[0])
-
-        symbols = model.symbols(shown=True)
-        # We should be able to change this by tuples, but test currently fail if so
-        positive_candidate = [
-            symbol.arguments[0]
-            for symbol in symbols
-            if symbol.name == "positive_candidate"
-        ]
-        negative_candidate = [
-            symbol.arguments[0]
-            for symbol in symbols
-            if symbol.name == "negative_candidate"
-        ]
-        positive_extra_assumptions = tuple(
-            symbol.arguments[0]
-            for symbol in symbols
-            if symbol.name == "positive_extra_assumptions"
+        (
+            positive_candidate,
+            negative_candidate,
+            positive_extra_assumptions,
+            negative_extra_assumptions,
+            _,
+        ) = util.partition4(
+            model.symbols(shown=True),
+            lambda symbol: symbol.name == "positive_candidate",
+            lambda symbol: symbol.name == "negative_candidate",
+            lambda symbol: symbol.name == "positive_extra_assumptions",
+            lambda symbol: symbol.name == "negative_extra_assumptions",
+            fun=lambda symbol: symbol.arguments[0],
         )
-        extra_assumptions = Assumptions(positive_extra_assumptions, ())
+        extra_assumptions = Assumptions(
+            positive_extra_assumptions, negative_extra_assumptions
+        )
         return Candidate(positive_candidate, negative_candidate, extra_assumptions)

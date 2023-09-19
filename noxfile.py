@@ -47,6 +47,7 @@ def tests(session):
         "tests/test_tester_reification.py",
         "tests/test_theory_atom_parser.py",
         "tests/test_transformers.py",
+        "tests/test_util.py",
         "-v",
     )
     session.notify("coverage")
