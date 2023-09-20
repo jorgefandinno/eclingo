@@ -1,8 +1,9 @@
 """
 If using conda, then be sure to be in the nox environment different from "base" before running this file.
 
-To run all tests: nox -Rt tests
+To run all tests: nox -Rs all_tests
 The above also runs coverage.
+The follwing only run a subset of tests and they do not run coverage.
 To run only fast test: nox -Rs tests
 To run only slow test: nox -Rs slow_tests
 """
@@ -24,7 +25,14 @@ def typecheck(session: nox.Session):
     session.run("mypy", "--implicit-optional", "src/eclingo")
 
 
-@nox.session(python=None, tags=["tests"])
+@nox.session(python=None)
+def all_tests(session: nox.Session):
+    session.notify("tests")
+    session.notify("slow_tests")
+    session.notify("coverage")
+
+
+@nox.session(python=None)
 def tests(session: nox.Session):
     session.install("coverage")
     session.install("-r", "requirements.txt")
@@ -60,7 +68,7 @@ def tests(session: nox.Session):
     )
 
 
-@nox.session(python=None, tags=["tests"])
+@nox.session(python=None)
 def slow_tests(session: nox.Session):
     session.install("coverage")
     session.install("-r", "requirements.txt")
@@ -76,11 +84,6 @@ def slow_tests(session: nox.Session):
         "tests/test_eclingo_examples.py",
         "-v",
     )
-
-
-@nox.session(python=None, tags=["tests"])
-def notify_coverage(session: nox.Session):
-    session.notify("coverage")
 
 
 # Session for individual new test implementation
