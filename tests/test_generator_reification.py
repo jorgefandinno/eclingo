@@ -1,4 +1,6 @@
+import textwrap
 import unittest
+from typing import List
 
 from clingo.symbol import Function
 
@@ -31,21 +33,46 @@ class TestCase(unittest.TestCase):
         self.assertCountEqual(models, expected)
 
 
-class TestEclingoGeneratorReification(TestCase):
-    # "a. b :- &k{a}."
-    # echo "u(a). u(b) :- k(u(a)). { k(u(a)) } :- u(a)." | clingo --output=reify
-    def test_generator01_reification(self):
-        self.assert_models(
-            generate(programs[0].ground_reification),
-            programs[0].candidates_01,
-        )
+def format_subtest_message(program: str, candidates: List[str]) -> str:
+    program = textwrap.indent(program, 4 * " ")
+    candidates = textwrap.indent("\n".join(candidates), 4 * " ")
+    return f"""\
 
-        # "{a}. b :- &k{a}."
-        # echo "{u(a)}. u(b) :- k(u(a)). { k(u(a)) } :- u(a)." | clingo --output=reify
-        self.assert_models(
-            generate(programs[1].ground_reification),
-            programs[1].candidates_01,
-        )
+Program:
+{program}
+Expected candidates:
+{candidates}
+"""
+
+
+class TestEclingoGeneratorReification(TestCase):
+    def test_generator_programs(self):
+        for program in programs:
+            prg = program.ground_reification
+            candidate = program.candidates_01
+
+            if prg is not None and candidate is not None:
+                with self.subTest(
+                    format_subtest_message(program.program, program.candidates_01_str)
+                ):
+                    self.assert_models(
+                        generate(prg),
+                        candidate,
+                    )
+        # # "a. b :- &k{a}."
+        # # echo "u(a). u(b) :- k(u(a)). { k(u(a)) } :- u(a)." | clingo --output=reify
+        # def test_generator01_reification(self):
+        #     self.assert_models(
+        #         generate(programs[0].ground_reification),
+        #         programs[0].candidates_01,
+        #     )
+
+        #     # "{a}. b :- &k{a}."
+        #     # echo "{u(a)}. u(b) :- k(u(a)). { k(u(a)) } :- u(a)." | clingo --output=reify
+        #     self.assert_models(
+        #         generate(programs[1].ground_reification),
+        #         programs[1].candidates_01,
+        #     )
 
         self.assert_models(
             generate(
