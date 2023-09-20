@@ -115,7 +115,6 @@ class Test(TestCase):
         )
 
     def test_epistemic_atom_with_both_negations(self):
-
         self.assert_equal_program(
             parse_program(":- &k{ not -a}."),
             ":- k(not1(u(-a))). not1(u(-a)) :- not u(-a). {k(not1(u(-a)))} :- not1(u(-a)).",

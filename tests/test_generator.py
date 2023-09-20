@@ -24,7 +24,6 @@ class CandidateGeneratorTest(Control):
 
 
 def generate(program):
-
     # Initialize
     control = InternalStateControl(message_limit=0)
     control.configuration.solve.models = 0

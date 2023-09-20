@@ -12,7 +12,6 @@ from eclingo.solver.tester import CandidateTesterReification
 
 
 def tester(program, candidates):
-
     config = _eclingo.config.AppConfig()
     config.eclingo_semantics = "c19-1"
 

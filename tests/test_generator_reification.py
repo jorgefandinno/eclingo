@@ -15,7 +15,6 @@ from tests.generated_programs import programs
 
 
 def generate(program):
-
     config = _eclingo.config.AppConfig()
     config.eclingo_semantics = "c19-1"
 
@@ -209,7 +208,6 @@ class TestEclingoGeneratorReification(TestCase):
         )
 
     def test_generator02_reification(self):
-
         # echo "-a. b :- &k{-a}. c :- &k{b}." | eclingo --semantics c19-1 --reification --output=reify
         self.assert_models(
             generate(
