@@ -26,6 +26,8 @@ def tests(session):
     session.run(
         "coverage",
         "run",
+        "--data-file",
+        ".coverage_fast",
         "-m",
         "unittest",
         "tests/test_reification.py",
@@ -60,7 +62,8 @@ def slow_tests(session):
     session.run(
         "coverage",
         "run",
-        "-a",
+        "--data-file",
+        ".coverage_slow",
         "-m",
         "unittest",
         "tests/test_app.py",
@@ -90,6 +93,12 @@ def notify_coverage(session):
 def coverage(session):
     session.install("coverage")
     omit = ["src/eclingo/__main__.py", "tests/*", "helper_test/*"]
+    session.run(
+        "coverage",
+        "combine",
+        ".coverage_fast",
+        ".coverage_slow",
+    )
     session.run(
         "coverage",
         "report",
