@@ -18,7 +18,7 @@ def typecheck(session):
     session.run("mypy", "--implicit-optional", "src/eclingo")
 
 
-@nox.session(python=None)
+@nox.session(python=None, tags=["tests"])
 def tests(session):
     session.install("coverage")
     session.install("-r", "requirements.txt")
@@ -33,9 +33,9 @@ def tests(session):
         "tests/test_reification3.py",
         "tests/test_reification4.py",
         "tests/test_reification5.py",
-        "tests/test_app.py",
+        # "tests/test_app.py",
         "tests/test_eclingo.py",
-        "tests/test_eclingo_examples.py",
+        # "tests/test_eclingo_examples.py",
         "tests/test_grounder.py",
         "tests/test_generator_reification.py",
         "tests/test_literals.py",
@@ -50,6 +50,27 @@ def tests(session):
         "tests/test_util.py",
         "-v",
     )
+
+
+@nox.session(python=None, tags=["tests"])
+def slow_tests(session):
+    session.install("coverage")
+    session.install("-r", "requirements.txt")
+    session.install("-e", ".")
+    session.run(
+        "coverage",
+        "run",
+        "-a",
+        "-m",
+        "unittest",
+        "tests/test_app.py",
+        "tests/test_eclingo_examples.py",
+        "-v",
+    )
+
+
+@nox.session(python=None, tags=["tests"])
+def notify_coverage(session):
     session.notify("coverage")
 
 
