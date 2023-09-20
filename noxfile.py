@@ -12,7 +12,7 @@ import nox
 @nox.session
 def format(session: nox.Session):
     session.install("black", "isort")
-    args = session.posargs if session.posargs else ["src/eclingo"]
+    args = session.posargs if session.posargs else ["src/eclingo", "tests"]
     session.run("isort", "--profile", "black", "src/eclingo")
     session.run("black", *args)
 

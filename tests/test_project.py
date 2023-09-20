@@ -36,7 +36,6 @@ class TestCase(unittest.TestCase):
 
 
 class TestEclingoProject(TestCase):
-
     # Given auto,3 as project parameter should not give 2 world views.
     def test_project0(self):
         self.maxDiff = None

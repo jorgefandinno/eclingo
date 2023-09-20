@@ -61,7 +61,6 @@ class Program:
         non_ground_reifications: str = None,
         description: str = "",
     ) -> None:
-
         self.program = program
         self.unoptimiced_candidates = unoptimiced_candidates
         self.candidates = self.build_candidates(candidates)

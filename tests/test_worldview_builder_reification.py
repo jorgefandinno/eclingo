@@ -1,5 +1,6 @@
 import unittest
 from typing import Sequence
+
 from clingo.ast import Sign
 from clingo.symbol import Function, Symbol
 
@@ -16,7 +17,6 @@ from eclingo.solver.world_view_builder import WorldWiewBuilderReification
 
 
 def world_view_builder(tested_candidates):
-
     config = _eclingo.config.AppConfig()
     config.eclingo_semantics = "c19-1"
     control = internal_control.InternalStateControl(["0"], message_limit=0)
