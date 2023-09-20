@@ -141,7 +141,7 @@ def build_candidates(candidate: Optional[Iterable[str]]) -> Optional[List[Candid
 
 def complete_program(program: programs.Program) -> programs_helper.Program:
     non_ground_reification = program.non_ground_reification
-    if non_ground_reification is not None:
+    if non_ground_reification is not None and ground_reification is None:
         ground_reification = subprocess.check_output(
             f'echo "{non_ground_reification}" | clingo --output=reify',
             shell=True,
