@@ -10,7 +10,7 @@ import nox
 
 
 @nox.session
-def format(session):
+def format(session: nox.Session):
     session.install("black", "isort")
     args = session.posargs if session.posargs else ["src/eclingo"]
     session.run("isort", "--profile", "black", "src/eclingo")
@@ -18,14 +18,14 @@ def format(session):
 
 
 @nox.session(python=None)
-def typecheck(session):
+def typecheck(session: nox.Session):
     session.install("mypy")
     session.install("-r", "requirements.txt")
     session.run("mypy", "--implicit-optional", "src/eclingo")
 
 
 @nox.session(python=None, tags=["tests"])
-def tests(session):
+def tests(session: nox.Session):
     session.install("coverage")
     session.install("-r", "requirements.txt")
     session.install("-e", ".")
@@ -61,7 +61,7 @@ def tests(session):
 
 
 @nox.session(python=None, tags=["tests"])
-def slow_tests(session):
+def slow_tests(session: nox.Session):
     session.install("coverage")
     session.install("-r", "requirements.txt")
     session.install("-e", ".")
@@ -79,13 +79,13 @@ def slow_tests(session):
 
 
 @nox.session(python=None, tags=["tests"])
-def notify_coverage(session):
+def notify_coverage(session: nox.Session):
     session.notify("coverage")
 
 
 # Session for individual new test implementation
 # @nox.session(python=None)
-# def tests(session):
+# def tests(session: nox.Session):
 #     session.install("coverage")
 #     session.install("-r", "requirements.txt")
 #     session.install("-e", ".")
@@ -96,7 +96,7 @@ def notify_coverage(session):
 
 
 @nox.session(python=None)
-def coverage(session):
+def coverage(session: nox.Session):
     session.install("coverage")
     omit = ["src/eclingo/__main__.py", "tests/*", "helper_test/*"]
     session.run(
@@ -116,12 +116,12 @@ def coverage(session):
 
 
 @nox.session
-def pylint(session):
+def pylint(session: nox.Session):
     session.install("-r", "requirements.txt", "pylint")
     session.run("pylint", "src/eclingo")
 
 
 @nox.session
-def lint_flake8(session):
+def lint_flake8(session: nox.Session):
     session.install("flake8", "flake8-black", "flake8-isort")
     session.run("flake8", "src/eclingo")
