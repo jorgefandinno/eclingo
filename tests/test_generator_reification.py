@@ -5,7 +5,7 @@ from clingo.symbol import Function
 import eclingo as _eclingo
 from eclingo.solver.candidate import Candidate
 from eclingo.solver.generator import GeneratorReification
-from tests.programs import programs
+from tests.generated_programs import programs
 
 # python -m unittest tests.test_generator_reification.TestEclingoGeneratorReification
 
@@ -37,14 +37,14 @@ class TestEclingoGeneratorReification(TestCase):
     def test_generator01_reification(self):
         self.assert_models(
             generate(programs[0].ground_reification),
-            programs[0].candidates,
+            programs[0].candidates_01,
         )
 
         # "{a}. b :- &k{a}."
         # echo "{u(a)}. u(b) :- k(u(a)). { k(u(a)) } :- u(a)." | clingo --output=reify
         self.assert_models(
             generate(programs[1].ground_reification),
-            programs[1].candidates,
+            programs[1].candidates_01,
         )
 
         self.assert_models(
