@@ -1,6 +1,12 @@
-import nox
+"""
+If using conda, then be sure to be in the nox environment different from "base" before running this file.
 
-# If using conda, then be sure to be in the nox environment different from "base" before running this file.
+To run all tests: nox -Rt tests
+The above also runs coverage.
+To run only fast test: nox -Rs tests
+To run only slow test: nox -Rs slow_tests
+"""
+import nox
 
 
 @nox.session
