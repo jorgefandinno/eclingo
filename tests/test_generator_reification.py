@@ -5,8 +5,7 @@ from clingo.symbol import Function
 import eclingo as _eclingo
 from eclingo.solver.candidate import Candidate
 from eclingo.solver.generator import GeneratorReification
-
-from .programs import programs
+from tests.programs import programs
 
 # python -m unittest tests.test_generator_reification.TestEclingoGeneratorReification
 
