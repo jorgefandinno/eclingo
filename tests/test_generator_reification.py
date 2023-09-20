@@ -25,6 +25,8 @@ def generate(program):
 
 class TestCase(unittest.TestCase):
     def assert_models(self, models, expected):
+        # discarding assumptiosn from the comparison
+        models = [Candidate(pos=m.pos, neg=m.neg) for m in models]
         self.assertCountEqual(models, expected)
 
 

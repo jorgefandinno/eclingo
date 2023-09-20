@@ -1,21 +1,24 @@
 from typing import Iterator
 
 import clingo
+from clingox.solving import approximate
 
+from eclingo import util
 from eclingo.config import AppConfig
 from eclingo.internal_states import internal_control
 
-from .candidate import Candidate
+from .candidate import Assumptions, Candidate
 
 
 class GeneratorReification:
     def __init__(self, config: AppConfig, reified_program: str) -> None:
         self._config = config
         self.control = internal_control.InternalStateControl(["0"], message_limit=0)
-        self.control.configuration.solve.project = "auto,3"
+        self.control.configuration.solve.project = "show,3"
         self.reified_program = reified_program
+        self.__initialeze_control(reified_program)
 
-    def __call__(self) -> Iterator[Candidate]:
+    def __initialeze_control(self, reified_program) -> None:
         base_program = """
             conjunction(B) :- literal_tuple(B), hold(L) : literal_tuple(B, L), L > 0;
                                             not hold(L) : literal_tuple(B, -L), L > 0.
@@ -30,10 +33,12 @@ class GeneratorReification:
 
             {hold(A) : atom_tuple(H,A)} :- rule(choice(H), B), body(B).
 
-            epistemic(k(A)) :- output(k(A), B), conjunction(B).
-            epistemic(not1(k(A))) :- output(k(A), B), not conjunction(B).
+            positive_candidate(k(A)) :- output(k(A), B), conjunction(B).
+            negative_candidate(k(A)) :- output(k(A), B), not conjunction(B).
 
-            #show epistemic/1."""
+            #show positive_candidate/1.
+            #show negative_candidate/1.
+            """
 
         fact_optimization_program = """
             % Propagate facts into epistemic facts
@@ -55,30 +60,41 @@ class GeneratorReification:
                 fact(SA).
 
             hold(KA) :- kp_hold(KA).
+
+            positive_extra_assumptions(A) :- epistemic_atom(k(A), KA), kp_hold(KA).
+            % negative_extra_assumptions(A) :- epistemic_atom(k(A), KA), kp_not_hold(KA).
+
+            #show positive_extra_assumptions/1.
+            #show negative_extra_assumptions/1.
             """
 
-        self.control.add("base", [], self.reified_program)
+        self.control.add("base", [], reified_program)
         self.control.add("base", [], base_program)
         self.control.add("base", [], fact_optimization_program)
         self.control.ground([("base", [])])
 
+    def __call__(self) -> Iterator[Candidate]:
         with self.control.solve(yield_=True) as handle:
             for model in handle:
                 candidate = self._model_to_candidate(model)
                 yield candidate
 
     def _model_to_candidate(self, model: clingo.Model) -> Candidate:
-        candidate_pos = []
-        candidate_neg = []
-
-        for symbol in model.symbols(shown=True):
-            symbol = symbol.arguments[0]
-            if symbol.name == "k":
-                # print("Generated Candidate symbol: ", symbol)
-                candidate_pos.append(symbol)
-            if symbol.name == "not1":
-                # print("Generated Candidate symbol Negative: ", symbol.arguments[0])
-                candidate_neg.append(symbol.arguments[0])
-
-        # print("Generated candidates: ", Candidate(candidate_pos, candidate_neg), "\n")
-        return Candidate(candidate_pos, candidate_neg)
+        (
+            positive_candidate,
+            negative_candidate,
+            positive_extra_assumptions,
+            negative_extra_assumptions,
+            _,
+        ) = util.partition4(
+            model.symbols(shown=True),
+            lambda symbol: symbol.name == "positive_candidate",
+            lambda symbol: symbol.name == "negative_candidate",
+            lambda symbol: symbol.name == "positive_extra_assumptions",
+            lambda symbol: symbol.name == "negative_extra_assumptions",
+            fun=lambda symbol: symbol.arguments[0],
+        )
+        extra_assumptions = Assumptions(
+            positive_extra_assumptions, negative_extra_assumptions
+        )
+        return Candidate(positive_candidate, negative_candidate, extra_assumptions)
