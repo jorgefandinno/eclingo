@@ -10,19 +10,6 @@ from clingox.testing.ast import parse_term
 
 from eclingo.solver.candidate import Candidate
 
-ua = Function("u", [Function("a", [], True)], True)
-kua = Function("k", [ua], True)
-
-candidate_kua = Candidate(
-    pos=[kua],
-    neg=[],
-)
-
-candidate_not_kua = Candidate(
-    pos=[],
-    neg=[kua],
-)
-
 
 def _ast_to_symbol(x: clingo.ast.AST) -> clingo.Symbol:
     """
