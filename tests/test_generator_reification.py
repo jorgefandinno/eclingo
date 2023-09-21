@@ -1,10 +1,13 @@
+import textwrap
 import unittest
+from typing import List
 
 from clingo.symbol import Function
 
 import eclingo as _eclingo
 from eclingo.solver.candidate import Candidate
 from eclingo.solver.generator import GeneratorReification
+from tests.generated_programs import programs
 
 # python -m unittest tests.test_generator_reification.TestEclingoGeneratorReification
 
@@ -12,7 +15,6 @@ from eclingo.solver.generator import GeneratorReification
 
 
 def generate(program):
-
     config = _eclingo.config.AppConfig()
     config.eclingo_semantics = "c19-1"
 
@@ -30,62 +32,46 @@ class TestCase(unittest.TestCase):
         self.assertCountEqual(models, expected)
 
 
-class TestEclingoGeneratorReification(TestCase):
-    # "a. b :- &k{a}."
-    # echo "u(a). u(b) :- k(u(a)). { k(u(a)) } :- u(a)." | clingo --output=reify
-    def test_generator01_reification(self):
-        self.assert_models(
-            generate(
-                """tag(incremental). atom_tuple(0). atom_tuple(0,1). literal_tuple(0).
-                                    rule(disjunction(0),normal(0)). atom_tuple(1).
-                                    atom_tuple(1,2). rule(choice(1),normal(0)). atom_tuple(2).
-                                    atom_tuple(2,3). literal_tuple(1). literal_tuple(1,2).
-                                    rule(disjunction(2),normal(1)). output(k(u(a)),1).
-                                    output(u(a),0). literal_tuple(2). literal_tuple(2,3). output(u(b),2)."""
-            ),
-            [
-                # Candidate(pos=[], neg=[Function('k', [Function('u', [Function('a', [], True)], True)], True)]),
-                Candidate(
-                    pos=[
-                        Function(
-                            "k", [Function("u", [Function("a", [], True)], True)], True
-                        )
-                    ],
-                    neg=[],
-                )
-            ],
-        )
+def format_subtest_message(program: str, candidates: List[str]) -> str:
+    program = textwrap.indent(program, 4 * " ")
+    candidates = textwrap.indent("\n".join(candidates), 4 * " ")
+    return f"""\
 
-        # "{a}. b :- &k{a}."
-        # echo "{u(a)}. u(b) :- k(u(a)). { k(u(a)) } :- u(a)." | clingo --output=reify
-        self.assert_models(
-            generate(
-                """atom_tuple(0). atom_tuple(0,1). literal_tuple(0). rule(choice(0),normal(0)).
-                                    atom_tuple(1). atom_tuple(1,2). literal_tuple(1). literal_tuple(1,1).
-                                    rule(choice(1),normal(1)). atom_tuple(2). atom_tuple(2,3).
-                                    literal_tuple(2). literal_tuple(2,2). rule(disjunction(2),normal(2)).
-                                    output(u(a),1). literal_tuple(3). literal_tuple(3,3).
-                                    output(u(b),3). output(k(u(a)),2)."""
-            ),
-            [
-                Candidate(
-                    pos=[],
-                    neg=[
-                        Function(
-                            "k", [Function("u", [Function("a", [], True)], True)], True
-                        )
-                    ],
-                ),
-                Candidate(
-                    pos=[
-                        Function(
-                            "k", [Function("u", [Function("a", [], True)], True)], True
-                        )
-                    ],
-                    neg=[],
-                ),
-            ],
-        )
+Program:
+{program}
+Expected candidates:
+{candidates}
+"""
+
+
+class TestEclingoGeneratorReification(TestCase):
+    def test_generator_programs(self):
+        for program in programs:
+            prg = program.ground_reification
+            candidate = program.candidates_01
+
+            if prg is not None and candidate is not None:
+                with self.subTest(
+                    format_subtest_message(program.program, program.candidates_01_str)
+                ):
+                    self.assert_models(
+                        generate(prg),
+                        candidate,
+                    )
+        # # "a. b :- &k{a}."
+        # # echo "u(a). u(b) :- k(u(a)). { k(u(a)) } :- u(a)." | clingo --output=reify
+        # def test_generator01_reification(self):
+        #     self.assert_models(
+        #         generate(programs[0].ground_reification),
+        #         programs[0].candidates_01,
+        #     )
+
+        #     # "{a}. b :- &k{a}."
+        #     # echo "{u(a)}. u(b) :- k(u(a)). { k(u(a)) } :- u(a)." | clingo --output=reify
+        #     self.assert_models(
+        #         generate(programs[1].ground_reification),
+        #         programs[1].candidates_01,
+        #     )
 
         self.assert_models(
             generate(
@@ -222,7 +208,6 @@ class TestEclingoGeneratorReification(TestCase):
         )
 
     def test_generator02_reification(self):
-
         # echo "-a. b :- &k{-a}. c :- &k{b}." | eclingo --semantics c19-1 --reification --output=reify
         self.assert_models(
             generate(
@@ -369,3 +354,8 @@ class TestEclingoGeneratorReification(TestCase):
                 ),
             ],
         )
+
+
+# class TestEclingoGeneratorReificationWithApproximation(TestCase):
+
+#     def

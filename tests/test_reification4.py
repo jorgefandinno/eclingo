@@ -10,7 +10,6 @@ from .ast_tester import ASTTestCase
 
 class Test(ASTTestCase):
     def test_theory_atom_negation(self):
-
         self.assertEqual(
             ast_reify.theory_atom_to_term(parse_literal("&k{ a(X) }")),
             parse_term("k(a(X))"),

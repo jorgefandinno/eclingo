@@ -48,7 +48,6 @@ class TestCase(ASTTestCase):
         self.print = False
 
     def assert_equal_program(self, program, expected):
-
         # Parse expected program as a list to test.
         expected_program = [x.strip() for x in expected.split(".") if x]
 
