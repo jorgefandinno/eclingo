@@ -1,6 +1,9 @@
-from typing import Iterator, cast
+import sys
+from typing import Iterator, Optional, Sequence, Tuple, cast
 
 import clingo
+from clingo import Function, Symbol
+from clingox.backend import SymbolicBackend
 
 from eclingo import util
 from eclingo.config import AppConfig
@@ -8,6 +11,51 @@ from eclingo.config import AppConfig
 from .candidate import Assumptions, Candidate
 
 # from clingox.solving import approximate
+
+
+def _approximate(
+    ctl: clingo.Control,
+) -> Optional[Tuple[Sequence[Symbol], Sequence[Symbol]]]:
+    """
+    Approximate the stable models of a program.
+
+    Parameters
+    ----------
+    ctl
+        A control object with a program. Grounding should be performed on this
+        control object before calling this function.
+
+    the following must be set before calling this function.
+    ctl.configuration.solve.solve_limit = 0
+
+    Returns
+    -------
+    Returns `None` if the problem is determined unsatisfiable. Otherwise,
+    returns an approximation of the stable models of the program in form of a
+    pair of sequences of symbols. Atoms contained in the first sequence are
+    true and atoms not contained in the second sequence are false in all stable
+    models.
+
+    Notes
+    -----
+    Runs in polynomial time. An approximation might be returned even if the
+    problem is unsatisfiable.
+    """
+    ctl.solve()
+    ctl.cleanup()
+
+    # check if the problem is conflicting
+    if ctl.is_conflicting:
+        return None
+
+    # return approximation
+    lower = []
+    upper = []
+    for sa in ctl.symbolic_atoms:
+        upper.append(sa.symbol)
+        if sa.is_fact:
+            lower.append(sa.symbol)
+    return lower, upper
 
 
 class GeneratorReification:
@@ -54,24 +102,75 @@ class GeneratorReification:
                     output(SA, LT),
                     #count {L : literal_tuple(LT, L)} = 0.
 
-            kp_hold(KA) :-
+            pk_hold(KA) :-
                 epistemic_atom(SKA, KA),
                 SKA = k(SA),
                 fact(SA).
 
-            hold(KA) :- kp_hold(KA).
+            hold(KA) :- pk_hold(KA).
 
-            positive_extra_assumptions(A) :- epistemic_atom(k(A), KA), kp_hold(KA).
+            positive_extra_assumptions(A) :- epistemic_atom(k(A), KA), pk_hold(KA).
             % negative_extra_assumptions(A) :- epistemic_atom(k(A), KA), kp_not_hold(KA).
 
             #show positive_extra_assumptions/1.
             #show negative_extra_assumptions/1.
             """
 
+        preprocessing_program = """
+            hold_symbolic_atom(SA) :- hold(A), symbolic_atom(SA, A).
+            hold_symbolic_atom(SA) :- fact(SA).
+            preprocessing_hold(KA) :- epistemic_atom(k(SA), KA), hold_symbolic_atom(SA).
+            holds(SA) :- hold(A), symbolic_atom(SA, A).
+            pk_holds(SA) :- pk_hold(A), symbolic_atom(SA, A).
+        """
+
         self.control.add("base", [], reified_program)
         self.control.add("base", [], base_program)
         self.control.add("base", [], fact_optimization_program)
+        self.control.add("base", [], preprocessing_program)
         self.control.ground([("base", [])])
+
+    def fast_preprocessing(self) -> None:
+        print("*" * 50)
+        solve_limit = self.control.configuration.solve.solve_limit
+        self.control.configuration.solve.solve_limit = 0
+        lower_prev_size, upper_pre_size = -1, sys.maxsize
+        lower_size, upper_size = 0, sys.maxsize
+        prev_lower, prev_upper = frozenset(), frozenset()
+        while lower_prev_size < lower_size or upper_pre_size > upper_size:
+            ret = _approximate(self.control)
+            if ret is None:
+                break
+            lower_all, upper_all = ret
+            lower = frozenset(
+                e.arguments[0] for e in lower_all if e.name == "preprocessing_hold"
+            )
+            upper = frozenset(
+                e.arguments[0] for e in upper_all if e.name == "preprocessing_hold"
+            )
+            lower_prev_size, upper_pre_size = lower_size, upper_size
+            lower_size, upper_size = len(lower), len(upper)
+
+            print("-" * 50)
+            names = {"holds", "pk_holds", "preprocessing_hold"}
+            print(
+                f"lower ({lower_prev_size},{lower_size}):\n",
+                " ".join(str(e) for e in sorted(lower_all) if e.name in sorted(names)),
+            )
+            # # print(f"lower ({lower_prev_size},{lower_size}):\n", " ".join(str(e) for e in sorted(lower_all)))
+            print(
+                f"upper ({upper_pre_size},{upper_size}):\n",
+                " ".join(str(e) for e in sorted(upper_all) if e.name in names),
+            )
+
+            if lower_prev_size < lower_size:
+                lower_diff = lower.difference(prev_lower)
+                print("lower_diff ", lower_diff)
+                with SymbolicBackend(self.control.backend()) as symbolic_backend:
+                    for atom in lower_diff:
+                        symbolic_backend.add_rule([], [], [Function("hold", [atom])])
+
+        self.control.configuration.solve.solve_limit = solve_limit
 
     def __call__(self) -> Iterator[Candidate]:
         with cast(clingo.SolveHandle, self.control.solve(yield_=True)) as handle:
@@ -80,6 +179,7 @@ class GeneratorReification:
                 yield candidate
 
     def _model_to_candidate(self, model: clingo.Model) -> Candidate:
+        # print(" ".join(str(a) for a in sorted(model.symbols(atoms=True))))
         (
             positive_candidate,
             negative_candidate,

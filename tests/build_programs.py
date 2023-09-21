@@ -119,11 +119,20 @@ class ASTtoSymbol(clingo.ast.Transformer):
 def build_candidate_atom(atom: clingo.ast.AST) -> clingo.symbol.Symbol:
     ast_to_symbol = ASTtoSymbol()
     atom = ast_to_symbol(atom)
-    atom = clingo.symbol.Function("u", [atom.arguments[0]], True)
-    return clingo.symbol.Function("k", [atom], True)
+    if atom.arguments[0].name == "not1":
+        atom = clingo.symbol.Function(
+            "not1",
+            [clingo.symbol.Function("u", [atom.arguments[0].arguments[0]])],
+        )
+    else:
+        atom = clingo.symbol.Function("u", [atom.arguments[0]])
+    return clingo.symbol.Function("k", [atom])
 
 
 def build_candidate(candidate: str) -> Candidate:
+    candidate = candidate.strip()
+    if not candidate:
+        return Candidate(pos=[], neg=[])
     atoms = candidate.split(" ")
     atoms = [parse_term(atom) for atom in atoms]
     pos = [build_candidate_atom(atom) for atom in atoms if atom.name == "k"]
@@ -144,8 +153,6 @@ def complete_program(program: programs.Program) -> programs_helper.Program:
     previous_candidate = None
     for attr, value in sorted(program._asdict().items()):
         if attr != "candidate_wv" and attr.startswith("candidates_"):
-            print("previous_candidate", previous_candidate)
-            print(attr, value)
             if value is None and previous_candidate is not None:
                 new_program_dict[f"{attr}_str"] = new_program_dict[
                     f"{previous_candidate}_str"
@@ -165,8 +172,6 @@ def complete_program(program: programs.Program) -> programs_helper.Program:
             shell=True,
         )
     new_program_dict["ground_reification"] = ground_reification.decode("utf-8")
-
-    pprint.pprint(f"new_program_dict  {new_program_dict}")
 
     return programs_helper.Program(**new_program_dict)
 

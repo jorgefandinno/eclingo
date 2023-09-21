@@ -20,8 +20,14 @@ def generate(program):
 
     candidate_generator = GeneratorReification(config, program)
 
+    # print("="*30)
     candidates = list(candidate_generator())
-    # print(sorted(candidates))
+
+    # print("Candidates:")
+    # for candidate in sorted(candidates):
+    #     print("-"*30)
+    #     print(" ".join(str(a) for a in candidate.pos))
+    #     print(" ".join(str(a) for a in candidate.neg))
     return sorted(candidates)
 
 
@@ -32,12 +38,12 @@ class TestCase(unittest.TestCase):
         self.assertCountEqual(models, expected)
 
 
-def format_subtest_message(program: str, candidates: List[str]) -> str:
+def format_subtest_message(i: int, program: str, candidates: List[str]) -> str:
     program = textwrap.indent(program, 4 * " ")
     candidates = textwrap.indent("\n".join(candidates), 4 * " ")
     return f"""\
 
-Program:
+Program {i}:
 {program}
 Expected candidates:
 {candidates}
@@ -46,13 +52,18 @@ Expected candidates:
 
 class TestEclingoGeneratorReification(TestCase):
     def test_generator_programs(self):
-        for program in programs:
+        for i, program in enumerate(programs):
             prg = program.ground_reification
             candidate = program.candidates_01
-
+            # print(candidate)
+            # print(prg)
             if prg is not None and candidate is not None:
+                # print(program.program)
+
                 with self.subTest(
-                    format_subtest_message(program.program, program.candidates_01_str)
+                    format_subtest_message(
+                        i, program.program, program.candidates_01_str
+                    )
                 ):
                     self.assert_models(
                         generate(prg),
