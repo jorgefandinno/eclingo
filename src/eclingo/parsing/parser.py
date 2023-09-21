@@ -4,7 +4,6 @@ from clingo import ast
 from clingo.ast import Location, Position
 
 from eclingo.config import AppConfig
-from eclingo.internal_states.internal_control import ASTObject
 
 from .transformers.parser_negations import StrongNegationReplacement
 from .transformers.theory_parser_epistemic import (
@@ -14,7 +13,7 @@ from .transformers.theory_parser_epistemic import (
     replace_negations_by_auxiliary_atoms_in_epistemic_literals,
 )
 
-_CallbackType = Callable[[ASTObject], None]
+_CallbackType = Callable[[ast.AST], None]
 
 from clingo.ast import ASTType, Location, Position, parse_string
 from clingox.ast import (

@@ -1,19 +1,19 @@
 from typing import Iterator
 
 import clingo
-from clingox.solving import approximate
 
 from eclingo import util
 from eclingo.config import AppConfig
-from eclingo.internal_states import internal_control
 
 from .candidate import Assumptions, Candidate
+
+# from clingox.solving import approximate
 
 
 class GeneratorReification:
     def __init__(self, config: AppConfig, reified_program: str) -> None:
         self._config = config
-        self.control = internal_control.InternalStateControl(["0"], message_limit=0)
+        self.control = clingo.Control(["0"], message_limit=0)
         self.control.configuration.solve.project = "show,3"
         self.reified_program = reified_program
         self.__initialeze_control(reified_program)

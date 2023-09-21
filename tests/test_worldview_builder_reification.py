@@ -1,11 +1,11 @@
 import unittest
 from typing import Sequence
 
+import clingo
 from clingo.ast import Sign
 from clingo.symbol import Function, Symbol
 
 import eclingo as _eclingo
-import eclingo.internal_states.internal_control as internal_control
 from eclingo.literals import Literal
 from eclingo.solver.candidate import Candidate
 from eclingo.solver.world_view import EpistemicLiteral, WorldView
@@ -19,7 +19,7 @@ from eclingo.solver.world_view_builder import WorldWiewBuilderReification
 def world_view_builder(tested_candidates):
     config = _eclingo.config.AppConfig()
     config.eclingo_semantics = "c19-1"
-    control = internal_control.InternalStateControl(["0"], message_limit=0)
+    control = clingo.Control(["0"], message_limit=0)
     control.configuration.solve.models = 0
     control.configuration.solve.project = "auto,3"
     show_stm: Sequence[Symbol] = []

@@ -1,9 +1,9 @@
 from typing import Sequence
 
+import clingo
 from clingo import Function, Symbol
 from clingo.ast import Sign
 
-import eclingo.internal_states.internal_control as internal_control
 from eclingo.literals import Literal
 from eclingo.solver.candidate import Candidate
 
@@ -12,9 +12,7 @@ from .world_view import EpistemicLiteral, WorldView
 
 
 class WorldWiewBuilderReification:
-    def __init__(
-        self, control: internal_control.InternalStateControl, show_stm: Sequence[Symbol]
-    ):
+    def __init__(self, control: clingo.Control, show_stm: Sequence[Symbol]):
         self.show_statements = show_stm
         self.control = control
 
@@ -103,7 +101,7 @@ class WorldWiewBuilderReification:
 
 class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
     def __init__(self, reified_program):
-        self.control = internal_control.InternalStateControl(["0"], message_limit=0)
+        self.control = clingo.Control(["0"], message_limit=0)
         self.control.configuration.solve.models = 0
         self.control.configuration.solve.project = "auto,3"
         self.reified_program = reified_program
@@ -112,7 +110,7 @@ class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
         program_meta_encoding = """
                                 symbolic_atom(SA, A) :- output(SA,LT), #count{LL : literal_tuple(LT, LL)} = 1, literal_tuple(LT, A).
                                 show_statement(SA) :- symbolic_atom(show_statement(SA), _).
-                                
+
                                 {k(A)} :- output(k(A), _).
                                 """
 

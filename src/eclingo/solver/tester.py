@@ -1,4 +1,5 @@
-import eclingo.internal_states.internal_control as internal_control
+import clingo
+
 from eclingo.config import AppConfig
 
 from .candidate import Candidate
@@ -7,9 +8,9 @@ from .candidate import Candidate
 class CandidateTesterReification:
     def __init__(self, config: AppConfig, reified_program: str):
         self._config = config
-        self.control = internal_control.InternalStateControl(["0"], message_limit=0)
+        self.control = clingo.Control(["0"], message_limit=0)
         self.reified_program = reified_program
-        self.control.control.configuration.solve.enum_mode = "cautious"  # type: ignore
+        self.control.configuration.solve.enum_mode = "cautious"  # type: ignore
 
         program_meta_encoding = """conjunction(B) :- literal_tuple(B),
                                                         hold(L) : literal_tuple(B,  L), L > 0;
