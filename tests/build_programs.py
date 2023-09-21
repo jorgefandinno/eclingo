@@ -140,26 +140,34 @@ def build_candidates(candidate: Optional[Iterable[str]]) -> Optional[List[Candid
 
 
 def complete_program(program: programs.Program) -> programs_helper.Program:
+    new_program_dict = {}
+    previous_candidate = None
+    for attr, value in sorted(program._asdict().items()):
+        if attr != "candidate_wv" and attr.startswith("candidates_"):
+            print("previous_candidate", previous_candidate)
+            print(attr, value)
+            if value is None and previous_candidate is not None:
+                new_program_dict[f"{attr}_str"] = new_program_dict[f"{previous_candidate}_str"]
+                new_program_dict[attr] = new_program_dict[f"{previous_candidate}"]
+            else:
+                new_program_dict[f"{attr}_str"] = value
+                new_program_dict[attr] = build_candidates(value)
+            previous_candidate = attr
+        else:
+            new_program_dict[attr] = value
+
     non_ground_reification = program.non_ground_reification
-    if non_ground_reification is not None and ground_reification is None:
+    if non_ground_reification is not None and program.ground_reification is None:
         ground_reification = subprocess.check_output(
             f'echo "{non_ground_reification}" | clingo --output=reify',
             shell=True,
         )
-        ground_reification = ground_reification.decode("utf-8")
+    new_program_dict["ground_reification"] = ground_reification.decode("utf-8")
 
-    return programs_helper.Program(
-        program=program.program,
-        candidates_00_str=program.candidates_00,
-        candidates_00=build_candidates(program.candidates_00),
-        candidates_01_str=program.candidates_01,
-        candidates_01=build_candidates(program.candidates_01),
-        candidates_wv_str=program.candidates_wv,
-        candidates_wv=program.candidates_wv,
-        non_ground_reification=program.non_ground_reification,
-        description=program.description,
-        ground_reification=ground_reification,
-    )
+    pprint.pprint(f"new_program_dict  {new_program_dict}")
+
+    return programs_helper.Program(**new_program_dict)
+
 
 
 str_programs = ",\n".join(
