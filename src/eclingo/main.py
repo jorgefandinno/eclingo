@@ -5,7 +5,7 @@ Main module providing the application logic.
 import sys
 from typing import Sequence
 
-from clingo.application import Application, Flag, clingo_main
+from clingo.application import Flag, clingo_main
 
 from eclingo.config import AppConfig
 from eclingo.control import Control
@@ -18,7 +18,7 @@ _TRUE = ["1", "yes", "true"]
 reification_flag = Flag(True)
 
 
-class Application(Application):
+class Application:
     """
     Application class that can be used with `clingo.clingo_main` to solve CSP
     problems.

@@ -1,7 +1,7 @@
-from typing import Sequence
+from typing import Sequence, cast
 
 import clingo
-from clingo import Function, Symbol
+from clingo import Configuration, Function, SolveHandle, Symbol
 from clingo.ast import Sign
 
 from eclingo.literals import Literal
@@ -102,8 +102,8 @@ class WorldWiewBuilderReification:
 class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
     def __init__(self, reified_program):
         self.control = clingo.Control(["0"], message_limit=0)
-        self.control.configuration.solve.models = 0
-        self.control.configuration.solve.project = "auto,3"
+        cast(Configuration, self.control.configuration.solve).models = 0
+        cast(Configuration, self.control.configuration.solve).project = "auto,3"
         self.reified_program = reified_program
         self.show_statements: Sequence[Symbol] = []
 
@@ -138,11 +138,12 @@ class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
             literal = literal.arguments[0]
             cand_show.append(literal)
 
-        self.control.configuration.solve.models = 0
-        self.control.configuration.solve.project = "no"
+        cast(Configuration, self.control.configuration.solve).models = 0
+        cast(Configuration, self.control.configuration.solve).project = "no"
 
-        with self.control.solve(
-            yield_=True, assumptions=candidate_assumptions
+        with cast(
+            SolveHandle,
+            self.control.solve(yield_=True, assumptions=candidate_assumptions),
         ) as handle:
             model = None
             for model in handle:
