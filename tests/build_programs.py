@@ -147,7 +147,9 @@ def complete_program(program: programs.Program) -> programs_helper.Program:
             print("previous_candidate", previous_candidate)
             print(attr, value)
             if value is None and previous_candidate is not None:
-                new_program_dict[f"{attr}_str"] = new_program_dict[f"{previous_candidate}_str"]
+                new_program_dict[f"{attr}_str"] = new_program_dict[
+                    f"{previous_candidate}_str"
+                ]
                 new_program_dict[attr] = new_program_dict[f"{previous_candidate}"]
             else:
                 new_program_dict[f"{attr}_str"] = value
@@ -167,7 +169,6 @@ def complete_program(program: programs.Program) -> programs_helper.Program:
     pprint.pprint(f"new_program_dict  {new_program_dict}")
 
     return programs_helper.Program(**new_program_dict)
-
 
 
 str_programs = ",\n".join(
