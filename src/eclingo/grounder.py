@@ -1,18 +1,19 @@
 from typing import Dict, List, Sequence, Tuple
 
 from clingo import Symbol
+from clingo.ast import ProgramBuilder
+from clingo.control import Control
 from clingox import program as clingox_program
 from clingox.reify import Reifier
 
 from eclingo.config import AppConfig
-from eclingo.internal_states.internal_control import InternalStateControl
 
 from .parsing.parser import parse_program
 from .parsing.transformers.ast_reify import reification_program_to_str
 
 
 class Grounder:
-    def __init__(self, control: InternalStateControl, config: AppConfig = AppConfig()):
+    def __init__(self, control: Control, config: AppConfig = AppConfig()):
         self.control = control
         self.config = config
         self.reification = self.config.eclingo_reification
@@ -27,7 +28,8 @@ class Grounder:
     def add_program(
         self, program: str, parameters: Sequence[str] = (), name: str = "base"
     ) -> None:
-        with self.control.builder() as builder:
+        builder = ProgramBuilder(self.control)
+        with builder:
             parse_program(program, builder.add, parameters, name, self.config)
 
     def ground(

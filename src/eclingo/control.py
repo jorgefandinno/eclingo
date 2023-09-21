@@ -21,7 +21,7 @@ class Control(object):
         #     self.max_models = 1
         #     self.control = internal_states.InternalStateControl(['0', '--project'])
         if config is None:
-            config = AppConfig()
+            config = AppConfig(semantics="c19-1", use_reification=True)
         self.config = config
 
         if self.max_models == 0:
