@@ -1,7 +1,6 @@
 import clingo.ast as _ast
 
 from eclingo.config import AppConfig
-from eclingo.internal_states.internal_control import ShowStatement
 from eclingo.parsing.parser import parse_program as _parse_program
 
 from . import helper
@@ -39,6 +38,16 @@ class ParsingTestHelper(helper.TestHelper):
 
     def __assert_equal_parsing_program(self, parsed_program, expected_program):
         expected_program = self.clingo_parse_program(expected_program)
+        parsed_program.sort()
+        expected_program.sort()
+        self.assertEqual(len(parsed_program), len(expected_program))
+        for r1, r2 in zip(parsed_program, expected_program):
+            self.assertEqual(str(r1), str(r2))
+            self.assertEqual(r1, r2)
+        self.assertCountEqual(
+            [str(s) for s in parsed_program], [str(s) for s in expected_program]
+        )
+        self.assertCountEqual(parsed_program, expected_program)
         self.assert_equal_ordered(parsed_program, expected_program)
 
     def assert_equal_parsing_program_with_show(
@@ -48,9 +57,10 @@ class ParsingTestHelper(helper.TestHelper):
         program_without_show = []
         show_statements = []
         for statement in parsed_program:
-            if isinstance(statement, ShowStatement):
-                show_statements.append(statement)
-            else:
-                program_without_show.append(statement)
+            # if isinstance(statement, ShowStatement):
+            #     show_statements.append(statement)
+            # else:
+            #     program_without_show.append(statement)
+            program_without_show.append(statement)
         self.__assert_equal_parsing_program(program_without_show, expected_program)
         self.assert_equal_ordered(show_statements, expected_show)

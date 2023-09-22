@@ -5,12 +5,10 @@ Main module providing the application logic.
 import sys
 from typing import Sequence
 
-from clingo.application import Flag
+from clingo.application import Flag, clingo_main
 
 from eclingo.config import AppConfig
 from eclingo.control import Control
-from eclingo.internal_states import internal_control
-from eclingo.internal_states.internal_control import InternalStateControl
 
 from . import __version__
 
@@ -20,7 +18,7 @@ _TRUE = ["1", "yes", "true"]
 reification_flag = Flag(True)
 
 
-class Application(internal_control.Application):
+class Application:
     """
     Application class that can be used with `clingo.clingo_main` to solve CSP
     problems.
@@ -67,7 +65,7 @@ class Application(internal_control.Application):
         with open(path) as file_:
             return file_.read()
 
-    def main(self, control: InternalStateControl, files: Sequence[str]) -> None:
+    def main(self, control: Control, files: Sequence[str]) -> None:
         """
         Entry point of the application registering the propagator and
         implementing the standard ground and solve functionality.
@@ -102,5 +100,5 @@ class Application(internal_control.Application):
 def main():
     sys.argv.append("--outf=3")
     application = Application()
-    result = internal_control.clingo_main(application, sys.argv[1:])
+    result = clingo_main(application, sys.argv[1:])
     return int(result)

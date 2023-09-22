@@ -1,15 +1,13 @@
 from typing import Set
 
+import clingo
 from clingo import Symbol
 
-import eclingo.internal_states.internal_control as internal_control
 from eclingo.config import AppConfig
 
 
 class Preprocessor:
-    def __init__(
-        self, config: AppConfig, control: internal_control.InternalStateControl
-    ) -> None:
+    def __init__(self, config: AppConfig, control: clingo.Control) -> None:
         self._control = control
         self._config = config
         self._epistemic_to_test_mapping = self._control.epistemic_to_test_mapping

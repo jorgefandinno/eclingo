@@ -4,7 +4,6 @@ from clingo.ast import Sign
 from clingo.symbol import Function
 
 import eclingo as _eclingo
-from eclingo.internal_states import internal_control
 from eclingo.literals import Literal
 from eclingo.solver import SolverReification
 from eclingo.solver.world_view import EpistemicLiteral, WorldView

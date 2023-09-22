@@ -1,4 +1,8 @@
-import eclingo.internal_states.internal_control as internal_control
+from typing import cast
+
+import clingo
+from clingo.control import Configuration
+
 from eclingo.config import AppConfig
 
 from .candidate import Candidate
@@ -7,9 +11,9 @@ from .candidate import Candidate
 class CandidateTesterReification:
     def __init__(self, config: AppConfig, reified_program: str):
         self._config = config
-        self.control = internal_control.InternalStateControl(["0"], message_limit=0)
+        self.control = clingo.Control(["0"], message_limit=0)
         self.reified_program = reified_program
-        self.control.control.configuration.solve.enum_mode = "cautious"  # type: ignore
+        cast(Configuration, self.control.configuration.solve).enum_mode = "cautious"  # type: ignore
 
         program_meta_encoding = """conjunction(B) :- literal_tuple(B),
                                                         hold(L) : literal_tuple(B,  L), L > 0;
@@ -77,8 +81,8 @@ class CandidateTesterReification:
             assumption = (literal, False)
             candidate_assumptions.append(assumption)
 
-        self.control.configuration.solve.models = 0
-        self.control.configuration.solve.project = "no"
+        cast(Configuration, self.control.configuration.solve).models = 0
+        cast(Configuration, self.control.configuration.solve).project = "no"
 
         # print("\nTESTER")
         # print("Candidate assumptions:\n", candidate_assumptions)
@@ -87,8 +91,9 @@ class CandidateTesterReification:
         #     "\n".join(str((str(a), v)) for a, v in candidate_assumptions),
         # )
 
-        with self.control.solve(
-            yield_=True, assumptions=candidate_assumptions
+        with cast(
+            clingo.SolveHandle,
+            self.control.solve(yield_=True, assumptions=candidate_assumptions),
         ) as handle:
             model = None
             for model in handle:

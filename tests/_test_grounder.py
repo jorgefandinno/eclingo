@@ -1,5 +1,7 @@
+# after removing InternalStateControl this does not work
 import unittest
 
+import clingo
 from clingo import Number
 
 import eclingo.internal_states.internal_control as internal_control
@@ -27,9 +29,7 @@ class TestCase(unittest.TestCase):
         config = _config.AppConfig()
         config.eclingo_semantics = "c19-1"
         self.grounder = _grounder.Grounder(
-            internal_control.InternalStateControl(
-                control=internal_control.InternalStateControl(message_limit=0)
-            ),
+            clingo.Control(message_limit=0),
             config=config,
         )
 

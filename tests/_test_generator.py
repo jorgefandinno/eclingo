@@ -1,11 +1,11 @@
 import unittest
 
+import clingo
 from clingo.symbol import Function
 
 import eclingo as _eclingo
 from eclingo.config import AppConfig
 from eclingo.control import Control
-from eclingo.internal_states.internal_control import InternalStateControl
 from eclingo.solver.candidate import Candidate
 from eclingo.solver.generator import CandidateGenerator
 
@@ -25,7 +25,7 @@ class CandidateGeneratorTest(Control):
 
 def generate(program):
     # Initialize
-    control = InternalStateControl(message_limit=0)
+    control = clingo.Control(message_limit=0)
     control.configuration.solve.models = 0
     config = _eclingo.config.AppConfig()
     config.eclingo_semantics = "c19-1"

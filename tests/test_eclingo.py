@@ -1,20 +1,21 @@
 import unittest
 
+import clingo
+
 import eclingo as _eclingo
 from eclingo.control import Control
-from eclingo.internal_states import internal_control
 
 # python -m unittest tests.test_eclingo.TestEclingoUnfounded
 
 
-def solve(program):
-    control = internal_control.InternalStateControl(message_limit=0)
-    config = _eclingo.config.AppConfig()
-    config.eclingo_semantics = "c19-1"
+def solve(program, models=0):
+    control = clingo.Control(message_limit=0)
+    # config = _eclingo.config.AppConfig()
+    # config.eclingo_semantics = "c19-1"
     control.configuration.solve.project = "auto,3"
-    control.configuration.solve.models = 0
+    control.configuration.solve.models = models
 
-    eclingo_control = Control(control, config)
+    eclingo_control = Control(control)
     eclingo_control.add_program(program)
 
     wviews = []
@@ -27,6 +28,11 @@ def solve(program):
 class TestCase(unittest.TestCase):
     def assert_models(self, models, expected):
         self.assertEqual(models, sorted(sorted(wv) for wv in expected))
+
+    def assert_subset_models(self, models, expected):
+        self.assertLessEqual(
+            set(frozenset(wv) for wv in models), set(frozenset(wv) for wv in expected)
+        )
 
 
 class TestEclingoGround(TestCase):
@@ -291,9 +297,18 @@ class TestEclingoCommontTo_G94_G11_FAEEL(TestCase):  # pylint: disable=invalid-n
         self.assert_models(solve("a, b. a :- not &k{ not b}."), [])
         self.assert_models(solve("a, b. a :- &k{ not b}."), [[], ["&m{b}"]])
         self.assert_models(solve("a :- b. b :- not &k{ not a}."), [[], ["&m{a}"]])
-        self.assert_models(
-            solve("a :- not &k{ not b}. b :- not &k{ not a}."), [[], ["&m{a}", "&m{b}"]]
-        )
+        expected_models = [[], ["&m{a}", "&m{b}"]]
+        models = solve("a :- not &k{ not b}. b :- not &k{ not a}.")
+        self.assert_models(models, expected_models)
+        models = solve("a :- not &k{ not b}. b :- not &k{ not a}.", models=0)
+        self.assertEqual(len(models), 2)
+        self.assert_models(models, expected_models)
+        models = solve("a :- not &k{ not b}. b :- not &k{ not a}.", models=1)
+        self.assertEqual(len(models), 1)
+        self.assert_subset_models(models, expected_models)
+        models = solve("a :- not &k{ not b}. b :- not &k{ not a}.", models=2)
+        self.assertEqual(len(models), 2)
+        self.assert_models(models, expected_models)
         self.assert_models(
             solve("a :- not &k{not b}, not b. b :- not &k{not a}, not a."),
             [[], ["&m{a}", "&m{b}"]],

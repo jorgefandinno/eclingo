@@ -1,20 +1,20 @@
-from typing import Iterator
+from typing import Iterator, cast
 
 import clingo
-from clingox.solving import approximate
 
 from eclingo import util
 from eclingo.config import AppConfig
-from eclingo.internal_states import internal_control
 
 from .candidate import Assumptions, Candidate
+
+# from clingox.solving import approximate
 
 
 class GeneratorReification:
     def __init__(self, config: AppConfig, reified_program: str) -> None:
         self._config = config
-        self.control = internal_control.InternalStateControl(["0"], message_limit=0)
-        self.control.configuration.solve.project = "show,3"
+        self.control = clingo.Control(["0"], message_limit=0)
+        cast(clingo.Configuration, self.control.configuration.solve).project = "show,3"
         self.reified_program = reified_program
         self.__initialeze_control(reified_program)
 
@@ -74,7 +74,7 @@ class GeneratorReification:
         self.control.ground([("base", [])])
 
     def __call__(self) -> Iterator[Candidate]:
-        with self.control.solve(yield_=True) as handle:
+        with cast(clingo.SolveHandle, self.control.solve(yield_=True)) as handle:
             for model in handle:
                 candidate = self._model_to_candidate(model)
                 yield candidate
