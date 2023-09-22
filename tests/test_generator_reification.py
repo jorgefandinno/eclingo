@@ -32,15 +32,16 @@ def generate(program):
 
 
 class TestCase(unittest.TestCase):
-    def assert_models(self, models, expected):
+    def assert_models(self, models, expected, use_assumptions=False):
         # discarding assumptiosn from the comparison
-        models = [Candidate(pos=m.pos, neg=m.neg) for m in models]
+        if not use_assumptions:
+            models = [Candidate(pos=m.pos, neg=m.neg) for m in models]
         self.assertCountEqual(models, expected)
 
 
 def format_subtest_message(i: int, program: str, candidates: List[str]) -> str:
     program = textwrap.indent(program, 4 * " ")
-    candidates = textwrap.indent("\n".join(candidates), 4 * " ")
+    candidates = textwrap.indent(candidates, 4 * " ")
     return f"""\
 
 Program {i}:
@@ -52,6 +53,7 @@ Expected candidates:
 
 class TestEclingoGeneratorReification(TestCase):
     def test_generator_programs(self):
+        self.maxDiff = None
         for i, program in enumerate(programs):
             prg = program.ground_reification
             candidate = program.candidates_01
@@ -68,6 +70,7 @@ class TestEclingoGeneratorReification(TestCase):
                     self.assert_models(
                         generate(prg),
                         candidate,
+                        use_assumptions=True,
                     )
         # # "a. b :- &k{a}."
         # # echo "u(a). u(b) :- k(u(a)). { k(u(a)) } :- u(a)." | clingo --output=reify

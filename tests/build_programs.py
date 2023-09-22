@@ -6,7 +6,7 @@ from collections import namedtuple
 from dataclasses import dataclass
 from io import StringIO
 from pprint import pformat
-from typing import Iterable, List, NamedTuple, Optional
+from typing import Iterable, List, NamedTuple, Optional, Tuple, Union
 
 import clingo
 import programs
@@ -14,7 +14,7 @@ import programs_helper
 from clingo import Function
 from clingox.testing.ast import parse_term
 
-from eclingo.solver.candidate import Candidate
+from eclingo.solver.candidate import Assumptions, Candidate
 
 
 class MyPrettyPrinter(pprint.PrettyPrinter):
@@ -109,6 +109,9 @@ def _ast_to_symbol(x: clingo.ast.AST) -> clingo.Symbol:
 class ASTtoSymbol(clingo.ast.Transformer):
     """Transforms a SymbolicTerm AST of type Function into an AST of type ast.Function."""
 
+    def visit_SymbolicTerm(self, x: clingo.ast.AST):  # pylint: disable=invalid-name
+        return x.symbol
+
     def visit_Function(self, x: clingo.ast.AST):  # pylint: disable=invalid-name
         """
         Transforms a SymbolicTerm AST of type Function into an AST of type ast.Function.
@@ -116,36 +119,65 @@ class ASTtoSymbol(clingo.ast.Transformer):
         return _ast_to_symbol(x)
 
 
-def build_candidate_atom(atom: clingo.ast.AST) -> clingo.symbol.Symbol:
-    ast_to_symbol = ASTtoSymbol()
-    atom = ast_to_symbol(atom)
-    if atom.arguments[0].name == "not1":
-        atom = clingo.symbol.Function(
-            "not1",
-            [clingo.symbol.Function("u", [atom.arguments[0].arguments[0]])],
+ast_to_symbol = ASTtoSymbol()
+
+
+def build_objective_atom(atom: clingo.ast.AST) -> clingo.symbol.Symbol:
+    if atom.name == "not1":
+        return clingo.symbol.Function(
+            "not1", [clingo.symbol.Function("u", [atom.arguments[0]])]
         )
-    else:
-        atom = clingo.symbol.Function("u", [atom.arguments[0]])
+    return clingo.symbol.Function("u", [atom])
+
+
+def build_subjective_atom(atom: clingo.ast.AST) -> clingo.symbol.Symbol:
+    atom = build_objective_atom(atom.arguments[0])
     return clingo.symbol.Function("k", [atom])
 
 
-def build_candidate(candidate: str) -> Candidate:
+def build_candidate_without_assumptions(candidate: str, assumptions=None) -> Candidate:
     candidate = candidate.strip()
     if not candidate:
         return Candidate(pos=[], neg=[])
     atoms = candidate.split(" ")
     atoms = [parse_term(atom) for atom in atoms]
-    pos = [build_candidate_atom(atom) for atom in atoms if atom.name == "k"]
+    atoms = [ast_to_symbol(atom) for atom in atoms]
+    pos = [build_subjective_atom(atom) for atom in atoms if atom.name != "not1"]
     neg = [
-        build_candidate_atom(atom.arguments[0]) for atom in atoms if atom.name == "not1"
+        build_subjective_atom(atom.arguments[0])
+        for atom in atoms
+        if atom.name == "not1"
     ]
+    if assumptions is not None:
+        return Candidate(pos=pos, neg=neg, extra_assumptions=assumptions)
     return Candidate(pos=pos, neg=neg)
 
 
-def build_candidates(candidate: Optional[Iterable[str]]) -> Optional[List[Candidate]]:
-    if candidate is None:
+def build_assumptions(assumptions: str) -> Assumptions:
+    if not assumptions:
+        return Assumptions(pos=[], neg=[])
+    atoms = assumptions.split(" ")
+    atoms = [ast_to_symbol(parse_term(atom)) for atom in atoms]
+    pos = [build_objective_atom(atom) for atom in atoms if atom.name != "not1"]
+    neg = [
+        build_objective_atom(atom.arguments[0]) for atom in atoms if atom.name == "not1"
+    ]
+    return Assumptions(pos=pos, neg=neg)
+
+
+def build_candidate(
+    candidate: Union[str, Tuple[str, str]]
+) -> Optional[List[Candidate]]:
+    if isinstance(candidate, str):
+        return build_candidate_without_assumptions(candidate)
+    assumptions = build_assumptions(candidate[1])
+    return build_candidate_without_assumptions(candidate[0], assumptions)
+
+
+def build_candidates(candidates: Optional[Iterable[str]]) -> Optional[List[Candidate]]:
+    if candidates is None:
         return None
-    return [build_candidate(c) for c in candidate]
+    return [build_candidate(c) for c in candidates]
 
 
 def complete_program(program: programs.Program) -> programs_helper.Program:
@@ -159,7 +191,7 @@ def complete_program(program: programs.Program) -> programs_helper.Program:
                 ]
                 new_program_dict[attr] = new_program_dict[f"{previous_candidate}"]
             else:
-                new_program_dict[f"{attr}_str"] = value
+                new_program_dict[f"{attr}_str"] = str(value)
                 new_program_dict[attr] = build_candidates(value)
             previous_candidate = attr
         else:

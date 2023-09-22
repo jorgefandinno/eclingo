@@ -16,7 +16,7 @@ class Assumptions(NamedTuple):
 class Candidate(NamedTuple):
     pos: Sequence[Symbol]
     neg: Sequence[Symbol]
-    extra_assumptions: Assumptions = Assumptions((), ())
+    extra_assumptions: Assumptions = Assumptions([], [])
 
     def __str__(self):
         pos_s = ", ".join(str(s) for s in self.pos)
