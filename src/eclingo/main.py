@@ -85,11 +85,16 @@ class Application:
         eclingo_control.preprocess()
         eclingo_control.prepare_solver()
         
+        # Command check
         if self.config.eclingo_rewritten == "rewritten":
             for i in range(1, len(self.config.rewritten_program)):
                 sys.stdout.write(str(self.config.rewritten_program[i]))
                 sys.stdout.write("\n")
-            return
+            return 0
+        
+        if '--output=reify' in sys.argv:
+            return 0
+        
                 
         sys.stdout.write("Solving...\n")
         wv_number = 1
