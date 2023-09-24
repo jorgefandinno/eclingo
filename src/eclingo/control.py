@@ -32,6 +32,9 @@ class Control(object):
     def add_program(self, program):
         if self.config.eclingo_rewritten == "rewritten":
             self.config.rewritten_program = parse_program(program)
+            for i in range(1, len(self.config.rewritten_program)):
+                sys.stdout.write(str(self.config.rewritten_program[i]))
+                sys.stdout.write("\n")
         self.grounder.add_program(program)
 
     def load(self, input_path):

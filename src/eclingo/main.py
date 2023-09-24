@@ -87,13 +87,10 @@ class Application:
         
         # Command check
         if self.config.eclingo_rewritten == "rewritten":
-            for i in range(1, len(self.config.rewritten_program)):
-                sys.stdout.write(str(self.config.rewritten_program[i]))
-                sys.stdout.write("\n")
-            return 0
+            return
         
         if '--output=reify' in sys.argv:
-            return 0
+            return
         
                 
         sys.stdout.write("Solving...\n")
