@@ -2,7 +2,7 @@
 Utility functions.
 """
 
-from typing import Any, Callable, Iterable, List, Tuple, TypeVar
+from typing import Any, Callable, Iterable, List, Sequence, Tuple, TypeVar
 from eclingo.parsing import parser
 from eclingo.config import AppConfig
 
@@ -163,7 +163,9 @@ def flatten(lst):
 
     return result
 
-def parse_program(stm, parameters=[], name="base"):
+def parse_program(stm, parameters=None, name="base"):
+    if parameters is None:
+        parameters = []
     ret = []
     parser.parse_program(
         stm,
