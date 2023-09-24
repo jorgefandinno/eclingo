@@ -158,6 +158,7 @@ def partition(
 
 
 def flatten(lst):
+    """Helping function to parse program for flag: --output-e=rewritten"""
     result = []
     for lst2 in lst:
         result.append(lst2)
@@ -166,6 +167,7 @@ def flatten(lst):
 
 
 def parse_program(stm, parameters=None, name="base"):
+    """Helping function to parse program for flag: --output-e=rewritten"""
     if parameters is None:
         parameters = []
     ret = []
