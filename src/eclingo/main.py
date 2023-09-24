@@ -84,15 +84,14 @@ class Application:
         eclingo_control.ground()
         eclingo_control.preprocess()
         eclingo_control.prepare_solver()
-        
+                
         # Command check
         if self.config.eclingo_rewritten == "rewritten":
             return
         
         if '--output=reify' in sys.argv:
             return
-        
-                
+              
         sys.stdout.write("Solving...\n")
         wv_number = 1
         for world_view in eclingo_control.solve():

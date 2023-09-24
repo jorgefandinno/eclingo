@@ -2,7 +2,7 @@
 Utility functions.
 """
 
-from typing import Any, Callable, Iterable, List, Sequence, Tuple, TypeVar
+from typing import Any, Callable, Iterable, List, Tuple, TypeVar
 from eclingo.parsing import parser
 from eclingo.config import AppConfig
 
@@ -156,12 +156,14 @@ def partition(
             appends[-1](fun(item))
     return lists
 
+
 def flatten(lst):
     result = []
     for lst2 in lst:
         result.append(lst2)
 
     return result
+
 
 def parse_program(stm, parameters=None, name="base"):
     if parameters is None:
