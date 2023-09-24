@@ -72,7 +72,7 @@ def simplify_strong_negations(stm: ast.AST) -> ast.AST:
 
 
 def make_strong_negations_auxiliar(
-    reification: bool, stm: ast.AST
+    stm: ast.AST
 ) -> Tuple[ast.AST, SnReplacementType]:
     """
     Replaces strong negation by an auxiliary atom.
@@ -111,7 +111,7 @@ NotReplacementType = Optional[Tuple[ast.AST, ast.AST]]
 
 
 def make_default_negation_auxiliar(
-    use_reification: bool, stm: ast.AST
+    stm: ast.AST
 ) -> Tuple[ast.AST, NotReplacementType]:
     """
     Replaces default negation by an auxiliary atom.

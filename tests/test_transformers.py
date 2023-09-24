@@ -66,7 +66,7 @@ class Test(unittest.TestCase):
         else:
             self.assertEqual(ast_type(term), _ast.ASTType.SymbolicTerm)
 
-        result = _parse_epistemic_literals_elements(statement, reification=False)
+        result = _parse_epistemic_literals_elements(statement)
         self.assertEqual(len(result.elements), 1)
         element = result.elements[0]
         self.assertEqual(ast_type(element), _ast.ASTType.TheoryAtomElement)

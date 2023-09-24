@@ -3,6 +3,8 @@ Utility functions.
 """
 
 from typing import Any, Callable, Iterable, List, Tuple, TypeVar
+from eclingo.parsing import parser
+from eclingo.config import AppConfig
 
 T = TypeVar("T")
 
@@ -153,3 +155,21 @@ def partition(
         if not added:
             appends[-1](fun(item))
     return lists
+
+def flatten(lst):
+    result = []
+    for lst2 in lst:
+        result.append(lst2)
+
+    return result
+
+def parse_program(stm, parameters=[], name="base"):
+    ret = []
+    parser.parse_program(
+        stm,
+        ret.append,
+        parameters,
+        name,
+        config=AppConfig(semantics="c19-1", verbose=0),
+    )
+    return flatten(ret)

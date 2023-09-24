@@ -40,13 +40,14 @@ class Application:
         """
         Register eclingo related options.
         """
-        group = "Eclingo Options"
+        group = "Rewritten Program"
 
-        options.add_flag(
+        options.add(
             group=group,
-            option="reification",
-            description="Applies reification to the program",
-            target=reification_flag,
+            option="output-e",
+            description="Rewrites the program using reification",
+            parser=self._parse_string(self.config, "eclingo_rewritten"),
+            argument="<rewritten>",
         )
 
         group = "Semantics Options"
@@ -83,7 +84,13 @@ class Application:
         eclingo_control.ground()
         eclingo_control.preprocess()
         eclingo_control.prepare_solver()
-
+        
+        if self.config.eclingo_rewritten == "rewritten":
+            for i in range(1, len(self.config.rewritten_program)):
+                sys.stdout.write(str(self.config.rewritten_program[i]))
+                sys.stdout.write("\n")
+            return
+                
         sys.stdout.write("Solving...\n")
         wv_number = 1
         for world_view in eclingo_control.solve():

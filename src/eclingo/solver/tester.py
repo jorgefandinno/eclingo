@@ -84,13 +84,6 @@ class CandidateTesterReification:
         cast(Configuration, self.control.configuration.solve).models = 0
         cast(Configuration, self.control.configuration.solve).project = "no"
 
-        # print("\nTESTER")
-        # print("Candidate assumptions:\n", candidate_assumptions)
-        # print(
-        #     "Candidate assumptions:\n",
-        #     "\n".join(str((str(a), v)) for a, v in candidate_assumptions),
-        # )
-
         with cast(
             clingo.SolveHandle,
             self.control.solve(yield_=True, assumptions=candidate_assumptions),

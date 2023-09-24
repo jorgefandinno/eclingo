@@ -6,6 +6,7 @@ from clingo import Symbol
 from eclingo.config import AppConfig
 from eclingo.grounder import Grounder
 from eclingo.solver import SolverReification
+from eclingo.util import parse_program
 
 
 class Control(object):
@@ -17,7 +18,7 @@ class Control(object):
         control.configuration.solve.models = 0
         self.control = control
         if config is None:
-            config = AppConfig(semantics="c19-1", use_reification=True)
+            config = AppConfig(semantics="c19-1")
         self.config = config
 
         if self.max_models == 0:
@@ -29,6 +30,8 @@ class Control(object):
         self.solver = None
 
     def add_program(self, program):
+        if self.config.eclingo_rewritten == "rewritten":
+            self.config.rewritten_program = parse_program(program)
         self.grounder.add_program(program)
 
     def load(self, input_path):
@@ -45,7 +48,7 @@ class Control(object):
     def prepare_solver(self):
         if not self.grounded:
             self.ground()
-
+      
         self.solver = SolverReification(self.grounder.reified_facts, self.config)
 
     def solve(self):

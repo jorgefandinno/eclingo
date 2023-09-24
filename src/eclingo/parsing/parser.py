@@ -63,13 +63,15 @@ class _ProgramParser(object):
             begin=Position(filename="<string>", line=1, column=1),
             end=Position(filename="<string>", line=1, column=1),
         )
+        self.config = config
         self.program = program
         self.callback = callback
         self.parameters = [ast.Id(self.initial_location, x) for x in parameters]
         self.name = name
         self.strong_negation_replacements = StrongNegationReplacement()
-        self.semantics = config.eclingo_semantics
-        self.reification = config.eclingo_reification
+        self.semantics = self.config.eclingo_semantics
+        self.rewritten_prg = self.config.rewritten_program
+        self.rewritten = self.config.eclingo_rewritten
         self.theory_parser = parse_theory(_ProgramParser.eclingo_theory)
 
     def __call__(self) -> None:
@@ -81,10 +83,10 @@ class _ProgramParser(object):
 
     def _parse_statement(self, statement: ast.AST) -> None:
         statement = self.theory_parser(statement)
-        statement = parse_epistemic_literals_elements(statement, self.reification)
+        statement = parse_epistemic_literals_elements(statement)
 
         statement = reify_symbolic_atoms(statement, U_NAME, reify_strong_negation=True)
-
+        
         # this avoids collitions between user predicates and auxiliary predicates
         if statement.ast_type == ast.ASTType.Rule:
             for rule in self._parse_rule(statement):
@@ -112,12 +114,11 @@ class _ProgramParser(object):
             rules,
             sn_replacement,
         ) = replace_negations_by_auxiliary_atoms_in_epistemic_literals(
-            rule, self.reification
+            rule
         )
         self.strong_negation_replacements.update(sn_replacement)
-
         return replace_epistemic_literals_by_auxiliary_atoms(
-            rules, self.reification, "k"
+            rules, "k"
         )
 
     def _parse_program_statement(self, statement: ast.AST) -> List[ast.AST]:
