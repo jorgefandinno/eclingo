@@ -18,8 +18,8 @@ class TestCase(ASTTestCase):
         eclingo_control.add_program(program)
 
         parsed_prg = []
-        for i in range(1, len(config.rewritten_program)):
-            parsed_prg.append(str(config.rewritten_program[i]))
+        for i in range(1, len(eclingo_control.rewritten_program)):
+            parsed_prg.append(str(eclingo_control.rewritten_program[i]))
         self.assertListEqual(parsed_prg, expected)
 
 

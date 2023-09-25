@@ -80,16 +80,20 @@ class Application:
             eclingo_control.add_program(self._read(path))
 
         if self.config.eclingo_rewritten == "rewritten":
+            for stm in eclingo_control.rewritten_program[1:]:
+                sys.stdout.write(str(stm))
+                sys.stdout.write("\n")
             return
 
         eclingo_control.ground()
-        eclingo_control.preprocess()
-        eclingo_control.prepare_solver()
 
         # Command check
-
-        if "--output=reify" in sys.argv:
+        print(sys.argv)
+        if "--output=reify" in set(arg.replace(" ", "") for arg in sys.argv):
             return
+
+        eclingo_control.preprocess()
+        eclingo_control.prepare_solver()
 
         sys.stdout.write("Solving...\n")
         wv_number = 0
