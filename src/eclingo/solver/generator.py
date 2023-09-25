@@ -117,6 +117,11 @@ class GeneratorReification:
             """
 
         preprocessing_program = """
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            % A choice is missing here
+            #external preprocessing.
+            {k(A)} :- output(k(A), _), preprocessing.
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             hold_symbolic_atom(SA) :- hold(A), symbolic_atom(SA, A).
             hold_symbolic_atom(SA) :- fact(SA).
             preprocessing_hold(KA) :- epistemic_atom(k(SA), KA), hold_symbolic_atom(SA).
