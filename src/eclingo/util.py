@@ -158,13 +158,13 @@ def partition(
     return lists
 
 
-def flatten(lst):
-    """Helping function to parse program for flag: --output-e=rewritten"""
-    result = []
-    for lst2 in lst:
-        result.append(lst2)
+# def flatten(lst):
+#     """Helping function to parse program for flag: --output-e=rewritten"""
+#     result = []
+#     for lst2 in lst:
+#         result.append(lst2)
 
-    return result
+#     return result
 
 
 def parse_program(stm, parameters=None, name="base"):
@@ -179,4 +179,4 @@ def parse_program(stm, parameters=None, name="base"):
         name,
         config=AppConfig(semantics="c19-1", verbose=0),
     )
-    return flatten(ret)
+    return ret
