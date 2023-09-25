@@ -35,6 +35,7 @@ class Control(object):
             for i in range(1, len(self.config.rewritten_program)):
                 sys.stdout.write(str(self.config.rewritten_program[i]))
                 sys.stdout.write("\n")
+            return
         self.grounder.add_program(program)
 
     def load(self, input_path):
@@ -51,7 +52,7 @@ class Control(object):
     def prepare_solver(self):
         if not self.grounded:
             self.ground()
-      
+
         self.solver = SolverReification(self.grounder.reified_facts, self.config)
 
     def solve(self):
