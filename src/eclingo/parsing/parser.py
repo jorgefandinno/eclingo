@@ -86,7 +86,7 @@ class _ProgramParser(object):
         statement = parse_epistemic_literals_elements(statement)
 
         statement = reify_symbolic_atoms(statement, U_NAME, reify_strong_negation=True)
-        
+
         # this avoids collitions between user predicates and auxiliary predicates
         if statement.ast_type == ast.ASTType.Rule:
             for rule in self._parse_rule(statement):
@@ -113,13 +113,9 @@ class _ProgramParser(object):
         (
             rules,
             sn_replacement,
-        ) = replace_negations_by_auxiliary_atoms_in_epistemic_literals(
-            rule
-        )
+        ) = replace_negations_by_auxiliary_atoms_in_epistemic_literals(rule)
         self.strong_negation_replacements.update(sn_replacement)
-        return replace_epistemic_literals_by_auxiliary_atoms(
-            rules, "k"
-        )
+        return replace_epistemic_literals_by_auxiliary_atoms(rules, "k")
 
     def _parse_program_statement(self, statement: ast.AST) -> List[ast.AST]:
         if (

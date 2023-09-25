@@ -71,9 +71,7 @@ def simplify_strong_negations(stm: ast.AST) -> ast.AST:
     return SimplifyStrongNegationsTransformer().visit(stm)
 
 
-def make_strong_negations_auxiliar(
-    stm: ast.AST
-) -> Tuple[ast.AST, SnReplacementType]:
+def make_strong_negations_auxiliar(stm: ast.AST) -> Tuple[ast.AST, SnReplacementType]:
     """
     Replaces strong negation by an auxiliary atom.
     Returns a pair:
@@ -110,9 +108,7 @@ def _make_default_negation_auxiliar(
 NotReplacementType = Optional[Tuple[ast.AST, ast.AST]]
 
 
-def make_default_negation_auxiliar(
-    stm: ast.AST
-) -> Tuple[ast.AST, NotReplacementType]:
+def make_default_negation_auxiliar(stm: ast.AST) -> Tuple[ast.AST, NotReplacementType]:
     """
     Replaces default negation by an auxiliary atom.
     Returns a pair:

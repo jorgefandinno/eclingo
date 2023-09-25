@@ -3,8 +3,9 @@ Utility functions.
 """
 
 from typing import Any, Callable, Iterable, List, Tuple, TypeVar
-from eclingo.parsing import parser
+
 from eclingo.config import AppConfig
+from eclingo.parsing import parser
 
 T = TypeVar("T")
 

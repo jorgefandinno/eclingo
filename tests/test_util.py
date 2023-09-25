@@ -1,12 +1,14 @@
 from unittest import TestCase
-from clingox.testing.ast import ASTTestCase
-from eclingo.config import AppConfig
-from eclingo.control import Control
+
 import clingo
+from clingox.testing.ast import ASTTestCase
 
 from eclingo import util
+from eclingo.config import AppConfig
+from eclingo.control import Control
 
 # python -m unittest tests.test_util.TestRewritten
+
 
 class TestCase(ASTTestCase):
     def assert_equal_program_rewritten(self, program, expected):
@@ -14,12 +16,13 @@ class TestCase(ASTTestCase):
         config = AppConfig(eclingo_rewritten="rewritten")
         eclingo_control = Control(control, config)
         eclingo_control.add_program(program)
-        
+
         parsed_prg = []
         for i in range(1, len(config.rewritten_program)):
             parsed_prg.append(str(config.rewritten_program[i]))
         self.assertListEqual(parsed_prg, expected)
-        
+
+
 class TestPartition(TestCase):
     def test_size_1(self):
         self.assertEqual(
@@ -72,10 +75,10 @@ class TestPartition(TestCase):
             ),
             ([2, 4, 6, 8, 10, 12], [7], [9], [11], [13], [1, 3, 5]),
         )
-        
+
+
 class TestRewritten(TestCase):
-    
     def test_rewritten(self):
-        self.assert_equal_program_rewritten("a. b :- &k{a}.",
-                            ["u(a).", "u(b) :- k(u(a)).", "{ k(u(a)) } :- u(a)."]
-                        )
+        self.assert_equal_program_rewritten(
+            "a. b :- &k{a}.", ["u(a).", "u(b) :- k(u(a)).", "{ k(u(a)) } :- u(a)."]
+        )

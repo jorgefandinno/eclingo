@@ -79,24 +79,24 @@ class Application:
         for path in files:
             eclingo_control.add_program(self._read(path))
 
+        if self.config.eclingo_rewritten == "rewritten":
+            return
+
         eclingo_control.ground()
         eclingo_control.preprocess()
         eclingo_control.prepare_solver()
 
         # Command check
-        if self.config.eclingo_rewritten == "rewritten":
-            return
 
         if "--output=reify" in sys.argv:
             return
 
         sys.stdout.write("Solving...\n")
-        wv_number = 1
-        for world_view in eclingo_control.solve():
+        wv_number = 0
+        for wv_number, world_view in enumerate(eclingo_control.solve(), 1):
             sys.stdout.write("World view: %d\n" % wv_number)
             sys.stdout.write(str(world_view))
             sys.stdout.write("\n")
-            wv_number += 1
         if wv_number > 1:
             sys.stdout.write("SATISFIABLE\n")
         else:

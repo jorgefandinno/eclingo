@@ -55,9 +55,9 @@ def _theory_term_to_literal_adapter(element: AST) -> AST:
 
 
 def parse_epistemic_literals_elements(rule):
-    return ApplyToEpistemicAtomsElementsTransformer(
-        _theory_term_to_literal_adapter
-    )(rule)
+    return ApplyToEpistemicAtomsElementsTransformer(_theory_term_to_literal_adapter)(
+        rule
+    )
 
 
 ####################################################################################
@@ -234,11 +234,7 @@ def replace_epistemic_literals_by_auxiliary_atoms(
 ) -> List[ast.AST]:
     rules = []
     for stm in stms:
-        rules.extend(
-            _replace_epistemic_literals_by_auxiliary_atoms(
-                stm, k_prefix
-            )
-        )
+        rules.extend(_replace_epistemic_literals_by_auxiliary_atoms(stm, k_prefix))
     return rules
 
 
