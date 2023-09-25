@@ -40,7 +40,15 @@ class Application:
         """
         Register eclingo related options.
         """
-        group = "Rewritten Program"
+        group = "Eclingo Options"
+
+        options.add(
+            group=group,
+            option="semantics",
+            description="Sets eclingo to use an specified semantics",
+            parser=self._parse_string(self.config, "eclingo_semantics"),
+            argument="<ELP_semantics>",
+        )
 
         options.add(
             group=group,
@@ -48,16 +56,6 @@ class Application:
             description="Rewrites the program using reification",
             parser=self._parse_string(self.config, "eclingo_rewritten"),
             argument="<rewritten>",
-        )
-
-        group = "Semantics Options"
-
-        options.add(
-            group=group,
-            option="semantics",
-            description="Sets Eclingo to use specified semantics",
-            parser=self._parse_string(self.config, "eclingo_semantics"),
-            argument="<ELP_semantics>",
         )
 
     def _read(self, path):
@@ -84,14 +82,14 @@ class Application:
         eclingo_control.ground()
         eclingo_control.preprocess()
         eclingo_control.prepare_solver()
-                
+
         # Command check
         if self.config.eclingo_rewritten == "rewritten":
             return
-        
-        if '--output=reify' in sys.argv:
+
+        if "--output=reify" in sys.argv:
             return
-              
+
         sys.stdout.write("Solving...\n")
         wv_number = 1
         for world_view in eclingo_control.solve():
