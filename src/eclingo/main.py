@@ -100,7 +100,7 @@ class Application:
             sys.stdout.write("World view: %d\n" % wv_number)
             sys.stdout.write(str(world_view))
             sys.stdout.write("\n")
-        if wv_number > 1:
+        if wv_number >= 1:
             sys.stdout.write("SATISFIABLE\n")
         else:
             sys.stdout.write("UNSATISFIABLE\n")
