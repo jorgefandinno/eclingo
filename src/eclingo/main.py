@@ -88,7 +88,6 @@ class Application:
         eclingo_control.ground()
 
         # Command check
-        print(sys.argv)
         if "--output=reify" in set(arg.replace(" ", "") for arg in sys.argv):
             return
 
