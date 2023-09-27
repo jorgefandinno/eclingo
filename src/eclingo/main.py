@@ -5,7 +5,7 @@ Main module providing the application logic.
 import sys
 from typing import Sequence
 
-from clingo.application import Flag, clingo_main
+from clingo.application import clingo_main
 
 from eclingo.config import AppConfig
 from eclingo.control import Control
@@ -14,8 +14,6 @@ from . import __version__
 
 _FALSE = ["0", "no", "false"]
 _TRUE = ["1", "yes", "true"]
-
-reification_flag = Flag(True)
 
 
 class Application:
@@ -72,9 +70,9 @@ class Application:
         if not files:
             files = ["-"]
 
-        self.config.eclingo_reification = reification_flag.flag
-
         eclingo_control = Control(control, self.config)
+
+        # print(eclingo_control.control.configuration.keys)
 
         for path in files:
             eclingo_control.add_program(self._read(path))
