@@ -107,6 +107,7 @@ class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
 
         program_meta_encoding = """
                                 symbolic_atom(SA, A) :- output(SA,LT), #count{LL : literal_tuple(LT, LL)} = 1, literal_tuple(LT, A).
+                                symbolic_atom(SA, LT) :- output(SA,LT), #count{LT : atom_tuple(LT)} = 1.
                                 show_statement(SA) :- symbolic_atom(show_statement(SA), _).
 
                                 {k(A)} :- output(k(A), _).
@@ -160,11 +161,12 @@ class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
 
     def epistemic_show_statements(self, model, candidates_show):
         show_name: str = "show_statement"
-
+        print(model)
+        print("Atom cands: ",candidates_show)
         for atom in candidates_show:
             show_arguments: Sequence[Symbol] = []
             atom_arguments: Sequence[Symbol] = []
-
+            
             if (
                 atom.name == "not1" or atom.name == "not2"
             ):  # Check if it is a negative atom

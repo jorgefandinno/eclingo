@@ -47,7 +47,7 @@ class GeneratorReification:
                     output(SA,LT),
                     #count{LL : literal_tuple(LT, LL)} = 1,
                     literal_tuple(LT, A).
-
+            
             epistemic_atom(KSA, KA) :- symbolic_atom(KSA, KA), KSA = k(_).
 
             fact(SA) :-

@@ -36,6 +36,7 @@ class CandidateTesterReification:
 
 
                                 symbolic_atom(SA, A) :- output(SA,LT), #count{LL : literal_tuple(LT, LL)} = 1, literal_tuple(LT, A).
+                                symbolic_atom(SA, LT) :- output(SA,LT), #count{LT : atom_tuple(LT)} = 1.
                                 epistemic_atom_info(SKA, KA, SA, A) :- symbolic_atom(SA, A), SKA=k(SA), symbolic_atom(SKA, KA).
                                 show_statement(SA) :- symbolic_atom(show_statement(SA), _).
 
@@ -70,9 +71,9 @@ class CandidateTesterReification:
             literal = literal.arguments[0]
             candidate_neg.append(literal)
 
-        # for literal in candidate.extra_assumptions.neg:
-        #     assumption = (literal, False)
-        #     candidate_assumptions.append(assumption)
+        for literal in candidate.extra_assumptions.neg:
+            assumption = (literal, False)
+            candidate_assumptions.append(assumption)
 
         cast(Configuration, self.control.configuration.solve).models = 0
         cast(Configuration, self.control.configuration.solve).project = "no"
@@ -83,6 +84,7 @@ class CandidateTesterReification:
         ) as handle:
             model = None
             for model in handle:
+                #print(model)
                 for atom in candidate_pos:
                     if not model.contains(atom):
                         return False
