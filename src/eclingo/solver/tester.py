@@ -13,7 +13,8 @@ class CandidateTesterReification:
         self._config = config
         self.control = clingo.Control(["0"], message_limit=0)
         self.reified_program = reified_program
-        cast(Configuration, self.control.configuration.solve).enum_mode = "cautious"  # type: ignore
+        assert isinstance(self.control.configuration.solve, Configuration)
+        self.control.configuration.solve.enum_mode = "cautious"  # type: ignore
 
         program_meta_encoding = """conjunction(B) :- literal_tuple(B),
                                                         hold(L) : literal_tuple(B,  L), L > 0;
@@ -74,8 +75,10 @@ class CandidateTesterReification:
         #     assumption = (literal, False)
         #     candidate_assumptions.append(assumption)
 
-        cast(Configuration, self.control.configuration.solve).models = 0
-        cast(Configuration, self.control.configuration.solve).project = "no"
+        assert isinstance(self.control.configuration.solve, Configuration)
+        self.control.configuration.solve.models = 0
+        assert isinstance(self.control.configuration.solve, Configuration)
+        self.control.configuration.solve.project = "no"
 
         with cast(
             clingo.SolveHandle,
