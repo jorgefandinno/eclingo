@@ -14,7 +14,7 @@ class CandidateTesterReification:
         self.control = clingo.Control(["0"], message_limit=0)
         self.reified_program = reified_program
         assert isinstance(self.control.configuration.solve, Configuration)
-        self.control.configuration.solve.enum_mode = "cautious"  # type: ignore
+        self.control.configuration.solve.enum_mode = "cautious"
 
         program_meta_encoding = """conjunction(B) :- literal_tuple(B),
                                                         hold(L) : literal_tuple(B,  L), L > 0;
