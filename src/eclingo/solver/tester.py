@@ -77,7 +77,6 @@ class CandidateTesterReification:
 
         assert isinstance(self.control.configuration.solve, Configuration)
         self.control.configuration.solve.models = 0
-        assert isinstance(self.control.configuration.solve, Configuration)
         self.control.configuration.solve.project = "no"
 
         with cast(
