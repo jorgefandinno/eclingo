@@ -88,7 +88,13 @@ class Application:
         eclingo_control.ground()
 
         # Command check
-        if "--output=reify" in set(arg.replace(" ", "") for arg in sys.argv):
+        try:
+            output_index = sys.argv.index("--output=")
+        except ValueError:
+            output_index = -1
+        if "--output=reify" in sys.argv or (
+            output_index >= 0 and sys.argv[output_index + 1] == "reify"
+        ):
             return
 
         eclingo_control.preprocess()
