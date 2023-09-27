@@ -72,8 +72,6 @@ class Application:
 
         eclingo_control = Control(control, self.config)
 
-        # print(eclingo_control.control.configuration.keys)
-
         for path in files:
             eclingo_control.add_program(self._read(path))
 
@@ -108,6 +106,12 @@ class Application:
             sys.stdout.write("SATISFIABLE\n")
         else:
             sys.stdout.write("UNSATISFIABLE\n")
+
+        if int(eclingo_control.control.configuration.stats) > 0:
+            sys.stdout.write("\n")
+            sys.stdout.write(
+                f"Number of candidates: {eclingo_control.solver.number_of_candidates()}\n"
+            )
 
 
 def main():
