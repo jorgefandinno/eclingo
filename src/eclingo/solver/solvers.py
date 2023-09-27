@@ -30,3 +30,6 @@ class SolverReification:
         for candidate in self.generate_candidates_reification():
             if self.test_candidate_reification(candidate):
                 yield self._build_world_view_reification(candidate)
+
+    def number_of_candidates(self) -> int:
+        return self.generate_candidates_reification.num_candidates

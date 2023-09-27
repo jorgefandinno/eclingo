@@ -17,6 +17,7 @@ class GeneratorReification:
         cast(clingo.Configuration, self.control.configuration.solve).project = "show,3"
         self.reified_program = reified_program
         self.__initialeze_control(reified_program)
+        self.num_candidates = 0
 
     def __initialeze_control(self, reified_program) -> None:
         base_program = """
@@ -77,6 +78,7 @@ class GeneratorReification:
         with cast(clingo.SolveHandle, self.control.solve(yield_=True)) as handle:
             for model in handle:
                 candidate = self._model_to_candidate(model)
+                self.num_candidates += 1
                 yield candidate
 
     def _model_to_candidate(self, model: clingo.Model) -> Candidate:
