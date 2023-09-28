@@ -3,6 +3,7 @@ Main module providing the application logic.
 """
 
 import sys
+import time
 from typing import Sequence
 
 from clingo.application import clingo_main
@@ -114,8 +115,15 @@ class Application:
             )  # pragma: no cover
 
 
-def main():
+def secondary_main(argv):
+    start = time.time()
     sys.argv.append("--outf=3")
     application = Application()
-    result = clingo_main(application, sys.argv[1:])
+    result = clingo_main(application, argv[1:])
+    end = time.time()
+    sys.stderr.write(f"\nElapsed time: {end - start}")
     return int(result)
+
+
+def main():
+    return secondary_main(sys.argv)

@@ -33,12 +33,16 @@ positive_candidate(k(A)) :- fact(k(A)).
 positive_candidate(k(A)) :- output(k(A), B), conjunction(B).
 negative_candidate(k(A)) :- output(k(A), B), not conjunction(B).
 
+atom_map(SA, A) :- output(SA,LT), #count{LL : literal_tuple(LT, LL)} = 1, literal_tuple(LT, A).
+strong_negatation_complement(A, B) :- atom_map(u(SA), A), atom_map(u(-SA), B).
+:- hold(A), hold(B), strong_negatation_complement(A, B).
+
 #show positive_candidate/1.
 #show negative_candidate/1.
 """
 
 preprocessing_program = """\
-atom_map(SA, A) :- output(SA,LT), #count{LL : literal_tuple(LT, LL)} = 1, literal_tuple(LT, A).
+
 symbolic_atom(SA) :- atom_map(SA, _).
 
 symbolic_epistemic_atom(k(A)) :- symbolic_atom(k(A)).

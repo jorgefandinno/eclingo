@@ -83,6 +83,10 @@ hold(A) : atom_tuple(H,A) :- rule(disjunction(H), B), body(B).
 {hold(A) : atom_tuple(H,A)} :- rule(choice(H), B), body(B).
 
 atom_map(SA, A) :- output(SA,LT), #count{LL : literal_tuple(LT, LL)} = 1, literal_tuple(LT, A).
+
+strong_negatation_complement(A, B) :- atom_map(u(SA), A), atom_map(u(-SA), B).
+:- hold(A), hold(B), strong_negatation_complement(A, B).
+
 symbolic_atom(SA) :- atom_map(SA, _).
 
 symbolic_epistemic_atom(k(A)) :- symbolic_atom(k(A)).
