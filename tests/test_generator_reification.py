@@ -36,6 +36,21 @@ class TestCase(unittest.TestCase):
         # discarding assumptiosn from the comparison
         if not use_assumptions:
             models = [Candidate(pos=m.pos, neg=m.neg) for m in models]
+        candidate_str = [
+            (sorted(str(a) for a in c.pos), sorted(str(a) for a in c.neg))
+            for c in models
+        ]
+        expected_str = [
+            (sorted(str(a) for a in c.pos), sorted(str(a) for a in c.neg))
+            for c in expected
+        ]
+        self.assertCountEqual(candidate_str, expected_str, "candidates string")
+        for model in models:
+            model.pos.sort()
+            model.neg.sort()
+        for model in expected:
+            model.pos.sort()
+            model.neg.sort()
         self.assertCountEqual(models, expected)
 
 

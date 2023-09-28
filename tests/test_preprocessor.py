@@ -5,50 +5,105 @@ from typing import List
 import eclingo
 from eclingo.solver.candidate import Candidate
 from eclingo.solver.generator import GeneratorReification
+from eclingo.solver.tester import CandidateTesterReification
 from tests.generated_programs import programs
 
 
-def generate(program):
+def fast_preprocessing(program):
     config = eclingo.config.AppConfig()
     config.eclingo_semantics = "c19-1"
-
-    candidate_generator = GeneratorReification(config, program)
-    candidate_generator.fast_preprocessing()
-    candidates = list(candidate_generator())
-    # print(sorted(candidates))
-    return sorted(candidates)
+    tester = CandidateTesterReification(config, program)
+    ret = tester.fast_preprocessing()
+    return ret
 
 
-def format_subtest_message(i: int, program: str, candidates: List[str]) -> str:
+def generate_candidates(program, preprocessing_result):
+    config = eclingo.config.AppConfig()
+    config.eclingo_semantics = "c19-1"
+    generator = GeneratorReification(config, program, preprocessing_result)
+    ret = list(generator())
+    return ret
+
+
+def format_subtest_message(i: int, program: str, expected: List[str]) -> str:
     program = textwrap.indent(program, 4 * " ")
-    candidates = textwrap.indent("\n".join(candidates), 4 * " ")
+    expected = textwrap.indent(str(expected), 4 * " ")
     return f"""\
 
 Program {i}:
 {program}
-Expected candidates:
-{candidates}
+Expected result:
+{expected}
 """
 
 
-class TestCase(unittest.TestCase):
-    def assert_models(self, models, expected):
-        # discarding assumptiosn from the comparison
-        models = [Candidate(pos=m.pos, neg=m.neg) for m in models]
-        self.assertCountEqual(models, expected)
+class PreprocessorTestCase(unittest.TestCase):
+    # def assert_models(self, models, expected):
+    # discarding assumptiosn from the comparison
+    # models = [Candidate(pos=m.pos, neg=m.neg) for m in models]
+    # self.assertCountEqual(models, expected)
 
-    def test_programs(self):
+    def test_preprocessor(self):
+        for i, program in enumerate(programs):
+            # print(program.program)
+            prg = program.ground_reification
+            if prg is not None and program.has_fast_preprocessing:
+                with self.subTest(
+                    format_subtest_message(
+                        i, program.program, program.fast_preprocessing_str
+                    )
+                ):
+                    ret = fast_preprocessing(prg)
+                    if program.fast_preprocessing is None:
+                        self.assertTrue(ret.unsatisfiable)
+                    else:
+                        self.assertFalse(ret.unsatisfiable)
+                        self.assertCountEqual(
+                            [str(a) for a in ret[1]],
+                            [str(a) for a in program.fast_preprocessing[0]],
+                            "lower",
+                        )
+                        self.assertCountEqual(
+                            [str(a) for a in ret[2]],
+                            [str(a) for a in program.fast_preprocessing[1]],
+                            "upper",
+                        )
+                        self.assertCountEqual(
+                            ret[1], program.fast_preprocessing[0], "lower"
+                        )
+                        self.assertCountEqual(
+                            ret[2], program.fast_preprocessing[1], "upper"
+                        )
+
+    def test_generator(self):
+        self.maxDiff = None
         for i, program in enumerate(programs):
             prg = program.ground_reification
-            candidate = program.candidates_02
-
-            if prg is not None and candidate is not None:
+            if prg is not None and program.has_fast_preprocessing:
                 with self.subTest(
                     format_subtest_message(
                         i, program.program, program.candidates_02_str
                     )
                 ):
-                    self.assert_models(
-                        generate(prg),
-                        candidate,
+                    ret = fast_preprocessing(prg)
+                    if ret is None:
+                        continue
+                    candidates = generate_candidates(prg, ret)
+                    candidate_str = [
+                        (sorted(str(a) for a in c.pos), sorted(str(a) for a in c.neg))
+                        for c in candidates
+                    ]
+                    expected_str = [
+                        (sorted(str(a) for a in c.pos), sorted(str(a) for a in c.neg))
+                        for c in program.candidates_02
+                    ]
+                    self.assertCountEqual(
+                        candidate_str, expected_str, "candidates string"
                     )
+                    for model in candidates:
+                        model.pos.sort()
+                        model.neg.sort()
+                    for model in program.candidates_02:
+                        model.pos.sort()
+                        model.neg.sort()
+                    self.assertCountEqual(candidates, program.candidates_02)

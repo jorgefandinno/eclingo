@@ -10,3 +10,4 @@ class AppConfig(object):
         self.eclingo_semantics = semantics
         self.eclingo_rewritten = eclingo_rewritten
         self.rewritten_program = rewritten_program
+        self.preprocessing_level = 3

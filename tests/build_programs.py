@@ -11,7 +11,7 @@ from typing import Iterable, List, NamedTuple, Optional, Tuple, Union
 import clingo
 import programs
 import programs_helper
-from clingo import Function
+from clingo import Function, Symbol
 from clingox.testing.ast import parse_term
 
 from eclingo.solver.candidate import Assumptions, Candidate
@@ -135,6 +135,12 @@ def build_subjective_atom(atom: clingo.ast.AST) -> clingo.symbol.Symbol:
     return clingo.symbol.Function("k", [atom])
 
 
+def build_atom(atom: clingo.ast.AST) -> clingo.symbol.Symbol:
+    if atom.name == "k":
+        return build_subjective_atom(atom)
+    return build_objective_atom(atom)
+
+
 def build_candidate_without_assumptions(candidate: str, assumptions=None) -> Candidate:
     candidate = candidate.strip()
     if not candidate:
@@ -180,6 +186,20 @@ def build_candidates(candidates: Optional[Iterable[str]]) -> Optional[List[Candi
     return [build_candidate(c) for c in candidates]
 
 
+def build_preprocessor_result(
+    value: Union[str, tuple[str, str]]
+) -> Tuple[List[Symbol], List[Symbol]]:
+    if isinstance(value, str):
+        lower = upper = value
+    else:
+        lower, upper = value
+    lower = lower.strip().split(" ")
+    upper = upper.strip().split(" ")
+    lower = [build_atom(ast_to_symbol(parse_term(atom))) for atom in lower if atom]
+    upper = [build_atom(ast_to_symbol(parse_term(atom))) for atom in upper if atom]
+    return lower, upper
+
+
 def complete_program(program: programs.Program) -> programs_helper.Program:
     new_program_dict = {}
     previous_candidate = None
@@ -194,16 +214,31 @@ def complete_program(program: programs.Program) -> programs_helper.Program:
                 new_program_dict[f"{attr}_str"] = str(value)
                 new_program_dict[attr] = build_candidates(value)
             previous_candidate = attr
+        elif attr == "fast_preprocessing":
+            if value is None:
+                new_program_dict[attr] = None
+                new_program_dict[f"{attr}_str"] = None
+            else:
+                new_program_dict[attr] = build_preprocessor_result(value)
+                new_program_dict[f"{attr}_str"] = value
+        elif attr == "non_ground_reification" and value is None:
+            non_ground_reification = subprocess.check_output(
+                f'echo "{program.program}" | eclingo --output-e=rewritten',
+                shell=True,
+            )
+            new_program_dict["non_ground_reification"] = non_ground_reification.decode(
+                "utf-8"
+            )
         else:
             new_program_dict[attr] = value
 
-    non_ground_reification = program.non_ground_reification
+    non_ground_reification = new_program_dict["non_ground_reification"]
     if non_ground_reification is not None and program.ground_reification is None:
         ground_reification = subprocess.check_output(
             f'echo "{non_ground_reification}" | clingo --output=reify',
             shell=True,
         )
-    new_program_dict["ground_reification"] = ground_reification.decode("utf-8")
+        new_program_dict["ground_reification"] = ground_reification.decode("utf-8")
 
     return programs_helper.Program(**new_program_dict)
 
