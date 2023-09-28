@@ -1506,4 +1506,42 @@ programs = [
         has_fast_preprocessing=True,
         description="",
     ),
+    Program(
+        program="a. b :- &k{a}. :- b.",
+        non_ground_reification="u(a).\n"
+        "u(b) :- k(u(a)).\n"
+        "{ k(u(a)) } :- u(a).\n"
+        "#false :- u(b).\n",
+        ground_reification="atom_tuple(0).\n"
+        "atom_tuple(0,1).\n"
+        "literal_tuple(0).\n"
+        "rule(disjunction(0),normal(0)).\n"
+        "atom_tuple(1).\n"
+        "atom_tuple(1,2).\n"
+        "rule(choice(1),normal(0)).\n"
+        "atom_tuple(2).\n"
+        "atom_tuple(2,3).\n"
+        "literal_tuple(1).\n"
+        "literal_tuple(1,2).\n"
+        "rule(disjunction(2),normal(1)).\n"
+        "atom_tuple(3).\n"
+        "literal_tuple(2).\n"
+        "literal_tuple(2,3).\n"
+        "rule(disjunction(3),normal(2)).\n"
+        "output(k(u(a)),1).\n"
+        "output(u(a),0).\n"
+        "output(u(b),2).\n",
+        candidates_00_str="None",
+        candidates_00=None,
+        candidates_01_str="[]",
+        candidates_01=[],
+        candidates_02_str="[]",
+        candidates_02=[],
+        candidates_wv_str="[]",
+        candidates_wv=[],
+        fast_preprocessing_str=None,
+        fast_preprocessing=None,
+        has_fast_preprocessing=True,
+        description="",
+    ),
 ]

@@ -91,7 +91,7 @@ class Application:
         if "--output=reify" in sys.argv or (
             output_index >= 0 and sys.argv[output_index + 1] == "reify"
         ):
-            return
+            return  # pragma: no cover
 
         eclingo_control.preprocess()
         eclingo_control.prepare_solver()
@@ -108,10 +108,10 @@ class Application:
             sys.stdout.write("UNSATISFIABLE\n")
 
         if int(eclingo_control.control.configuration.stats) > 0:
-            sys.stdout.write("\n")
+            sys.stdout.write("\n")  # pragma: no cover
             sys.stdout.write(
                 f"Number of candidates: {eclingo_control.solver.number_of_candidates()}\n"
-            )
+            )  # pragma: no cover
 
 
 def main():

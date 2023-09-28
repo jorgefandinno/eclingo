@@ -166,4 +166,11 @@ program_list = [
         fast_preprocessing=None,
         has_fast_preprocessing=True,
     ),
+    Program(
+        description="",
+        program="a. b :- &k{a}. :- b.",
+        candidates_01=[],
+        fast_preprocessing=None,
+        has_fast_preprocessing=True,
+    ),
 ]
