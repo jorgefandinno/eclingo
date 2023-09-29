@@ -1,4 +1,5 @@
 import sys
+import time
 from typing import Iterable, Tuple
 
 from clingo import Symbol
@@ -44,6 +45,8 @@ class Control(object):
         self.models = 0
         self.grounded = False
         self.solver = None
+        self.grounding_time = 0
+        self.solving_time = 0
 
     def add_program(self, program):
         if self.config.eclingo_rewritten == "rewritten":
@@ -55,8 +58,10 @@ class Control(object):
             self.add_program(program.read())
 
     def ground(self, parts: Iterable[Tuple[str, Iterable[Symbol]]] = (("base", []),)):
+        start_time = time.time()
         self.grounder.ground(parts)
         self.grounded = True
+        self.grounding_time += time.time() - start_time
 
     def preprocess(self):
         pass
@@ -64,15 +69,18 @@ class Control(object):
     def prepare_solver(self):
         if not self.grounded:
             self.ground()
-
+        start_time = time.time()
         self.solver = SolverReification(self.grounder.reified_facts, self.config)
+        self.grounding_time += time.time() - start_time
 
     def solve(self):
         if self.solver is None:
             self.prepare_solver()
 
+        start_time = time.time()
         for model in self.solver.solve():
             self.models += 1
             yield model
             if self.models >= self.max_models:
                 break
+        self.solving_time += time.time() - start_time

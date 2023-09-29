@@ -17,6 +17,17 @@ _FALSE = ["0", "no", "false"]
 _TRUE = ["1", "yes", "true"]
 
 
+def statistics(eclingo_control: Control, time: float):  # pragma: no cover
+    if int(eclingo_control.control.configuration.stats) > 0:
+        sys.stdout.write("\n")  # pragma: no cover
+        sys.stdout.write(
+            f"Number of candidates: {eclingo_control.solver.number_of_candidates()}\n"
+        )
+        sys.stderr.write(
+            f"{'Time: ':<14}{time:.3f}s (Solving: {eclingo_control.solving_time:.3f}s Grounding {eclingo_control.grounding_time:.3f}s)\n"
+        )
+
+
 class Application:
     """
     Application class that can be used with `clingo.clingo_main` to solve CSP
@@ -68,6 +79,7 @@ class Application:
         Entry point of the application registering the propagator and
         implementing the standard ground and solve functionality.
         """
+        start_time = time.time()
         if not files:
             files = ["-"]
 
@@ -107,21 +119,15 @@ class Application:
             sys.stdout.write("SATISFIABLE\n")
         else:
             sys.stdout.write("UNSATISFIABLE\n")
-
-        if int(eclingo_control.control.configuration.stats) > 0:
-            sys.stdout.write("\n")  # pragma: no cover
-            sys.stdout.write(
-                f"Number of candidates: {eclingo_control.solver.number_of_candidates()}\n"
-            )  # pragma: no cover
+        end_time = time.time()
+        total_time = end_time - start_time
+        statistics(eclingo_control, total_time)
 
 
 def secondary_main(argv):
-    start = time.time()
     sys.argv.append("--outf=3")
     application = Application()
     result = clingo_main(application, argv[1:])
-    end = time.time()
-    sys.stderr.write(f"\nElapsed time: {end - start}")
     return int(result)
 
 
