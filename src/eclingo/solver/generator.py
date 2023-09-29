@@ -41,14 +41,15 @@ strong_negatation_complement(A, B) :- atom_map(u(SA), A), atom_map(u(-SA), B).
 #show negative_candidate/1.
 """
 
-preprocessing_program = """\
-
+common_opt_program = """\
 symbolic_atom(SA) :- atom_map(SA, _).
 
 symbolic_epistemic_atom(k(A)) :- symbolic_atom(k(A)).
 epistemic_atom_map(KSA, KA) :- atom_map(KSA, KA), symbolic_epistemic_atom(KSA).
 epistemic_atom_int(KA) :- epistemic_atom_map(_, KA).
+"""
 
+preprocessing_program = """\
 symbolic_objective_atom(OSA) :- symbolic_atom(OSA), not symbolic_epistemic_atom(OSA).
 
 cautious_objetive(SA) :- cautious(SA), symbolic_objective_atom(SA).
@@ -59,26 +60,16 @@ cautious_objetive(SA) :- cautious(SA), symbolic_objective_atom(SA).
 fact_optimization_program = """\
 % Propagate facts into epistemic facts
 
-symbolic_atom(SA, A) :-
-        output(SA,LT),
-        #count{LL : literal_tuple(LT, LL)} = 1,
-        literal_tuple(LT, A).
-
-epistemic_atom(KSA, KA) :- symbolic_atom(KSA, KA), KSA = k(_).
-
 fact(SA) :-
         output(SA, LT),
         #count {L : literal_tuple(LT, L)} = 0.
 
-pk_hold(KA) :-
-    epistemic_atom(SKA, KA),
-    SKA = k(SA),
-    fact(SA).
+pk_hold(KA) :- epistemic_atom_map(k(SA), KA), fact(SA).
 
-hold(KA) :- pk_hold(KA).
+:- pk_hold(KA), not hold(KA), epistemic_atom_int(KA).
 
-positive_extra_assumptions(A) :- epistemic_atom(k(A), KA), pk_hold(KA).
-% negative_extra_assumptions(A) :- epistemic_atom(k(A), KA), kp_not_hold(KA).
+positive_extra_assumptions(A) :- epistemic_atom_map(k(A), KA), pk_hold(KA).
+% negative_extra_assumptions(A) :- epistemic_atom_map(k(A), KA), kp_not_hold(KA).
 
 #show positive_extra_assumptions/1.
 #show negative_extra_assumptions/1.
@@ -112,6 +103,7 @@ class GeneratorReification:
 
         self.control.add("base", [], reified_program)
         self.control.add("base", [], base_program)
+        self.control.add("base", [], common_opt_program)
         self.control.add("base", [], fact_optimization_program)
         if preprocessing_facts is not None:
             self.control.add("base", [], preprocessing_program)
