@@ -37,3 +37,6 @@ class SolverReification:
 
     def number_of_candidates(self) -> int:
         return self.generate_candidates_reification.num_candidates
+
+    def number_of_tester_calls(self) -> int:
+        return self.test_candidate_reification.num_solve_calls

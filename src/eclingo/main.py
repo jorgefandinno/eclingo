@@ -30,6 +30,9 @@ def statistics(eclingo_control: Control, time: float):  # pragma: no cover
         sys.stdout.write(
             f"{'Candidates':<{STATISTICS_FIRST_FIELD_SIZE}}: {eclingo_control.solver.number_of_candidates()}\n"
         )
+        sys.stdout.write(
+            f"{'Tester calls':<{STATISTICS_FIRST_FIELD_SIZE}}: {eclingo_control.solver.number_of_tester_calls()}\n"
+        )
 
 
 class Application:

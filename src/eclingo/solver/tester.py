@@ -119,6 +119,7 @@ preprocessing_hold(KA) :- epistemic_atom_map(k(SA), KA), hold_symbolic_atom(SA).
 
 class CandidateTesterReification:
     def __init__(self, config: AppConfig, reified_program: str):
+        self.num_solve_calls = 0
         self._config = config
         self.control = clingo.Control(["0"], message_limit=0)
         self.reified_program = reified_program
@@ -169,6 +170,7 @@ class CandidateTesterReification:
         ) as handle:
             model = None
             for model in handle:
+                self.num_solve_calls += 1
                 for atom in candidate_pos:
                     if not model.contains(atom):
                         return False
