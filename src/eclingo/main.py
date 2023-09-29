@@ -4,7 +4,7 @@ Main module providing the application logic.
 
 import sys
 import time
-from typing import Sequence
+from typing import Final, Sequence
 
 from clingo.application import clingo_main
 
@@ -17,14 +17,18 @@ _FALSE = ["0", "no", "false"]
 _TRUE = ["1", "yes", "true"]
 
 
+STATISTICS_FIRST_FIELD_SIZE: Final[int] = 14
+
+
 def statistics(eclingo_control: Control, time: float):  # pragma: no cover
     if int(eclingo_control.control.configuration.stats) > 0:
         sys.stdout.write("\n")  # pragma: no cover
-        sys.stdout.write(
-            f"Number of candidates: {eclingo_control.solver.number_of_candidates()}\n"
-        )
         sys.stderr.write(
-            f"{'Time: ':<14}{time:.3f}s (Solving: {eclingo_control.solving_time:.3f}s Grounding {eclingo_control.grounding_time:.3f}s)\n"
+            f"{'Time ':<{STATISTICS_FIRST_FIELD_SIZE}}: {time:.3f}s "
+            f"(Solving: {eclingo_control.solving_time:.3f}s Grounding {eclingo_control.grounding_time:.3f}s)\n"
+        )
+        sys.stdout.write(
+            f"{'Candidates':<{STATISTICS_FIRST_FIELD_SIZE}}: {eclingo_control.solver.number_of_candidates()}\n"
         )
 
 
