@@ -32,6 +32,7 @@ class SolverReification:
 
     def solve(self) -> Iterator[Candidate]:
         for candidate in self.generate_candidates_reification():
+            print(candidate)
             if self.test_candidate_reification(candidate):
                 yield self._build_world_view_reification(candidate)
 

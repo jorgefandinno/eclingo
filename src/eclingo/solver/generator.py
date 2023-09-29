@@ -75,6 +75,18 @@ positive_extra_assumptions(A) :- epistemic_atom_map(k(A), KA), pk_hold(KA).
 #show negative_extra_assumptions/1.
 """
 
+positive_propagation_program = """\
+singleton_disjuntion(H) :- rule(disjunction(H), _), #count {L : literal_tuple(H, L)} = 1.
+
+kp_conjunction(B) :- literal_tuple(B), kp_hold(A) : literal_tuple(B,  A), A > 0, not epistemic_atom_int(A);
+                                          hold(A) : literal_tuple(B,  A), A > 0,     epistemic_atom_int(A);
+                                   kp_not_hold(A) : literal_tuple(B, -A), A > 0, not epistemic_atom_int(A);
+                                      not hold(A) : literal_tuple(B, -A), A > 0,     epistemic_atom_int(A).
+
+kp_body(normal(B)) :- rule(_, normal(B)), kp_conjunction(B).
+kp_hold(A) : atom_tuple(H,A) :- rule(disjunction(H), B), singleton_disjuntion(H), kp_body(B).
+"""
+
 
 class GeneratorReification:
     def __init__(
@@ -92,6 +104,7 @@ class GeneratorReification:
         self.control.add("base", [], base_program)
         self.control.add("base", [], common_opt_program)
         self.control.add("base", [], fact_optimization_program)
+        self.control.add("base", [], positive_propagation_program)
         if preprocessing_facts is not None:
             self.control.add("base", [], preprocessing_program)
             with SymbolicBackend(self.control.backend()) as backend:
