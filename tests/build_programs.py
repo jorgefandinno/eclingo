@@ -97,6 +97,13 @@ def _ast_to_symbol(x: clingo.ast.AST) -> clingo.Symbol:
     """
     if x.ast_type == clingo.ast.ASTType.SymbolicTerm:
         return x.symbol
+    if x.ast_type == clingo.ast.ASTType.UnaryOperation:
+        a = _ast_to_symbol(x.argument)
+        return clingo.symbol.Function(
+            a.name,
+            a.arguments,
+            positive=not a.positive,
+        )
     if x.ast_type != clingo.ast.ASTType.Function:
         return x
     return clingo.symbol.Function(
@@ -110,9 +117,15 @@ class ASTtoSymbol(clingo.ast.Transformer):
     """Transforms a SymbolicTerm AST of type Function into an AST of type ast.Function."""
 
     def visit_SymbolicTerm(self, x: clingo.ast.AST):  # pylint: disable=invalid-name
-        return x.symbol
+        return _ast_to_symbol(x)
 
     def visit_Function(self, x: clingo.ast.AST):  # pylint: disable=invalid-name
+        """
+        Transforms a SymbolicTerm AST of type Function into an AST of type ast.Function.
+        """
+        return _ast_to_symbol(x)
+
+    def visit_UnaryOperation(self, x: clingo.ast.AST):  # pylint: disable=invalid-name
         """
         Transforms a SymbolicTerm AST of type Function into an AST of type ast.Function.
         """

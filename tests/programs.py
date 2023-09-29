@@ -173,4 +173,18 @@ program_list = [
         fast_preprocessing=None,
         has_fast_preprocessing=True,
     ),
+    Program(
+        description="",
+        program="a :- not &k{not a}.",
+        candidates_01=["not1(k(not1(a)))", "k(not1(a))"],
+        fast_preprocessing=("", "a not1(a) k(not1(a))"),
+        has_fast_preprocessing=True,
+    ),
+    Program(
+        description="",
+        program="a :- not &k{-a}. -a :- not &k{a}.",
+        candidates_01=["k(a) not1(k(-a))", "not1(k(a)) k(-a)"],
+        fast_preprocessing=("", "a -a k(a) k(-a)"),
+        has_fast_preprocessing=True,
+    ),
 ]

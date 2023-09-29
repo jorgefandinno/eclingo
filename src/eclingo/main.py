@@ -13,10 +13,6 @@ from eclingo.control import Control
 
 from . import __version__
 
-_FALSE = ["0", "no", "false"]
-_TRUE = ["1", "yes", "true"]
-
-
 STATISTICS_FIRST_FIELD_SIZE: Final[int] = 14
 
 

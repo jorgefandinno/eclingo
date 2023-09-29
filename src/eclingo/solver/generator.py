@@ -88,19 +88,6 @@ class GeneratorReification:
         self.num_candidates = 0
 
     def __initialeze_control(self, reified_program, preprocessing_facts) -> None:
-        # preprocessing_program = """
-        #     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        #     % A choice is missing here
-        #     #external preprocessing.
-        #     {k(A)} :- output(k(A), _), preprocessing.
-        #     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        #     hold_symbolic_atom(SA) :- hold(A), symbolic_atom(SA, A).
-        #     hold_symbolic_atom(SA) :- fact(SA).
-        #     preprocessing_hold(KA) :- epistemic_atom(k(SA), KA), hold_symbolic_atom(SA).
-        #     holds(SA) :- hold(A), symbolic_atom(SA, A).
-        #     pk_holds(SA) :- pk_hold(A), symbolic_atom(SA, A).
-        # """
-
         self.control.add("base", [], reified_program)
         self.control.add("base", [], base_program)
         self.control.add("base", [], common_opt_program)
@@ -112,16 +99,6 @@ class GeneratorReification:
                     backend.add_rule([Function("cautious", [atom])], [], [])
         self.control.ground([("base", [])])
 
-    # def __initialeze_control_preprocessing(self, preprocessing_facts) -> None:
-    #     if preprocessing_facts is None:
-    #         return
-    #     lower, upper = preprocessing_facts
-    #     with self.control.backend() as backend:
-    #         for atom in lower:
-    #             backend.add_rule([atom], [], [])
-    #         # for atom in upper:
-    #         #     backend.add_rule([], [], [Function("preprocessing_hold", [atom])])
-
     def __call__(self) -> Iterator[Candidate]:
         with cast(clingo.SolveHandle, self.control.solve(yield_=True)) as handle:
             for model in handle:
@@ -130,7 +107,6 @@ class GeneratorReification:
                 yield candidate
 
     def _model_to_candidate(self, model: clingo.Model) -> Candidate:
-        # print(" ".join(str(a) for a in sorted(model.symbols(atoms=True))))
         (
             positive_candidate,
             negative_candidate,
@@ -148,51 +124,4 @@ class GeneratorReification:
         extra_assumptions = Assumptions(
             positive_extra_assumptions, negative_extra_assumptions
         )
-        # print()
-        # print("Model:")
-        # print(model)
-        # print()
-        # print(" ".join(sorted(str(a) for a in model.symbols(atoms=True))))
         return Candidate(positive_candidate, negative_candidate, extra_assumptions)
-
-    # def fast_preprocessing(self) -> None:
-    #     print("*" * 50)
-    #     solve_limit = self.control.configuration.solve.solve_limit
-    #     self.control.configuration.solve.solve_limit = 0
-    #     lower_prev_size, upper_pre_size = -1, sys.maxsize
-    #     lower_size, upper_size = 0, sys.maxsize
-    #     prev_lower, prev_upper = frozenset(), frozenset()
-    #     while lower_prev_size < lower_size or upper_pre_size > upper_size:
-    #         ret = _approximate(self.control)
-    #         if ret is None:
-    #             break
-    #         lower_all, upper_all = ret
-    #         lower = frozenset(
-    #             e.arguments[0] for e in lower_all if e.name == "preprocessing_hold"
-    #         )
-    #         upper = frozenset(
-    #             e.arguments[0] for e in upper_all if e.name == "preprocessing_hold"
-    #         )
-    #         lower_prev_size, upper_pre_size = lower_size, upper_size
-    #         lower_size, upper_size = len(lower), len(upper)
-
-    #         print("-" * 50)
-    #         names = {"holds", "pk_holds", "preprocessing_hold"}
-    #         print(
-    #             f"lower ({lower_prev_size},{lower_size}):\n",
-    #             " ".join(str(e) for e in sorted(lower_all) if e.name in sorted(names)),
-    #         )
-    #         # # print(f"lower ({lower_prev_size},{lower_size}):\n", " ".join(str(e) for e in sorted(lower_all)))
-    #         print(
-    #             f"upper ({upper_pre_size},{upper_size}):\n",
-    #             " ".join(str(e) for e in sorted(upper_all) if e.name in names),
-    #         )
-
-    #         if lower_prev_size < lower_size:
-    #             lower_diff = lower.difference(prev_lower)
-    #             print("lower_diff ", lower_diff)
-    #             with SymbolicBackend(self.control.backend()) as symbolic_backend:
-    #                 for atom in lower_diff:
-    #                     symbolic_backend.add_rule([], [], [Function("hold", [atom])])
-
-    #     self.control.configuration.solve.solve_limit = solve_limit
