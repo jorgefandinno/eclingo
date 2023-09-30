@@ -32,7 +32,7 @@ programs = [
         "literal_tuple(2).\n"
         "literal_tuple(2,3).\n"
         "output(u(b),2).\n",
-        candidates_00_str="['k(a)', 'not1(k(a))']",
+        candidates_00_str="['k(a)', 'no(k(a))']",
         candidates_00=[
             Candidate(
                 pos=[
@@ -149,7 +149,7 @@ programs = [
         "output(u(c),4).\n",
         candidates_00_str="None",
         candidates_00=None,
-        candidates_01_str="[('k(a) not1(k(b))', 'a'), ('k(a) k(b)', 'a')]",
+        candidates_01_str="[('k(a) no(k(b))', 'a'), ('k(a) k(b)', 'a')]",
         candidates_01=[
             Candidate(
                 pos=[
@@ -265,7 +265,7 @@ programs = [
         "literal_tuple(3,3).\n"
         "output(u(b),3).\n"
         "output(k(u(a)),2).\n",
-        candidates_00_str="['k(a)', 'not1(k(a))']",
+        candidates_00_str="['k(a)', 'no(k(a))']",
         candidates_00=[
             Candidate(
                 pos=[
@@ -286,7 +286,7 @@ programs = [
                 extra_assumptions=Assumptions(pos=[], neg=[]),
             ),
         ],
-        candidates_01_str="['k(a)', 'not1(k(a))']",
+        candidates_01_str="['k(a)', 'no(k(a))']",
         candidates_01=[
             Candidate(
                 pos=[
@@ -307,7 +307,7 @@ programs = [
                 extra_assumptions=Assumptions(pos=[], neg=[]),
             ),
         ],
-        candidates_02_str="['k(a)', 'not1(k(a))']",
+        candidates_02_str="['k(a)', 'no(k(a))']",
         candidates_02=[
             Candidate(
                 pos=[
@@ -328,7 +328,7 @@ programs = [
                 extra_assumptions=Assumptions(pos=[], neg=[]),
             ),
         ],
-        candidates_wv_str="['k(a)', 'not1(k(a))']",
+        candidates_wv_str="['k(a)', 'no(k(a))']",
         candidates_wv=[
             Candidate(
                 pos=[
@@ -482,7 +482,7 @@ programs = [
         "literal_tuple(4,3).\n"
         "output(u(b),4).\n"
         "output(k(u(a)),2).\n",
-        candidates_00_str="['k(a)', 'not1(k(a))']",
+        candidates_00_str="['k(a)', 'no(k(a))']",
         candidates_00=[
             Candidate(
                 pos=[
@@ -503,7 +503,7 @@ programs = [
                 extra_assumptions=Assumptions(pos=[], neg=[]),
             ),
         ],
-        candidates_01_str="['k(a)', 'not1(k(a))']",
+        candidates_01_str="['k(a)', 'no(k(a))']",
         candidates_01=[
             Candidate(
                 pos=[
@@ -595,7 +595,7 @@ programs = [
         "output(k(u(a)),2).\n",
         candidates_00_str="None",
         candidates_00=None,
-        candidates_01_str="['not1(k(a))']",
+        candidates_01_str="['no(k(a))']",
         candidates_01=[
             Candidate(
                 pos=[],
@@ -607,7 +607,7 @@ programs = [
                 extra_assumptions=Assumptions(pos=[], neg=[]),
             )
         ],
-        candidates_02_str="['not1(k(a))']",
+        candidates_02_str="['no(k(a))']",
         candidates_02=[
             Candidate(
                 pos=[],
@@ -619,7 +619,7 @@ programs = [
                 extra_assumptions=Assumptions(pos=[], neg=[]),
             )
         ],
-        candidates_wv_str="['not1(k(a))']",
+        candidates_wv_str="['no(k(a))']",
         candidates_wv=[
             Candidate(
                 pos=[],
@@ -706,7 +706,7 @@ programs = [
         "output(not1(u(a)),2).\n",
         candidates_00_str="None",
         candidates_00=None,
-        candidates_01_str="['k(not1(a))', 'not1(k(not1(a)))']",
+        candidates_01_str="['k(not1(a))', 'no(k(not1(a)))']",
         candidates_01=[
             Candidate(
                 pos=[
@@ -743,7 +743,7 @@ programs = [
                 extra_assumptions=Assumptions(pos=[], neg=[]),
             ),
         ],
-        candidates_02_str="['k(not1(a))', 'not1(k(not1(a)))']",
+        candidates_02_str="['k(not1(a))', 'no(k(not1(a)))']",
         candidates_02=[
             Candidate(
                 pos=[
@@ -780,7 +780,7 @@ programs = [
                 extra_assumptions=Assumptions(pos=[], neg=[]),
             ),
         ],
-        candidates_wv_str="['k(not1(a))', 'not1(k(not1(a)))']",
+        candidates_wv_str="['k(not1(a))', 'no(k(not1(a)))']",
         candidates_wv=[
             Candidate(
                 pos=[
@@ -880,7 +880,7 @@ programs = [
         "output(not1(u(a)),2).\n",
         candidates_00_str="None",
         candidates_00=None,
-        candidates_01_str="['not1(k(not1(a)))']",
+        candidates_01_str="['no(k(not1(a)))']",
         candidates_01=[
             Candidate(
                 pos=[],
@@ -900,7 +900,7 @@ programs = [
                 extra_assumptions=Assumptions(pos=[], neg=[]),
             )
         ],
-        candidates_02_str="['not1(k(not1(a)))']",
+        candidates_02_str="['no(k(not1(a)))']",
         candidates_02=[
             Candidate(
                 pos=[],
@@ -920,7 +920,7 @@ programs = [
                 extra_assumptions=Assumptions(pos=[], neg=[]),
             )
         ],
-        candidates_wv_str="['not1(k(not1(a)))']",
+        candidates_wv_str="['no(k(not1(a)))']",
         candidates_wv=[
             Candidate(
                 pos=[],
@@ -986,7 +986,7 @@ programs = [
         "output(not1(u(a)),2).\n",
         candidates_00_str="None",
         candidates_00=None,
-        candidates_01_str="['k(not1(a))', 'not1(k(not1(a)))']",
+        candidates_01_str="['k(not1(a))', 'no(k(not1(a)))']",
         candidates_01=[
             Candidate(
                 pos=[
@@ -1173,8 +1173,8 @@ programs = [
         "output(k(u(a)),8).\n",
         candidates_00_str="None",
         candidates_00=None,
-        candidates_01_str="['not1(k(a)) not1(k(b))', 'not1(k(a)) k(b)', 'k(a) "
-        "not1(k(b))', 'k(a) k(b)']",
+        candidates_01_str="['no(k(a)) no(k(b))', 'no(k(a)) k(b)', 'k(a) "
+        "no(k(b))', 'k(a) k(b)']",
         candidates_01=[
             Candidate(
                 pos=[],
@@ -1349,8 +1349,8 @@ programs = [
         "output(k(u(a)),9).\n",
         candidates_00_str="None",
         candidates_00=None,
-        candidates_01_str="['not1(k(a)) not1(k(b))', 'not1(k(a)) k(b)', 'k(a) "
-        "not1(k(b))', 'k(a) k(b)']",
+        candidates_01_str="['no(k(a)) no(k(b))', 'no(k(a)) k(b)', 'k(a) "
+        "no(k(b))', 'k(a) k(b)']",
         candidates_01=[
             Candidate(
                 pos=[],
@@ -1403,8 +1403,8 @@ programs = [
                 extra_assumptions=Assumptions(pos=[], neg=[]),
             ),
         ],
-        candidates_02_str="['not1(k(a)) not1(k(b))', 'not1(k(a)) k(b)', 'k(a) "
-        "not1(k(b))', 'k(a) k(b)']",
+        candidates_02_str="['no(k(a)) no(k(b))', 'no(k(a)) k(b)', 'k(a) "
+        "no(k(b))', 'k(a) k(b)']",
         candidates_02=[
             Candidate(
                 pos=[],
@@ -1457,8 +1457,8 @@ programs = [
                 extra_assumptions=Assumptions(pos=[], neg=[]),
             ),
         ],
-        candidates_wv_str="['not1(k(a)) not1(k(b))', 'not1(k(a)) k(b)', 'k(a) "
-        "not1(k(b))', 'k(a) k(b)']",
+        candidates_wv_str="['no(k(a)) no(k(b))', 'no(k(a)) k(b)', 'k(a) "
+        "no(k(b))', 'k(a) k(b)']",
         candidates_wv=[
             Candidate(
                 pos=[],
@@ -1615,7 +1615,7 @@ programs = [
         "output(not1(u(a)),2).\n",
         candidates_00_str="None",
         candidates_00=None,
-        candidates_01_str="['not1(k(not1(a)))', 'k(not1(a))']",
+        candidates_01_str="['no(k(not1(a)))', 'k(not1(a))']",
         candidates_01=[
             Candidate(
                 pos=[],
@@ -1652,7 +1652,7 @@ programs = [
                 extra_assumptions=Assumptions(pos=[], neg=[]),
             ),
         ],
-        candidates_02_str="['not1(k(not1(a)))', 'k(not1(a))']",
+        candidates_02_str="['no(k(not1(a)))', 'k(not1(a))']",
         candidates_02=[
             Candidate(
                 pos=[],
@@ -1689,7 +1689,7 @@ programs = [
                 extra_assumptions=Assumptions(pos=[], neg=[]),
             ),
         ],
-        candidates_wv_str="['not1(k(not1(a)))', 'k(not1(a))']",
+        candidates_wv_str="['no(k(not1(a)))', 'k(not1(a))']",
         candidates_wv=[
             Candidate(
                 pos=[],
@@ -1786,7 +1786,7 @@ programs = [
         "output(u(-a),3).\n",
         candidates_00_str="None",
         candidates_00=None,
-        candidates_01_str="['k(a) not1(k(-a))', 'not1(k(a)) k(-a)']",
+        candidates_01_str="['k(a) no(k(-a))', 'no(k(a)) k(-a)']",
         candidates_01=[
             Candidate(
                 pos=[
@@ -1815,7 +1815,7 @@ programs = [
                 extra_assumptions=Assumptions(pos=[], neg=[]),
             ),
         ],
-        candidates_02_str="['k(a) not1(k(-a))', 'not1(k(a)) k(-a)']",
+        candidates_02_str="['k(a) no(k(-a))', 'no(k(a)) k(-a)']",
         candidates_02=[
             Candidate(
                 pos=[
@@ -1844,7 +1844,7 @@ programs = [
                 extra_assumptions=Assumptions(pos=[], neg=[]),
             ),
         ],
-        candidates_wv_str="['k(a) not1(k(-a))', 'not1(k(a)) k(-a)']",
+        candidates_wv_str="['k(a) no(k(-a))', 'no(k(a)) k(-a)']",
         candidates_wv=[
             Candidate(
                 pos=[
@@ -1948,7 +1948,7 @@ programs = [
         "output(u(c),5).\n",
         candidates_00_str="None",
         candidates_00=None,
-        candidates_01_str="['k(a) k(c) not1(k(-a))']",
+        candidates_01_str="['k(a) k(c) no(k(-a))']",
         candidates_01=[
             Candidate(
                 pos=[
@@ -1967,7 +1967,7 @@ programs = [
                 extra_assumptions=Assumptions(pos=[], neg=[]),
             )
         ],
-        candidates_02_str="[('k(a) k(c) not1(k(-a))', '')]",
+        candidates_02_str="[('k(a) k(c) no(k(-a))', '')]",
         candidates_02=[
             Candidate(
                 pos=[
@@ -1986,7 +1986,7 @@ programs = [
                 extra_assumptions=Assumptions(pos=[], neg=[]),
             )
         ],
-        candidates_wv_str="[('k(a) k(c) not1(k(-a))', '')]",
+        candidates_wv_str="[('k(a) k(c) no(k(-a))', '')]",
         candidates_wv=[
             Candidate(
                 pos=[

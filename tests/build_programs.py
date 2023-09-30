@@ -161,11 +161,9 @@ def build_candidate_without_assumptions(candidate: str, assumptions=None) -> Can
     atoms = candidate.split(" ")
     atoms = [parse_term(atom) for atom in atoms]
     atoms = [ast_to_symbol(atom) for atom in atoms]
-    pos = [build_subjective_atom(atom) for atom in atoms if atom.name != "not1"]
+    pos = [build_subjective_atom(atom) for atom in atoms if atom.name != "no"]
     neg = [
-        build_subjective_atom(atom.arguments[0])
-        for atom in atoms
-        if atom.name == "not1"
+        build_subjective_atom(atom.arguments[0]) for atom in atoms if atom.name == "no"
     ]
     if assumptions is not None:
         return Candidate(pos=pos, neg=neg, extra_assumptions=assumptions)

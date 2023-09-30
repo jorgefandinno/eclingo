@@ -23,7 +23,7 @@ program_list = [
         non_ground_reification="u(a). u(b) :- k(u(a)). { k(u(a)) } :- u(a).",
         candidates_00=[
             "k(a)",
-            "not1(k(a))",
+            "no(k(a))",
         ],
         candidates_01=[("k(a)", "a")],
         fast_preprocessing="a b k(a)",
@@ -32,7 +32,7 @@ program_list = [
     Program(
         description="",
         program="a. b :- &k{a}. c :- &k{b}.",
-        candidates_01=[("k(a) not1(k(b))", "a"), ("k(a) k(b)", "a")],
+        candidates_01=[("k(a) no(k(b))", "a"), ("k(a) k(b)", "a")],
         candidates_02=[("k(a) k(b)", "a b")],
         fast_preprocessing="a b c k(a) k(b)",
         has_fast_preprocessing=True,
@@ -43,7 +43,7 @@ program_list = [
         non_ground_reification="{u(a)}. u(b) :- k(u(a)). { k(u(a)) } :- u(a).",
         candidates_00=[
             "k(a)",
-            "not1(k(a))",
+            "no(k(a))",
         ],
         fast_preprocessing=("", "a b k(a)"),
         has_fast_preprocessing=True,
@@ -69,7 +69,7 @@ program_list = [
         non_ground_reification="{u(a)}. :- not u(a). u(b) :- k(u(a)). { k(u(a)) } :- u(a).",
         candidates_00=[
             "k(a)",
-            "not1(k(a))",
+            "no(k(a))",
         ],
         candidates_02=[
             ("k(a)", "a"),
@@ -83,10 +83,10 @@ program_list = [
         non_ground_reification="{u(a)}. :- u(a). u(b) :- k(u(a)). { k(u(a)) } :- u(a).",
         # candidates_00=[
         #     "k(a)",
-        #     "not1(k(a))",
+        #     "no(k(a))",
         # ],
         candidates_01=[
-            "not1(k(a))",
+            "no(k(a))",
         ],
         fast_preprocessing="",
         has_fast_preprocessing=True,
@@ -105,7 +105,7 @@ program_list = [
         program="{a}. b :- &k{not a}.",
         candidates_01=[
             "k(not1(a))",
-            "not1(k(not1(a)))",
+            "no(k(not1(a)))",
         ],
         fast_preprocessing=("", "a b not1(a) k(not1(a))"),
         has_fast_preprocessing=True,
@@ -114,7 +114,7 @@ program_list = [
         description="",
         program="{a}. :- not a. b :- &k{not a}.",
         candidates_01=[
-            "not1(k(not1(a)))",
+            "no(k(not1(a)))",
         ],
         fast_preprocessing="a",
         has_fast_preprocessing=True,
@@ -124,7 +124,7 @@ program_list = [
         program="{a}. :- a. b :- &k{not a}.",
         candidates_01=[
             "k(not1(a))",
-            "not1(k(not1(a)))",
+            "no(k(not1(a)))",
         ],
         candidates_02=[
             ("k(not1(a))", "not1(a)"),
@@ -136,9 +136,9 @@ program_list = [
         description="",
         program="{a}. {b}. :- not a. :- not b. c :- &k{a}, &k{b}.",
         candidates_01=[
-            "not1(k(a)) not1(k(b))",
-            "not1(k(a)) k(b)",
-            "k(a) not1(k(b))",
+            "no(k(a)) no(k(b))",
+            "no(k(a)) k(b)",
+            "k(a) no(k(b))",
             "k(a) k(b)",
         ],
         candidates_02=[
@@ -151,9 +151,9 @@ program_list = [
         description="",
         program="{a}. {b}. :- not a, not b. :- a, not b. :- b, not a. c :- &k{a}, &k{b}.",
         candidates_01=[
-            "not1(k(a)) not1(k(b))",
-            "not1(k(a)) k(b)",
-            "k(a) not1(k(b))",
+            "no(k(a)) no(k(b))",
+            "no(k(a)) k(b)",
+            "k(a) no(k(b))",
             "k(a) k(b)",
         ],
         fast_preprocessing=("", "a b c k(a) k(b)"),
@@ -177,7 +177,7 @@ program_list = [
         description="",
         program="a :- not &k{not a}.",
         candidates_01=[
-            "not1(k(not1(a)))",
+            "no(k(not1(a)))",
             "k(not1(a))",
         ],
         fast_preprocessing=("", "a not1(a) k(not1(a))"),
@@ -187,8 +187,8 @@ program_list = [
         description="",
         program="a :- not &k{-a}. -a :- not &k{a}.",
         candidates_01=[
-            "k(a) not1(k(-a))",
-            "not1(k(a)) k(-a)",
+            "k(a) no(k(-a))",
+            "no(k(a)) k(-a)",
         ],
         fast_preprocessing=("", "a -a k(a) k(-a)"),
         has_fast_preprocessing=True,
@@ -197,10 +197,10 @@ program_list = [
         description="",
         program="a :- not &k{-a}. -a :- not &k{a}. b :- a. c :- b. :- not &k{c}.",
         candidates_01=[
-            "k(a) k(c) not1(k(-a))",
+            "k(a) k(c) no(k(-a))",
         ],
         candidates_02=[
-            ("k(a) k(c) not1(k(-a))", ""),
+            ("k(a) k(c) no(k(-a))", ""),
         ],
         fast_preprocessing=("k(c)", "a -a b c k(a) k(-a) k(c)"),
         has_fast_preprocessing=True,
