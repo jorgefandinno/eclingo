@@ -2304,7 +2304,7 @@ programs = [
                 extra_assumptions=Assumptions(pos=[], neg=[]),
             )
         ],
-        candidates_02_str="[('k(a) k(c) no(k(-a))', '')]",
+        candidates_02_str="['k(a) k(c) no(k(-a))']",
         candidates_02=[
             Candidate(
                 pos=[
@@ -2381,6 +2381,281 @@ programs = [
                 Function("u", [Function("a", [], False)], True),
                 Function("u", [Function("b", [], True)], True),
                 Function("u", [Function("c", [], True)], True),
+                Function("k", [Function("u", [Function("a", [], True)], True)], True),
+                Function("k", [Function("u", [Function("a", [], False)], True)], True),
+                Function("k", [Function("u", [Function("c", [], True)], True)], True),
+            ],
+        ),
+        has_fast_preprocessing=True,
+        description="",
+    ),
+    Program(
+        program="a :- not &k{-a}. -a :- not &k{a}. b :- a. c :- b. d :- not " "&k{c}.",
+        non_ground_reification="u(a) :- not k(u(-a)).\n"
+        "{ k(u(-a)) } :- u(-a).\n"
+        "u(-a) :- not k(u(a)).\n"
+        "{ k(u(a)) } :- u(a).\n"
+        "u(b) :- u(a).\n"
+        "u(c) :- u(b).\n"
+        "u(d) :- not k(u(c)).\n"
+        "{ k(u(c)) } :- u(c).\n",
+        ground_reification="atom_tuple(0).\n"
+        "atom_tuple(0,1).\n"
+        "literal_tuple(0).\n"
+        "literal_tuple(0,-2).\n"
+        "rule(disjunction(0),normal(0)).\n"
+        "atom_tuple(1).\n"
+        "atom_tuple(1,3).\n"
+        "literal_tuple(1).\n"
+        "literal_tuple(1,-4).\n"
+        "rule(disjunction(1),normal(1)).\n"
+        "atom_tuple(2).\n"
+        "atom_tuple(2,2).\n"
+        "literal_tuple(2).\n"
+        "literal_tuple(2,3).\n"
+        "rule(choice(2),normal(2)).\n"
+        "atom_tuple(3).\n"
+        "atom_tuple(3,4).\n"
+        "literal_tuple(3).\n"
+        "literal_tuple(3,1).\n"
+        "rule(choice(3),normal(3)).\n"
+        "atom_tuple(4).\n"
+        "atom_tuple(4,5).\n"
+        "rule(disjunction(4),normal(3)).\n"
+        "atom_tuple(5).\n"
+        "atom_tuple(5,6).\n"
+        "literal_tuple(4).\n"
+        "literal_tuple(4,5).\n"
+        "rule(disjunction(5),normal(4)).\n"
+        "atom_tuple(6).\n"
+        "atom_tuple(6,7).\n"
+        "literal_tuple(5).\n"
+        "literal_tuple(5,6).\n"
+        "rule(choice(6),normal(5)).\n"
+        "atom_tuple(7).\n"
+        "atom_tuple(7,8).\n"
+        "literal_tuple(6).\n"
+        "literal_tuple(6,-7).\n"
+        "rule(disjunction(7),normal(6)).\n"
+        "literal_tuple(7).\n"
+        "literal_tuple(7,2).\n"
+        "output(k(u(-a)),7).\n"
+        "literal_tuple(8).\n"
+        "literal_tuple(8,4).\n"
+        "output(k(u(a)),8).\n"
+        "literal_tuple(9).\n"
+        "literal_tuple(9,7).\n"
+        "output(k(u(c)),9).\n"
+        "output(u(a),3).\n"
+        "output(u(-a),2).\n"
+        "output(u(b),4).\n"
+        "output(u(c),5).\n"
+        "literal_tuple(10).\n"
+        "literal_tuple(10,8).\n"
+        "output(u(d),10).\n",
+        candidates_00_str="None",
+        candidates_00=None,
+        candidates_01_str="['k(a) k(c) no(k(-a))', 'k(a) no(k(c)) no(k(-a))', "
+        "'no(k(a)) no(k(c)) k(-a)']",
+        candidates_01=[
+            Candidate(
+                pos=[
+                    Function(
+                        "k", [Function("u", [Function("a", [], True)], True)], True
+                    ),
+                    Function(
+                        "k", [Function("u", [Function("c", [], True)], True)], True
+                    ),
+                ],
+                neg=[
+                    Function(
+                        "k", [Function("u", [Function("a", [], False)], True)], True
+                    )
+                ],
+                extra_assumptions=Assumptions(pos=[], neg=[]),
+            ),
+            Candidate(
+                pos=[
+                    Function(
+                        "k", [Function("u", [Function("a", [], True)], True)], True
+                    )
+                ],
+                neg=[
+                    Function(
+                        "k", [Function("u", [Function("c", [], True)], True)], True
+                    ),
+                    Function(
+                        "k", [Function("u", [Function("a", [], False)], True)], True
+                    ),
+                ],
+                extra_assumptions=Assumptions(pos=[], neg=[]),
+            ),
+            Candidate(
+                pos=[
+                    Function(
+                        "k", [Function("u", [Function("a", [], False)], True)], True
+                    )
+                ],
+                neg=[
+                    Function(
+                        "k", [Function("u", [Function("a", [], True)], True)], True
+                    ),
+                    Function(
+                        "k", [Function("u", [Function("c", [], True)], True)], True
+                    ),
+                ],
+                extra_assumptions=Assumptions(pos=[], neg=[]),
+            ),
+        ],
+        candidates_02_str="['k(a) k(c) no(k(-a))', 'k(a) no(k(c)) no(k(-a))', "
+        "'no(k(a)) no(k(c)) k(-a)']",
+        candidates_02=[
+            Candidate(
+                pos=[
+                    Function(
+                        "k", [Function("u", [Function("a", [], True)], True)], True
+                    ),
+                    Function(
+                        "k", [Function("u", [Function("c", [], True)], True)], True
+                    ),
+                ],
+                neg=[
+                    Function(
+                        "k", [Function("u", [Function("a", [], False)], True)], True
+                    )
+                ],
+                extra_assumptions=Assumptions(pos=[], neg=[]),
+            ),
+            Candidate(
+                pos=[
+                    Function(
+                        "k", [Function("u", [Function("a", [], True)], True)], True
+                    )
+                ],
+                neg=[
+                    Function(
+                        "k", [Function("u", [Function("c", [], True)], True)], True
+                    ),
+                    Function(
+                        "k", [Function("u", [Function("a", [], False)], True)], True
+                    ),
+                ],
+                extra_assumptions=Assumptions(pos=[], neg=[]),
+            ),
+            Candidate(
+                pos=[
+                    Function(
+                        "k", [Function("u", [Function("a", [], False)], True)], True
+                    )
+                ],
+                neg=[
+                    Function(
+                        "k", [Function("u", [Function("a", [], True)], True)], True
+                    ),
+                    Function(
+                        "k", [Function("u", [Function("c", [], True)], True)], True
+                    ),
+                ],
+                extra_assumptions=Assumptions(pos=[], neg=[]),
+            ),
+        ],
+        candidates_03_str="[('k(a) k(c) no(k(-a))', 'a c'), ('no(k(a)) no(k(c)) "
+        "k(-a)', '-a')]",
+        candidates_03=[
+            Candidate(
+                pos=[
+                    Function(
+                        "k", [Function("u", [Function("a", [], True)], True)], True
+                    ),
+                    Function(
+                        "k", [Function("u", [Function("c", [], True)], True)], True
+                    ),
+                ],
+                neg=[
+                    Function(
+                        "k", [Function("u", [Function("a", [], False)], True)], True
+                    )
+                ],
+                extra_assumptions=Assumptions(
+                    pos=[
+                        Function("u", [Function("a", [], True)], True),
+                        Function("u", [Function("c", [], True)], True),
+                    ],
+                    neg=[],
+                ),
+            ),
+            Candidate(
+                pos=[
+                    Function(
+                        "k", [Function("u", [Function("a", [], False)], True)], True
+                    )
+                ],
+                neg=[
+                    Function(
+                        "k", [Function("u", [Function("a", [], True)], True)], True
+                    ),
+                    Function(
+                        "k", [Function("u", [Function("c", [], True)], True)], True
+                    ),
+                ],
+                extra_assumptions=Assumptions(
+                    pos=[Function("u", [Function("a", [], False)], True)], neg=[]
+                ),
+            ),
+        ],
+        candidates_wv_str="[('k(a) k(c) no(k(-a))', 'a c'), ('no(k(a)) no(k(c)) "
+        "k(-a)', '-a')]",
+        candidates_wv=[
+            Candidate(
+                pos=[
+                    Function(
+                        "k", [Function("u", [Function("a", [], True)], True)], True
+                    ),
+                    Function(
+                        "k", [Function("u", [Function("c", [], True)], True)], True
+                    ),
+                ],
+                neg=[
+                    Function(
+                        "k", [Function("u", [Function("a", [], False)], True)], True
+                    )
+                ],
+                extra_assumptions=Assumptions(
+                    pos=[
+                        Function("u", [Function("a", [], True)], True),
+                        Function("u", [Function("c", [], True)], True),
+                    ],
+                    neg=[],
+                ),
+            ),
+            Candidate(
+                pos=[
+                    Function(
+                        "k", [Function("u", [Function("a", [], False)], True)], True
+                    )
+                ],
+                neg=[
+                    Function(
+                        "k", [Function("u", [Function("a", [], True)], True)], True
+                    ),
+                    Function(
+                        "k", [Function("u", [Function("c", [], True)], True)], True
+                    ),
+                ],
+                extra_assumptions=Assumptions(
+                    pos=[Function("u", [Function("a", [], False)], True)], neg=[]
+                ),
+            ),
+        ],
+        fast_preprocessing_str=("", "a -a b c d k(a) k(-a) k(c)"),
+        fast_preprocessing=(
+            [],
+            [
+                Function("u", [Function("a", [], True)], True),
+                Function("u", [Function("a", [], False)], True),
+                Function("u", [Function("b", [], True)], True),
+                Function("u", [Function("c", [], True)], True),
+                Function("u", [Function("d", [], True)], True),
                 Function("k", [Function("u", [Function("a", [], True)], True)], True),
                 Function("k", [Function("u", [Function("a", [], False)], True)], True),
                 Function("k", [Function("u", [Function("c", [], True)], True)], True),

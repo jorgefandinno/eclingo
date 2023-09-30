@@ -211,28 +211,25 @@ program_list = [
         candidates_01=[
             "k(a) k(c) no(k(-a))",
         ],
-        candidates_02=[
-            ("k(a) k(c) no(k(-a))", ""),
-        ],
         candidates_03=[
             ("k(a) k(c) no(k(-a))", "a c"),
         ],
         fast_preprocessing=("k(c)", "a -a b c k(a) k(-a) k(c)"),
         has_fast_preprocessing=True,
     ),
-    #    Program(
-    #         description="",
-    #         program="a :- not &k{-a}. -a :- not &k{a}. b :- a. c :- b. d :- not &k{c}.",
-    #         candidates_01=[
-    #             "k(a) k(c) no(k(-a))",
-    #         ],
-    #         candidates_02=[
-    #             ("k(a) k(c) no(k(-a))", ""),
-    #         ],
-    #         candidates_03=[
-    #             ("k(a) k(c) no(k(-a))", "a c"),
-    #         ],
-    #         fast_preprocessing=("k(c)", "a -a b c k(a) k(-a) k(c)"),
-    #         has_fast_preprocessing=True,
-    #     ),
+    Program(
+        description="",
+        program="a :- not &k{-a}. -a :- not &k{a}. b :- a. c :- b. d :- not &k{c}.",
+        candidates_01=[
+            "k(a) k(c) no(k(-a))",
+            "k(a) no(k(c)) no(k(-a))",
+            "no(k(a)) no(k(c)) k(-a)",
+        ],
+        candidates_03=[
+            ("k(a) k(c) no(k(-a))", "a c"),
+            ("no(k(a)) no(k(c)) k(-a)", "-a"),
+        ],
+        fast_preprocessing=("", "a -a b c d k(a) k(-a) k(c)"),
+        has_fast_preprocessing=True,
+    ),
 ]
