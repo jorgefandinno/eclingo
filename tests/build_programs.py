@@ -177,9 +177,9 @@ def build_assumptions(assumptions: str) -> Assumptions:
         return Assumptions(pos=[], neg=[])
     atoms = assumptions.split(" ")
     atoms = [ast_to_symbol(parse_term(atom)) for atom in atoms]
-    pos = [build_objective_atom(atom) for atom in atoms if atom.name != "not1"]
+    pos = [build_objective_atom(atom) for atom in atoms if atom.name != "no"]
     neg = [
-        build_objective_atom(atom.arguments[0]) for atom in atoms if atom.name == "not1"
+        build_objective_atom(atom.arguments[0]) for atom in atoms if atom.name == "no"
     ]
     return Assumptions(pos=pos, neg=neg)
 

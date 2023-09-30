@@ -33,7 +33,7 @@ program_list = [
         description="",
         program="a. b :- &k{a}. c :- &k{b}.",
         candidates_01=[("k(a) not1(k(b))", "a"), ("k(a) k(b)", "a")],
-        candidates_02=[("k(a) k(b)", "a")],
+        candidates_02=[("k(a) k(b)", "a b")],
         fast_preprocessing="a b c k(a) k(b)",
         has_fast_preprocessing=True,
     ),
@@ -72,7 +72,7 @@ program_list = [
             "not1(k(a))",
         ],
         candidates_02=[
-            "k(a)",
+            ("k(a)", "a"),
         ],
         fast_preprocessing=("a b k(a)", "a b k(a)"),
         has_fast_preprocessing=True,
@@ -127,7 +127,7 @@ program_list = [
             "not1(k(not1(a)))",
         ],
         candidates_02=[
-            "k(not1(a))",
+            ("k(not1(a))", "not1(a)"),
         ],
         fast_preprocessing="b not1(a) k(not1(a))",
         has_fast_preprocessing=True,
@@ -142,7 +142,7 @@ program_list = [
             "k(a) k(b)",
         ],
         candidates_02=[
-            "k(a) k(b)",
+            ("k(a) k(b)", "a b"),
         ],
         fast_preprocessing="a b c k(a) k(b)",
         has_fast_preprocessing=True,

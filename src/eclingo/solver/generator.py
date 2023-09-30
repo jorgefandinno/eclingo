@@ -47,6 +47,8 @@ symbolic_atom(SA) :- atom_map(SA, _).
 symbolic_epistemic_atom(k(A)) :- symbolic_atom(k(A)).
 epistemic_atom_map(KSA, KA) :- atom_map(KSA, KA), symbolic_epistemic_atom(KSA).
 epistemic_atom_int(KA) :- epistemic_atom_map(_, KA).
+
+:- kp_hold(KA), not hold(KA), epistemic_atom_int(KA).
 """
 
 preprocessing_program = """\
@@ -54,7 +56,7 @@ symbolic_objective_atom(OSA) :- symbolic_atom(OSA), not symbolic_epistemic_atom(
 
 cautious_objetive(SA) :- cautious(SA), symbolic_objective_atom(SA).
 %hold(A)  :- atom_map(SA, A), cautious_objetive(SA). % this is incorrect, objecti atoms may hold wihtout been proved
-:- epistemic_atom_map(k(SA), KA), cautious_objetive(SA), not hold(KA).
+kp_hold(KA) :- epistemic_atom_map(k(SA), KA), cautious_objetive(SA).
 """
 
 fact_optimization_program = """\
@@ -65,8 +67,6 @@ fact(SA) :-
         #count {L : literal_tuple(LT, L)} = 0.
 
 kp_hold(KA) :- epistemic_atom_map(k(SA), KA), fact(SA).
-
-:- kp_hold(KA), not hold(KA), epistemic_atom_int(KA).
 
 positive_extra_assumptions(A) :- epistemic_atom_map(k(A), KA), kp_hold(KA).
 % negative_extra_assumptions(A) :- epistemic_atom_map(k(A), KA), kp_not_hold(KA).
@@ -104,7 +104,7 @@ class GeneratorReification:
         self.control.add("base", [], base_program)
         self.control.add("base", [], common_opt_program)
         self.control.add("base", [], fact_optimization_program)
-        self.control.add("base", [], positive_propagation_program)
+        # self.control.add("base", [], positive_propagation_program)
         if preprocessing_facts is not None:
             self.control.add("base", [], preprocessing_program)
             with SymbolicBackend(self.control.backend()) as backend:

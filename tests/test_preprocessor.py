@@ -100,10 +100,38 @@ class PreprocessorTestCase(unittest.TestCase):
                     self.assertCountEqual(
                         candidate_str, expected_str, "candidates string"
                     )
+                    candidate_with_assumption_str = [
+                        (
+                            sorted(str(a) for a in c.pos),
+                            sorted(str(a) for a in c.neg),
+                            sorted(str(a) for a in c.extra_assumptions.pos),
+                            sorted(str(a) for a in c.extra_assumptions.neg),
+                        )
+                        for c in candidates
+                    ]
+                    expected_with_assumption_str = [
+                        (
+                            sorted(str(a) for a in c.pos),
+                            sorted(str(a) for a in c.neg),
+                            sorted(str(a) for a in c.extra_assumptions.pos),
+                            sorted(str(a) for a in c.extra_assumptions.neg),
+                        )
+                        for c in program.candidates_02
+                    ]
+                    self.assertCountEqual(
+                        candidate_with_assumption_str,
+                        expected_with_assumption_str,
+                        "with assumptions string",
+                    )
+
                     for model in candidates:
                         model.pos.sort()
                         model.neg.sort()
+                        model.extra_assumptions.pos.sort()
+                        model.extra_assumptions.neg.sort()
                     for model in program.candidates_02:
                         model.pos.sort()
                         model.neg.sort()
+                        model.extra_assumptions.pos.sort()
+                        model.extra_assumptions.neg.sort()
                     self.assertCountEqual(candidates, program.candidates_02)
