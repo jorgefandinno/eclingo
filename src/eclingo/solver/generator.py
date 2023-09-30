@@ -54,9 +54,11 @@ epistemic_atom_int(KA) :- epistemic_atom_map(_, KA).
 preprocessing_program = """\
 symbolic_objective_atom(OSA) :- symbolic_atom(OSA), not symbolic_epistemic_atom(OSA).
 
-cautious_objetive(SA) :- cautious(SA), symbolic_objective_atom(SA).
+cautious_objetive(SA)   :- cautious(SA),  symbolic_objective_atom(SA).
+cautious_epistemic(KSA) :- cautious(KSA), symbolic_epistemic_atom(KSA).
 %hold(A)  :- atom_map(SA, A), cautious_objetive(SA). % this is incorrect, objecti atoms may hold wihtout been proved
 kp_hold(KA) :- epistemic_atom_map(k(SA), KA), cautious_objetive(SA).
+:- epistemic_atom_map(KSA, KA), cautious_epistemic(KSA), not hold(KA).
 """
 
 fact_optimization_program = """\
