@@ -106,7 +106,7 @@ class GeneratorReification:
         self.control.add("base", [], base_program)
         self.control.add("base", [], common_opt_program)
         self.control.add("base", [], fact_optimization_program)
-        self.control.add("base", [], positive_propagation_program)
+        # self.control.add("base", [], positive_propagation_program)
         if preprocessing_facts is not None:
             self.control.add("base", [], preprocessing_program)
             with SymbolicBackend(self.control.backend()) as backend:
