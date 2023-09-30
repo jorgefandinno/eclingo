@@ -77,7 +77,7 @@ positive_extra_assumptions(A) :- epistemic_atom_map(k(A), KA), kp_hold(KA).
 #show negative_extra_assumptions/1.
 """
 
-positive_propagation_program = """\
+propagation_program = """\
 singleton_disjuntion(H) :- rule(disjunction(H), _), #count {L : literal_tuple(H, L)} = 1.
 
 kp_conjunction(B) :- literal_tuple(B), kp_hold(A) : literal_tuple(B,  A), A > 0, not epistemic_atom_int(A);
@@ -85,8 +85,24 @@ kp_conjunction(B) :- literal_tuple(B), kp_hold(A) : literal_tuple(B,  A), A > 0,
                                    kp_not_hold(A) : literal_tuple(B, -A), A > 0, not epistemic_atom_int(A);
                                       not hold(A) : literal_tuple(B, -A), A > 0,     epistemic_atom_int(A).
 
-kp_body(normal(B)) :- rule(_, normal(B)), kp_conjunction(B).
+kp_not_conjunction(B) :- literal_tuple(B), kp_not_hold(A), literal_tuple(B, A), A > 0, not epistemic_atom(A).
+kp_not_conjunction(B) :- literal_tuple(B),    not hold(A), literal_tuple(B, A), A > 0, epistemic_atom(A).
+kp_not_conjunction(B) :- literal_tuple(B), kp_hold(A), literal_tuple(B, -A), A > 0, not epistemic_atom(A).
+kp_not_conjunction(B) :- literal_tuple(B),    hold(A), literal_tuple(B, -A), A > 0, epistemic_atom(A).
+
+kp_body(normal(B))     :- rule(_, normal(B)), kp_conjunction(B).
+kp_not_body(normal(B)) :- rule(_, normal(B)), kp_not_conjunction(B).
+
 kp_hold(A) : atom_tuple(H,A) :- rule(disjunction(H), B), singleton_disjuntion(H), kp_body(B).
+
+rule_head_tuple(H, B) :- rule(disjunction(H), B).
+rule_head_tuple(H, B) :- rule(choice(H), B).
+
+kp_not_hold(A) :- symbolic_atom(_, A), kp_not_body(B) : atom_tuple(H,A), rule_head_tuple(H, B).
+
+zhold(SA)        :- hold(A), atom_map(SA, A).
+zkp_hold(SA)     :- kp_hold(A), atom_map(SA, A).
+zkp_not_hold(SA) :- kp_not_hold(A), atom_map(SA, A).
 """
 
 
@@ -106,7 +122,7 @@ class GeneratorReification:
         self.control.add("base", [], base_program)
         self.control.add("base", [], common_opt_program)
         self.control.add("base", [], fact_optimization_program)
-        # self.control.add("base", [], positive_propagation_program)
+        self.control.add("base", [], propagation_program)
         if preprocessing_facts is not None:
             self.control.add("base", [], preprocessing_program)
             with SymbolicBackend(self.control.backend()) as backend:
@@ -117,6 +133,7 @@ class GeneratorReification:
     def __call__(self) -> Iterator[Candidate]:
         with cast(clingo.SolveHandle, self.control.solve(yield_=True)) as handle:
             for model in handle:
+                print("\n".join(sorted(str(a) for a in model.symbols(atoms=True))))
                 candidate = self._model_to_candidate(model)
                 self.num_candidates += 1
                 yield candidate
