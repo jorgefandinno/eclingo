@@ -22,8 +22,10 @@ class SolverReification:
         self.test_candidate_reification = CandidateTesterReification(
             self._config, reified_program
         )
-        prepreocessing_info = None
-        # prepreocessing_info = self.test_candidate_reification.fast_preprocessing()
+        if self._config.preprocessing_level == 0:
+            prepreocessing_info = None
+        else:
+            prepreocessing_info = self.test_candidate_reification.fast_preprocessing()
         self.generate_candidates_reification = GeneratorReification(
             self._config,
             reified_program,
