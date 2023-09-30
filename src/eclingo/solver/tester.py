@@ -175,7 +175,7 @@ class CandidateTesterReification:
                     if not model.contains(atom):
                         return False
 
-            assert model is not None
+            assert model is not None, str(candidate)
 
             for atom in candidate_neg:
                 if model.contains(atom):

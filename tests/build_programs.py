@@ -275,7 +275,7 @@ Modify the file "test/programs.py" and run "python test/build_programs.py" inste
     )
     f.write(
         f"""\
-from clingo import Function
+from clingo import Function, Number
 from eclingo.solver.candidate import Candidate, Assumptions
 from tests.programs_helper import Program
 

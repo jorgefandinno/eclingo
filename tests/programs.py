@@ -232,4 +232,46 @@ program_list = [
         fast_preprocessing=("", "a -a b c d k(a) k(-a) k(c)"),
         has_fast_preprocessing=True,
     ),
+    Program(
+        description="",
+        program="""\
+            a(1) :- not c(1).
+            c(1) :- not a(1).
+            b(1) :- not &k{ not a(1) }.
+            d(1) :- &k{ b(1) }.
+        """,
+        candidates_01=[
+            "no(k(not1(a(1)))) k(b(1))",
+            "no(k(not1(a(1)))) no(k(b(1)))",
+            "k(not1(a(1))) no(k(b(1)))",
+        ],
+        # candidates_03=[
+        #     ("k(a) k(c) no(k(-a))", "a c"),
+        #     ("no(k(a)) no(k(c)) k(-a)", "-a"),
+        # ],
+        fast_preprocessing=("", "a(1) b(1) c(1) d(1) not1(a(1)) k(not1(a(1))) k(b(1))"),
+        has_fast_preprocessing=True,
+    ),
+    Program(
+        description="",
+        program="""\
+            a(1) :- not c(1).
+            c(1) :- not a(1).
+            b(1) :- not &k{ not a(1) }.
+            b(2) :- not &k{ not a(2) }.
+            d(1) :- &k{ b(1) }.
+            d(2) :- &k{ b(2) }.
+        """,
+        candidates_01=[
+            ("no(k(not1(a(1)))) k(not1(a(2))) k(b(1)) no(k(b(2)))", "not1(a(2))"),
+            ("no(k(not1(a(1)))) k(not1(a(2))) no(k(b(1))) no(k(b(2)))", "not1(a(2))"),
+            ("k(not1(a(1))) k(not1(a(2))) no(k(b(1))) no(k(b(2)))", "not1(a(2))"),
+        ],
+        # candidates_03=[
+        #     ("k(a) k(c) no(k(-a))", "a c"),
+        #     ("no(k(a)) no(k(c)) k(-a)", "-a"),
+        # ],
+        fast_preprocessing=("", "a(1) b(1) c(1) not1(a(1)) k(not1(a(1)))"),
+        has_fast_preprocessing=True,
+    ),
 ]

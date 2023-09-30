@@ -6,7 +6,7 @@ Modify the file "test/programs.py" and run "python test/build_programs.py" inste
 """
 
 
-from clingo import Function
+from clingo import Function, Number
 
 from eclingo.solver.candidate import Assumptions, Candidate
 from tests.programs_helper import Program
@@ -2659,6 +2659,1269 @@ programs = [
                 Function("k", [Function("u", [Function("a", [], True)], True)], True),
                 Function("k", [Function("u", [Function("a", [], False)], True)], True),
                 Function("k", [Function("u", [Function("c", [], True)], True)], True),
+            ],
+        ),
+        has_fast_preprocessing=True,
+        description="",
+    ),
+    Program(
+        program="            a(1) :- not c(1).\n"
+        "            c(1) :- not a(1).\n"
+        "            b(1) :- not &k{ not a(1) }.\n"
+        "            d(1) :- &k{ b(1) }.\n"
+        "        ",
+        non_ground_reification="u(a(1)) :- not u(c(1)).\n"
+        "u(c(1)) :- not u(a(1)).\n"
+        "u(b(1)) :- not k(not1(u(a(1)))).\n"
+        "{ k(not1(u(a(1)))) } :- not1(u(a(1))).\n"
+        "not1(u(a(1))) :- not u(a(1)).\n"
+        "u(d(1)) :- k(u(b(1))).\n"
+        "{ k(u(b(1))) } :- u(b(1)).\n",
+        ground_reification="atom_tuple(0).\n"
+        "atom_tuple(0,1).\n"
+        "literal_tuple(0).\n"
+        "literal_tuple(0,-2).\n"
+        "rule(disjunction(0),normal(0)).\n"
+        "atom_tuple(1).\n"
+        "atom_tuple(1,2).\n"
+        "literal_tuple(1).\n"
+        "literal_tuple(1,-1).\n"
+        "rule(disjunction(1),normal(1)).\n"
+        "atom_tuple(2).\n"
+        "atom_tuple(2,3).\n"
+        "rule(disjunction(2),normal(1)).\n"
+        "atom_tuple(3).\n"
+        "atom_tuple(3,4).\n"
+        "literal_tuple(2).\n"
+        "literal_tuple(2,3).\n"
+        "rule(choice(3),normal(2)).\n"
+        "atom_tuple(4).\n"
+        "atom_tuple(4,5).\n"
+        "literal_tuple(3).\n"
+        "literal_tuple(3,-4).\n"
+        "rule(disjunction(4),normal(3)).\n"
+        "atom_tuple(5).\n"
+        "atom_tuple(5,6).\n"
+        "literal_tuple(4).\n"
+        "literal_tuple(4,5).\n"
+        "rule(choice(5),normal(4)).\n"
+        "atom_tuple(6).\n"
+        "atom_tuple(6,7).\n"
+        "literal_tuple(5).\n"
+        "literal_tuple(5,6).\n"
+        "rule(disjunction(6),normal(5)).\n"
+        "literal_tuple(6).\n"
+        "literal_tuple(6,2).\n"
+        "output(u(c(1)),6).\n"
+        "literal_tuple(7).\n"
+        "literal_tuple(7,1).\n"
+        "output(u(a(1)),7).\n"
+        "output(u(b(1)),4).\n"
+        "literal_tuple(8).\n"
+        "literal_tuple(8,7).\n"
+        "output(u(d(1)),8).\n"
+        "literal_tuple(9).\n"
+        "literal_tuple(9,4).\n"
+        "output(k(not1(u(a(1)))),9).\n"
+        "output(k(u(b(1))),5).\n"
+        "output(not1(u(a(1))),2).\n",
+        candidates_00_str="None",
+        candidates_00=None,
+        candidates_01_str="['no(k(not1(a(1)))) k(b(1))', 'no(k(not1(a(1)))) "
+        "no(k(b(1)))', 'k(not1(a(1))) no(k(b(1)))']",
+        candidates_01=[
+            Candidate(
+                pos=[
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(1)], True)], True)],
+                        True,
+                    )
+                ],
+                neg=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(1)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    )
+                ],
+                extra_assumptions=Assumptions(pos=[], neg=[]),
+            ),
+            Candidate(
+                pos=[],
+                neg=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(1)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(1)], True)], True)],
+                        True,
+                    ),
+                ],
+                extra_assumptions=Assumptions(pos=[], neg=[]),
+            ),
+            Candidate(
+                pos=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(1)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    )
+                ],
+                neg=[
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(1)], True)], True)],
+                        True,
+                    )
+                ],
+                extra_assumptions=Assumptions(pos=[], neg=[]),
+            ),
+        ],
+        candidates_02_str="['no(k(not1(a(1)))) k(b(1))', 'no(k(not1(a(1)))) "
+        "no(k(b(1)))', 'k(not1(a(1))) no(k(b(1)))']",
+        candidates_02=[
+            Candidate(
+                pos=[
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(1)], True)], True)],
+                        True,
+                    )
+                ],
+                neg=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(1)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    )
+                ],
+                extra_assumptions=Assumptions(pos=[], neg=[]),
+            ),
+            Candidate(
+                pos=[],
+                neg=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(1)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(1)], True)], True)],
+                        True,
+                    ),
+                ],
+                extra_assumptions=Assumptions(pos=[], neg=[]),
+            ),
+            Candidate(
+                pos=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(1)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    )
+                ],
+                neg=[
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(1)], True)], True)],
+                        True,
+                    )
+                ],
+                extra_assumptions=Assumptions(pos=[], neg=[]),
+            ),
+        ],
+        candidates_03_str="['no(k(not1(a(1)))) k(b(1))', 'no(k(not1(a(1)))) "
+        "no(k(b(1)))', 'k(not1(a(1))) no(k(b(1)))']",
+        candidates_03=[
+            Candidate(
+                pos=[
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(1)], True)], True)],
+                        True,
+                    )
+                ],
+                neg=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(1)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    )
+                ],
+                extra_assumptions=Assumptions(pos=[], neg=[]),
+            ),
+            Candidate(
+                pos=[],
+                neg=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(1)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(1)], True)], True)],
+                        True,
+                    ),
+                ],
+                extra_assumptions=Assumptions(pos=[], neg=[]),
+            ),
+            Candidate(
+                pos=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(1)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    )
+                ],
+                neg=[
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(1)], True)], True)],
+                        True,
+                    )
+                ],
+                extra_assumptions=Assumptions(pos=[], neg=[]),
+            ),
+        ],
+        candidates_wv_str="['no(k(not1(a(1)))) k(b(1))', 'no(k(not1(a(1)))) "
+        "no(k(b(1)))', 'k(not1(a(1))) no(k(b(1)))']",
+        candidates_wv=[
+            Candidate(
+                pos=[
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(1)], True)], True)],
+                        True,
+                    )
+                ],
+                neg=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(1)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    )
+                ],
+                extra_assumptions=Assumptions(pos=[], neg=[]),
+            ),
+            Candidate(
+                pos=[],
+                neg=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(1)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(1)], True)], True)],
+                        True,
+                    ),
+                ],
+                extra_assumptions=Assumptions(pos=[], neg=[]),
+            ),
+            Candidate(
+                pos=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(1)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    )
+                ],
+                neg=[
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(1)], True)], True)],
+                        True,
+                    )
+                ],
+                extra_assumptions=Assumptions(pos=[], neg=[]),
+            ),
+        ],
+        fast_preprocessing_str=(
+            "",
+            "a(1) b(1) c(1) d(1) not1(a(1)) k(not1(a(1))) " "k(b(1))",
+        ),
+        fast_preprocessing=(
+            [],
+            [
+                Function("u", [Function("a", [Number(1)], True)], True),
+                Function("u", [Function("b", [Number(1)], True)], True),
+                Function("u", [Function("c", [Number(1)], True)], True),
+                Function("u", [Function("d", [Number(1)], True)], True),
+                Function(
+                    "not1",
+                    [Function("u", [Function("a", [Number(1)], True)], True)],
+                    True,
+                ),
+                Function(
+                    "k",
+                    [
+                        Function(
+                            "not1",
+                            [Function("u", [Function("a", [Number(1)], True)], True)],
+                            True,
+                        )
+                    ],
+                    True,
+                ),
+                Function(
+                    "k", [Function("u", [Function("b", [Number(1)], True)], True)], True
+                ),
+            ],
+        ),
+        has_fast_preprocessing=True,
+        description="",
+    ),
+    Program(
+        program="            a(1) :- not c(1).\n"
+        "            c(1) :- not a(1).\n"
+        "            b(1) :- not &k{ not a(1) }.\n"
+        "            b(2) :- not &k{ not a(2) }.\n"
+        "            d(1) :- &k{ b(1) }.\n"
+        "            d(2) :- &k{ b(2) }.\n"
+        "        ",
+        non_ground_reification="u(a(1)) :- not u(c(1)).\n"
+        "u(c(1)) :- not u(a(1)).\n"
+        "u(b(1)) :- not k(not1(u(a(1)))).\n"
+        "{ k(not1(u(a(1)))) } :- not1(u(a(1))).\n"
+        "not1(u(a(1))) :- not u(a(1)).\n"
+        "u(b(2)) :- not k(not1(u(a(2)))).\n"
+        "{ k(not1(u(a(2)))) } :- not1(u(a(2))).\n"
+        "not1(u(a(2))) :- not u(a(2)).\n"
+        "u(d(1)) :- k(u(b(1))).\n"
+        "{ k(u(b(1))) } :- u(b(1)).\n"
+        "u(d(2)) :- k(u(b(2))).\n"
+        "{ k(u(b(2))) } :- u(b(2)).\n",
+        ground_reification="atom_tuple(0).\n"
+        "atom_tuple(0,1).\n"
+        "literal_tuple(0).\n"
+        "rule(disjunction(0),normal(0)).\n"
+        "atom_tuple(1).\n"
+        "atom_tuple(1,2).\n"
+        "rule(choice(1),normal(0)).\n"
+        "atom_tuple(2).\n"
+        "atom_tuple(2,3).\n"
+        "literal_tuple(1).\n"
+        "literal_tuple(1,-2).\n"
+        "rule(disjunction(2),normal(1)).\n"
+        "atom_tuple(3).\n"
+        "atom_tuple(3,4).\n"
+        "literal_tuple(2).\n"
+        "literal_tuple(2,3).\n"
+        "rule(choice(3),normal(2)).\n"
+        "atom_tuple(4).\n"
+        "atom_tuple(4,5).\n"
+        "literal_tuple(3).\n"
+        "literal_tuple(3,4).\n"
+        "rule(disjunction(4),normal(3)).\n"
+        "atom_tuple(5).\n"
+        "atom_tuple(5,6).\n"
+        "literal_tuple(4).\n"
+        "literal_tuple(4,-7).\n"
+        "rule(disjunction(5),normal(4)).\n"
+        "atom_tuple(6).\n"
+        "atom_tuple(6,7).\n"
+        "literal_tuple(5).\n"
+        "literal_tuple(5,-6).\n"
+        "rule(disjunction(6),normal(5)).\n"
+        "atom_tuple(7).\n"
+        "atom_tuple(7,8).\n"
+        "rule(disjunction(7),normal(5)).\n"
+        "atom_tuple(8).\n"
+        "atom_tuple(8,9).\n"
+        "literal_tuple(6).\n"
+        "literal_tuple(6,8).\n"
+        "rule(choice(8),normal(6)).\n"
+        "atom_tuple(9).\n"
+        "atom_tuple(9,10).\n"
+        "literal_tuple(7).\n"
+        "literal_tuple(7,-9).\n"
+        "rule(disjunction(9),normal(7)).\n"
+        "atom_tuple(10).\n"
+        "atom_tuple(10,11).\n"
+        "literal_tuple(8).\n"
+        "literal_tuple(8,10).\n"
+        "rule(choice(10),normal(8)).\n"
+        "atom_tuple(11).\n"
+        "atom_tuple(11,12).\n"
+        "literal_tuple(9).\n"
+        "literal_tuple(9,11).\n"
+        "rule(disjunction(11),normal(9)).\n"
+        "output(u(b(2)),2).\n"
+        "literal_tuple(10).\n"
+        "literal_tuple(10,5).\n"
+        "output(u(d(2)),10).\n"
+        "literal_tuple(11).\n"
+        "literal_tuple(11,7).\n"
+        "output(u(c(1)),11).\n"
+        "literal_tuple(12).\n"
+        "literal_tuple(12,6).\n"
+        "output(u(a(1)),12).\n"
+        "output(u(b(1)),8).\n"
+        "literal_tuple(13).\n"
+        "literal_tuple(13,12).\n"
+        "output(u(d(1)),13).\n"
+        "literal_tuple(14).\n"
+        "literal_tuple(14,2).\n"
+        "output(k(not1(u(a(2)))),14).\n"
+        "output(k(u(b(2))),3).\n"
+        "literal_tuple(15).\n"
+        "literal_tuple(15,9).\n"
+        "output(k(not1(u(a(1)))),15).\n"
+        "output(k(u(b(1))),9).\n"
+        "output(not1(u(a(2))),0).\n"
+        "output(not1(u(a(1))),6).\n",
+        candidates_00_str="None",
+        candidates_00=None,
+        candidates_01_str="[('no(k(not1(a(1)))) k(not1(a(2))) k(b(1)) "
+        "no(k(b(2)))', 'not1(a(2))'), ('no(k(not1(a(1)))) "
+        "k(not1(a(2))) no(k(b(1))) no(k(b(2)))', 'not1(a(2))'), "
+        "('k(not1(a(1))) k(not1(a(2))) no(k(b(1))) "
+        "no(k(b(2)))', 'not1(a(2))')]",
+        candidates_01=[
+            Candidate(
+                pos=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(2)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(1)], True)], True)],
+                        True,
+                    ),
+                ],
+                neg=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(1)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(2)], True)], True)],
+                        True,
+                    ),
+                ],
+                extra_assumptions=Assumptions(
+                    pos=[
+                        Function(
+                            "not1",
+                            [Function("u", [Function("a", [Number(2)], True)], True)],
+                            True,
+                        )
+                    ],
+                    neg=[],
+                ),
+            ),
+            Candidate(
+                pos=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(2)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    )
+                ],
+                neg=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(1)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(1)], True)], True)],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(2)], True)], True)],
+                        True,
+                    ),
+                ],
+                extra_assumptions=Assumptions(
+                    pos=[
+                        Function(
+                            "not1",
+                            [Function("u", [Function("a", [Number(2)], True)], True)],
+                            True,
+                        )
+                    ],
+                    neg=[],
+                ),
+            ),
+            Candidate(
+                pos=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(1)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(2)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    ),
+                ],
+                neg=[
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(1)], True)], True)],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(2)], True)], True)],
+                        True,
+                    ),
+                ],
+                extra_assumptions=Assumptions(
+                    pos=[
+                        Function(
+                            "not1",
+                            [Function("u", [Function("a", [Number(2)], True)], True)],
+                            True,
+                        )
+                    ],
+                    neg=[],
+                ),
+            ),
+        ],
+        candidates_02_str="[('no(k(not1(a(1)))) k(not1(a(2))) k(b(1)) "
+        "no(k(b(2)))', 'not1(a(2))'), ('no(k(not1(a(1)))) "
+        "k(not1(a(2))) no(k(b(1))) no(k(b(2)))', 'not1(a(2))'), "
+        "('k(not1(a(1))) k(not1(a(2))) no(k(b(1))) "
+        "no(k(b(2)))', 'not1(a(2))')]",
+        candidates_02=[
+            Candidate(
+                pos=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(2)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(1)], True)], True)],
+                        True,
+                    ),
+                ],
+                neg=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(1)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(2)], True)], True)],
+                        True,
+                    ),
+                ],
+                extra_assumptions=Assumptions(
+                    pos=[
+                        Function(
+                            "not1",
+                            [Function("u", [Function("a", [Number(2)], True)], True)],
+                            True,
+                        )
+                    ],
+                    neg=[],
+                ),
+            ),
+            Candidate(
+                pos=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(2)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    )
+                ],
+                neg=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(1)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(1)], True)], True)],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(2)], True)], True)],
+                        True,
+                    ),
+                ],
+                extra_assumptions=Assumptions(
+                    pos=[
+                        Function(
+                            "not1",
+                            [Function("u", [Function("a", [Number(2)], True)], True)],
+                            True,
+                        )
+                    ],
+                    neg=[],
+                ),
+            ),
+            Candidate(
+                pos=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(1)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(2)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    ),
+                ],
+                neg=[
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(1)], True)], True)],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(2)], True)], True)],
+                        True,
+                    ),
+                ],
+                extra_assumptions=Assumptions(
+                    pos=[
+                        Function(
+                            "not1",
+                            [Function("u", [Function("a", [Number(2)], True)], True)],
+                            True,
+                        )
+                    ],
+                    neg=[],
+                ),
+            ),
+        ],
+        candidates_03_str="[('no(k(not1(a(1)))) k(not1(a(2))) k(b(1)) "
+        "no(k(b(2)))', 'not1(a(2))'), ('no(k(not1(a(1)))) "
+        "k(not1(a(2))) no(k(b(1))) no(k(b(2)))', 'not1(a(2))'), "
+        "('k(not1(a(1))) k(not1(a(2))) no(k(b(1))) "
+        "no(k(b(2)))', 'not1(a(2))')]",
+        candidates_03=[
+            Candidate(
+                pos=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(2)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(1)], True)], True)],
+                        True,
+                    ),
+                ],
+                neg=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(1)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(2)], True)], True)],
+                        True,
+                    ),
+                ],
+                extra_assumptions=Assumptions(
+                    pos=[
+                        Function(
+                            "not1",
+                            [Function("u", [Function("a", [Number(2)], True)], True)],
+                            True,
+                        )
+                    ],
+                    neg=[],
+                ),
+            ),
+            Candidate(
+                pos=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(2)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    )
+                ],
+                neg=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(1)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(1)], True)], True)],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(2)], True)], True)],
+                        True,
+                    ),
+                ],
+                extra_assumptions=Assumptions(
+                    pos=[
+                        Function(
+                            "not1",
+                            [Function("u", [Function("a", [Number(2)], True)], True)],
+                            True,
+                        )
+                    ],
+                    neg=[],
+                ),
+            ),
+            Candidate(
+                pos=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(1)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(2)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    ),
+                ],
+                neg=[
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(1)], True)], True)],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(2)], True)], True)],
+                        True,
+                    ),
+                ],
+                extra_assumptions=Assumptions(
+                    pos=[
+                        Function(
+                            "not1",
+                            [Function("u", [Function("a", [Number(2)], True)], True)],
+                            True,
+                        )
+                    ],
+                    neg=[],
+                ),
+            ),
+        ],
+        candidates_wv_str="[('no(k(not1(a(1)))) k(not1(a(2))) k(b(1)) "
+        "no(k(b(2)))', 'not1(a(2))'), ('no(k(not1(a(1)))) "
+        "k(not1(a(2))) no(k(b(1))) no(k(b(2)))', 'not1(a(2))'), "
+        "('k(not1(a(1))) k(not1(a(2))) no(k(b(1))) "
+        "no(k(b(2)))', 'not1(a(2))')]",
+        candidates_wv=[
+            Candidate(
+                pos=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(2)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(1)], True)], True)],
+                        True,
+                    ),
+                ],
+                neg=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(1)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(2)], True)], True)],
+                        True,
+                    ),
+                ],
+                extra_assumptions=Assumptions(
+                    pos=[
+                        Function(
+                            "not1",
+                            [Function("u", [Function("a", [Number(2)], True)], True)],
+                            True,
+                        )
+                    ],
+                    neg=[],
+                ),
+            ),
+            Candidate(
+                pos=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(2)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    )
+                ],
+                neg=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(1)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(1)], True)], True)],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(2)], True)], True)],
+                        True,
+                    ),
+                ],
+                extra_assumptions=Assumptions(
+                    pos=[
+                        Function(
+                            "not1",
+                            [Function("u", [Function("a", [Number(2)], True)], True)],
+                            True,
+                        )
+                    ],
+                    neg=[],
+                ),
+            ),
+            Candidate(
+                pos=[
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(1)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [
+                            Function(
+                                "not1",
+                                [
+                                    Function(
+                                        "u", [Function("a", [Number(2)], True)], True
+                                    )
+                                ],
+                                True,
+                            )
+                        ],
+                        True,
+                    ),
+                ],
+                neg=[
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(1)], True)], True)],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(2)], True)], True)],
+                        True,
+                    ),
+                ],
+                extra_assumptions=Assumptions(
+                    pos=[
+                        Function(
+                            "not1",
+                            [Function("u", [Function("a", [Number(2)], True)], True)],
+                            True,
+                        )
+                    ],
+                    neg=[],
+                ),
+            ),
+        ],
+        fast_preprocessing_str=("", "a(1) b(1) c(1) not1(a(1)) k(not1(a(1)))"),
+        fast_preprocessing=(
+            [],
+            [
+                Function("u", [Function("a", [Number(1)], True)], True),
+                Function("u", [Function("b", [Number(1)], True)], True),
+                Function("u", [Function("c", [Number(1)], True)], True),
+                Function(
+                    "not1",
+                    [Function("u", [Function("a", [Number(1)], True)], True)],
+                    True,
+                ),
+                Function(
+                    "k",
+                    [
+                        Function(
+                            "not1",
+                            [Function("u", [Function("a", [Number(1)], True)], True)],
+                            True,
+                        )
+                    ],
+                    True,
+                ),
             ],
         ),
         has_fast_preprocessing=True,

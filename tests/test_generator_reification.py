@@ -13,11 +13,13 @@ from tests.generated_programs import programs
 
 """ Helper function to generate candidates for a given program """
 
+config = _eclingo.config.AppConfig()
+config.eclingo_semantics = "c19-1"
+config.preprocessing_level = 0
+config.propagate = False
+
 
 def generate(program):
-    config = _eclingo.config.AppConfig()
-    config.eclingo_semantics = "c19-1"
-
     candidate_generator = GeneratorReification(config, program)
 
     # print("="*30)
@@ -45,12 +47,41 @@ class TestCase(unittest.TestCase):
             for c in expected
         ]
         self.assertCountEqual(candidate_str, expected_str, "candidates string")
+        candidate_with_assumption_str = [
+            (
+                sorted(str(a) for a in c.pos),
+                sorted(str(a) for a in c.neg),
+                sorted(str(a) for a in c.extra_assumptions.pos),
+                sorted(str(a) for a in c.extra_assumptions.neg),
+            )
+            for c in models
+        ]
+        expected_with_assumption_str = [
+            (
+                sorted(str(a) for a in c.pos),
+                sorted(str(a) for a in c.neg),
+                sorted(str(a) for a in c.extra_assumptions.pos),
+                sorted(str(a) for a in c.extra_assumptions.neg),
+            )
+            for c in expected
+        ]
+        self.assertCountEqual(
+            candidate_with_assumption_str,
+            expected_with_assumption_str,
+            "with assumptions string",
+        )
         for model in models:
             model.pos.sort()
             model.neg.sort()
         for model in expected:
             model.pos.sort()
             model.neg.sort()
+        models.sort()
+        expected.sort()
+        for m, e in zip(models, expected):
+            self.assertEqual(m.pos, e.pos)
+            self.assertEqual(m.neg, e.neg)
+            self.assertEqual(m.extra_assumptions, e.extra_assumptions)
         self.assertCountEqual(models, expected)
 
 
