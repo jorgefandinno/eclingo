@@ -64,11 +64,11 @@ fact(SA) :-
         output(SA, LT),
         #count {L : literal_tuple(LT, L)} = 0.
 
-pk_hold(KA) :- epistemic_atom_map(k(SA), KA), fact(SA).
+kp_hold(KA) :- epistemic_atom_map(k(SA), KA), fact(SA).
 
-:- pk_hold(KA), not hold(KA), epistemic_atom_int(KA).
+:- kp_hold(KA), not hold(KA), epistemic_atom_int(KA).
 
-positive_extra_assumptions(A) :- epistemic_atom_map(k(A), KA), pk_hold(KA).
+positive_extra_assumptions(A) :- epistemic_atom_map(k(A), KA), kp_hold(KA).
 % negative_extra_assumptions(A) :- epistemic_atom_map(k(A), KA), kp_not_hold(KA).
 
 #show positive_extra_assumptions/1.

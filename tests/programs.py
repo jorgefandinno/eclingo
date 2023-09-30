@@ -176,15 +176,33 @@ program_list = [
     Program(
         description="",
         program="a :- not &k{not a}.",
-        candidates_01=["not1(k(not1(a)))", "k(not1(a))"],
+        candidates_01=[
+            "not1(k(not1(a)))",
+            "k(not1(a))",
+        ],
         fast_preprocessing=("", "a not1(a) k(not1(a))"),
         has_fast_preprocessing=True,
     ),
     Program(
         description="",
         program="a :- not &k{-a}. -a :- not &k{a}.",
-        candidates_01=["k(a) not1(k(-a))", "not1(k(a)) k(-a)"],
+        candidates_01=[
+            "k(a) not1(k(-a))",
+            "not1(k(a)) k(-a)",
+        ],
         fast_preprocessing=("", "a -a k(a) k(-a)"),
+        has_fast_preprocessing=True,
+    ),
+    Program(
+        description="",
+        program="a :- not &k{-a}. -a :- not &k{a}. b :- a. c :- b. :- not &k{c}.",
+        candidates_01=[
+            "k(a) k(c) not1(k(-a))",
+        ],
+        candidates_02=[
+            ("k(a) k(c) not1(k(-a))", ""),
+        ],
+        fast_preprocessing=("k(c)", "a -a b c k(a) k(-a) k(c)"),
         has_fast_preprocessing=True,
     ),
 ]
