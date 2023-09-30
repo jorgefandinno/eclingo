@@ -7,6 +7,7 @@ from clingox.backend import SymbolicBackend
 
 from eclingo import util
 from eclingo.config import AppConfig
+from eclingo.solver.tester import PreprocessingResult
 
 from .candidate import Assumptions, Candidate
 
@@ -127,7 +128,7 @@ class GeneratorReification:
         self,
         config: AppConfig,
         reified_program: str,
-        preprocessing_facts=None,
+        preprocessing_facts: Optional[PreprocessingResult] = None,
     ) -> None:
         self._config = config
         self.control = clingo.Control(["0"], message_limit=0)
