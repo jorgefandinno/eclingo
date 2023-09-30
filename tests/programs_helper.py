@@ -15,6 +15,8 @@ class Program(NamedTuple):
     candidates_01: Optional[List[Candidate]] = None
     candidates_02_str: Optional[List[str]] = None
     candidates_02: Optional[List[Candidate]] = None
+    candidates_03_str: Optional[List[str]] = None
+    candidates_03: Optional[List[Candidate]] = None
     candidates_wv_str: Optional[List[str]] = None
     candidates_wv: Optional[List[Candidate]] = None
     fast_preprocessing_str: Optional[tuple[str, str]] = None

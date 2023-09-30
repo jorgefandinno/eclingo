@@ -45,39 +45,43 @@ common_opt_program = """\
 symbolic_atom(SA) :- atom_map(SA, _).
 
 symbolic_epistemic_atom(k(A)) :- symbolic_atom(k(A)).
-epistemic_atom_map(KSA, KA) :- atom_map(KSA, KA), symbolic_epistemic_atom(KSA).
-epistemic_atom_int(KA) :- epistemic_atom_map(_, KA).
+symbolic_objective_atom(OSA) :- symbolic_atom(OSA), not symbolic_epistemic_atom(OSA).
 
-:- kp_hold(KA), not hold(KA), epistemic_atom_int(KA).
+epistemic_atom_map(KSA, KA) :- atom_map(KSA, KA), symbolic_epistemic_atom(KSA).
+objective_atom_map(OSA, OA) :- atom_map(OSA, OA), symbolic_objective_atom(OSA).
+
+epistemic_atom_int(KA) :- epistemic_atom_map(_, KA).
+objective_atom_int(A)  :- objective_atom_map(_, A).
+
+epistemic_map(KA,OA) :- epistemic_atom_map(KSA, KA), objective_atom_map(OSA, OA), KSA = k(OSA).
+
+:- kp_hold(A), epistemic_map(KA, A), not hold(KA).
 """
 
 preprocessing_program = """\
-symbolic_objective_atom(OSA) :- symbolic_atom(OSA), not symbolic_epistemic_atom(OSA).
+:- cautious(SA), atom_map(SA, A), not hold(A).
+positive_extra_assumptions(OSA) :- cautious(OSA), symbolic_epistemic_atom(k(OSA)).
+#show positive_extra_assumptions/1.
 
-cautious_objetive(SA)   :- cautious(SA),  symbolic_objective_atom(SA).
-cautious_epistemic(KSA) :- cautious(KSA), symbolic_epistemic_atom(KSA).
-%hold(A)  :- atom_map(SA, A), cautious_objetive(SA). % this is incorrect, objecti atoms may hold wihtout been proved
-kp_hold(KA) :- epistemic_atom_map(k(SA), KA), cautious_objetive(SA).
-:- epistemic_atom_map(KSA, KA), cautious_epistemic(KSA), not hold(KA).
+% hold(A)  :- atom_map(SA, A), cautious_objetive(SA). % this is incorrect, objecti atoms may hold wihtout been proved
+% kp_hold(KA) :- epistemic_atom_map(k(SA), KA), cautious_objetive(SA).
 """
+
+# kp_hold(A) :- cautious(SA),  objective_atom_map(SA, A).
+# cautious_epistemic(KSA) :- cautious(KSA), symbolic_epistemic_atom(KSA).
+# :- epistemic_atom_map(KSA, KA), cautious_epistemic(KSA), not hold(KA).
 
 fact_optimization_program = """\
 % Propagate facts into epistemic facts
 
-fact(SA) :-
-        output(SA, LT),
-        #count {L : literal_tuple(LT, L)} = 0.
-
-kp_hold(KA) :- epistemic_atom_map(k(SA), KA), fact(SA).
-
-positive_extra_assumptions(A) :- epistemic_atom_map(k(A), KA), kp_hold(KA).
-% negative_extra_assumptions(A) :- epistemic_atom_map(k(A), KA), kp_not_hold(KA).
-
+:- fact(OSA), epistemic_atom_map(k(OSA), KA), not hold(KA).
+positive_extra_assumptions(OSA) :- fact(OSA), symbolic_epistemic_atom(k(OSA)).
 #show positive_extra_assumptions/1.
-#show negative_extra_assumptions/1.
 """
 
 propagation_program = """\
+kp_hold(OA) :- cautious(OSA),  objective_atom_map(OSA, OA).
+
 singleton_disjuntion(H) :- rule(disjunction(H), _), #count {L : literal_tuple(H, L)} = 1.
 
 kp_conjunction(B) :- literal_tuple(B), kp_hold(A) : literal_tuple(B,  A), A > 0, not epistemic_atom_int(A);
@@ -103,12 +107,27 @@ kp_not_hold(A) :- symbolic_atom(_, A), kp_not_body(B) : atom_tuple(H,A), rule_he
 zhold(SA)        :- hold(A), atom_map(SA, A).
 zkp_hold(SA)     :- kp_hold(A), atom_map(SA, A).
 zkp_not_hold(SA) :- kp_not_hold(A), atom_map(SA, A).
+
+positive_extra_assumptions(OSA) :-
+    kp_hold(OA),
+    objective_atom_map(OSA,OA),
+    symbolic_epistemic_atom(k(OSA)).
+#show positive_extra_assumptions/1.
+#show negative_extra_assumptions/1.
 """
+
+# kp_hold(OSA) :- fact(OSA).
+
+#   :- kp_hold(OSA),    objective_atom_map(SA, A).
+# % negative_extra_assumptions(SA) :- kp_not_hold(A), epistemic_map(_, A),  objective_atom_map(SA, A).
 
 
 class GeneratorReification:
     def __init__(
-        self, config: AppConfig, reified_program: str, preprocessing_facts=None
+        self,
+        config: AppConfig,
+        reified_program: str,
+        preprocessing_facts=None,
     ) -> None:
         self._config = config
         self.control = clingo.Control(["0"], message_limit=0)
@@ -122,7 +141,8 @@ class GeneratorReification:
         self.control.add("base", [], base_program)
         self.control.add("base", [], common_opt_program)
         self.control.add("base", [], fact_optimization_program)
-        self.control.add("base", [], propagation_program)
+        if self._config.propagate:
+            self.control.add("base", [], propagation_program)
         if preprocessing_facts is not None:
             self.control.add("base", [], preprocessing_program)
             with SymbolicBackend(self.control.backend()) as backend:
@@ -133,7 +153,9 @@ class GeneratorReification:
     def __call__(self) -> Iterator[Candidate]:
         with cast(clingo.SolveHandle, self.control.solve(yield_=True)) as handle:
             for model in handle:
-                print("\n".join(sorted(str(a) for a in model.symbols(atoms=True))))
+                # print("*"*50)
+                # print(model)
+                # print("\n".join(sorted(str(a) for a in model.symbols(atoms=True))))
                 candidate = self._model_to_candidate(model)
                 self.num_candidates += 1
                 yield candidate
