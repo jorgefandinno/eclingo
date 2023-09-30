@@ -32,8 +32,13 @@ program_list = [
     Program(
         description="",
         program="a. b :- &k{a}. c :- &k{b}.",
-        candidates_01=[("k(a) no(k(b))", "a"), ("k(a) k(b)", "a")],
-        candidates_02=[("k(a) k(b)", "a b")],
+        candidates_01=[
+            ("k(a) no(k(b))", "a"),
+            ("k(a) k(b)", "a"),
+        ],
+        candidates_02=[
+            ("k(a) k(b)", "a b"),
+        ],
         fast_preprocessing="a b c k(a) k(b)",
         has_fast_preprocessing=True,
     ),
