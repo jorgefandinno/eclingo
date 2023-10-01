@@ -2895,8 +2895,8 @@ programs = [
                 extra_assumptions=Assumptions(pos=[], neg=[]),
             ),
         ],
-        candidates_03_str="['no(k(not1(a(1)))) k(b(1))', 'no(k(not1(a(1)))) "
-        "no(k(b(1)))', 'k(not1(a(1))) no(k(b(1)))']",
+        candidates_03_str="[('no(k(not1(a(1))))    k(b(1))', 'b(1)'), '   "
+        "k(not1(a(1)))  no(k(b(1)))']",
         candidates_03=[
             Candidate(
                 pos=[
@@ -2923,33 +2923,10 @@ programs = [
                         True,
                     )
                 ],
-                extra_assumptions=Assumptions(pos=[], neg=[]),
-            ),
-            Candidate(
-                pos=[],
-                neg=[
-                    Function(
-                        "k",
-                        [
-                            Function(
-                                "not1",
-                                [
-                                    Function(
-                                        "u", [Function("a", [Number(1)], True)], True
-                                    )
-                                ],
-                                True,
-                            )
-                        ],
-                        True,
-                    ),
-                    Function(
-                        "k",
-                        [Function("u", [Function("b", [Number(1)], True)], True)],
-                        True,
-                    ),
-                ],
-                extra_assumptions=Assumptions(pos=[], neg=[]),
+                extra_assumptions=Assumptions(
+                    pos=[Function("u", [Function("b", [Number(1)], True)], True)],
+                    neg=[],
+                ),
             ),
             Candidate(
                 pos=[
@@ -2979,8 +2956,8 @@ programs = [
                 extra_assumptions=Assumptions(pos=[], neg=[]),
             ),
         ],
-        candidates_wv_str="['no(k(not1(a(1)))) k(b(1))', 'no(k(not1(a(1)))) "
-        "no(k(b(1)))', 'k(not1(a(1))) no(k(b(1)))']",
+        candidates_wv_str="[('no(k(not1(a(1))))    k(b(1))', 'b(1)'), '   "
+        "k(not1(a(1)))  no(k(b(1)))']",
         candidates_wv=[
             Candidate(
                 pos=[
@@ -3007,33 +2984,10 @@ programs = [
                         True,
                     )
                 ],
-                extra_assumptions=Assumptions(pos=[], neg=[]),
-            ),
-            Candidate(
-                pos=[],
-                neg=[
-                    Function(
-                        "k",
-                        [
-                            Function(
-                                "not1",
-                                [
-                                    Function(
-                                        "u", [Function("a", [Number(1)], True)], True
-                                    )
-                                ],
-                                True,
-                            )
-                        ],
-                        True,
-                    ),
-                    Function(
-                        "k",
-                        [Function("u", [Function("b", [Number(1)], True)], True)],
-                        True,
-                    ),
-                ],
-                extra_assumptions=Assumptions(pos=[], neg=[]),
+                extra_assumptions=Assumptions(
+                    pos=[Function("u", [Function("b", [Number(1)], True)], True)],
+                    neg=[],
+                ),
             ),
             Candidate(
                 pos=[
@@ -3199,10 +3153,10 @@ programs = [
         "output(not1(u(a(1))),6).\n",
         candidates_00_str="None",
         candidates_00=None,
-        candidates_01_str="[('no(k(not1(a(1)))) k(not1(a(2))) k(b(1)) "
+        candidates_01_str="[('no(k(not1(a(1)))) k(not1(a(2)))    k(b(1))  "
         "no(k(b(2)))', 'not1(a(2))'), ('no(k(not1(a(1)))) "
         "k(not1(a(2))) no(k(b(1))) no(k(b(2)))', 'not1(a(2))'), "
-        "('k(not1(a(1))) k(not1(a(2))) no(k(b(1))) "
+        "('   k(not1(a(1)))  k(not1(a(2))) no(k(b(1))) "
         "no(k(b(2)))', 'not1(a(2))')]",
         candidates_01=[
             Candidate(
@@ -3374,10 +3328,10 @@ programs = [
                 ),
             ),
         ],
-        candidates_02_str="[('no(k(not1(a(1)))) k(not1(a(2))) k(b(1)) "
+        candidates_02_str="[('no(k(not1(a(1)))) k(not1(a(2)))    k(b(1))  "
         "no(k(b(2)))', 'not1(a(2))'), ('no(k(not1(a(1)))) "
         "k(not1(a(2))) no(k(b(1))) no(k(b(2)))', 'not1(a(2))'), "
-        "('k(not1(a(1))) k(not1(a(2))) no(k(b(1))) "
+        "('   k(not1(a(1)))  k(not1(a(2))) no(k(b(1))) "
         "no(k(b(2)))', 'not1(a(2))')]",
         candidates_02=[
             Candidate(
@@ -3549,11 +3503,9 @@ programs = [
                 ),
             ),
         ],
-        candidates_03_str="[('no(k(not1(a(1)))) k(not1(a(2))) k(b(1)) "
-        "no(k(b(2)))', 'not1(a(2))'), ('no(k(not1(a(1)))) "
-        "k(not1(a(2))) no(k(b(1))) no(k(b(2)))', 'not1(a(2))'), "
-        "('k(not1(a(1))) k(not1(a(2))) no(k(b(1))) "
-        "no(k(b(2)))', 'not1(a(2))')]",
+        candidates_03_str="[('no(k(not1(a(1)))) k(not1(a(2)))    k(b(1))  "
+        "no(k(b(2)))', 'not1(a(2)) b(1)'), ('   k(not1(a(1)))  "
+        "k(not1(a(2))) no(k(b(1))) no(k(b(2)))', 'not1(a(2))')]",
         candidates_03=[
             Candidate(
                 pos=[
@@ -3606,63 +3558,8 @@ programs = [
                             "not1",
                             [Function("u", [Function("a", [Number(2)], True)], True)],
                             True,
-                        )
-                    ],
-                    neg=[],
-                ),
-            ),
-            Candidate(
-                pos=[
-                    Function(
-                        "k",
-                        [
-                            Function(
-                                "not1",
-                                [
-                                    Function(
-                                        "u", [Function("a", [Number(2)], True)], True
-                                    )
-                                ],
-                                True,
-                            )
-                        ],
-                        True,
-                    )
-                ],
-                neg=[
-                    Function(
-                        "k",
-                        [
-                            Function(
-                                "not1",
-                                [
-                                    Function(
-                                        "u", [Function("a", [Number(1)], True)], True
-                                    )
-                                ],
-                                True,
-                            )
-                        ],
-                        True,
-                    ),
-                    Function(
-                        "k",
-                        [Function("u", [Function("b", [Number(1)], True)], True)],
-                        True,
-                    ),
-                    Function(
-                        "k",
-                        [Function("u", [Function("b", [Number(2)], True)], True)],
-                        True,
-                    ),
-                ],
-                extra_assumptions=Assumptions(
-                    pos=[
-                        Function(
-                            "not1",
-                            [Function("u", [Function("a", [Number(2)], True)], True)],
-                            True,
-                        )
+                        ),
+                        Function("u", [Function("b", [Number(1)], True)], True),
                     ],
                     neg=[],
                 ),
@@ -3724,11 +3621,9 @@ programs = [
                 ),
             ),
         ],
-        candidates_wv_str="[('no(k(not1(a(1)))) k(not1(a(2))) k(b(1)) "
-        "no(k(b(2)))', 'not1(a(2))'), ('no(k(not1(a(1)))) "
-        "k(not1(a(2))) no(k(b(1))) no(k(b(2)))', 'not1(a(2))'), "
-        "('k(not1(a(1))) k(not1(a(2))) no(k(b(1))) "
-        "no(k(b(2)))', 'not1(a(2))')]",
+        candidates_wv_str="[('no(k(not1(a(1)))) k(not1(a(2)))    k(b(1))  "
+        "no(k(b(2)))', 'not1(a(2)) b(1)'), ('   k(not1(a(1)))  "
+        "k(not1(a(2))) no(k(b(1))) no(k(b(2)))', 'not1(a(2))')]",
         candidates_wv=[
             Candidate(
                 pos=[
@@ -3781,63 +3676,8 @@ programs = [
                             "not1",
                             [Function("u", [Function("a", [Number(2)], True)], True)],
                             True,
-                        )
-                    ],
-                    neg=[],
-                ),
-            ),
-            Candidate(
-                pos=[
-                    Function(
-                        "k",
-                        [
-                            Function(
-                                "not1",
-                                [
-                                    Function(
-                                        "u", [Function("a", [Number(2)], True)], True
-                                    )
-                                ],
-                                True,
-                            )
-                        ],
-                        True,
-                    )
-                ],
-                neg=[
-                    Function(
-                        "k",
-                        [
-                            Function(
-                                "not1",
-                                [
-                                    Function(
-                                        "u", [Function("a", [Number(1)], True)], True
-                                    )
-                                ],
-                                True,
-                            )
-                        ],
-                        True,
-                    ),
-                    Function(
-                        "k",
-                        [Function("u", [Function("b", [Number(1)], True)], True)],
-                        True,
-                    ),
-                    Function(
-                        "k",
-                        [Function("u", [Function("b", [Number(2)], True)], True)],
-                        True,
-                    ),
-                ],
-                extra_assumptions=Assumptions(
-                    pos=[
-                        Function(
-                            "not1",
-                            [Function("u", [Function("a", [Number(2)], True)], True)],
-                            True,
-                        )
+                        ),
+                        Function("u", [Function("b", [Number(1)], True)], True),
                     ],
                     neg=[],
                 ),
@@ -3899,13 +3739,35 @@ programs = [
                 ),
             ),
         ],
-        fast_preprocessing_str=("", "a(1) b(1) c(1) not1(a(1)) k(not1(a(1)))"),
+        fast_preprocessing_str=(
+            "not1(a(2)) k(not1(a(2)))",
+            "a(1) b(1) c(1) d(1) not1(a(1)) k(not1(a(1))) "
+            "k(b(1)) not1(a(2)) k(not1(a(2)))",
+        ),
         fast_preprocessing=(
-            [],
+            [
+                Function(
+                    "not1",
+                    [Function("u", [Function("a", [Number(2)], True)], True)],
+                    True,
+                ),
+                Function(
+                    "k",
+                    [
+                        Function(
+                            "not1",
+                            [Function("u", [Function("a", [Number(2)], True)], True)],
+                            True,
+                        )
+                    ],
+                    True,
+                ),
+            ],
             [
                 Function("u", [Function("a", [Number(1)], True)], True),
                 Function("u", [Function("b", [Number(1)], True)], True),
                 Function("u", [Function("c", [Number(1)], True)], True),
+                Function("u", [Function("d", [Number(1)], True)], True),
                 Function(
                     "not1",
                     [Function("u", [Function("a", [Number(1)], True)], True)],
@@ -3917,6 +3779,25 @@ programs = [
                         Function(
                             "not1",
                             [Function("u", [Function("a", [Number(1)], True)], True)],
+                            True,
+                        )
+                    ],
+                    True,
+                ),
+                Function(
+                    "k", [Function("u", [Function("b", [Number(1)], True)], True)], True
+                ),
+                Function(
+                    "not1",
+                    [Function("u", [Function("a", [Number(2)], True)], True)],
+                    True,
+                ),
+                Function(
+                    "k",
+                    [
+                        Function(
+                            "not1",
+                            [Function("u", [Function("a", [Number(2)], True)], True)],
                             True,
                         )
                     ],

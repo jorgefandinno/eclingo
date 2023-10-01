@@ -133,7 +133,7 @@ class CandidateTesterReification:
         self.unsatisfiable = False
         self.objective_atoms: frozenset[Symbol] = frozenset()
         self.epistemic_atoms: frozenset[Symbol] = frozenset()
-        self._epistemic_atoms_int: frozenset[Symbol] = frozenset()
+        self._epistemic_atoms_int: set[Symbol] = set()
 
     def __call__(self, candidate: Candidate) -> bool:
         candidate_pos = []  # rename as query_pos
@@ -201,9 +201,10 @@ class CandidateTesterReification:
         self.epistemic_atoms = frozenset(
             e.arguments[0] for e in upper_all if e.name == "has_epistemic_atom"
         )
-        self._epistemic_atoms_int = frozenset(
+        self._epistemic_atoms_int = set(
             e.arguments[0] for e in upper_all if e.name == "epistemic_atom_int"
         )
+        # print(f"\n\nupper_all: {' '.join(sorted(str(a) for a in upper_all if a.name=='atom_map'))}")
         return PreprocessingResult(unsatisfiable=False, lower=lower, upper=upper)
 
     def _prepreocessing_atoms(self, lower, upper):
@@ -243,18 +244,19 @@ class CandidateTesterReification:
     def _fast_preprocessing_loop(self, lower, upper) -> PreprocessingResult:
         lower_size, upper_size = len(lower), len(upper)
         prev_lower: frozenset[Symbol] = frozenset()
-        prev_upper: frozenset[Symbol] = frozenset()
         lower_prev_size, upper_prev_size = 0, sys.maxsize
         # print(f"{lower_prev_size} {lower_size} {upper_prev_size} {upper_size}")
         while lower_prev_size < lower_size or upper_prev_size > upper_size:
+            # print("*" * 50)
+            # print(f"lower: {lower}")
+            # print(f"upper: {upper}")
             new_rules = []
             if lower_prev_size < lower_size:
                 new_rules.extend(self._fast_preprocessing_lower(lower, prev_lower))
                 prev_lower = lower
 
             if upper_prev_size > upper_size:
-                new_rules.extend(self._fast_preprocessing_upper(upper, prev_upper))
-                prev_upper = upper
+                new_rules.extend(self._fast_preprocessing_upper(upper))
 
             with SymbolicBackend(self.control.backend()) as symbolic_backend:
                 for rule in new_rules:
@@ -279,8 +281,10 @@ class CandidateTesterReification:
         for atom in lower_diff:
             yield ([], [], [Function("hold", [atom])])
 
-    def _fast_preprocessing_upper(self, upper, prev_upper):
-        upper_diff = upper.difference(prev_upper)
+    def _fast_preprocessing_upper(self, upper):
+        remove_from_epistemic_atoms_int = []
         for atom in self._epistemic_atoms_int:
-            if atom not in upper_diff:
+            if atom not in upper:
+                remove_from_epistemic_atoms_int.append(atom)
                 yield ([], [Function("hold", [atom])], [])
+        self._epistemic_atoms_int.difference_update(remove_from_epistemic_atoms_int)
