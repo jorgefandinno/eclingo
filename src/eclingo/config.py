@@ -9,7 +9,7 @@ class AppConfig(object):
         verbose=0,
         eclingo_rewritten="no",
         rewritten_program=[],
-        preprocessing_level=0,
+        preprocessing_level=3,
         propagate=False,
     ):
         self.eclingo_verbose = verbose
