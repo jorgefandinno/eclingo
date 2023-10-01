@@ -15,3 +15,13 @@ class TestCandidate(TestCase):
 
         candidate = build_candidate(("k(a) k(b) no(k(c)) no(k(d))", "a b no(c) no(d)"))
         self.assertTrue(candidate.proven())
+
+        candidate = build_candidate(
+            ("k(a) k(b) no(k(no1(c))) no(k(not1(d)))", "a b no1(c) no(not1(d))")
+        )
+        self.assertFalse(candidate.proven())
+
+        candidate = build_candidate(
+            ("k(a) k(b) no(k(no1(c))) no(k(not1(d)))", "a b no(no1(c)) no(not1(d))")
+        )
+        self.assertTrue(candidate.proven())
