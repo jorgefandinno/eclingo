@@ -41,6 +41,7 @@ class SolverReification:
         for candidate in self.generate_candidates_reification():
             print()
             print(candidate)
+            print()
             if candidate.proven():
                 print("------------ PROVEN")
             if candidate.proven() or self.test_candidate_reification(candidate):

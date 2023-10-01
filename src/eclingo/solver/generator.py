@@ -166,9 +166,9 @@ class GeneratorReification:
     def __call__(self) -> Iterator[Candidate]:
         with cast(clingo.SolveHandle, self.control.solve(yield_=True)) as handle:
             for model in handle:
-                print("*" * 50)
-                print(model)
-                print("\n".join(sorted(str(a) for a in model.symbols(atoms=True))))
+                # print("*" * 50)
+                # print(model)
+                # print("\n".join(sorted(str(a) for a in model.symbols(atoms=True))))
                 candidate = self._model_to_candidate(model)
                 self.num_candidates += 1
                 yield candidate
@@ -191,7 +191,7 @@ class GeneratorReification:
         extra_assumptions = Assumptions(
             positive_extra_assumptions, negative_extra_assumptions
         )
-        print()
+        # print()
 
-        print(extra_assumptions)
+        # print(extra_assumptions)
         return Candidate(positive_candidate, negative_candidate, extra_assumptions)
