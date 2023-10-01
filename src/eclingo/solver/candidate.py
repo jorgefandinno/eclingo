@@ -1,3 +1,4 @@
+import itertools
 from typing import NamedTuple, Sequence
 
 from clingo import Symbol
@@ -24,3 +25,11 @@ class Candidate(NamedTuple):
         if not self.extra_assumptions.pos and not self.extra_assumptions.neg:
             return f"Candidate(pos=[{pos_s}], neg=[{neg_s}])"
         return f"Candidate(pos=[{pos_s}], neg=[{neg_s}], extra_assumptions={self.extra_assumptions})"
+
+    def proven(self) -> bool:
+        return all(
+            itertools.chain(
+                (a.arguments[0] in self.extra_assumptions.pos for a in self.pos),
+                (a.arguments[0] in self.extra_assumptions.neg for a in self.neg),
+            )
+        )

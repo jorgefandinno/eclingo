@@ -40,7 +40,7 @@ class SolverReification:
             return []
         for candidate in self.generate_candidates_reification():
             # print(candidate)
-            if self.test_candidate_reification(candidate):
+            if candidate.proven() or self.test_candidate_reification(candidate):
                 yield self._build_world_view_reification(candidate)
 
     def number_of_candidates(self) -> int:  # pragma: no cover

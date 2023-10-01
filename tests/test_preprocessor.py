@@ -3,7 +3,6 @@ import unittest
 from typing import List
 
 import eclingo
-from eclingo.solver.candidate import Candidate
 from eclingo.solver.generator import GeneratorReification
 from eclingo.solver.tester import CandidateTesterReification
 from tests.generated_programs import programs
