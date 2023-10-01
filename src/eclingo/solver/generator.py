@@ -90,10 +90,10 @@ kp_conjunction(B) :- literal_tuple(B), kp_hold(A) : literal_tuple(B,  A), A > 0,
                                    kp_not_hold(A) : literal_tuple(B, -A), A > 0, not epistemic_atom_int(A);
                                       not hold(A) : literal_tuple(B, -A), A > 0,     epistemic_atom_int(A).
 
-kp_not_conjunction(B) :- literal_tuple(B), kp_not_hold(A), literal_tuple(B, A), A > 0, not epistemic_atom(A).
-kp_not_conjunction(B) :- literal_tuple(B),    not hold(A), literal_tuple(B, A), A > 0, epistemic_atom(A).
-kp_not_conjunction(B) :- literal_tuple(B), kp_hold(A), literal_tuple(B, -A), A > 0, not epistemic_atom(A).
-kp_not_conjunction(B) :- literal_tuple(B),    hold(A), literal_tuple(B, -A), A > 0, epistemic_atom(A).
+kp_not_conjunction(B) :- literal_tuple(B), kp_not_hold(A), literal_tuple(B, A), A > 0, not epistemic_atom_int(A).
+kp_not_conjunction(B) :- literal_tuple(B),    not hold(A), literal_tuple(B, A), A > 0, epistemic_atom_int(A).
+kp_not_conjunction(B) :- literal_tuple(B), kp_hold(A), literal_tuple(B, -A), A > 0, not epistemic_atom_int(A).
+kp_not_conjunction(B) :- literal_tuple(B),    hold(A), literal_tuple(B, -A), A > 0, epistemic_atom_int(A).
 
 kp_body(normal(B))     :- rule(_, normal(B)), kp_conjunction(B).
 kp_not_body(normal(B)) :- rule(_, normal(B)), kp_not_conjunction(B).
@@ -103,16 +103,28 @@ kp_hold(A) : atom_tuple(H,A) :- rule(disjunction(H), B), singleton_disjuntion(H)
 rule_head_tuple(H, B) :- rule(disjunction(H), B).
 rule_head_tuple(H, B) :- rule(choice(H), B).
 
-kp_not_hold(A) :- symbolic_atom(_, A), kp_not_body(B) : atom_tuple(H,A), rule_head_tuple(H, B).
+kp_not_hold(A) :- objective_atom_int(A), kp_not_body(B) : atom_tuple(H,A), rule_head_tuple(H, B).
 
 zhold(SA)        :- hold(A), atom_map(SA, A).
-zkp_hold(SA)     :- kp_hold(A), atom_map(SA, A).
-zkp_not_hold(SA) :- kp_not_hold(A), atom_map(SA, A).
+z_kp_hold(SA)     :- kp_hold(A), atom_map(SA, A).
+z_kp_not_hold(SA) :- kp_not_hold(A), atom_map(SA, A).
+z_rule_head(disjunction(SA),rule(H,B)) :- rule(H, B), H = disjunction(H1), atom_tuple(H1,A), atom_map(SA, A).
+z_rule_head(choice(SA),rule(H,B)) :- rule(H, B), H = choice(H1), atom_tuple(H1,A), atom_map(SA, A).
+z_rule_body(normal(SA),rule(H,B)) :- rule(H, normal(B)), literal_tuple(B,A), A > 0, atom_map(SA, A).
+z_rule_body(normal(-SA),rule(H,B)) :- rule(H, normal(B)), literal_tuple(B,-A), A > 0, atom_map(SA, A).
 
 positive_extra_assumptions(OSA) :-
     kp_hold(OA),
     objective_atom_map(OSA,OA),
     symbolic_epistemic_atom(k(OSA)).
+negative_extra_assumptions(OSA) :-
+    kp_not_hold(OA),
+    objective_atom_map(OSA,OA),
+    symbolic_epistemic_atom(k(OSA)).
+negative_extra_assumptions(not1(OSA)) :-
+    kp_hold(OA),
+    objective_atom_map(OSA,OA),
+    symbolic_epistemic_atom(k(not1(OSA))).
 #show positive_extra_assumptions/1.
 #show negative_extra_assumptions/1.
 """
@@ -154,9 +166,9 @@ class GeneratorReification:
     def __call__(self) -> Iterator[Candidate]:
         with cast(clingo.SolveHandle, self.control.solve(yield_=True)) as handle:
             for model in handle:
-                # print("*"*50)
-                # print(model)
-                # print("\n".join(sorted(str(a) for a in model.symbols(atoms=True))))
+                print("*" * 50)
+                print(model)
+                print("\n".join(sorted(str(a) for a in model.symbols(atoms=True))))
                 candidate = self._model_to_candidate(model)
                 self.num_candidates += 1
                 yield candidate
@@ -179,4 +191,7 @@ class GeneratorReification:
         extra_assumptions = Assumptions(
             positive_extra_assumptions, negative_extra_assumptions
         )
+        print()
+
+        print(extra_assumptions)
         return Candidate(positive_candidate, negative_candidate, extra_assumptions)

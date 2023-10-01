@@ -1055,7 +1055,7 @@ programs = [
                 extra_assumptions=Assumptions(pos=[], neg=[]),
             )
         ],
-        candidates_03_str="['no(k(not1(a)))']",
+        candidates_03_str="[('no(k(not1(a)))', 'no(not1(a))')]",
         candidates_03=[
             Candidate(
                 pos=[],
@@ -1072,10 +1072,19 @@ programs = [
                         True,
                     )
                 ],
-                extra_assumptions=Assumptions(pos=[], neg=[]),
+                extra_assumptions=Assumptions(
+                    pos=[],
+                    neg=[
+                        Function(
+                            "not1",
+                            [Function("u", [Function("a", [], True)], True)],
+                            True,
+                        )
+                    ],
+                ),
             )
         ],
-        candidates_wv_str="['no(k(not1(a)))']",
+        candidates_wv_str="[('no(k(not1(a)))', 'no(not1(a))')]",
         candidates_wv=[
             Candidate(
                 pos=[],
@@ -1092,7 +1101,16 @@ programs = [
                         True,
                     )
                 ],
-                extra_assumptions=Assumptions(pos=[], neg=[]),
+                extra_assumptions=Assumptions(
+                    pos=[],
+                    neg=[
+                        Function(
+                            "not1",
+                            [Function("u", [Function("a", [], True)], True)],
+                            True,
+                        )
+                    ],
+                ),
             )
         ],
         fast_preprocessing_str="a",
@@ -1952,7 +1970,8 @@ programs = [
                 extra_assumptions=Assumptions(pos=[], neg=[]),
             ),
         ],
-        candidates_03_str="['no(k(not1(a)))', 'k(not1(a))']",
+        candidates_03_str="[('no(k(not1(a)))', 'no(not1(a))'), ('k(not1(a))', "
+        "'not1(a)')]",
         candidates_03=[
             Candidate(
                 pos=[],
@@ -1969,7 +1988,16 @@ programs = [
                         True,
                     )
                 ],
-                extra_assumptions=Assumptions(pos=[], neg=[]),
+                extra_assumptions=Assumptions(
+                    pos=[],
+                    neg=[
+                        Function(
+                            "not1",
+                            [Function("u", [Function("a", [], True)], True)],
+                            True,
+                        )
+                    ],
+                ),
             ),
             Candidate(
                 pos=[
@@ -1986,10 +2014,20 @@ programs = [
                     )
                 ],
                 neg=[],
-                extra_assumptions=Assumptions(pos=[], neg=[]),
+                extra_assumptions=Assumptions(
+                    pos=[
+                        Function(
+                            "not1",
+                            [Function("u", [Function("a", [], True)], True)],
+                            True,
+                        )
+                    ],
+                    neg=[],
+                ),
             ),
         ],
-        candidates_wv_str="['no(k(not1(a)))', 'k(not1(a))']",
+        candidates_wv_str="[('no(k(not1(a)))', 'no(not1(a))'), ('k(not1(a))', "
+        "'not1(a)')]",
         candidates_wv=[
             Candidate(
                 pos=[],
@@ -2006,7 +2044,16 @@ programs = [
                         True,
                     )
                 ],
-                extra_assumptions=Assumptions(pos=[], neg=[]),
+                extra_assumptions=Assumptions(
+                    pos=[],
+                    neg=[
+                        Function(
+                            "not1",
+                            [Function("u", [Function("a", [], True)], True)],
+                            True,
+                        )
+                    ],
+                ),
             ),
             Candidate(
                 pos=[
@@ -2023,7 +2070,16 @@ programs = [
                     )
                 ],
                 neg=[],
-                extra_assumptions=Assumptions(pos=[], neg=[]),
+                extra_assumptions=Assumptions(
+                    pos=[
+                        Function(
+                            "not1",
+                            [Function("u", [Function("a", [], True)], True)],
+                            True,
+                        )
+                    ],
+                    neg=[],
+                ),
             ),
         ],
         fast_preprocessing_str=("", "a not1(a) k(not1(a))"),
@@ -2051,7 +2107,9 @@ programs = [
         description="",
     ),
     Program(
-        program="a :- not &k{-a}. -a :- not &k{a}.",
+        program="             a :- not &k{-a}.\n"
+        "            -a :- not &k{ a}.\n"
+        "        ",
         non_ground_reification="u(a) :- not k(u(-a)).\n"
         "{ k(u(-a)) } :- u(-a).\n"
         "u(-a) :- not k(u(a)).\n"
@@ -2144,7 +2202,8 @@ programs = [
                 extra_assumptions=Assumptions(pos=[], neg=[]),
             ),
         ],
-        candidates_03_str="[('k(a) no(k(-a))', 'a'), ('no(k(a)) k(-a)', '-a')]",
+        candidates_03_str="[('k(a) no(k(-a))', 'a no(-a)'), ('no(k(a)) k(-a)', "
+        "'-a no(a)')]",
         candidates_03=[
             Candidate(
                 pos=[
@@ -2158,7 +2217,8 @@ programs = [
                     )
                 ],
                 extra_assumptions=Assumptions(
-                    pos=[Function("u", [Function("a", [], True)], True)], neg=[]
+                    pos=[Function("u", [Function("a", [], True)], True)],
+                    neg=[Function("u", [Function("a", [], False)], True)],
                 ),
             ),
             Candidate(
@@ -2173,11 +2233,13 @@ programs = [
                     )
                 ],
                 extra_assumptions=Assumptions(
-                    pos=[Function("u", [Function("a", [], False)], True)], neg=[]
+                    pos=[Function("u", [Function("a", [], False)], True)],
+                    neg=[Function("u", [Function("a", [], True)], True)],
                 ),
             ),
         ],
-        candidates_wv_str="[('k(a) no(k(-a))', 'a'), ('no(k(a)) k(-a)', '-a')]",
+        candidates_wv_str="[('k(a) no(k(-a))', 'a no(-a)'), ('no(k(a)) k(-a)', "
+        "'-a no(a)')]",
         candidates_wv=[
             Candidate(
                 pos=[
@@ -2191,7 +2253,8 @@ programs = [
                     )
                 ],
                 extra_assumptions=Assumptions(
-                    pos=[Function("u", [Function("a", [], True)], True)], neg=[]
+                    pos=[Function("u", [Function("a", [], True)], True)],
+                    neg=[Function("u", [Function("a", [], False)], True)],
                 ),
             ),
             Candidate(
@@ -2206,7 +2269,8 @@ programs = [
                     )
                 ],
                 extra_assumptions=Assumptions(
-                    pos=[Function("u", [Function("a", [], False)], True)], neg=[]
+                    pos=[Function("u", [Function("a", [], False)], True)],
+                    neg=[Function("u", [Function("a", [], True)], True)],
                 ),
             ),
         ],
@@ -2224,7 +2288,12 @@ programs = [
         description="",
     ),
     Program(
-        program="a :- not &k{-a}. -a :- not &k{a}. b :- a. c :- b. :- not &k{c}.",
+        program="            a :- not &k{-a}.\n"
+        "            -a :- not &k{a}.\n"
+        "            b :- a.\n"
+        "            c :- b.\n"
+        "            :- not &k{c}.\n"
+        "        ",
         non_ground_reification="u(a) :- not k(u(-a)).\n"
         "{ k(u(-a)) } :- u(-a).\n"
         "u(-a) :- not k(u(a)).\n"
@@ -2323,7 +2392,7 @@ programs = [
                 extra_assumptions=Assumptions(pos=[], neg=[]),
             )
         ],
-        candidates_03_str="[('k(a) k(c) no(k(-a))', 'a c')]",
+        candidates_03_str="[('k(a) k(c) no(k(-a))', 'a c no(-a)')]",
         candidates_03=[
             Candidate(
                 pos=[
@@ -2344,11 +2413,11 @@ programs = [
                         Function("u", [Function("a", [], True)], True),
                         Function("u", [Function("c", [], True)], True),
                     ],
-                    neg=[],
+                    neg=[Function("u", [Function("a", [], False)], True)],
                 ),
             )
         ],
-        candidates_wv_str="[('k(a) k(c) no(k(-a))', 'a c')]",
+        candidates_wv_str="[('k(a) k(c) no(k(-a))', 'a c no(-a)')]",
         candidates_wv=[
             Candidate(
                 pos=[
@@ -2369,7 +2438,7 @@ programs = [
                         Function("u", [Function("a", [], True)], True),
                         Function("u", [Function("c", [], True)], True),
                     ],
-                    neg=[],
+                    neg=[Function("u", [Function("a", [], False)], True)],
                 ),
             )
         ],
@@ -2390,7 +2459,12 @@ programs = [
         description="",
     ),
     Program(
-        program="a :- not &k{-a}. -a :- not &k{a}. b :- a. c :- b. d :- not " "&k{c}.",
+        program="            a :- not &k{-a}. \n"
+        "            -a :- not &k{a}.\n"
+        "             b :- a.\n"
+        "             c :- b.\n"
+        "             d :- not &k{c}.\n"
+        "        ",
         non_ground_reification="u(a) :- not k(u(-a)).\n"
         "{ k(u(-a)) } :- u(-a).\n"
         "u(-a) :- not k(u(a)).\n"
@@ -2559,8 +2633,8 @@ programs = [
                 extra_assumptions=Assumptions(pos=[], neg=[]),
             ),
         ],
-        candidates_03_str="[('k(a) k(c) no(k(-a))', 'a c'), ('no(k(a)) no(k(c)) "
-        "k(-a)', '-a')]",
+        candidates_03_str="[('k(a) k(c) no(k(-a))', 'a c no(-a)'), ('no(k(a)) "
+        "no(k(c)) k(-a)', 'no(a) no(c) -a')]",
         candidates_03=[
             Candidate(
                 pos=[
@@ -2581,7 +2655,7 @@ programs = [
                         Function("u", [Function("a", [], True)], True),
                         Function("u", [Function("c", [], True)], True),
                     ],
-                    neg=[],
+                    neg=[Function("u", [Function("a", [], False)], True)],
                 ),
             ),
             Candidate(
@@ -2599,12 +2673,16 @@ programs = [
                     ),
                 ],
                 extra_assumptions=Assumptions(
-                    pos=[Function("u", [Function("a", [], False)], True)], neg=[]
+                    pos=[Function("u", [Function("a", [], False)], True)],
+                    neg=[
+                        Function("u", [Function("a", [], True)], True),
+                        Function("u", [Function("c", [], True)], True),
+                    ],
                 ),
             ),
         ],
-        candidates_wv_str="[('k(a) k(c) no(k(-a))', 'a c'), ('no(k(a)) no(k(c)) "
-        "k(-a)', '-a')]",
+        candidates_wv_str="[('k(a) k(c) no(k(-a))', 'a c no(-a)'), ('no(k(a)) "
+        "no(k(c)) k(-a)', 'no(a) no(c) -a')]",
         candidates_wv=[
             Candidate(
                 pos=[
@@ -2625,7 +2703,7 @@ programs = [
                         Function("u", [Function("a", [], True)], True),
                         Function("u", [Function("c", [], True)], True),
                     ],
-                    neg=[],
+                    neg=[Function("u", [Function("a", [], False)], True)],
                 ),
             ),
             Candidate(
@@ -2643,7 +2721,11 @@ programs = [
                     ),
                 ],
                 extra_assumptions=Assumptions(
-                    pos=[Function("u", [Function("a", [], False)], True)], neg=[]
+                    pos=[Function("u", [Function("a", [], False)], True)],
+                    neg=[
+                        Function("u", [Function("a", [], True)], True),
+                        Function("u", [Function("c", [], True)], True),
+                    ],
                 ),
             ),
         ],
@@ -2895,8 +2977,8 @@ programs = [
                 extra_assumptions=Assumptions(pos=[], neg=[]),
             ),
         ],
-        candidates_03_str="[('no(k(not1(a(1))))    k(b(1))', 'b(1)'), '   "
-        "k(not1(a(1)))  no(k(b(1)))']",
+        candidates_03_str="[('no(k(not1(a(1))))    k(b(1))', 'b(1)'), ('   "
+        "k(not1(a(1)))  no(k(b(1)))', 'no(b(1))')]",
         candidates_03=[
             Candidate(
                 pos=[
@@ -2953,11 +3035,14 @@ programs = [
                         True,
                     )
                 ],
-                extra_assumptions=Assumptions(pos=[], neg=[]),
+                extra_assumptions=Assumptions(
+                    pos=[],
+                    neg=[Function("u", [Function("b", [Number(1)], True)], True)],
+                ),
             ),
         ],
-        candidates_wv_str="[('no(k(not1(a(1))))    k(b(1))', 'b(1)'), '   "
-        "k(not1(a(1)))  no(k(b(1)))']",
+        candidates_wv_str="[('no(k(not1(a(1))))    k(b(1))', 'b(1)'), ('   "
+        "k(not1(a(1)))  no(k(b(1)))', 'no(b(1))')]",
         candidates_wv=[
             Candidate(
                 pos=[
@@ -3014,7 +3099,10 @@ programs = [
                         True,
                     )
                 ],
-                extra_assumptions=Assumptions(pos=[], neg=[]),
+                extra_assumptions=Assumptions(
+                    pos=[],
+                    neg=[Function("u", [Function("b", [Number(1)], True)], True)],
+                ),
             ),
         ],
         fast_preprocessing_str=(
@@ -3504,8 +3592,9 @@ programs = [
             ),
         ],
         candidates_03_str="[('no(k(not1(a(1)))) k(not1(a(2)))    k(b(1))  "
-        "no(k(b(2)))', 'not1(a(2)) b(1)'), ('   k(not1(a(1)))  "
-        "k(not1(a(2))) no(k(b(1))) no(k(b(2)))', 'not1(a(2))')]",
+        "no(k(b(2)))', 'not1(a(2)) b(1) no(b(2))'), "
+        "('k(not1(a(1)))  k(not1(a(2))) no(k(b(1))) "
+        "no(k(b(2)))', 'not1(a(2)) no(b(1)) no(b(2))')]",
         candidates_03=[
             Candidate(
                 pos=[
@@ -3561,7 +3650,7 @@ programs = [
                         ),
                         Function("u", [Function("b", [Number(1)], True)], True),
                     ],
-                    neg=[],
+                    neg=[Function("u", [Function("b", [Number(2)], True)], True)],
                 ),
             ),
             Candidate(
@@ -3617,13 +3706,17 @@ programs = [
                             True,
                         )
                     ],
-                    neg=[],
+                    neg=[
+                        Function("u", [Function("b", [Number(1)], True)], True),
+                        Function("u", [Function("b", [Number(2)], True)], True),
+                    ],
                 ),
             ),
         ],
         candidates_wv_str="[('no(k(not1(a(1)))) k(not1(a(2)))    k(b(1))  "
-        "no(k(b(2)))', 'not1(a(2)) b(1)'), ('   k(not1(a(1)))  "
-        "k(not1(a(2))) no(k(b(1))) no(k(b(2)))', 'not1(a(2))')]",
+        "no(k(b(2)))', 'not1(a(2)) b(1) no(b(2))'), "
+        "('k(not1(a(1)))  k(not1(a(2))) no(k(b(1))) "
+        "no(k(b(2)))', 'not1(a(2)) no(b(1)) no(b(2))')]",
         candidates_wv=[
             Candidate(
                 pos=[
@@ -3679,7 +3772,7 @@ programs = [
                         ),
                         Function("u", [Function("b", [Number(1)], True)], True),
                     ],
-                    neg=[],
+                    neg=[Function("u", [Function("b", [Number(2)], True)], True)],
                 ),
             ),
             Candidate(
@@ -3735,7 +3828,10 @@ programs = [
                             True,
                         )
                     ],
-                    neg=[],
+                    neg=[
+                        Function("u", [Function("b", [Number(1)], True)], True),
+                        Function("u", [Function("b", [Number(2)], True)], True),
+                    ],
                 ),
             ),
         ],

@@ -10,7 +10,7 @@ class AppConfig(object):
         eclingo_rewritten="no",
         rewritten_program=[],
         preprocessing_level=3,
-        propagate=False,
+        propagate=True,
     ):
         self.eclingo_verbose = verbose
         self.eclingo_semantics = semantics
