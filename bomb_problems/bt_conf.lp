@@ -41,8 +41,8 @@ executable(dunk(P), T) :- action(dunk(P)), step(T), not holds(dunked(P),T).
  holds(unsafe, T) :- holds(armed(P),   T), step(T).
 -holds(unsafe, T) :- not holds(unsafe, T), step(T).
 
-aux :- &k{  holds(armed(P), T)}, step(T), package(P).
-aux :- &k{ -holds(armed(P), T)}, step(T), package(P).
+% aux :- &k{  holds(armed(P), T)}, step(T), package(P).
+% aux :- &k{ -holds(armed(P), T)}, step(T), package(P).
 
 %%%%% occurs  %%%%%%%
 occurs(A,S) :- action(A), stepless(S), not &k{ not occurs(A,S) }.
