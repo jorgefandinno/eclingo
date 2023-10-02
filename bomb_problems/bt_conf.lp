@@ -6,7 +6,8 @@
 % #external _heuristic.
 package(1..np).
 
-1 { holds(armed(P),0) : package(P) } 1.
+{ holds(armed(P),0) } :- package(P).
+:- not 1 { holds(armed(P),0) : package(P) } 1.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%problem description%%%%%%%%

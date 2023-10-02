@@ -335,4 +335,50 @@ program_list = [
         ),
         has_fast_preprocessing=True,
     ),
+    Program(
+        description="",
+        program="""\
+            a :- not &k{not a}.
+            b :- &k{a}.
+        """,
+        candidates_01=[
+            "k(a) no(k(not1(a)))",
+            "k(not1(a)) no(k(a))",
+            "no(k(not1(a))) no(k(a))",
+        ],
+        candidates_03=[
+            ("k(a) no(k(not1(a)))", "a no(not1(a))"),
+            ("k(not1(a)) no(k(a))", "not1(a) no(a)"),
+        ],
+        fast_preprocessing=("", "a b k(a) not1(a) k(not1(a))"),
+        has_fast_preprocessing=True,
+    ),
+    Program(
+        description="",
+        program="""\
+            a :- not &k{not a}.
+            b :- &k{a}.
+            c :- &k{b}.
+        """,
+        candidates_03=[
+            ("k(a) k(b) no(k(not1(a)))", "a b no(not1(a))"),
+            ("k(not1(a)) no(k(a)) no(k(b))", "not1(a) no(a) no(b)"),
+        ],
+    ),
+    Program(
+        description="",
+        program="""\
+            a :- not &k{not a}.
+            b :- &k{a}.
+            c :- &k{not b}.
+            d :- &k{c}.
+        """,
+        candidates_03=[
+            (
+                "k(a) no(k(c)) no(k(not1(a))) no(k(not1(b)))",
+                "a no(not1(a)) no(not1(b)) no(c)",
+            ),
+            ("k(not1(a)) k(not1(b)) k(c) no(k(a))", "not1(a) not1(b) c no(a)"),
+        ],
+    ),
 ]

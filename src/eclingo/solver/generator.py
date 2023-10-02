@@ -121,10 +121,10 @@ negative_extra_assumptions(OSA) :-
     kp_not_hold(OA),
     objective_atom_map(OSA,OA),
     symbolic_epistemic_atom(k(OSA)).
-negative_extra_assumptions(not1(OSA)) :-
-    kp_hold(OA),
-    objective_atom_map(OSA,OA),
-    symbolic_epistemic_atom(k(not1(OSA))).
+% negative_extra_assumptions(not1(OSA)) :-
+%    kp_hold(OA),
+%    objective_atom_map(OSA,OA),
+%    symbolic_epistemic_atom(k(not1(OSA))).
 #show positive_extra_assumptions/1.
 #show negative_extra_assumptions/1.
 """
