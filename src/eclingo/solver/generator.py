@@ -55,8 +55,6 @@ epistemic_atom_int(KA) :- epistemic_atom_map(_, KA).
 objective_atom_int(A)  :- objective_atom_map(_, A).
 
 epistemic_map(KA,OA) :- epistemic_atom_map(KSA, KA), objective_atom_map(OSA, OA), KSA = k(OSA).
-
-:- kp_hold(A), epistemic_map(KA, A), not hold(KA).
 """
 
 preprocessing_program = """\
@@ -81,6 +79,8 @@ positive_extra_assumptions(OSA) :- fact(OSA), symbolic_epistemic_atom(k(OSA)).
 """
 
 propagation_program = """\
+:- kp_hold(A), epistemic_map(KA, A), not hold(KA).
+
 kp_hold(OA) :- cautious(OSA),  objective_atom_map(OSA, OA).
 
 kp_conjunction(B) :- literal_tuple(B), kp_hold(A) : literal_tuple(B,  A), A > 0, not epistemic_atom_int(A);
