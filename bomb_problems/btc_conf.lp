@@ -36,7 +36,7 @@ action(dunk(P)) :- package(P).
 action(flush).
 
 %%%%%%  executable  %%%%%%%
-executable(dunk(P), T) :- action(dunk(P)), step(T), not holds(dunked(P),T).
+executable(dunk(P), T) :- action(dunk(P)), -holds(clogged,T), step(T), not holds(dunked(P),T).
 
 executable(flush,T) :- action(flush), step(T).
 
@@ -54,7 +54,7 @@ executable(flush,T) :- action(flush), step(T).
 %%%%% occurs  %%%%%%%
 occurs(A,S) :- action(A), stepless(S), not &k{ ~ occurs(A,S) }.
 bot :- occurs(A,S), not executable(A,S).
-:- { occurs(A,S) } > 1, stepless(S).
+:- occurs(A1,S), occurs(A2,S), A1 < A2, stepless(S).
 
 %%%%% goal  %%%%%%%
 goal :- -holds(unsafe, LEN), not bot, max(LEN).

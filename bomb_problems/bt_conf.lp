@@ -41,9 +41,11 @@ executable(dunk(P), T) :- action(dunk(P)), step(T), not holds(dunked(P),T).
  holds(unsafe, T) :- holds(armed(P),   T), step(T).
 -holds(unsafe, T) :- not holds(unsafe, T), step(T).
 
+aux :- &k{  holds(armed(P), T)}, step(T), package(P).
+aux :- &k{ -holds(armed(P), T)}, step(T), package(P).
 
 %%%%% occurs  %%%%%%%
-occurs(A,S) :- action(A), stepless(S), not &k{ ~ occurs(A,S) }.
+occurs(A,S) :- action(A), stepless(S), not &k{ not occurs(A,S) }.
 bot :- occurs(A,S), not executable(A,S).
 :- { occurs(A,S) } > 1, stepless(S).
 
@@ -51,3 +53,9 @@ bot :- occurs(A,S), not executable(A,S).
 goal :- -holds(unsafe, LEN), not bot, max(LEN).
 
 :- not &k{ goal }.
+
+
+%%%%% defaults and inertia  %%%%%%%
+-holds(F,0)   :- not  holds(F,0), fluent(F).
+ holds(F,S+1) :- fluent(F), inertial(F), stepless(S),  holds(F,S), not  -holds(F,S+1).
+-holds(F,S+1) :- fluent(F), inertial(F), stepless(S), -holds(F,S), not   holds(F,S+1).

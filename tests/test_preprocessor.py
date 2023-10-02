@@ -7,18 +7,19 @@ from eclingo.solver.generator import GeneratorReification
 from eclingo.solver.tester import CandidateTesterReification
 from tests.generated_programs import programs
 
+config = eclingo.config.AppConfig()
+config.eclingo_semantics = "c19-1"
+config.preprocessing_level = 3
+config.propagate = False
+
 
 def fast_preprocessing(program):
-    config = eclingo.config.AppConfig()
-    config.eclingo_semantics = "c19-1"
     tester = CandidateTesterReification(config, program)
     ret = tester.fast_preprocessing()
     return ret
 
 
 def generate_candidates(program, preprocessing_result):
-    config = eclingo.config.AppConfig()
-    config.eclingo_semantics = "c19-1"
     generator = GeneratorReification(config, program, preprocessing_result)
     ret = list(generator())
     return ret

@@ -39,11 +39,18 @@ class SolverReification:
         if self.unsatisfiable:
             return []
         for candidate in self.generate_candidates_reification():
-            print()
-            print(candidate)
-            print()
-            if candidate.proven():
-                print("------------ PROVEN")
+            # print()
+            # print(candidate)
+            # print()
+            # if candidate.proven():
+            #     print("------------ PROVEN")
+            # else:
+            #     for a in candidate.pos:
+            #         if a.arguments[0] not in candidate.extra_assumptions.pos:
+            #             print(f"POS {a}")
+            #     for a in candidate.neg:
+            #         if a.arguments[0] not in candidate.extra_assumptions.neg:
+            #             print(f"POS {a}")
             if candidate.proven() or self.test_candidate_reification(candidate):
                 # if self.test_candidate_reification(candidate):
                 yield self._build_world_view_reification(candidate)

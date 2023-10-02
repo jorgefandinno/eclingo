@@ -22,7 +22,7 @@ body(normal(B)) :- rule(_, normal(B)), conjunction (B).
 
 body(sum(B, G)) :- rule (_, sum(B,G)),
                     #sum { W,L :     hold(L), weighted_literal_tuple(B,  L, W), L>0;
-                            W,L : not hold(L), weighted_literal_tuple(B, -L, W), L>0} >= G.
+                           W,L : not hold(L), weighted_literal_tuple(B, -L, W), L>0} >= G.
 
 hold(A) : atom_tuple(H,A) :- rule(disjunction(H), B), body(B).
 
@@ -46,7 +46,7 @@ common_opt_program = """\
 symbolic_atom(SA) :- atom_map(SA, _).
 
 symbolic_epistemic_atom(k(A)) :- symbolic_atom(k(A)).
-symbolic_objective_atom(OSA) :- symbolic_atom(OSA), not symbolic_epistemic_atom(OSA).
+symbolic_objective_atom(OSA)  :- symbolic_atom(OSA), not symbolic_epistemic_atom(OSA).
 
 epistemic_atom_map(KSA, KA) :- atom_map(KSA, KA), symbolic_epistemic_atom(KSA).
 objective_atom_map(OSA, OA) :- atom_map(OSA, OA), symbolic_objective_atom(OSA).
@@ -83,20 +83,20 @@ positive_extra_assumptions(OSA) :- fact(OSA), symbolic_epistemic_atom(k(OSA)).
 propagation_program = """\
 kp_hold(OA) :- cautious(OSA),  objective_atom_map(OSA, OA).
 
-singleton_disjuntion(H) :- rule(disjunction(H), _), #count {L : literal_tuple(H, L)} = 1.
-
 kp_conjunction(B) :- literal_tuple(B), kp_hold(A) : literal_tuple(B,  A), A > 0, not epistemic_atom_int(A);
                                           hold(A) : literal_tuple(B,  A), A > 0,     epistemic_atom_int(A);
                                    kp_not_hold(A) : literal_tuple(B, -A), A > 0, not epistemic_atom_int(A);
                                       not hold(A) : literal_tuple(B, -A), A > 0,     epistemic_atom_int(A).
 
-kp_not_conjunction(B) :- literal_tuple(B), kp_not_hold(A), literal_tuple(B, A), A > 0, not epistemic_atom_int(A).
-kp_not_conjunction(B) :- literal_tuple(B),    not hold(A), literal_tuple(B, A), A > 0, epistemic_atom_int(A).
-kp_not_conjunction(B) :- literal_tuple(B), kp_hold(A), literal_tuple(B, -A), A > 0, not epistemic_atom_int(A).
-kp_not_conjunction(B) :- literal_tuple(B),    hold(A), literal_tuple(B, -A), A > 0, epistemic_atom_int(A).
+kp_not_conjunction(B) :- literal_tuple(B), kp_not_hold(A), literal_tuple(B,  A), A > 0, not epistemic_atom_int(A).
+kp_not_conjunction(B) :- literal_tuple(B),    not hold(A), literal_tuple(B,  A), A > 0,     epistemic_atom_int(A).
+kp_not_conjunction(B) :- literal_tuple(B),     kp_hold(A), literal_tuple(B, -A), A > 0, not epistemic_atom_int(A).
+kp_not_conjunction(B) :- literal_tuple(B),        hold(A), literal_tuple(B, -A), A > 0,     epistemic_atom_int(A).
 
 kp_body(normal(B))     :- rule(_, normal(B)), kp_conjunction(B).
 kp_not_body(normal(B)) :- rule(_, normal(B)), kp_not_conjunction(B).
+
+singleton_disjuntion(H) :- rule(disjunction(H), _), #count{A : atom_tuple(H, A)} = 1.
 
 kp_hold(A) : atom_tuple(H,A) :- rule(disjunction(H), B), singleton_disjuntion(H), kp_body(B).
 

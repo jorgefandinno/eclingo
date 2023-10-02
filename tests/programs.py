@@ -305,4 +305,34 @@ program_list = [
         ),
         has_fast_preprocessing=True,
     ),
+    Program(
+        description="",
+        program="""\
+            a(1), c(1).
+            b(1) :- not &k{ not a(1) }.
+            b(2) :- not &k{ not a(2) }.
+            d(1) :- &k{ b(1) }.
+            d(2) :- &k{ b(2) }.
+        """,
+        candidates_01=[
+            ("no(k(not1(a(1)))) k(not1(a(2)))    k(b(1))  no(k(b(2)))", "not1(a(2))"),
+            ("no(k(not1(a(1)))) k(not1(a(2))) no(k(b(1))) no(k(b(2)))", "not1(a(2))"),
+            ("   k(not1(a(1)))  k(not1(a(2))) no(k(b(1))) no(k(b(2)))", "not1(a(2))"),
+        ],
+        candidates_03=[
+            (
+                "k(not1(a(2)))    k(b(1))  no(k(not1(a(1)))) no(k(b(2)))",
+                "not1(a(2)) b(1) no(b(2))",
+            ),
+            (
+                "k(not1(a(1)))  k(not1(a(2))) no(k(b(1))) no(k(b(2)))",
+                "not1(a(2)) no(b(1)) no(b(2))",
+            ),
+        ],
+        fast_preprocessing=(
+            "not1(a(2)) k(not1(a(2)))",
+            "a(1) b(1) c(1) d(1) not1(a(1)) k(not1(a(1))) k(b(1)) not1(a(2)) k(not1(a(2)))",
+        ),
+        has_fast_preprocessing=True,
+    ),
 ]
