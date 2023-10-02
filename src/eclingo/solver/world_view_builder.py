@@ -191,6 +191,7 @@ class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
                 uatom = Function("u", [atom.arguments[0]], True)
                 if model.contains(uatom):
                     candidate_pos.append(uatom)
+        print("The candidate pos: ", candidate_pos)
         return Candidate(candidate_pos, candidate_neg)
 
         # show_name: str = "show_statement"
