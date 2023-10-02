@@ -98,7 +98,6 @@ def partition4(  # pylint: disable-msg=too-many-locals
     Partitions iterable according to *pred.
     fun is applied to each element.
     """
-
     l0: List[T] = []
     l1: List[T] = []
     l2: List[T] = []

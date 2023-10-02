@@ -105,12 +105,39 @@ class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
         self.reified_program = reified_program
         self.show_statements: Sequence[Symbol] = []
 
-        program_meta_encoding = """
+        program_meta_encoding = """conjunction(B) :- literal_tuple(B),
+                                                        hold(L) : literal_tuple(B,  L), L > 0;
+                                                    not hold(L) : literal_tuple(B, -L), L > 0.
+
+                                body(normal(B)) :- rule(_, normal(B)), conjunction (B).
+
+                                body(sum(B, G)) :- rule (_sum(B,G)),
+                                #sum {
+                                    W,L : hold(L), weighted_literal_tuple(B, L,W), L>0;
+                                    W,L : not hold(L), weighted_literal_tuple(B, -L,W), L>0} >= G.
+
+                                hold(A) : atom_tuple(H,A) :- rule(disjunction(H), B), body(B).
+
+                                {hold(A) : atom_tuple(H,A)} :- rule(choice(H), B), body(B).
+
+                                u(A)    :- output(u(A), B), conjunction(B).
+                                not1(A) :- output(not1(A), B), conjunction(B).
+                                not2(A) :- output(not2(A), B), conjunction(B).
+
+
                                 symbolic_atom(SA, A) :- output(SA,LT), #count{LL : literal_tuple(LT, LL)} = 1, literal_tuple(LT, A).
-                                symbolic_atom(SA, LT) :- output(SA,LT), #count{LT : atom_tuple(LT)} = 1.
+                                %symbolic_atom(SA, LT) :- output(SA,LT), #count{LT : atom_tuple(LT)} = 1.
+                                epistemic_atom_info(SKA, KA, SA, A) :- symbolic_atom(SA, A), SKA=k(SA), symbolic_atom(SKA, KA).
                                 show_statement(SA) :- symbolic_atom(show_statement(SA), _).
 
                                 {k(A)} :- output(k(A), _).
+
+                                hold(L) :- k(A), output(k(A), B), literal_tuple(B, L).
+                                :- hold(L) , not k(A), output(k(A), B), literal_tuple(B, L).
+                                % symbolic_atom(SA, A) :- output(SA,LT), #count{LL : literal_tuple(LT, LL)} = 1, literal_tuple(LT, A).
+                                % symbolic_atom(SA, LT) :- output(SA,LT), #count{LT : atom_tuple(LT)} = 1.
+                                % show_statement(SA) :- symbolic_atom(show_statement(SA), _).
+                                % {k(A)} :- output(k(A), _).
                                 """
 
         self.control.add("base", [], self.reified_program)
@@ -139,7 +166,7 @@ class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
 
         cast(Configuration, self.control.configuration.solve).models = 0
         cast(Configuration, self.control.configuration.solve).project = "no"
-
+        print("The cand assumptions in Wview: ", candidate_assumptions)
         with cast(
             SolveHandle,
             self.control.solve(yield_=True, assumptions=candidate_assumptions),
@@ -161,8 +188,6 @@ class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
 
     def epistemic_show_statements(self, model, candidates_show):
         show_name: str = "show_statement"
-        print(model)
-        print("Atom cands: ",candidates_show)
         for atom in candidates_show:
             show_arguments: Sequence[Symbol] = []
             atom_arguments: Sequence[Symbol] = []

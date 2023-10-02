@@ -7,9 +7,6 @@ from eclingo.config import AppConfig
 
 from .candidate import Assumptions, Candidate
 
-# from clingox.solving import approximate
-
-
 class GeneratorReification:
     def __init__(self, config: AppConfig, reified_program: str) -> None:
         self._config = config
@@ -18,7 +15,7 @@ class GeneratorReification:
         self.reified_program = reified_program
         self.__initialeze_control(reified_program)
 
-    def __initialeze_control(self, reified_program) -> None:
+    def __initialeze_control(self, reified_program: str) -> None:
         base_program = """
             conjunction(B) :- literal_tuple(B), hold(L) : literal_tuple(B, L), L > 0;
                                             not hold(L) : literal_tuple(B, -L), L > 0.

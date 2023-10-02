@@ -36,7 +36,7 @@ class CandidateTesterReification:
 
 
                                 symbolic_atom(SA, A) :- output(SA,LT), #count{LL : literal_tuple(LT, LL)} = 1, literal_tuple(LT, A).
-                                symbolic_atom(SA, LT) :- output(SA,LT), #count{LT : atom_tuple(LT)} = 1.
+                                %symbolic_atom(SA, LT) :- output(SA,LT), #count{LT : atom_tuple(LT)} = 1.
                                 epistemic_atom_info(SKA, KA, SA, A) :- symbolic_atom(SA, A), SKA=k(SA), symbolic_atom(SKA, KA).
                                 show_statement(SA) :- symbolic_atom(show_statement(SA), _).
 
@@ -44,6 +44,10 @@ class CandidateTesterReification:
 
                                 hold(L) :- k(A), output(k(A), B), literal_tuple(B, L).
                                 :- hold(L) , not k(A), output(k(A), B), literal_tuple(B, L).
+                                
+                                %hold(L) :-  show_statment(SA), output(k(A), B), literal_tuple(B, L).
+                                #project hold(L) :  output(k(A), B), literal_tuple(B, L).
+                                #project hold(L) :  show_statment(SA), output(k(A), B), literal_tuple(B, L).
                                 """
 
         self.control.add("base", [], self.reified_program)
