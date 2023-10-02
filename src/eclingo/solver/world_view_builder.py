@@ -68,7 +68,6 @@ class WorldWiewBuilderReification:
     def world_view_from_candidate(self, candidate: Candidate):
         epistemic_literals = []
         k_symbols = []
-        epistemic_show_literals = []
 
         for epistemic_literal in candidate.pos:
             show_literal = self.generate_k_symbol(epistemic_literal)
