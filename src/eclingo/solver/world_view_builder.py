@@ -88,8 +88,8 @@ class WorldWiewBuilderReification:
             ):
                 epistemic_literals.append(show_literal)
 
-                # if epistemic_literal in self.show_statements:
-                #     epistemic_show_literals.append(show_literal)
+        #         if epistemic_literal in self.show_statements:
+        #             epistemic_show_literals.append(show_literal)
 
         # if epistemic_show_literals:
         #     return WorldView(epistemic_show_literals)
@@ -105,7 +105,8 @@ class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
         self.reified_program = reified_program
         self.show_statements: Sequence[Symbol] = []
 
-        program_meta_encoding = """conjunction(B) :- literal_tuple(B),
+        program_meta_encoding = """
+                                conjunction(B) :- literal_tuple(B),
                                                         hold(L) : literal_tuple(B,  L), L > 0;
                                                     not hold(L) : literal_tuple(B, -L), L > 0.
 
@@ -126,18 +127,15 @@ class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
 
 
                                 symbolic_atom(SA, A) :- output(SA,LT), #count{LL : literal_tuple(LT, LL)} = 1, literal_tuple(LT, A).
-                                %symbolic_atom(SA, LT) :- output(SA,LT), #count{LT : atom_tuple(LT)} = 1.
                                 epistemic_atom_info(SKA, KA, SA, A) :- symbolic_atom(SA, A), SKA=k(SA), symbolic_atom(SKA, KA).
                                 show_statement(SA) :- symbolic_atom(show_statement(SA), _).
+
+                                not1(u(SA)) :- show_statement(SA), not u(SA).
 
                                 {k(A)} :- output(k(A), _).
 
                                 hold(L) :- k(A), output(k(A), B), literal_tuple(B, L).
                                 :- hold(L) , not k(A), output(k(A), B), literal_tuple(B, L).
-                                % symbolic_atom(SA, A) :- output(SA,LT), #count{LL : literal_tuple(LT, LL)} = 1, literal_tuple(LT, A).
-                                % symbolic_atom(SA, LT) :- output(SA,LT), #count{LT : atom_tuple(LT)} = 1.
-                                % show_statement(SA) :- symbolic_atom(show_statement(SA), _).
-                                % {k(A)} :- output(k(A), _).
                                 """
 
         self.control.add("base", [], self.reified_program)
@@ -166,7 +164,8 @@ class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
 
         cast(Configuration, self.control.configuration.solve).models = 0
         cast(Configuration, self.control.configuration.solve).project = "no"
-        print("The cand assumptions in Wview: ", candidate_assumptions)
+        cast(Configuration, self.control.configuration.solve).enum_mode = "cautious"
+
         with cast(
             SolveHandle,
             self.control.solve(yield_=True, assumptions=candidate_assumptions),
@@ -176,8 +175,11 @@ class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
                 pass
 
             assert model is not None
+            ret = self.epistemic_show_statements(model)
+            if ret is not None:
+                candidate = ret
 
-        return super().world_view_from_candidate(self.epistemic_show_statements(model))
+        return super().world_view_from_candidate(candidate)
 
     """
         Check in model for show_statement(X) facts for all X atoms.
@@ -186,37 +188,49 @@ class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
     def epistemic_show_statements(self, model):
         candidate_pos = []
         candidate_neg = []
+        with_show_statement = False
+        print(model)
         for atom in model.symbols(atoms=True):
             if atom.name == "show_statement":
-                uatom = Function("u", [atom.arguments[0]], True)
+                with_show_statement = True
+                uatom = Function("u", [atom.arguments[0]])
+                katom = Function("k", [uatom])
+                natom = Function("not1", [uatom])
+                knatom = Function("k", [natom])
                 if model.contains(uatom):
-                    candidate_pos.append(uatom)
+                    candidate_pos.append(katom)
+                elif not model.contains(natom):
+                    candidate_neg.append(knatom)
         print("The candidate pos: ", candidate_pos)
-        return Candidate(candidate_pos, candidate_neg)
+        print("The candidate neg: ", candidate_neg)
+        if with_show_statement:
+            return Candidate(candidate_pos, candidate_neg)
+        return None
 
-        # show_name: str = "show_statement"
-        # for atom in candidates_show:
-        #     show_arguments: Sequence[Symbol] = []
-        #     atom_arguments: Sequence[Symbol] = []
+    # show_name: str = "show_statement"
 
-        #     if (
-        #         atom.name == "not1" or atom.name == "not2"
-        #     ):  # Check if it is a negative atom
-        #         atom_show = atom.arguments[0].arguments[0]
-        #     else:
-        #         atom_show = atom.arguments[0]
+    # for atom in candidates_show:
+    #     show_arguments: Sequence[Symbol] = []
+    #     atom_arguments: Sequence[Symbol] = []
 
-        #     # Check for arguments of atom
-        #     if atom_show.arguments:
-        #         for args in atom_show.arguments:
-        #             atom_arguments.append(args)
+    #     if (
+    #         atom.name == "not1" or atom.name == "not2"
+    #     ):  # Check if it is a negative atom
+    #         atom_show = atom.arguments[0].arguments[0]
+    #     else:
+    #         atom_show = atom.arguments[0]
 
-        #     show_arguments.append(
-        #         Function(atom_show.name, atom_arguments, atom.arguments[0].positive)
-        #     )
+    #     # Check for arguments of atom
+    #     if atom_show.arguments:
+    #         for args in atom_show.arguments:
+    #             atom_arguments.append(args)
 
-        #     show_stm = Function(show_name, show_arguments, True)
+    #     show_arguments.append(
+    #         Function(atom_show.name, atom_arguments, atom.arguments[0].positive)
+    #     )
 
-        #     k_atom = Function("k", [atom], atom.arguments[0].positive)
-        #     if model.contains(show_stm) and k_atom not in self.show_statements:
-        #         self.show_statements.append(k_atom)
+    #     show_stm = Function(show_name, show_arguments, True)
+
+    #     k_atom = Function("k", [atom], atom.arguments[0].positive)
+    #     if model.contains(show_stm) and k_atom not in self.show_statements:
+    #         self.show_statements.append(k_atom)
