@@ -45,7 +45,7 @@ executable(dunk(P), T) :- action(dunk(P)), step(T), not holds(dunked(P),T).
 % aux :- &k{ -holds(armed(P), T)}, step(T), package(P).
 
 %%%%% occurs  %%%%%%%
-occurs(A,S) :- action(A), stepless(S), not &k{ not occurs(A,S) }.
+occurs(A,S) :- action(A), stepless(S), not &k{ ~ occurs(A,S) }.
 bot :- occurs(A,S), not executable(A,S).
 :- { occurs(A,S) } > 1, stepless(S).
 

@@ -156,9 +156,9 @@ class CandidateTesterReification:
             literal = literal.arguments[0]
             candidate_neg.append(literal)
 
-        # for literal in candidate.extra_assumptions.neg:
-        #     assumption = (literal, False)
-        #     candidate_assumptions.append(assumption)
+        for literal in candidate.extra_assumptions.neg:
+            assumption = (literal, False)
+            candidate_assumptions.append(assumption)
 
         assert isinstance(self.control.configuration.solve, Configuration)
         self.control.configuration.solve.models = 0

@@ -236,8 +236,8 @@ program_list = [
     Program(
         description="",
         program="""\
-            a :- not &k{-a}.
-            -a :- not &k{a}.
+             a :- not &k{-a}.
+            -a :- not &k{ a}.
              b :- a.
              c :- b.
              d :- not &k{c}.
