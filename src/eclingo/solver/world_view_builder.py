@@ -44,8 +44,6 @@ class WorldWiewBuilderReification:
             for args in literal_symbol.arguments:
                 arguments.append(args)
 
-        # print("The args: ", literal_symbol.arguments[0])
-
         new_symbol = Function(literal_symbol.name, arguments, is_explicit)
         literal = Literal(new_symbol, sign)
 
@@ -75,9 +73,6 @@ class WorldWiewBuilderReification:
                 epistemic_literals.append(show_literal)
                 k_symbols.append(show_literal.objective_literal)
 
-                # if epistemic_literal in self.show_statements:
-                #     epistemic_show_literals.append(show_literal)
-
         for epistemic_literal in candidate.neg:
             show_literal = self.generate_m_symbol(epistemic_literal)
 
@@ -86,12 +81,6 @@ class WorldWiewBuilderReification:
                 and show_literal.objective_literal not in k_symbols
             ):
                 epistemic_literals.append(show_literal)
-
-        #         if epistemic_literal in self.show_statements:
-        #             epistemic_show_literals.append(show_literal)
-
-        # if epistemic_show_literals:
-        #     return WorldView(epistemic_show_literals)
 
         return WorldView(epistemic_literals)
 
@@ -123,7 +112,6 @@ class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
                                 u(A)    :- output(u(A), B), conjunction(B).
                                 not1(A) :- output(not1(A), B), conjunction(B).
                                 not2(A) :- output(not2(A), B), conjunction(B).
-
 
                                 symbolic_atom(SA, A) :- output(SA,LT), #count{LL : literal_tuple(LT, LL)} = 1, literal_tuple(LT, A).
                                 epistemic_atom_info(SKA, KA, SA, A) :- symbolic_atom(SA, A), SKA=k(SA), symbolic_atom(SKA, KA).
@@ -188,7 +176,6 @@ class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
         candidate_pos = []
         candidate_neg = []
         with_show_statement = False
-        print(model)
         for atom in model.symbols(atoms=True):
             if atom.name == "show_statement":
                 with_show_statement = True
@@ -200,36 +187,6 @@ class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
                     candidate_pos.append(katom)
                 elif not model.contains(natom):
                     candidate_neg.append(knatom)
-        print("The candidate pos: ", candidate_pos)
-        print("The candidate neg: ", candidate_neg)
         if with_show_statement:
             return Candidate(candidate_pos, candidate_neg)
         return None
-
-    # show_name: str = "show_statement"
-
-    # for atom in candidates_show:
-    #     show_arguments: Sequence[Symbol] = []
-    #     atom_arguments: Sequence[Symbol] = []
-
-    #     if (
-    #         atom.name == "not1" or atom.name == "not2"
-    #     ):  # Check if it is a negative atom
-    #         atom_show = atom.arguments[0].arguments[0]
-    #     else:
-    #         atom_show = atom.arguments[0]
-
-    #     # Check for arguments of atom
-    #     if atom_show.arguments:
-    #         for args in atom_show.arguments:
-    #             atom_arguments.append(args)
-
-    #     show_arguments.append(
-    #         Function(atom_show.name, atom_arguments, atom.arguments[0].positive)
-    #     )
-
-    #     show_stm = Function(show_name, show_arguments, True)
-
-    #     k_atom = Function("k", [atom], atom.arguments[0].positive)
-    #     if model.contains(show_stm) and k_atom not in self.show_statements:
-    #         self.show_statements.append(k_atom)
