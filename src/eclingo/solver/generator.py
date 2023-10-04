@@ -176,6 +176,27 @@ class GeneratorReification:
         self.control.ground([("base", [])])
 
     def __call__(self) -> Iterator[Candidate]:
+        if not self._config.propagate:
+            yield from self._candidates()
+        else:
+            # return self._candidates()
+            self.control.assign_external(Function("only_proved_candidates"), True)
+            self.control.assign_external(Function("only_unproved_candidates"), False)
+            yield from self._candidates()
+            self.control.assign_external(Function("only_proved_candidates"), False)
+            self.control.assign_external(Function("only_unproved_candidates"), True)
+            yield from self._candidates()
+        # # with cast(clingo.SolveHandle, self.control.solve(yield_=True)) as handle:
+        # #     for model in handle:
+        # #         # print("*" * 50)
+        # #         # print(model)
+        # #         # print("\n".join(sorted(str(a) for a in model.symbols(atoms=True))))
+        # #         candidate = self._model_to_candidate(model)
+        # #         self.num_candidates += 1
+        # #         yield candidate
+        # self.control.assign_external(Function("only_proved_candidates"), True)
+        # self.control.assign_external(Function("only_unproved_candidates"), False)
+        # candidates = []
         # with cast(clingo.SolveHandle, self.control.solve(yield_=True)) as handle:
         #     for model in handle:
         #         # print("*" * 50)
@@ -183,9 +204,25 @@ class GeneratorReification:
         #         # print("\n".join(sorted(str(a) for a in model.symbols(atoms=True))))
         #         candidate = self._model_to_candidate(model)
         #         self.num_candidates += 1
+        #         candidates.append((frozenset(candidate.pos), frozenset(candidate.neg)))
         #         yield candidate
-        self.control.assign_external(Function("only_proved_candidates"), True)
-        candidates = []
+        # self.control.assign_external(Function("only_proved_candidates"), False)
+        # self.control.assign_external(Function("only_unproved_candidates"), True)
+        # seen_candidates = frozenset(candidates)
+        # with cast(clingo.SolveHandle, self.control.solve(yield_=True)) as handle:
+        #     for model in handle:
+        #         # print("*" * 50)
+        #         # print(model)
+        #         # print("\n".join(sorted(str(a) for a in model.symbols(atoms=True))))
+        #         candidate = self._model_to_candidate(model)
+        #         self.num_candidates += 1
+        #         # if (
+        #         #     frozenset(candidate.pos),
+        #         #     frozenset(candidate.neg),
+        #         # ) not in seen_candidates:
+        #         yield candidate
+
+    def _candidates(self) -> Iterator[Candidate]:
         with cast(clingo.SolveHandle, self.control.solve(yield_=True)) as handle:
             for model in handle:
                 # print("*" * 50)
@@ -193,22 +230,7 @@ class GeneratorReification:
                 # print("\n".join(sorted(str(a) for a in model.symbols(atoms=True))))
                 candidate = self._model_to_candidate(model)
                 self.num_candidates += 1
-                candidates.append((frozenset(candidate.pos), frozenset(candidate.neg)))
                 yield candidate
-        self.control.assign_external(Function("only_proved_candidates"), False)
-        seen_candidates = frozenset(candidates)
-        with cast(clingo.SolveHandle, self.control.solve(yield_=True)) as handle:
-            for model in handle:
-                # print("*" * 50)
-                # print(model)
-                # print("\n".join(sorted(str(a) for a in model.symbols(atoms=True))))
-                candidate = self._model_to_candidate(model)
-                self.num_candidates += 1
-                if (
-                    frozenset(candidate.pos),
-                    frozenset(candidate.neg),
-                ) not in seen_candidates:
-                    yield candidate
 
     def _model_to_candidate(self, model: clingo.Model) -> Candidate:
         (
