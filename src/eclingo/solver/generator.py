@@ -79,7 +79,7 @@ positive_extra_assumptions(OSA) :- fact(OSA), symbolic_epistemic_atom(k(OSA)).
 """
 
 propagation_program = """\
-:- kp_hold(A), epistemic_map(KA, A), not hold(KA).
+:- kp_hold(OA), epistemic_map(KA, OA), not hold(KA).
 
 kp_hold(OA) :- cautious(OSA),  objective_atom_map(OSA, OA).
 
@@ -127,6 +127,18 @@ negative_extra_assumptions(OSA) :-
 %    symbolic_epistemic_atom(k(not1(OSA))).
 #show positive_extra_assumptions/1.
 #show negative_extra_assumptions/1.
+
+#external only_proved_candidates.
+#external only_unproved_candidates.
+
+explit_proven_candidates :- only_proved_candidates.
+explit_proven_candidates :- only_unproved_candidates.
+
+unproved(OA) :- explit_proven_candidates, epistemic_map(KA, OA), hold(KA), not kp_hold(OA).
+exists_unproved :- explit_proven_candidates, unproved(_).
+
+:-     exists_unproved, only_proved_candidates.
+:- not exists_unproved, only_unproved_candidates.
 """
 
 # kp_hold(OSA) :- fact(OSA).
