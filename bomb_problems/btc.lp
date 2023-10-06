@@ -1,24 +1,25 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%initial states%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%% arguments %%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% #program initial.
-% #external _heuristic.
-package(1..np).
+% input: input_length(L).
+num_packages(L/2) :- input_length(L).
+max_length(L-1)   :- input_length(L).
 
-1 { holds(armed(P),0) : package(P) } 1.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%% initial states %%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%problem description%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% #program problem.
+package(1..NP) :- num_packages(NP).
 
-step(0..length).
-max(length).
-stepless(0..L-1) :- max(L).
+{ holds(armed(P),0) } :- package(P).
+:- not 1 { holds(armed(P),0) : package(P) } 1.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%% problem description %%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%  fluents   %%%%%%%%%
+%%%%%%%  fluents   %%%%%%%%%%%%%%%%%%
 
 fluent(armed(P))   :- package(P).
 inertial(armed(P)) :- package(P).
@@ -43,20 +44,10 @@ executable(flush,T) :- action(flush), step(T).
 %%%%%  direct effects   %%%%%%%
 -holds(armed(P),  T+1) :- occurs(dunk(P), T), step(T).
  holds(dunked(P), T+1) :- occurs(dunk(P), T), step(T).
+ holds(clogged, T+1)   :- occurs(dunk(P), T), step(T).
 
 -holds(clogged, T+1)   :- occurs(flush,   T), step(T).
 
 %%%%%  indirect effects   %%%%%%%
  holds(unsafe, T) :- holds(armed(P),   T), step(T).
 -holds(unsafe, T) :- not holds(unsafe, T), step(T).
-
-
-%%%%% occurs  %%%%%%%
-occurs(A,S) :- action(A), stepless(S), not &k{ ~ occurs(A,S) }.
-bot :- occurs(A,S), not executable(A,S).
-:- occurs(A1,S), occurs(A2,S), A1 < A2, stepless(S).
-
-%%%%% goal  %%%%%%%
-goal :- -holds(unsafe, LEN), not bot, max(LEN).
-
-:- not &k{ goal }.
