@@ -12,8 +12,7 @@ from .world_view import EpistemicLiteral, WorldView
 
 
 class WorldWiewBuilderReification:
-    def __init__(self, control: clingo.Control, show_stm: Sequence[Symbol]):
-        self.show_statements = show_stm
+    def __init__(self, control: clingo.Control):
         self.control = control
 
     def __call__(self, candidate: Candidate):
@@ -56,7 +55,6 @@ class WorldWiewBuilderReification:
         # if symbol is of the form &k{not L} with L an explicit literal
         if epistemic_name == "not1":
             literal_symbol = ep_args.arguments[0].arguments[0]
-            sign = Sign.NoSign
         # if symbol is of the form &k{not not L} with L an explicit literal
         else:
             return None
@@ -91,7 +89,6 @@ class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
         cast(Configuration, self.control.configuration.solve).models = 0
         cast(Configuration, self.control.configuration.solve).project = "auto,3"
         self.reified_program = reified_program
-        self.show_statements: Sequence[Symbol] = []
 
         program_meta_encoding = """
                                 conjunction(B) :- literal_tuple(B),
@@ -129,25 +126,20 @@ class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
         self.control.add("base", [], program_meta_encoding)
         self.control.ground([("base", [])])
 
-        super().__init__(self.control, self.show_statements)
+        super().__init__(self.control)
 
     def world_view_from_candidate(self, candidate: Candidate):
-        candidate_pos = candidate[0]
-        candidate_neg = candidate[1]
         candidate_assumptions = []
-        cand_show = []
 
         for literal in candidate[0]:
             assumption = (literal, True)
             candidate_assumptions.append(assumption)
             literal = literal.arguments[0]
-            cand_show.append(literal)
 
         for literal in candidate[1]:
             assumption = (literal, False)
             candidate_assumptions.append(assumption)
             literal = literal.arguments[0]
-            cand_show.append(literal)
 
         cast(Configuration, self.control.configuration.solve).models = 0
         cast(Configuration, self.control.configuration.solve).project = "no"
@@ -160,7 +152,7 @@ class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
             model = None
             for model in handle:
                 pass
-
+            
             assert model is not None
             ret = self.epistemic_show_statements(model)
             if ret is not None:

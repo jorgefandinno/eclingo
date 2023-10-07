@@ -14,11 +14,12 @@ from .world_view_builder import (
 class SolverReification:
     def __init__(self, reified_program: str, config: AppConfig) -> None:
         self._config = config
+        self.reified_program = reified_program
 
         self._build_world_view_reification = WorldWiewBuilderReificationWithShow(
-            reified_program
+            self.reified_program
         )
-        # self._build_world_view_reification = WorldWiewBuilderReification()
+        
         self.test_candidate_reification = CandidateTesterReification(
             self._config, reified_program
         )
@@ -31,7 +32,7 @@ class SolverReification:
 
         self.generate_candidates_reification = GeneratorReification(
             self._config,
-            reified_program,
+            self.reified_program,
             prepreocessing_info,
         )
 
