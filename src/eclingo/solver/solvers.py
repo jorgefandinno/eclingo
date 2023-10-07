@@ -19,7 +19,7 @@ class SolverReification:
         self._build_world_view_reification = WorldWiewBuilderReificationWithShow(
             self.reified_program
         )
-        
+
         self.test_candidate_reification = CandidateTesterReification(
             self._config, reified_program
         )

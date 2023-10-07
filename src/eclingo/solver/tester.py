@@ -73,10 +73,11 @@ conjunction(B) :- literal_tuple(B),
 
 body(normal(B)) :- rule(_, normal(B)), conjunction (B).
 
-body(sum(B, G)) :- rule (_, sum(B,G)),
+body(sum(B, G)) :- rule(_, sum(B,G)),
 #sum {
     W,L : hold(L), weighted_literal_tuple(B, L,W), L>0;
-    W,L : not hold(L), weighted_literal_tuple(B, -L,W), L>0} >= G.
+    W,L : not hold(L), weighted_literal_tuple(B, -L,W), L>0
+} >= G.
 
 hold(A) : atom_tuple(H,A) :- rule(disjunction(H), B), body(B).
 

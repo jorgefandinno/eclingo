@@ -97,10 +97,11 @@ class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
 
                                 body(normal(B)) :- rule(_, normal(B)), conjunction (B).
 
-                                body(sum(B, G)) :- rule (_sum(B,G)),
-                                #sum {
-                                    W,L : hold(L), weighted_literal_tuple(B, L,W), L>0;
-                                    W,L : not hold(L), weighted_literal_tuple(B, -L,W), L>0} >= G.
+                                body(sum(B, G)) :- rule (_, sum(B,G)),
+                                                   #sum {
+                                                        W,L : hold(L), weighted_literal_tuple(B, L,W), L>0;
+                                                        W,L : not hold(L), weighted_literal_tuple(B, -L,W), L>0
+                                                    } >= G.
 
                                 hold(A) : atom_tuple(H,A) :- rule(disjunction(H), B), body(B).
 
@@ -131,15 +132,15 @@ class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
     def world_view_from_candidate(self, candidate: Candidate):
         candidate_assumptions = []
 
-        for literal in candidate[0]:
+        for literal in candidate.pos:
             assumption = (literal, True)
             candidate_assumptions.append(assumption)
-            literal = literal.arguments[0]
+            # literal = literal.arguments[0]
 
-        for literal in candidate[1]:
+        for literal in candidate.neg:
             assumption = (literal, False)
             candidate_assumptions.append(assumption)
-            literal = literal.arguments[0]
+            # literal = literal.arguments[0]
 
         cast(Configuration, self.control.configuration.solve).models = 0
         cast(Configuration, self.control.configuration.solve).project = "no"
@@ -152,7 +153,7 @@ class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
             model = None
             for model in handle:
                 pass
-            
+
             assert model is not None
             ret = self.epistemic_show_statements(model)
             if ret is not None:
