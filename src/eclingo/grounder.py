@@ -16,7 +16,6 @@ class Grounder:
     def __init__(self, control: Control, config: AppConfig = AppConfig()):
         self.control = control
         self.config = config
-        self.reification = self.config.eclingo_reification
         self.facts: List[Symbol] = []
         self.reified_facts: str
         self.atom_to_symbol: Dict[int, Symbol] = dict()

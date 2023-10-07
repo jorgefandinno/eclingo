@@ -27,7 +27,7 @@ def parse_program(stm, parameters=[], name="base"):
         ret.append,
         parameters,
         name,
-        config=AppConfig(semantics="c19-1", verbose=0, use_reification=True),
+        config=AppConfig(semantics="c19-1", verbose=0),
     )
     return flatten(ret)
 

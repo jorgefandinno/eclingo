@@ -43,13 +43,6 @@ class CandidateTesterReification:
 
                                 hold(L) :- k(A), output(k(A), B), literal_tuple(B, L).
                                 :- hold(L) , not k(A), output(k(A), B), literal_tuple(B, L).
-
-                                %%symbolic_atom(SA, A) :- output(SA,LT), #count{LL : literal_tuple(LT, LL)} = 1, literal_tuple(LT, A).
-                                %%epistemic_atom_info(SKA, KA, SA, A) :- symbolic_atom(SA, A), SKA=k(SA), symbolic_atom(SKA, KA).
-                                %%show_statement(SA) :- symbolic_atom(show_statement(SA), _).
-                                %%hold(L) :  show_statment(SA), output(k(A), B), literal_tuple(B, L).
-                                %% #project hold(L) :  output(k(A), B), literal_tuple(B, L).
-                                %% #project hold(L) :  show_statment(SA), output(k(A), B), literal_tuple(B, L).
                                 """
 
         self.control.add("base", [], self.reified_program)
@@ -77,19 +70,12 @@ class CandidateTesterReification:
             literal = literal.arguments[0]
             candidate_neg.append(literal)
 
-        for literal in candidate.extra_assumptions.neg:
-            assumption = (literal, False)
-            candidate_assumptions.append(assumption)
+        # for literal in candidate.extra_assumptions.neg:
+        #     assumption = (literal, False)
+        #     candidate_assumptions.append(assumption)
 
         cast(Configuration, self.control.configuration.solve).models = 0
         cast(Configuration, self.control.configuration.solve).project = "no"
-
-        # print("\nTESTER")
-        # print("Candidate assumptions:\n", candidate_assumptions)
-        # print(
-        #     "Candidate assumptions:\n",
-        #     "\n".join(str((str(a), v)) for a, v in candidate_assumptions),
-        # )
 
         with cast(
             clingo.SolveHandle,

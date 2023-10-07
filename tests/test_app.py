@@ -147,3 +147,32 @@ class TestExamples(unittest.TestCase):
                     command, [yale_path, input_path], output_path, external_call=False
                 )
                 self.assert_world_views(command, [yale_path, input_path], output_path)
+
+
+class PrintRewrittenTestCase(unittest.TestCase):
+    def test_print_rewritten(self):
+        command = 'echo "{a}. b :- &k{a}." | eclingo --output-e=rewritten'
+        process = subprocess.Popen(
+            command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True
+        )
+        stdout, stderr = process.communicate()
+        output = stdout.decode("utf-8")
+        self.assertEqual(
+            output.strip(),
+            """\
+{ u(a) }.
+u(b) :- k(u(a)).
+{ k(u(a)) } :- u(a).""",
+        )
+
+    def test_print_rewrittenpatch(self):
+        path = os.path.dirname(os.path.realpath(__file__))
+        input_path = os.path.join(path, INPUT_PROG_PATH)
+        input_path = os.path.join(input_path, f"prog00.lp")
+        command = ["eclingo", input_path, "--output-e=rewritten"]
+        with (
+            contextlib.redirect_stdout(io.StringIO()) as stdout,
+            patch.object(sys, "argv", command),
+        ):
+            eclingo_main()
+            output = stdout.getvalue()

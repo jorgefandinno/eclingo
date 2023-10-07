@@ -42,21 +42,20 @@ class Application:
         """
         group = "Eclingo Options"
 
-        options.add_flag(
-            group=group,
-            option="reification",
-            description="Applies reification to the program",
-            target=reification_flag,
-        )
-
-        group = "Semantics Options"
-
         options.add(
             group=group,
             option="semantics",
-            description="Sets Eclingo to use specified semantics",
+            description="Sets eclingo to use an specified semantics",
             parser=self._parse_string(self.config, "eclingo_semantics"),
             argument="<ELP_semantics>",
+        )
+
+        options.add(
+            group=group,
+            option="output-e",
+            description="Rewrites the program using reification",
+            parser=self._parse_string(self.config, "eclingo_rewritten"),
+            argument="<rewritten>",
         )
 
     def _read(self, path):
@@ -80,18 +79,28 @@ class Application:
         for path in files:
             eclingo_control.add_program(self._read(path))
 
+        if self.config.eclingo_rewritten == "rewritten":
+            for stm in eclingo_control.rewritten_program[1:]:
+                sys.stdout.write(str(stm))
+                sys.stdout.write("\n")
+            return
+
         eclingo_control.ground()
+
+        # Command check
+        if "--output=reify" in set(arg.replace(" ", "") for arg in sys.argv):
+            return
+
         eclingo_control.preprocess()
         eclingo_control.prepare_solver()
 
         sys.stdout.write("Solving...\n")
-        wv_number = 1
-        for world_view in eclingo_control.solve():
+        wv_number = 0
+        for wv_number, world_view in enumerate(eclingo_control.solve(), 1):
             sys.stdout.write("World view: %d\n" % wv_number)
             sys.stdout.write(str(world_view))
             sys.stdout.write("\n")
-            wv_number += 1
-        if wv_number > 1:
+        if wv_number >= 1:
             sys.stdout.write("SATISFIABLE\n")
         else:
             sys.stdout.write("UNSATISFIABLE\n")

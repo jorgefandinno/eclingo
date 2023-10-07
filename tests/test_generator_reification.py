@@ -21,7 +21,6 @@ def generate(program):
     candidate_generator = GeneratorReification(config, program)
 
     candidates = list(candidate_generator())
-    # print(sorted(candidates))
     return sorted(candidates)
 
 

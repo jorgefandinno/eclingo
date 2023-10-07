@@ -5,7 +5,23 @@ from clingo import Symbol
 
 from eclingo.config import AppConfig
 from eclingo.grounder import Grounder
+from eclingo.parsing import parser
 from eclingo.solver import SolverReification
+
+
+def parse_program(stm, parameters=None, name="base"):
+    """Helping function to parse program for flag: --output-e=rewritten"""
+    if parameters is None:
+        parameters = []
+    ret = []
+    parser.parse_program(
+        stm,
+        ret.append,
+        parameters,
+        name,
+        config=AppConfig(semantics="c19-1", verbose=0),
+    )
+    return ret
 
 
 class Control(object):
@@ -15,9 +31,10 @@ class Control(object):
         self.max_models = int(control.configuration.solve.models)
         control.configuration.solve.project = "auto,3"
         control.configuration.solve.models = 0
+        self.rewritten_program = None
         self.control = control
         if config is None:
-            config = AppConfig(semantics="c19-1", use_reification=True)
+            config = AppConfig(semantics="c19-1")
         self.config = config
 
         if self.max_models == 0:
@@ -29,6 +46,8 @@ class Control(object):
         self.solver = None
 
     def add_program(self, program):
+        if self.config.eclingo_rewritten == "rewritten":
+            self.rewritten_program = parse_program(program)
         self.grounder.add_program(program)
 
     def load(self, input_path):

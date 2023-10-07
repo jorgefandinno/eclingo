@@ -1,4 +1,4 @@
-from typing import List, NamedTuple, Sequence
+from typing import NamedTuple, Sequence
 
 from clingo import Symbol
 
