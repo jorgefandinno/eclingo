@@ -3,19 +3,32 @@ Main module providing the application logic.
 """
 
 import sys
-from typing import Sequence
+import time
+from typing import Final, Sequence
 
-from clingo.application import Flag, clingo_main
+from clingo.application import clingo_main
 
 from eclingo.config import AppConfig
 from eclingo.control import Control
 
 from . import __version__
 
-_FALSE = ["0", "no", "false"]
-_TRUE = ["1", "yes", "true"]
+STATISTICS_FIRST_FIELD_SIZE: Final[int] = 14
 
-reification_flag = Flag(True)
+
+def statistics(eclingo_control: Control, time: float):  # pragma: no cover
+    if int(eclingo_control.control.configuration.stats) > 0:
+        sys.stdout.write("\n")  # pragma: no cover
+        sys.stderr.write(
+            f"{'Time ':<{STATISTICS_FIRST_FIELD_SIZE}}: {time:.3f}s "
+            f"(Solving: {eclingo_control.solving_time:.3f}s Grounding {eclingo_control.grounding_time:.3f}s)\n"
+        )
+        sys.stdout.write(
+            f"{'Candidates':<{STATISTICS_FIRST_FIELD_SIZE}}: {eclingo_control.solver.number_of_candidates()}\n"
+        )
+        sys.stdout.write(
+            f"{'Tester calls':<{STATISTICS_FIRST_FIELD_SIZE}}: {eclingo_control.solver.number_of_tester_calls()}\n"
+        )
 
 
 class Application:
@@ -69,10 +82,9 @@ class Application:
         Entry point of the application registering the propagator and
         implementing the standard ground and solve functionality.
         """
+        start_time = time.time()
         if not files:
             files = ["-"]
-
-        self.config.eclingo_reification = reification_flag.flag
 
         eclingo_control = Control(control, self.config)
 
@@ -88,8 +100,14 @@ class Application:
         eclingo_control.ground()
 
         # Command check
-        if "--output=reify" in set(arg.replace(" ", "") for arg in sys.argv):
-            return
+        try:
+            output_index = sys.argv.index("--output=")
+        except ValueError:
+            output_index = -1
+        if "--output=reify" in sys.argv or (
+            output_index >= 0 and sys.argv[output_index + 1] == "reify"
+        ):
+            return  # pragma: no cover
 
         eclingo_control.preprocess()
         eclingo_control.prepare_solver()
@@ -104,10 +122,17 @@ class Application:
             sys.stdout.write("SATISFIABLE\n")
         else:
             sys.stdout.write("UNSATISFIABLE\n")
+        end_time = time.time()
+        total_time = end_time - start_time
+        statistics(eclingo_control, total_time)
+
+
+def secondary_main(argv):
+    sys.argv.append("--outf=3")
+    application = Application()
+    result = clingo_main(application, argv[1:])
+    return int(result)
 
 
 def main():
-    sys.argv.append("--outf=3")
-    application = Application()
-    result = clingo_main(application, sys.argv[1:])
-    return int(result)
+    return secondary_main(sys.argv)

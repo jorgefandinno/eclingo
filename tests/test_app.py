@@ -165,7 +165,7 @@ u(b) :- k(u(a)).
 { k(u(a)) } :- u(a).""",
         )
 
-    def test_print_rewrittenpatch(self):
+    def test_print_rewrittenp_atch(self):
         path = os.path.dirname(os.path.realpath(__file__))
         input_path = os.path.join(path, INPUT_PROG_PATH)
         input_path = os.path.join(input_path, f"prog00.lp")
@@ -176,3 +176,10 @@ u(b) :- k(u(a)).
         ):
             eclingo_main()
             output = stdout.getvalue()
+        self.assertEqual(
+            output.strip(),
+            """\
+{ u(a) }.
+u(b) :- k(u(a)).
+{ k(u(a)) } :- u(a).""",
+        )

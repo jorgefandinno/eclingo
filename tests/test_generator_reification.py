@@ -13,30 +13,84 @@ from tests.generated_programs import programs
 
 """ Helper function to generate candidates for a given program """
 
+config = _eclingo.config.AppConfig()
+config.eclingo_semantics = "c19-1"
+config.preprocessing_level = 0
+config.propagate = False
+
 
 def generate(program):
-    config = _eclingo.config.AppConfig()
-    config.eclingo_semantics = "c19-1"
-
     candidate_generator = GeneratorReification(config, program)
 
+    # print("="*30)
     candidates = list(candidate_generator())
+
+    # print("Candidates:")
+    # for candidate in sorted(candidates):
+    #     print("-"*30)
+    #     print(" ".join(str(a) for a in candidate.pos))
+    #     print(" ".join(str(a) for a in candidate.neg))
     return sorted(candidates)
 
 
 class TestCase(unittest.TestCase):
-    def assert_models(self, models, expected):
+    def assert_models(self, models, expected, use_assumptions=False):
         # discarding assumptiosn from the comparison
-        models = [Candidate(pos=m.pos, neg=m.neg) for m in models]
+        if not use_assumptions:
+            models = [Candidate(pos=m.pos, neg=m.neg) for m in models]
+        candidate_str = [
+            (sorted(str(a) for a in c.pos), sorted(str(a) for a in c.neg))
+            for c in models
+        ]
+        expected_str = [
+            (sorted(str(a) for a in c.pos), sorted(str(a) for a in c.neg))
+            for c in expected
+        ]
+        self.assertCountEqual(candidate_str, expected_str, "candidates string")
+        candidate_with_assumption_str = [
+            (
+                sorted(str(a) for a in c.pos),
+                sorted(str(a) for a in c.neg),
+                sorted(str(a) for a in c.extra_assumptions.pos),
+                sorted(str(a) for a in c.extra_assumptions.neg),
+            )
+            for c in models
+        ]
+        expected_with_assumption_str = [
+            (
+                sorted(str(a) for a in c.pos),
+                sorted(str(a) for a in c.neg),
+                sorted(str(a) for a in c.extra_assumptions.pos),
+                sorted(str(a) for a in c.extra_assumptions.neg),
+            )
+            for c in expected
+        ]
+        self.assertCountEqual(
+            candidate_with_assumption_str,
+            expected_with_assumption_str,
+            "with assumptions string",
+        )
+        for model in models:
+            model.pos.sort()
+            model.neg.sort()
+        for model in expected:
+            model.pos.sort()
+            model.neg.sort()
+        models.sort()
+        expected.sort()
+        for m, e in zip(models, expected):
+            self.assertEqual(m.pos, e.pos)
+            self.assertEqual(m.neg, e.neg)
+            self.assertEqual(m.extra_assumptions, e.extra_assumptions)
         self.assertCountEqual(models, expected)
 
 
-def format_subtest_message(program: str, candidates: List[str]) -> str:
+def format_subtest_message(i: int, program: str, candidates: List[str]) -> str:
     program = textwrap.indent(program, 4 * " ")
-    candidates = textwrap.indent("\n".join(candidates), 4 * " ")
+    candidates = textwrap.indent(candidates, 4 * " ")
     return f"""\
 
-Program:
+Program {i}:
 {program}
 Expected candidates:
 {candidates}
@@ -45,17 +99,24 @@ Expected candidates:
 
 class TestEclingoGeneratorReification(TestCase):
     def test_generator_programs(self):
-        for program in programs:
+        self.maxDiff = None
+        for i, program in enumerate(programs):
             prg = program.ground_reification
             candidate = program.candidates_01
-
+            # print(candidate)
+            # print(prg)
             if prg is not None and candidate is not None:
+                # print(program.program)
+
                 with self.subTest(
-                    format_subtest_message(program.program, program.candidates_01_str)
+                    format_subtest_message(
+                        i, program.program, program.candidates_01_str
+                    )
                 ):
                     self.assert_models(
                         generate(prg),
                         candidate,
+                        use_assumptions=True,
                     )
         # # "a. b :- &k{a}."
         # # echo "u(a). u(b) :- k(u(a)). { k(u(a)) } :- u(a)." | clingo --output=reify

@@ -60,6 +60,8 @@ def tests(session: nox.Session):
         "tests/test_theory_atom_parser.py",
         "tests/test_transformers.py",
         "tests/test_util.py",
+        "tests/test_preprocessor.py",
+        "tests/test_propagator.py",
         "-v",
     )
 
