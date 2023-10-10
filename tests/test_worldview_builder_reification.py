@@ -22,9 +22,8 @@ def world_view_builder(tested_candidates):
     control = clingo.Control(["0"], message_limit=0)
     control.configuration.solve.models = 0
     control.configuration.solve.project = "auto,3"
-    show_stm: Sequence[Symbol] = []
 
-    world_view_builder = WorldWiewBuilderReification(control, show_stm)
+    world_view_builder = WorldWiewBuilderReification(control)
 
     wviews = []
     for candidate in tested_candidates:
