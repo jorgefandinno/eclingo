@@ -1,11 +1,12 @@
 # pylint: disable=no-member
 # pylint: disable=no-name-in-module
 # pylint: disable=import-error
+import sys
 from copy import copy
 from typing import Iterable, List, Set, Tuple, Union, cast
 
 from clingo import ast
-from clingo.ast import AST, ASTSequence, Sign, Transformer
+from clingo.ast import AST, ASTSequence, Sign, TheoryFunction, Transformer
 from clingox.ast import (
     filter_body_literals,
     reify_symbolic_atoms,
@@ -47,8 +48,23 @@ class ApplyToEpistemicAtomsElementsTransformer(Transformer):
 ####################################################################################
 
 
+class OldEclingoNegation(Transformer):
+    def __init__(self):
+        self.in_theory_atom = False
+
+    def visit_TheoryFunction(self, fun, loc="body"):
+        if fun.name != "~":
+            return fun
+        return TheoryFunction(fun.location, "not", fun.arguments)
+
+
+####################################################################################
+
+
 def _theory_term_to_literal_adapter(element: AST) -> AST:
     assert len(element.terms) == 1
+    old_eclingo_negation_parser = OldEclingoNegation()
+    element = old_eclingo_negation_parser.visit(element)
     new_element = copy(element)
     new_element.terms[0] = theory_term_to_literal(element.terms[0])
     return new_element
