@@ -16,4 +16,4 @@ for i in range(1, 251, 10):
 #     os.system(f"./pyrunlim.py -t 1200 -m 16384 -s 0 'java -jar qasp.jar -n 0 -f chosen,plan ../experiment/instance-{i}.sat.qasp' >& ../experiment/ordered.{i}.{i}.qasp.pyrunlim")
 
 # RUN
-# eclingo 0 instances/instance_{i} sequential-horizon.uurev.eclingo
+# eclingo 0 instances/instance_{i} sequential-horizon.uurev.eclingo.lp
