@@ -32,7 +32,7 @@ class Control(object):
         self.max_models = int(control.configuration.solve.models)
         control.configuration.solve.project = "auto,3"
         control.configuration.solve.models = 0
-        self.rewritten_program = None
+        self.rewritten_program = []
         self.control = control
         if config is None:
             config = AppConfig(semantics="c19-1")
@@ -50,8 +50,9 @@ class Control(object):
 
     def add_program(self, program):
         if self.config.eclingo_rewritten == "rewritten":
-            self.rewritten_program = parse_program(program)
-        self.grounder.add_program(program)
+            self.rewritten_program.extend(parse_program(program))
+        else:
+            self.grounder.add_program(program)
 
     def load(self, input_path):
         with open(input_path, "r") as program:
