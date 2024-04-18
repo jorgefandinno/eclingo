@@ -9,7 +9,7 @@ class AppConfig(object):
         verbose=0,
         eclingo_rewritten="no",
         rewritten_program=[],
-        preprocessing_level=3,
+        preprocessing_level=0,
         propagate=True,
         ignore_shows=False,
     ):
