@@ -6,6 +6,7 @@ import sys
 import time
 from typing import Final, Sequence
 
+from clingo import Flag
 from clingo.application import clingo_main
 
 from eclingo.config import AppConfig
@@ -22,6 +23,9 @@ def statistics(eclingo_control: Control, time: float):  # pragma: no cover
         sys.stderr.write(
             f"{'Time ':<{STATISTICS_FIRST_FIELD_SIZE}}: {time:.3f}s "
             f"(Solving: {eclingo_control.solving_time:.3f}s Grounding {eclingo_control.grounding_time:.3f}s)\n"
+            f"{' '*(STATISTICS_FIRST_FIELD_SIZE+10)}Generator grounding time         : {eclingo_control.solver.generator_grounding_time:.3f}s\n"
+            f"{' '*(STATISTICS_FIRST_FIELD_SIZE+10)}Tester grounding time            : {eclingo_control.solver.tester_grounding_time:.3f}s\n"
+            f"{' '*(STATISTICS_FIRST_FIELD_SIZE+10)}Worldview builder grounding time : {eclingo_control.solver.world_wivew_builder_grounding_time:.3f}s\n"
         )
         sys.stdout.write(
             f"{'Candidates':<{STATISTICS_FIRST_FIELD_SIZE}}: {eclingo_control.solver.number_of_candidates()}\n"
@@ -41,6 +45,7 @@ class Application:
         self.program_name = "eclingo"
         self.version = __version__
         self.config = AppConfig()
+        self.ingnore_shows = Flag()
 
     def _parse_string(self, config, attr):
         def parse(value):
@@ -71,6 +76,13 @@ class Application:
             argument="<rewritten>",
         )
 
+        options.add_flag(
+            group=group,
+            option="ignore-shows",
+            description="Show statements are ignored",
+            target=self.ingnore_shows,
+        )
+
     def _read(self, path):
         if path == "-":
             return sys.stdin.read()
@@ -83,6 +95,7 @@ class Application:
         implementing the standard ground and solve functionality.
         """
         start_time = time.time()
+
         if not files:
             files = ["-"]
 
@@ -96,6 +109,7 @@ class Application:
                 sys.stdout.write(str(stm))
                 sys.stdout.write("\n")
             return
+        self.config.ignore_shows = self.ingnore_shows.flag
 
         eclingo_control.ground()
 

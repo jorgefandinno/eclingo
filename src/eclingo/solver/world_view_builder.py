@@ -13,8 +13,8 @@ from .world_view import EpistemicLiteral, WorldView
 
 
 class WorldWiewBuilderReification:
-    def __init__(self, control: clingo.Control):
-        self.control = control
+    def __init__(self):
+        self.control = clingo.Control(["0"], message_limit=0)
 
     def __call__(self, candidate: Candidate):
         return self.world_view_from_candidate(candidate)
@@ -86,7 +86,7 @@ class WorldWiewBuilderReification:
 
 class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
     def __init__(self, reified_program: Sequence[Symbol]):
-        self.control = clingo.Control(["0"], message_limit=0)
+        super().__init__()
         cast(Configuration, self.control.configuration.solve).models = 0
         cast(Configuration, self.control.configuration.solve).project = "auto,3"
         self.reified_program = reified_program
@@ -130,7 +130,7 @@ class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
         self.control.add("base", [], program_meta_encoding)
         self.control.ground([("base", [])])
 
-        super().__init__(self.control)
+        
 
     def world_view_from_candidate(self, candidate: Candidate):
         candidate_assumptions = []

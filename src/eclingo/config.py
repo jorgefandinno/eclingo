@@ -1,3 +1,6 @@
+from clingo import Flag
+
+
 class AppConfig(object):
     """
     Class for application specific options.
@@ -11,6 +14,7 @@ class AppConfig(object):
         rewritten_program=[],
         preprocessing_level=3,
         propagate=True,
+        ignore_shows=False,
     ):
         self.eclingo_verbose = verbose
         self.eclingo_semantics = semantics
@@ -18,3 +22,4 @@ class AppConfig(object):
         self.rewritten_program = rewritten_program
         self.preprocessing_level = preprocessing_level
         self.propagate = propagate
+        self.ignore_shows = ignore_shows

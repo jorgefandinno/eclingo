@@ -1,3 +1,4 @@
+import time
 from typing import Iterator, Sequence
 
 from clingo import Symbol
@@ -18,13 +19,21 @@ class SolverReification:
     def __init__(self, reified_program: Sequence[Symbol], config: AppConfig) -> None:
         self._config = config
         self.reified_program = reified_program
-        self._build_world_view_reification = WorldWiewBuilderReificationWithShow(
-            reified_program
-        )
 
+        start_time = time.time()
+        if config.ignore_shows:
+            self._build_world_view_reification = WorldWiewBuilderReification()
+        else:
+            self._build_world_view_reification = WorldWiewBuilderReificationWithShow(
+                reified_program
+            )
+        self.world_wivew_builder_grounding_time = time.time() - start_time
+        
+        start_time = time.time()
         self.test_candidate_reification = CandidateTesterReification(
             self._config, reified_program
         )
+        self.tester_grounding_time = time.time() - start_time
         if self._config.preprocessing_level == 0:  # pragma: no cover
             prepreocessing_info = None
             self.unsatisfiable = False
@@ -32,11 +41,13 @@ class SolverReification:
             prepreocessing_info = self.test_candidate_reification.fast_preprocessing()
             self.unsatisfiable = prepreocessing_info.unsatisfiable
 
+        start_time = time.time()
         self.generate_candidates_reification = GeneratorReification(
             self._config,
             reified_program,
             prepreocessing_info,
         )
+        self.generator_grounding_time = time.time() - start_time
 
     def solve(self) -> Iterator[Candidate]:
         if self.unsatisfiable:
