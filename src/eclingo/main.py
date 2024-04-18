@@ -19,7 +19,7 @@ STATISTICS_FIRST_FIELD_SIZE: Final[int] = 14
 
 def statistics(eclingo_control: Control, time: float):  # pragma: no cover
     if int(eclingo_control.control.configuration.stats) > 0:
-        sys.stdout.write("\n")  # pragma: no cover
+        sys.stderr.write("\n")  # pragma: no cover
         sys.stderr.write(
             f"{'Time ':<{STATISTICS_FIRST_FIELD_SIZE}}: {time:.3f}s "
             f"(Solving: {eclingo_control.solving_time:.3f}s"
@@ -34,10 +34,10 @@ def statistics(eclingo_control: Control, time: float):  # pragma: no cover
             f"{' '*(STATISTICS_FIRST_FIELD_SIZE+11)}"
             f"Worldview builder grounding time : {eclingo_control.solver.world_wivew_builder_grounding_time:.3f}s\n"
         )
-        sys.stdout.write(
+        sys.stderr.write(
             f"{'Candidates':<{STATISTICS_FIRST_FIELD_SIZE}}: {eclingo_control.solver.number_of_candidates()}\n"
         )
-        sys.stdout.write(
+        sys.stderr.write(
             f"{'Tester calls':<{STATISTICS_FIRST_FIELD_SIZE}}: {eclingo_control.solver.number_of_tester_calls()}\n"
         )
 
@@ -54,6 +54,7 @@ class Application:
         self.config = AppConfig()
         self.ingnore_shows = Flag()
         self.use_preprocessing = Flag(True)
+        self.use_propagate = Flag(True)
 
     def _parse_string(self, config, attr):
         def parse(value):
@@ -91,19 +92,26 @@ class Application:
             argument="<rewritten>",
         )
 
-        options.add_flag(
-            group=group,
-            option="ignore-shows",
-            description="Show statements are ignored",
-            target=self.ingnore_shows,
-        )
-
         options.add(
             group=group,
             option="preprocessing-level",
             description="Sets the preprocessing-level\n" "      0: No preprocessing",
             parser=self._parse_int(self.config, "preprocessing_level"),
             argument="<l>",
+        )
+
+        options.add_flag(
+            group=group,
+            option="ignore-shows",
+            description="Show statements are ignored (Default false)",
+            target=self.ingnore_shows,
+        )
+
+        options.add_flag(
+            group=group,
+            option="eclingo-propagate",
+            description="Uses the propagation inside of the generator (Default true)",
+            target=self.use_propagate,
         )
 
     def _read(self, path):
@@ -133,6 +141,7 @@ class Application:
                 sys.stdout.write("\n")
             return
         self.config.ignore_shows = self.ingnore_shows.flag
+        self.config.propagate = self.use_propagate.flag
 
         eclingo_control.ground()
 

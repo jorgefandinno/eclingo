@@ -76,7 +76,6 @@ class SolverReification:
             if candidate.proven() or self.test_candidate_reification(candidate):
                 # if self.test_candidate_reification(candidate):
                 yield self._build_world_view_reification(candidate)
-        self.tester_grounding_time += self.test_candidate_reification.grounding_time
 
     def number_of_candidates(self) -> int:  # pragma: no cover
         return self.generate_candidates_reification.num_candidates
