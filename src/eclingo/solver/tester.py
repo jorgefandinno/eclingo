@@ -1,4 +1,5 @@
 import sys
+import time
 from collections import namedtuple
 from typing import Optional, Sequence, cast
 
@@ -127,16 +128,23 @@ class CandidateTesterReification:
         assert isinstance(self.control.configuration.solve, Configuration)
         self.control.configuration.solve.enum_mode = "cautious"
 
-        with SymbolicBackend(self.control.backend()) as backend:
-            for symbol in reified_program:
-                backend.add_rule([symbol])
-        self.control.add("base", [], program_meta_encoding)
-        self.control.ground([("base", [])])
+        self.initialized_control = False
+        self.grounding_time = 0
 
         self.unsatisfiable = False
         self.objective_atoms: frozenset[Symbol] = frozenset()
         self.epistemic_atoms: frozenset[Symbol] = frozenset()
         self._epistemic_atoms_int: set[Symbol] = set()
+
+    def _initialize_control(self):
+        start_time = time.time()
+        with SymbolicBackend(self.control.backend()) as backend:
+            for symbol in self.reified_program:
+                backend.add_rule([symbol])
+        self.control.add(program_meta_encoding)
+        self.control.ground()
+        self.initialized_control = True
+        self.grounding_time += time.time() - start_time
 
     def __call__(self, candidate: Candidate) -> bool:
         candidate_pos = []  # rename as query_pos
@@ -166,6 +174,9 @@ class CandidateTesterReification:
         assert isinstance(self.control.configuration.solve, Configuration)
         self.control.configuration.solve.models = 0
         self.control.configuration.solve.project = "no"
+
+        if not self.initialized_control:
+            self._initialize_control()
 
         with cast(
             clingo.SolveHandle,
@@ -220,6 +231,8 @@ class CandidateTesterReification:
         return lower, upper
 
     def fast_preprocessing(self) -> PreprocessingResult:
+        if not self.initialized_control:
+            self._initialize_control()
         ret = self._fast_preprocessing()
         unsatisfiable, lower, upper = ret
         names = {"u", "k", "not1", "not2"}

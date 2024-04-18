@@ -7,6 +7,7 @@ The follwing only run a subset of tests and they do not run coverage.
 To run only fast test: nox -Rs tests
 To run only slow test: nox -Rs slow_tests
 """
+
 import nox
 
 

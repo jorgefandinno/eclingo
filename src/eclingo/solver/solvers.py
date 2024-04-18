@@ -28,19 +28,26 @@ class SolverReification:
                 reified_program
             )
         self.world_wivew_builder_grounding_time = time.time() - start_time
-        
+
         start_time = time.time()
         self.test_candidate_reification = CandidateTesterReification(
             self._config, reified_program
         )
         self.tester_grounding_time = time.time() - start_time
-        print(f"{self._config.preprocessing_level=}")
+
+        self.preprocessing_time = 0.0
+        start_time = time.time()
         if self._config.preprocessing_level == 0:  # pragma: no cover
             prepreocessing_info = None
             self.unsatisfiable = False
         else:
             prepreocessing_info = self.test_candidate_reification.fast_preprocessing()
             self.unsatisfiable = prepreocessing_info.unsatisfiable
+
+            self.tester_grounding_time += self.test_candidate_reification.grounding_time
+            self.preprocessing_time -= self.test_candidate_reification.grounding_time
+            self.test_candidate_reification.grounding_time = 0
+        self.preprocessing_time += time.time() - start_time
 
         start_time = time.time()
         self.generate_candidates_reification = GeneratorReification(
@@ -69,6 +76,7 @@ class SolverReification:
             if candidate.proven() or self.test_candidate_reification(candidate):
                 # if self.test_candidate_reification(candidate):
                 yield self._build_world_view_reification(candidate)
+        self.tester_grounding_time += self.test_candidate_reification.grounding_time
 
     def number_of_candidates(self) -> int:  # pragma: no cover
         return self.generate_candidates_reification.num_candidates

@@ -22,10 +22,17 @@ def statistics(eclingo_control: Control, time: float):  # pragma: no cover
         sys.stdout.write("\n")  # pragma: no cover
         sys.stderr.write(
             f"{'Time ':<{STATISTICS_FIRST_FIELD_SIZE}}: {time:.3f}s "
-            f"(Solving: {eclingo_control.solving_time:.3f}s Grounding {eclingo_control.grounding_time:.3f}s)\n"
-            f"{' '*(STATISTICS_FIRST_FIELD_SIZE+10)}Generator grounding time         : {eclingo_control.solver.generator_grounding_time:.3f}s\n"
-            f"{' '*(STATISTICS_FIRST_FIELD_SIZE+10)}Tester grounding time            : {eclingo_control.solver.tester_grounding_time:.3f}s\n"
-            f"{' '*(STATISTICS_FIRST_FIELD_SIZE+10)}Worldview builder grounding time : {eclingo_control.solver.world_wivew_builder_grounding_time:.3f}s\n"
+            f"(Solving: {eclingo_control.solving_time:.3f}s"
+            f"   Grounding {eclingo_control.grounding_time:.3f}s"
+            f"   Preprocessing {eclingo_control.solver.preprocessing_time:.3f}s)\n"
+            f"{' '*(STATISTICS_FIRST_FIELD_SIZE+11)}"
+            f"Main grounding time              : {eclingo_control.main_grounding_time:.3f}s\n"
+            f"{' '*(STATISTICS_FIRST_FIELD_SIZE+11)}"
+            f"Generator grounding time         : {eclingo_control.solver.generator_grounding_time:.3f}s\n"
+            f"{' '*(STATISTICS_FIRST_FIELD_SIZE+11)}"
+            f"Tester grounding time            : {eclingo_control.solver.tester_grounding_time:.3f}s\n"
+            f"{' '*(STATISTICS_FIRST_FIELD_SIZE+11)}"
+            f"Worldview builder grounding time : {eclingo_control.solver.world_wivew_builder_grounding_time:.3f}s\n"
         )
         sys.stdout.write(
             f"{'Candidates':<{STATISTICS_FIRST_FIELD_SIZE}}: {eclingo_control.solver.number_of_candidates()}\n"
@@ -54,7 +61,7 @@ class Application:
             return True  # pragma: no cover
 
         return parse
-    
+
     def _parse_int(self, config, attr):
         def parse(value):
             setattr(config, attr, int(value))  # pragma: no cover
@@ -94,8 +101,7 @@ class Application:
         options.add(
             group=group,
             option="preprocessing-level",
-            description="Sets the preprocessing-level\n"
-                        "      0: No preprocessing",
+            description="Sets the preprocessing-level\n" "      0: No preprocessing",
             parser=self._parse_int(self.config, "preprocessing_level"),
             argument="<l>",
         )

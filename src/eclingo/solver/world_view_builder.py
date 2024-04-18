@@ -130,8 +130,6 @@ class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
         self.control.add("base", [], program_meta_encoding)
         self.control.ground([("base", [])])
 
-        
-
     def world_view_from_candidate(self, candidate: Candidate):
         candidate_assumptions = []
 

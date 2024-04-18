@@ -23,7 +23,7 @@ def world_view_builder(tested_candidates):
     control.configuration.solve.models = 0
     control.configuration.solve.project = "auto,3"
 
-    world_view_builder = WorldWiewBuilderReification(control)
+    world_view_builder = WorldWiewBuilderReification()
 
     wviews = []
     for candidate in tested_candidates:

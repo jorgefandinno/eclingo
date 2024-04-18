@@ -46,6 +46,7 @@ class Control(object):
         self.grounded = False
         self.solver = None
         self.grounding_time = 0
+        self.main_grounding_time = 0
         self.solving_time = 0
 
     def add_program(self, program):
@@ -62,7 +63,8 @@ class Control(object):
         start_time = time.time()
         self.grounder.ground(parts)
         self.grounded = True
-        self.grounding_time += time.time() - start_time
+        self.main_grounding_time += time.time() - start_time
+        self.grounding_time += self.main_grounding_time
 
     def preprocess(self):
         pass
@@ -72,7 +74,7 @@ class Control(object):
             self.ground()
         start_time = time.time()
         self.solver = SolverReification(self.grounder.reified_facts, self.config)
-        self.grounding_time += time.time() - start_time
+        self.grounding_time += time.time() - start_time - self.solver.preprocessing_time
 
     def solve(self):
         if self.solver is None:
@@ -85,3 +87,4 @@ class Control(object):
             if self.models >= self.max_models:
                 break
         self.solving_time += time.time() - start_time
+        self.solving_time -= self.solver.test_candidate_reification.grounding_time

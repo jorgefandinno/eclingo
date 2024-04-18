@@ -1,6 +1,3 @@
-from clingo import Flag
-
-
 class AppConfig(object):
     """
     Class for application specific options.
