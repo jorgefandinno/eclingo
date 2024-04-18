@@ -46,10 +46,18 @@ class Application:
         self.version = __version__
         self.config = AppConfig()
         self.ingnore_shows = Flag()
+        self.use_preprocessing = Flag(True)
 
     def _parse_string(self, config, attr):
         def parse(value):
             setattr(config, attr, value)  # pragma: no cover
+            return True  # pragma: no cover
+
+        return parse
+    
+    def _parse_int(self, config, attr):
+        def parse(value):
+            setattr(config, attr, int(value))  # pragma: no cover
             return True  # pragma: no cover
 
         return parse
@@ -81,6 +89,15 @@ class Application:
             option="ignore-shows",
             description="Show statements are ignored",
             target=self.ingnore_shows,
+        )
+
+        options.add(
+            group=group,
+            option="preprocessing-level",
+            description="Sets the preprocessing-level\n"
+                        "      0: No preprocessing",
+            parser=self._parse_int(self.config, "preprocessing_level"),
+            argument="<l>",
         )
 
     def _read(self, path):

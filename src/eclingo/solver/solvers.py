@@ -34,6 +34,7 @@ class SolverReification:
             self._config, reified_program
         )
         self.tester_grounding_time = time.time() - start_time
+        print(f"{self._config.preprocessing_level=}")
         if self._config.preprocessing_level == 0:  # pragma: no cover
             prepreocessing_info = None
             self.unsatisfiable = False
