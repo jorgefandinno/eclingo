@@ -1,8 +1,9 @@
-from typing import Sequence, cast
+from typing import Optional, Sequence, cast
 
 import clingo
 from clingo import Configuration, Function, SolveHandle, Symbol
 from clingo.ast import Sign
+from clingox.backend import SymbolicBackend
 
 from eclingo.literals import Literal
 from eclingo.solver.candidate import Candidate
@@ -18,7 +19,7 @@ class WorldWiewBuilderReification:
     def __call__(self, candidate: Candidate):
         return self.world_view_from_candidate(candidate)
 
-    def generate_k_symbol(self, epistemic_literal):
+    def generate_k_symbol(self, epistemic_literal) -> Optional[EpistemicLiteral]:
         ep_args = epistemic_literal.arguments[0]
         epistemic_name = ep_args.name  # not1, not2 or u
 
@@ -38,7 +39,7 @@ class WorldWiewBuilderReification:
         is_explicit = literal_symbol.positive
 
         # Check for arguments of literal
-        arguments: Sequence[Symbol] = []
+        arguments: list[Symbol] = []
         if literal_symbol.arguments:
             for args in literal_symbol.arguments:
                 arguments.append(args)
@@ -84,7 +85,7 @@ class WorldWiewBuilderReification:
 
 
 class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
-    def __init__(self, reified_program):
+    def __init__(self, reified_program: Sequence[Symbol]):
         self.control = clingo.Control(["0"], message_limit=0)
         cast(Configuration, self.control.configuration.solve).models = 0
         cast(Configuration, self.control.configuration.solve).project = "auto,3"
@@ -123,7 +124,9 @@ class WorldWiewBuilderReificationWithShow(WorldWiewBuilderReification):
                                 :- hold(L) , not k(A), output(k(A), B), literal_tuple(B, L).
                                 """
 
-        self.control.add("base", [], self.reified_program)
+        with SymbolicBackend(self.control.backend()) as backend:
+            for symbol in reified_program:
+                backend.add_rule([symbol])
         self.control.add("base", [], program_meta_encoding)
         self.control.ground([("base", [])])
 

@@ -6,12 +6,15 @@ import eclingo as _eclingo
 from eclingo.solver.candidate import Candidate
 from eclingo.solver.tester import CandidateTesterReification
 
+from tests.parse_programs import parse_program
+
 # python -m unittest tests.test_tester_reification.TestEclingoTesterReification
 
 """ Helper function to generate candidates for a given program and test them"""
 
 
 def tester(program, candidates):
+    program = parse_program(program)
     config = _eclingo.config.AppConfig()
     config.eclingo_semantics = "c19-1"
 

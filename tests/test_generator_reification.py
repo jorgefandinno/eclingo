@@ -8,6 +8,7 @@ import eclingo as _eclingo
 from eclingo.solver.candidate import Candidate
 from eclingo.solver.generator import GeneratorReification
 from tests.generated_programs import programs
+from tests.parse_programs import parse_program
 
 # python -m unittest tests.test_generator_reification.TestEclingoGeneratorReification
 
@@ -20,6 +21,7 @@ config.propagate = False
 
 
 def generate(program):
+    program = parse_program(program)
     candidate_generator = GeneratorReification(config, program)
 
     # print("="*30)

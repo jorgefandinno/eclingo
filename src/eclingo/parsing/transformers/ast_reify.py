@@ -1,6 +1,7 @@
 """
 This module contains functions for reififcation of `AST` objects
 """
+
 import clingo
 from clingo import ast
 from clingo.ast import AST, ASTType, Sign

@@ -1,6 +1,7 @@
 """
 Module to replace strong and default negations by auxiliary atoms.
 """
+
 from copy import copy
 from typing import List, Optional, Set, Tuple
 

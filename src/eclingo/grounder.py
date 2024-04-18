@@ -17,7 +17,7 @@ class Grounder:
         self.control = control
         self.config = config
         self.facts: List[Symbol] = []
-        self.reified_facts: str
+        self.reified_facts: List[Symbol] = []
         self.atom_to_symbol: Dict[int, Symbol] = dict()
         self.ground_program = clingox_program.Program()
         self.control.register_observer(
@@ -34,8 +34,5 @@ class Grounder:
     def ground(
         self, parts: Sequence[Tuple[str, Sequence[Symbol]]] = (("base", []),)
     ) -> None:  # pylint: disable=dangerous-default-value
-        reified_facts: List[Symbol] = []
-        self.control.register_observer(Reifier(reified_facts.append))
+        self.control.register_observer(Reifier(self.reified_facts.append))
         self.control.ground(parts)
-        reified_facts = [e for e in reified_facts]
-        self.reified_facts = reification_program_to_str(reified_facts)

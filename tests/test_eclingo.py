@@ -4,6 +4,7 @@ import clingo
 
 import eclingo as _eclingo
 from eclingo.control import Control
+from tests.parse_programs import parse_program
 
 # python -m unittest tests.test_eclingo.TestEclingoUnfounded
 

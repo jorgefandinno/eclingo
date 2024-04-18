@@ -1,9 +1,12 @@
-from typing import Iterator
+from typing import Iterator, Sequence
+
+from clingo import Symbol
 
 from eclingo.config import AppConfig
 from eclingo.solver.generator import GeneratorReification
 from eclingo.solver.tester import CandidateTesterReification
 
+from ..parsing.transformers.ast_reify import reification_program_to_str
 from .candidate import Candidate
 from .world_view_builder import (
     WorldWiewBuilderReification,
@@ -12,12 +15,11 @@ from .world_view_builder import (
 
 
 class SolverReification:
-    def __init__(self, reified_program: str, config: AppConfig) -> None:
+    def __init__(self, reified_program: Sequence[Symbol], config: AppConfig) -> None:
         self._config = config
         self.reified_program = reified_program
-
         self._build_world_view_reification = WorldWiewBuilderReificationWithShow(
-            self.reified_program
+            reified_program
         )
 
         self.test_candidate_reification = CandidateTesterReification(
@@ -32,7 +34,7 @@ class SolverReification:
 
         self.generate_candidates_reification = GeneratorReification(
             self._config,
-            self.reified_program,
+            reified_program,
             prepreocessing_info,
         )
 

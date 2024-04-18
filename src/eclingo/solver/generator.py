@@ -151,7 +151,7 @@ class GeneratorReification:
     def __init__(
         self,
         config: AppConfig,
-        reified_program: str,
+        reified_program: Sequence[Symbol],
         preprocessing_facts: Optional[PreprocessingResult] = None,
     ) -> None:
         self._config = config
@@ -162,7 +162,9 @@ class GeneratorReification:
         self.num_candidates = 0
 
     def __initialeze_control(self, reified_program, preprocessing_facts) -> None:
-        self.control.add("base", [], reified_program)
+        with SymbolicBackend(self.control.backend()) as backend:
+            for symbol in reified_program:
+                backend.add_rule([symbol])
         self.control.add("base", [], base_program)
         self.control.add("base", [], common_opt_program)
         self.control.add("base", [], fact_optimization_program)
@@ -226,7 +228,7 @@ class GeneratorReification:
         with cast(clingo.SolveHandle, self.control.solve(yield_=True)) as handle:
             for model in handle:
                 # print("*" * 50)
-                # print(model)
+                # # print(model)
                 # print("\n".join(sorted(str(a) for a in model.symbols(atoms=True))))
                 candidate = self._model_to_candidate(model)
                 self.num_candidates += 1

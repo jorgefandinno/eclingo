@@ -119,7 +119,7 @@ preprocessing_hold(KA) :- epistemic_atom_map(k(SA), KA), hold_symbolic_atom(SA).
 
 
 class CandidateTesterReification:
-    def __init__(self, config: AppConfig, reified_program: str):
+    def __init__(self, config: AppConfig, reified_program: Sequence[Symbol]):
         self.num_solve_calls = 0
         self._config = config
         self.control = clingo.Control(["0"], message_limit=0)
@@ -127,7 +127,9 @@ class CandidateTesterReification:
         assert isinstance(self.control.configuration.solve, Configuration)
         self.control.configuration.solve.enum_mode = "cautious"
 
-        self.control.add("base", [], self.reified_program)
+        with SymbolicBackend(self.control.backend()) as backend:
+            for symbol in reified_program:
+                backend.add_rule([symbol])
         self.control.add("base", [], program_meta_encoding)
         self.control.ground([("base", [])])
 

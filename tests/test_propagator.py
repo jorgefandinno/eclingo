@@ -7,6 +7,7 @@ from eclingo.solver.candidate import Candidate
 from eclingo.solver.generator import GeneratorReification
 from eclingo.solver.tester import CandidateTesterReification
 from tests.generated_programs import programs
+from tests.parse_programs import parse_program
 
 config = eclingo.config.AppConfig()
 config.eclingo_semantics = "c19-1"
@@ -14,18 +15,21 @@ config.propagate = True
 
 
 def fast_preprocessing(program):
+    program = parse_program(program)
     tester = CandidateTesterReification(config, program)
     ret = tester.fast_preprocessing()
     return ret
 
 
 def generate_candidates(program, preprocessing_result):
+    program = parse_program(program)
     generator = GeneratorReification(config, program, preprocessing_result)
     ret = list(generator())
     return ret
 
 
 def format_subtest_message(i: int, program: str, expected: List[str]) -> str:
+    # program = parse_program(program)
     program = textwrap.indent(program, 4 * " ")
     expected = textwrap.indent(str(expected), 4 * " ")
     return f"""\

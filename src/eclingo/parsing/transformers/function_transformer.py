@@ -1,4 +1,5 @@
 """Module providing an AST function Trasnformer"""
+
 import clingo
 from clingo import ast
 from clingo.ast import AST, Transformer

@@ -8,12 +8,15 @@ from eclingo.literals import Literal
 from eclingo.solver import SolverReification
 from eclingo.solver.world_view import EpistemicLiteral, WorldView
 
+from tests.parse_programs import parse_program
+
 # python -m unittest tests.test_solver_reification.TestEclingoSolverReification.test_solver_reification01
 
 """ SOLVER for test_solver """
 
 
 def solve(reified_program):
+    reified_program = parse_program(reified_program)
     config = _eclingo.config.AppConfig()
     config.eclingo_semantics = "c19-1"
 

@@ -8,13 +8,13 @@ class Program(NamedTuple):
     candidates_00: Optional[str] = None  # candidates without fact optimization
     candidates_01: Optional[str] = None  # candidates with fact optimization
     candidates_02: Optional[str] = None  # candidates with fast preprocessing
-    candidates_03: Optional[
-        str
-    ] = None  # candidates with fast preprocessing and propagation
+    candidates_03: Optional[str] = (
+        None  # candidates with fast preprocessing and propagation
+    )
     candidates_wv: Optional[str] = None  # world view as candidates objects
-    fast_preprocessing: Optional[
-        Union[str, tuple[str, str]]
-    ] = None  # the result of fast preprocessing, if a string both lower and upper are the same
+    fast_preprocessing: Optional[Union[str, tuple[str, str]]] = (
+        None  # the result of fast preprocessing, if a string both lower and upper are the same
+    )
     has_fast_preprocessing: bool = False
     description: str = ""
 
