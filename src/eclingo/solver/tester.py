@@ -141,8 +141,8 @@ class CandidateTesterReification:
         with SymbolicBackend(self.control.backend()) as backend:
             for symbol in self.reified_program:
                 backend.add_rule([symbol])
-        self.control.add(program_meta_encoding)
-        self.control.ground()
+        self.control.add("base", [], program_meta_encoding)
+        self.control.ground([("base", [])])
         self.initialized_control = True
         self.grounding_time += time.time() - start_time
 
