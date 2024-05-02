@@ -88,4 +88,6 @@ class Control(object):
                 break
         self.solving_time += time.time() - start_time
         self.solving_time -= self.solver.test_candidate_reification.grounding_time
-        self.solver.tester_grounding_time += self.solver.test_candidate_reification.grounding_time
+        self.solver.tester_grounding_time += (
+            self.solver.test_candidate_reification.grounding_time
+        )

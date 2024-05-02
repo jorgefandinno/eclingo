@@ -23,8 +23,8 @@ def statistics(eclingo_control: Control, time: float):  # pragma: no cover
         sys.stderr.write(
             f"{'Time ':<{STATISTICS_FIRST_FIELD_SIZE}}: {time:.3f}s "
             f"(Solving: {eclingo_control.solving_time:.3f}s"
-            f"   Grounding {eclingo_control.grounding_time:.3f}s"
-            f"   Preprocessing {eclingo_control.solver.preprocessing_time:.3f}s)\n"
+            f"   : {eclingo_control.grounding_time:.3f}s"
+            f"   Preprocessing: {eclingo_control.solver.preprocessing_time:.3f}s)\n"
             f"{' '*(STATISTICS_FIRST_FIELD_SIZE+11)}"
             f"Main grounding time              : {eclingo_control.main_grounding_time:.3f}s\n"
             f"{' '*(STATISTICS_FIRST_FIELD_SIZE+11)}"
