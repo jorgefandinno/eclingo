@@ -59,7 +59,7 @@ class SolverReification:
 
     def solve(self) -> Iterator[Candidate]:
         if self.unsatisfiable:
-            return []
+            return
         for candidate in self.generate_candidates_reification():
             # print()
             # print(candidate)
