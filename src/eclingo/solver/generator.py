@@ -52,7 +52,9 @@ epistemic_atom_map(KSA, KA) :- atom_map(KSA, KA), symbolic_epistemic_atom(KSA).
 objective_atom_map(OSA, OA) :- atom_map(OSA, OA), symbolic_objective_atom(OSA).
 
 epistemic_atom_int(KA) :- epistemic_atom_map(_, KA).
-objective_atom_int(A)  :- objective_atom_map(_, A).
+atom_int(A) :- atom_tuple(_, A), A > 0.
+atom_int(A) :- literal_tuple(_, A), A > 0.
+objective_atom_int(A)  :- atom_int(A), not epistemic_atom_int(A).
 
 epistemic_map(KA,OA) :- epistemic_atom_map(KSA, KA), objective_atom_map(OSA, OA), KSA = k(OSA).
 """
@@ -81,7 +83,7 @@ positive_extra_assumptions(OSA) :- fact(OSA), symbolic_epistemic_atom(k(OSA)).
 propagation_program = """\
 :- kp_hold(OA), epistemic_map(KA, OA), not hold(KA).
 
-kp_hold(OA) :- cautious(OSA),  objective_atom_map(OSA, OA).
+kp_hold(OA) :- cautious(OSA), objective_atom_map(OSA, OA).
 
 kp_conjunction(B) :- literal_tuple(B), kp_hold(A) : literal_tuple(B,  A), A > 0, not epistemic_atom_int(A);
                                           hold(A) : literal_tuple(B,  A), A > 0,     epistemic_atom_int(A);
@@ -105,13 +107,13 @@ rule_head_tuple(H, B) :- rule(choice(H), B).
 
 kp_not_hold(A) :- objective_atom_int(A), kp_not_body(B) : atom_tuple(H,A), rule_head_tuple(H, B).
 
-zhold(SA)        :- hold(A), atom_map(SA, A).
+zhold(SA)         :- hold(A), atom_map(SA, A).
 z_kp_hold(SA)     :- kp_hold(A), atom_map(SA, A).
 z_kp_not_hold(SA) :- kp_not_hold(A), atom_map(SA, A).
-z_rule_head(disjunction(SA),rule(H,B)) :- rule(H, B), H = disjunction(H1), atom_tuple(H1,A), atom_map(SA, A).
-z_rule_head(choice(SA),rule(H,B)) :- rule(H, B), H = choice(H1), atom_tuple(H1,A), atom_map(SA, A).
-z_rule_body(normal(SA),rule(H,B)) :- rule(H, normal(B)), literal_tuple(B,A), A > 0, atom_map(SA, A).
-z_rule_body(normal(-SA),rule(H,B)) :- rule(H, normal(B)), literal_tuple(B,-A), A > 0, atom_map(SA, A).
+z_rule_head(disjunction(SA),rule(H1,B)) :- rule(H, B), H = disjunction(H1), atom_tuple(H1,A), atom_map(SA, A).
+z_rule_head(choice(SA),rule(H,B))  :- rule(H, B), H = choice(H1), atom_tuple(H1,A), atom_map(SA, A).
+z_rule_body(normal(SA),rule(H,B))  :- rule(H, normal(B)), literal_tuple(B,A), A > 0, atom_map(SA, A).
+z_rule_body(normal(not1(SA)),rule(H,B)) :- rule(H, normal(B)), literal_tuple(B,-A), A > 0, atom_map(SA, A).
 
 positive_extra_assumptions(OSA) :-
     kp_hold(OA),

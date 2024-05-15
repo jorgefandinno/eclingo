@@ -9,7 +9,7 @@ class Program(NamedTuple):
     candidates_01: Optional[str] = None  # candidates with fact optimization
     candidates_02: Optional[str] = None  # candidates with fast preprocessing
     candidates_03: Optional[str] = (
-        None  # candidates with fast preprocessing and propagation
+        None  # candidates with propagation (and may be fast preprocessing)
     )
     candidates_wv: Optional[str] = None  # world view as candidates objects
     fast_preprocessing: Optional[Union[str, tuple[str, str]]] = (
@@ -379,6 +379,41 @@ program_list = [
                 "a no(not1(a)) no(not1(b)) no(c)",
             ),
             ("k(not1(a)) k(not1(b)) k(c) no(k(a))", "not1(a) not1(b) c no(a)"),
+        ],
+    ),
+    Program(
+        description="",
+        program="""\
+            a :- not not_k_a.
+            not_k_a :- not &k{a}.
+            :- not &k{a}.
+            b(I) :- a, i(I).
+            c :- i(I), &k{b(I)}.
+
+            i(1..2).
+        """,
+        candidates_03=[
+            (
+                "k(a) k(b(1)) k(b(2))",
+                "a b(1) b(2)",
+            ),
+        ],
+    ),
+    Program(
+        description="",
+        program="""\
+            a :- not not &k{a}.
+            :- not &k{a}.
+            b(I) :- a, i(I).
+            c :- i(I), &k{b(I)}.
+
+            i(1..2).
+        """,
+        candidates_03=[
+            (
+                "k(a) k(b(1)) k(b(2))",
+                "a b(1) b(2)",
+            ),
         ],
     ),
 ]

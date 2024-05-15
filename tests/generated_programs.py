@@ -6,8 +6,7 @@ Modify the file "test/programs.py" and run "python test/build_programs.py" inste
 """
 
 from clingo import Function, Number
-
-from eclingo.solver.candidate import Assumptions, Candidate
+from eclingo.solver.candidate import Candidate, Assumptions
 from tests.programs_helper import Program
 
 programs = [
@@ -5512,6 +5511,305 @@ programs = [
                     neg=[Function("u", [Function("a", [], True)], True)],
                 ),
             ),
+        ],
+        fast_preprocessing_str=None,
+        fast_preprocessing=None,
+        has_fast_preprocessing=False,
+        description="",
+    ),
+    Program(
+        program="            a :- not not_k_a.\n"
+        "            not_k_a :- not &k{a}.\n"
+        "            :- not &k{a}.\n"
+        "            b(I) :- a, i(I).\n"
+        "            c :- i(I), &k{b(I)}.\n"
+        "\n"
+        "            i(1..2).\n"
+        "        ",
+        non_ground_reification="u(a) :- not u(not_k_a).\n"
+        "u(not_k_a) :- not k(u(a)).\n"
+        "{ k(u(a)) } :- u(a).\n"
+        "#false :- not k(u(a)).\n"
+        "{ k(u(a)) } :- u(a).\n"
+        "u(b(I)) :- u(a); u(i(I)).\n"
+        "u(c) :- u(i(I)); k(u(b(I))).\n"
+        "{ k(u(b(I))) } :- u(b(I)).\n"
+        "u(i((1..2))).\n",
+        ground_reification="atom_tuple(0).\n"
+        "atom_tuple(0,1).\n"
+        "literal_tuple(0).\n"
+        "rule(disjunction(0),normal(0)).\n"
+        "atom_tuple(1).\n"
+        "atom_tuple(1,2).\n"
+        "rule(disjunction(1),normal(0)).\n"
+        "atom_tuple(2).\n"
+        "atom_tuple(2,3).\n"
+        "literal_tuple(1).\n"
+        "literal_tuple(1,-4).\n"
+        "rule(disjunction(2),normal(1)).\n"
+        "atom_tuple(3).\n"
+        "atom_tuple(3,4).\n"
+        "literal_tuple(2).\n"
+        "literal_tuple(2,-5).\n"
+        "rule(disjunction(3),normal(2)).\n"
+        "atom_tuple(4).\n"
+        "atom_tuple(4,5).\n"
+        "literal_tuple(3).\n"
+        "literal_tuple(3,3).\n"
+        "rule(choice(4),normal(3)).\n"
+        "rule(choice(4),normal(3)).\n"
+        "atom_tuple(5).\n"
+        "atom_tuple(5,6).\n"
+        "rule(disjunction(5),normal(3)).\n"
+        "atom_tuple(6).\n"
+        "atom_tuple(6,7).\n"
+        "rule(disjunction(6),normal(3)).\n"
+        "atom_tuple(7).\n"
+        "atom_tuple(7,8).\n"
+        "literal_tuple(4).\n"
+        "literal_tuple(4,6).\n"
+        "rule(choice(7),normal(4)).\n"
+        "atom_tuple(8).\n"
+        "atom_tuple(8,9).\n"
+        "literal_tuple(5).\n"
+        "literal_tuple(5,7).\n"
+        "rule(choice(8),normal(5)).\n"
+        "atom_tuple(9).\n"
+        "atom_tuple(9,10).\n"
+        "literal_tuple(6).\n"
+        "literal_tuple(6,8).\n"
+        "rule(disjunction(9),normal(6)).\n"
+        "literal_tuple(7).\n"
+        "literal_tuple(7,9).\n"
+        "rule(disjunction(9),normal(7)).\n"
+        "atom_tuple(10).\n"
+        "rule(disjunction(10),normal(2)).\n"
+        "output(u(i(1)),0).\n"
+        "output(u(i(2)),0).\n"
+        "literal_tuple(8).\n"
+        "literal_tuple(8,4).\n"
+        "output(u(not_k_a),8).\n"
+        "output(u(a),3).\n"
+        "output(u(b(1)),4).\n"
+        "output(u(b(2)),5).\n"
+        "literal_tuple(9).\n"
+        "literal_tuple(9,10).\n"
+        "output(u(c),9).\n"
+        "literal_tuple(10).\n"
+        "literal_tuple(10,5).\n"
+        "output(k(u(a)),10).\n"
+        "output(k(u(b(1))),6).\n"
+        "output(k(u(b(2))),7).\n",
+        candidates_00_str="None",
+        candidates_00=None,
+        candidates_01_str="None",
+        candidates_01=None,
+        candidates_02_str="None",
+        candidates_02=None,
+        candidates_03_str="[('k(a) k(b(1)) k(b(2))', 'a b(1) b(2)')]",
+        candidates_03=[
+            Candidate(
+                pos=[
+                    Function(
+                        "k", [Function("u", [Function("a", [], True)], True)], True
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(1)], True)], True)],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(2)], True)], True)],
+                        True,
+                    ),
+                ],
+                neg=[],
+                extra_assumptions=Assumptions(
+                    pos=[
+                        Function("u", [Function("a", [], True)], True),
+                        Function("u", [Function("b", [Number(1)], True)], True),
+                        Function("u", [Function("b", [Number(2)], True)], True),
+                    ],
+                    neg=[],
+                ),
+            )
+        ],
+        candidates_wv_str="[('k(a) k(b(1)) k(b(2))', 'a b(1) b(2)')]",
+        candidates_wv=[
+            Candidate(
+                pos=[
+                    Function(
+                        "k", [Function("u", [Function("a", [], True)], True)], True
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(1)], True)], True)],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(2)], True)], True)],
+                        True,
+                    ),
+                ],
+                neg=[],
+                extra_assumptions=Assumptions(
+                    pos=[
+                        Function("u", [Function("a", [], True)], True),
+                        Function("u", [Function("b", [Number(1)], True)], True),
+                        Function("u", [Function("b", [Number(2)], True)], True),
+                    ],
+                    neg=[],
+                ),
+            )
+        ],
+        fast_preprocessing_str=None,
+        fast_preprocessing=None,
+        has_fast_preprocessing=False,
+        description="",
+    ),
+    Program(
+        program="            a :- not not &k{a}.\n"
+        "            :- not &k{a}.\n"
+        "            b(I) :- a, i(I).\n"
+        "            c :- i(I), &k{b(I)}.\n"
+        "\n"
+        "            i(1..2).\n"
+        "        ",
+        non_ground_reification="u(a) :- not not k(u(a)).\n"
+        "{ k(u(a)) } :- u(a).\n"
+        "#false :- not k(u(a)).\n"
+        "{ k(u(a)) } :- u(a).\n"
+        "u(b(I)) :- u(a); u(i(I)).\n"
+        "u(c) :- u(i(I)); k(u(b(I))).\n"
+        "{ k(u(b(I))) } :- u(b(I)).\n"
+        "u(i((1..2))).\n",
+        ground_reification="atom_tuple(0).\n"
+        "atom_tuple(0,1).\n"
+        "literal_tuple(0).\n"
+        "rule(disjunction(0),normal(0)).\n"
+        "atom_tuple(1).\n"
+        "atom_tuple(1,2).\n"
+        "rule(disjunction(1),normal(0)).\n"
+        "atom_tuple(2).\n"
+        "atom_tuple(2,3).\n"
+        "literal_tuple(1).\n"
+        "literal_tuple(1,-4).\n"
+        "rule(disjunction(2),normal(1)).\n"
+        "atom_tuple(3).\n"
+        "atom_tuple(3,5).\n"
+        "literal_tuple(2).\n"
+        "literal_tuple(2,-3).\n"
+        "rule(disjunction(3),normal(2)).\n"
+        "atom_tuple(4).\n"
+        "atom_tuple(4,4).\n"
+        "literal_tuple(3).\n"
+        "literal_tuple(3,5).\n"
+        "rule(choice(4),normal(3)).\n"
+        "rule(choice(4),normal(3)).\n"
+        "atom_tuple(5).\n"
+        "atom_tuple(5,6).\n"
+        "rule(disjunction(5),normal(3)).\n"
+        "atom_tuple(6).\n"
+        "atom_tuple(6,7).\n"
+        "rule(disjunction(6),normal(3)).\n"
+        "atom_tuple(7).\n"
+        "atom_tuple(7,8).\n"
+        "literal_tuple(4).\n"
+        "literal_tuple(4,6).\n"
+        "rule(choice(7),normal(4)).\n"
+        "atom_tuple(8).\n"
+        "atom_tuple(8,9).\n"
+        "literal_tuple(5).\n"
+        "literal_tuple(5,7).\n"
+        "rule(choice(8),normal(5)).\n"
+        "atom_tuple(9).\n"
+        "atom_tuple(9,10).\n"
+        "literal_tuple(6).\n"
+        "literal_tuple(6,8).\n"
+        "rule(disjunction(9),normal(6)).\n"
+        "literal_tuple(7).\n"
+        "literal_tuple(7,9).\n"
+        "rule(disjunction(9),normal(7)).\n"
+        "atom_tuple(10).\n"
+        "rule(disjunction(10),normal(1)).\n"
+        "literal_tuple(8).\n"
+        "literal_tuple(8,4).\n"
+        "output(k(u(a)),8).\n"
+        "output(k(u(b(1))),6).\n"
+        "output(k(u(b(2))),7).\n"
+        "output(u(i(1)),0).\n"
+        "output(u(i(2)),0).\n"
+        "output(u(a),3).\n"
+        "output(u(b(1)),4).\n"
+        "output(u(b(2)),5).\n"
+        "literal_tuple(9).\n"
+        "literal_tuple(9,10).\n"
+        "output(u(c),9).\n",
+        candidates_00_str="None",
+        candidates_00=None,
+        candidates_01_str="None",
+        candidates_01=None,
+        candidates_02_str="None",
+        candidates_02=None,
+        candidates_03_str="[('k(a) k(b(1)) k(b(2))', 'a b(1) b(2)')]",
+        candidates_03=[
+            Candidate(
+                pos=[
+                    Function(
+                        "k", [Function("u", [Function("a", [], True)], True)], True
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(1)], True)], True)],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(2)], True)], True)],
+                        True,
+                    ),
+                ],
+                neg=[],
+                extra_assumptions=Assumptions(
+                    pos=[
+                        Function("u", [Function("a", [], True)], True),
+                        Function("u", [Function("b", [Number(1)], True)], True),
+                        Function("u", [Function("b", [Number(2)], True)], True),
+                    ],
+                    neg=[],
+                ),
+            )
+        ],
+        candidates_wv_str="[('k(a) k(b(1)) k(b(2))', 'a b(1) b(2)')]",
+        candidates_wv=[
+            Candidate(
+                pos=[
+                    Function(
+                        "k", [Function("u", [Function("a", [], True)], True)], True
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(1)], True)], True)],
+                        True,
+                    ),
+                    Function(
+                        "k",
+                        [Function("u", [Function("b", [Number(2)], True)], True)],
+                        True,
+                    ),
+                ],
+                neg=[],
+                extra_assumptions=Assumptions(
+                    pos=[
+                        Function("u", [Function("a", [], True)], True),
+                        Function("u", [Function("b", [Number(1)], True)], True),
+                        Function("u", [Function("b", [Number(2)], True)], True),
+                    ],
+                    neg=[],
+                ),
+            )
         ],
         fast_preprocessing_str=None,
         fast_preprocessing=None,

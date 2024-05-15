@@ -51,15 +51,17 @@ class PropagatorTestCase(unittest.TestCase):
         self.maxDiff = None
         for i, program in enumerate(programs):
             prg = program.ground_reification
-            if prg is not None and program.has_fast_preprocessing:
+            if prg is not None:
                 with self.subTest(
                     format_subtest_message(
                         i, program.program, program.candidates_03_str
                     )
                 ):
-                    ret = fast_preprocessing(prg)
-                    if ret is None:
-                        continue
+                    ret = None
+                    if program.has_fast_preprocessing:
+                        ret = fast_preprocessing(prg)
+                        if ret is None:
+                            continue
                     candidates = generate_candidates(prg, ret)
                     candidate_str = [
                         (sorted(str(a) for a in c.pos), sorted(str(a) for a in c.neg))
@@ -69,6 +71,9 @@ class PropagatorTestCase(unittest.TestCase):
                         (sorted(str(a) for a in c.pos), sorted(str(a) for a in c.neg))
                         for c in program.candidates_03
                     ]
+                    if len(candidate_str) != len(expected_str):
+                        print("candidates:", candidate_str)
+                        print("expected:", expected_str)
                     self.assertCountEqual(
                         candidate_str, expected_str, "candidates string"
                     )
