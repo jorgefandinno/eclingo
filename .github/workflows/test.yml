@@ -12,8 +12,8 @@ jobs:
       fail-fast: false
       matrix:
         os: ['ubuntu-latest']
-        python-version: ['3.9']
-        clingo-version: ['>=5.5.0,<5.6.0']
+        python-version: ['3.9', '3.11', '3.12']
+        clingo-version: ['>=5.5.0,<5.6.0','>=5.6.0,<5.7.0','>=5.7.0,<5.8.0']
 
     steps:
     - uses: actions/checkout@v2
@@ -33,7 +33,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        python -m pip install -r requirements.txt
+        python -m pip install nox
 
     - name: Info
       run: |

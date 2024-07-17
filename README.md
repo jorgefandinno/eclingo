@@ -10,7 +10,7 @@
 ---
 
 ## Description
-`eclingo` is a solver for epistemic logic programs [[1]](#References) built upon the ASP system [`clingo`](https://github.com/potassco/clingo).  
+`eclingo` is a solver for epistemic logic programs [[1]](#References) built upon the ASP system [`clingo`](https://github.com/potassco/clingo).
 Currently, `eclingo` can compute world views under the following semantics:
 - Gelfond 1991; Gelfond and Przymusinska 1993; Gelfond 1994 (G94) [[2, 3, 4]](#References)
 
@@ -118,7 +118,7 @@ git checkout -b <your_name>/<branch>
 ```
 where ```<your_name>``` is to be replaced by your name and ```<branch>``` should be the name of the branch you are creating.
 
-Once you have made the contributions, test that everythink works correctly. 
+Once you have made the contributions, test that everythink works correctly.
 We auto format code using [black]. We provide a [pre-commit][pre]
 config to automate this process. It can be set up using the following commands:
 

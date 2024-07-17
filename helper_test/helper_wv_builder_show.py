@@ -1,15 +1,20 @@
 from pprint import pprint
-from eclingo.solver.world_view_builder import WorldWiewBuilderWithShow
+
+from eclingo.solver.world_view_builder import WorldWiewBuilderReificationWithShow
 from helper_test.helper_eclingo import EclingoTestHelper
 
-class WorldWiewBuilderWithShowTestHelper(EclingoTestHelper):
 
+class WorldWiewBuilderWithShowTestHelper(EclingoTestHelper):
     def assert_equal_show_program(self, program, expected_show_program):
         self.eclingo_control = self._control_and_ground(program)
-        wv_builder = WorldWiewBuilderWithShow(self.eclingo_control.control)
-        ground_program = wv_builder.control.ground_program.pretty_str()
-        if self.printing:
-            print("\n--- program ---")
-            pprint(ground_program)
-        ground_program = sorted(map(str, list(filter(lambda x: x != '', ground_program.split("\n")))))
-        self.assert_equal_ordered(ground_program, expected_show_program)
+        wv_builder = WorldWiewBuilderReificationWithShow(
+            self.eclingo_control.grounder.reified_facts
+        )
+        facts = wv_builder.control.ground_program.facts
+        shows = []
+        for i in range(0, len(facts)):
+            if facts[i].symbol.name == "output":
+                if facts[i].symbol.arguments[0].name == "show_statement":
+                    shows.append(facts[i].symbol.arguments[0])
+
+        self.assert_equal_ordered(shows, expected_show_program)

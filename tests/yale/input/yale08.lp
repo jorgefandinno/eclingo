@@ -11,7 +11,7 @@ action(fire).
 action(aim).
 action(cock).
 
-%%%%%%  executable  %%%%%%% 
+%%%%%%  executable  %%%%%%%
 executable(fire,T):-  holds(cocked,T), stepless(T).
 executable(load,T) :- -holds(loaded,T),stepless(T).
 executable(aim,T):-  stepless(T).
@@ -29,8 +29,8 @@ holds(cocked, T+1) :- occurs(cock, T), stepless(T).
 holds(wounded,T+1):- occurs(fire,T), holds(loaded,T),
                      -holds(wounded,T), holds(alive,T),
                      holds(aimed,T), holds(cocked,T), stepless(T).
--holds(alive,T+1):- occurs(fire,T),holds(loaded,T), 
-                    holds(wounded,T), holds(alive,T), 
+-holds(alive,T+1):- occurs(fire,T),holds(loaded,T),
+                    holds(wounded,T), holds(alive,T),
                     holds(aimed,T), holds(cocked,T), stepless(T).
 -holds(loaded,T+1):-occurs(fire,T),stepless(T).
 holds(loaded,T+1):-occurs(load,T),stepless(T).

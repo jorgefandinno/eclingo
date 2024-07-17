@@ -1,7 +1,9 @@
 from typing import List
+
 from clingo import ast
 
 # pylint: disable=all
+
 
 def atom(location: ast.Location, positive: bool, name: str, arguments: List) -> ast.AST:
     """
@@ -13,11 +15,8 @@ def atom(location: ast.Location, positive: bool, name: str, arguments: List) -> 
     name     --  The name of the atom.
     arguments -- The arguments of the atom.
     """
+
     ret = ast.Function(location, name, arguments, False)
     if not positive:
         ret = ast.UnaryOperation(location, ast.UnaryOperator.Minus, ret)
     return ast.SymbolicAtom(ret)
-
-
-
-
