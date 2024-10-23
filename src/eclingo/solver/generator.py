@@ -1,4 +1,4 @@
-import sys
+from pathlib import Path
 from typing import Iterator, Optional, Sequence, Tuple, cast
 
 import clingo
@@ -13,49 +13,30 @@ from .candidate import Assumptions, Candidate
 
 # from clingox.solving import approximate
 
+current_script_path = Path(__file__).parent
 
-base_program = """\
-conjunction(B) :- literal_tuple(B), hold(L) : literal_tuple(B, L), L > 0;
-                                not hold(L) : literal_tuple(B, -L), L > 0.
 
-body(normal(B)) :- rule(_, normal(B)), conjunction (B).
+with open(current_script_path / "base_program.lp") as f:
+    base_program = f.read()
 
-body(sum(B, G)) :- rule (_, sum(B,G)),
-                    #sum { W,L :     hold(L), weighted_literal_tuple(B,  L, W), L>0;
-                           W,L : not hold(L), weighted_literal_tuple(B, -L, W), L>0} >= G.
+with open(current_script_path / "generator_opt_common_program.lp") as f:
+    common_opt_program = f.read()
 
-hold(A) : atom_tuple(H,A) :- rule(disjunction(H), B), body(B).
+# common_opt_program = """\
+# symbolic_atom(SA) :- atom_map(SA, _).
 
-{hold(A) : atom_tuple(H,A)} :- rule(choice(H), B), body(B).
+# symbolic_epistemic_atom(k(A)) :- symbolic_atom(k(A)).
+# symbolic_objective_atom(OSA)  :- symbolic_atom(OSA), not symbolic_epistemic_atom(OSA).
 
-fact(SA) :- output(SA, LT), #count {L : literal_tuple(LT, L)} = 0.
+# epistemic_atom_map(KSA, KA) :- atom_map(KSA, KA), symbolic_epistemic_atom(KSA).
+# objective_atom_map(OSA, OA) :- atom_map(OSA, OA), symbolic_objective_atom(OSA).
 
-positive_candidate(k(A)) :- fact(k(A)).
-positive_candidate(k(A)) :- output(k(A), B), conjunction(B).
-negative_candidate(k(A)) :- output(k(A), B), not conjunction(B).
+# epistemic_atom_int(KA) :- epistemic_atom_map(_, KA).
+# objective_atom_int(A)  :- objective_atom_map(_, A).
 
-atom_map(SA, A) :- output(SA,LT), #count{LL : literal_tuple(LT, LL)} = 1, literal_tuple(LT, A).
-strong_negatation_complement(A, B) :- atom_map(u(SA), A), atom_map(u(-SA), B).
-:- hold(A), hold(B), strong_negatation_complement(A, B).
+# epistemic_map(KA,OA) :- epistemic_atom_map(KSA, KA), objective_atom_map(OSA, OA), KSA = k(OSA).
+# """
 
-#show positive_candidate/1.
-#show negative_candidate/1.
-"""
-
-common_opt_program = """\
-symbolic_atom(SA) :- atom_map(SA, _).
-
-symbolic_epistemic_atom(k(A)) :- symbolic_atom(k(A)).
-symbolic_objective_atom(OSA)  :- symbolic_atom(OSA), not symbolic_epistemic_atom(OSA).
-
-epistemic_atom_map(KSA, KA) :- atom_map(KSA, KA), symbolic_epistemic_atom(KSA).
-objective_atom_map(OSA, OA) :- atom_map(OSA, OA), symbolic_objective_atom(OSA).
-
-epistemic_atom_int(KA) :- epistemic_atom_map(_, KA).
-objective_atom_int(A)  :- objective_atom_map(_, A).
-
-epistemic_map(KA,OA) :- epistemic_atom_map(KSA, KA), objective_atom_map(OSA, OA), KSA = k(OSA).
-"""
 
 preprocessing_program = """\
 :- cautious(SA), atom_map(SA, A), not hold(A).
@@ -70,13 +51,17 @@ positive_extra_assumptions(OSA) :- cautious(OSA), symbolic_epistemic_atom(k(OSA)
 # cautious_epistemic(KSA) :- cautious(KSA), symbolic_epistemic_atom(KSA).
 # :- epistemic_atom_map(KSA, KA), cautious_epistemic(KSA), not hold(KA).
 
-fact_optimization_program = """\
-% Propagate facts into epistemic facts
 
-:- fact(OSA), epistemic_atom_map(k(OSA), KA), not hold(KA).
-positive_extra_assumptions(OSA) :- fact(OSA), symbolic_epistemic_atom(k(OSA)).
-#show positive_extra_assumptions/1.
-"""
+with open(current_script_path / "generator_opt_fact_program.lp") as f:
+    fact_optimization_program = f.read()
+
+# fact_optimization_program = """\
+# % Propagate facts into epistemic facts
+
+# :- fact(OSA), epistemic_atom_map(k(OSA), KA), not hold(KA).
+# positive_extra_assumptions(OSA) :- fact(OSA), symbolic_epistemic_atom(k(OSA)).
+# #show positive_extra_assumptions/1.
+# """
 
 propagation_program = """\
 :- kp_hold(OA), epistemic_map(KA, OA), not hold(KA).
@@ -181,48 +166,12 @@ class GeneratorReification:
         if not self._config.propagate:
             yield from self._candidates()
         else:
-            # return self._candidates()
             self.control.assign_external(Function("only_proved_candidates"), True)
             self.control.assign_external(Function("only_unproved_candidates"), False)
             yield from self._candidates()
             self.control.assign_external(Function("only_proved_candidates"), False)
             self.control.assign_external(Function("only_unproved_candidates"), True)
             yield from self._candidates()
-        # # with cast(clingo.SolveHandle, self.control.solve(yield_=True)) as handle:
-        # #     for model in handle:
-        # #         # print("*" * 50)
-        # #         # print(model)
-        # #         # print("\n".join(sorted(str(a) for a in model.symbols(atoms=True))))
-        # #         candidate = self._model_to_candidate(model)
-        # #         self.num_candidates += 1
-        # #         yield candidate
-        # self.control.assign_external(Function("only_proved_candidates"), True)
-        # self.control.assign_external(Function("only_unproved_candidates"), False)
-        # candidates = []
-        # with cast(clingo.SolveHandle, self.control.solve(yield_=True)) as handle:
-        #     for model in handle:
-        #         # print("*" * 50)
-        #         # print(model)
-        #         # print("\n".join(sorted(str(a) for a in model.symbols(atoms=True))))
-        #         candidate = self._model_to_candidate(model)
-        #         self.num_candidates += 1
-        #         candidates.append((frozenset(candidate.pos), frozenset(candidate.neg)))
-        #         yield candidate
-        # self.control.assign_external(Function("only_proved_candidates"), False)
-        # self.control.assign_external(Function("only_unproved_candidates"), True)
-        # seen_candidates = frozenset(candidates)
-        # with cast(clingo.SolveHandle, self.control.solve(yield_=True)) as handle:
-        #     for model in handle:
-        #         # print("*" * 50)
-        #         # print(model)
-        #         # print("\n".join(sorted(str(a) for a in model.symbols(atoms=True))))
-        #         candidate = self._model_to_candidate(model)
-        #         self.num_candidates += 1
-        #         # if (
-        #         #     frozenset(candidate.pos),
-        #         #     frozenset(candidate.neg),
-        #         # ) not in seen_candidates:
-        #         yield candidate
 
     def _candidates(self) -> Iterator[Candidate]:
         with cast(clingo.SolveHandle, self.control.solve(yield_=True)) as handle:
