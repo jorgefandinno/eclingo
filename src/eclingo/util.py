@@ -86,7 +86,7 @@ def partition3(
     return l0, l1, l2, other
 
 
-def partition4(  # pylint: disable-msg=too-many-locals
+def partition4(  # pylint: disable-msg=too-many-locals,too-many-positional-arguments
     iterable: Iterable[T],
     pred0: Callable[[T], bool],
     pred1: Callable[[T], bool],
