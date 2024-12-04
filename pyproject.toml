@@ -41,3 +41,7 @@ source = ["eclingo"]
 
 [tool.coverage.report]
 show_missing = true
+
+[tool.mypy]
+#warn_return_any = true
+#disallow_untyped_defs = true

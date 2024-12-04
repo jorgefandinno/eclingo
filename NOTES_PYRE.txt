@@ -1,0 +1,4 @@
+conda install dfroger::watchman
+pip install pyre-check
+pyre init
+pyre infer -i 
