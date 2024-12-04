@@ -13,6 +13,8 @@ from clingox.ast import (
     theory_term_to_literal,
 )
 
+from eclingo.parsing.transformers.astutil import negate_literal
+
 from .parser_negations import (
     SnReplacementType,
     default_negation_auxiliary_rule_replacement,
@@ -32,7 +34,7 @@ class ApplyToEpistemicAtomsElementsTransformer(Transformer):
         self.update_fun = update_fun
 
     def visit_TheoryAtom(self, atom, loc="body"):
-        if atom.term.name == "k" and not atom.term.arguments:
+        if atom.term.name in {"k", "m"} and not atom.term.arguments:
             if self.update_fun is None:
                 new_elements = [self.fun(e) for e in atom.elements]
             else:
@@ -225,7 +227,7 @@ class EClingoTransformer(Transformer):
         return x
 
     def visit_TheoryAtom(self, atom, loc="body"):
-        assert atom.term.name == "k" and not atom.term.arguments
+        assert atom.term.name in {"k", "m"} and not atom.term.arguments
         nested_literal = atom.elements[0].terms[0]
 
         aux_atom = reify_symbolic_atoms(
@@ -257,7 +259,32 @@ def replace_epistemic_literals_by_auxiliary_atoms(
 ####################################################################################
 
 
+class MTransformer(Transformer):
+
+    def visit_Literal(self, stm, loc="body"):
+        if (
+            stm.atom.ast_type != ast.ASTType.TheoryAtom
+            or stm.atom.term.name != "m"
+            or stm.atom.term.arguments
+        ):
+            return stm
+        literal = negate_literal(stm.atom.elements[0].terms[0])
+        stm = negate_literal(stm)
+        stm.atom.elements[0].terms[0] = literal
+        stm.atom.term.name = "k"
+        return stm
+
+
+def parse_m_literals(stm: AST) -> AST:
+    transformer = MTransformer()
+    return transformer.visit(stm)
+
+
+####################################################################################
+
+
 class G94Transformer(Transformer):
+
     def visit_Literal(self, stm, loc="body"):
         is_nonnegative_epistemic_listeral = (
             (stm.sign == Sign.NoSign)

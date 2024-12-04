@@ -18,6 +18,7 @@ STATISTICS_FIRST_FIELD_SIZE: Final[int] = 14
 
 
 def statistics(eclingo_control: Control, time: float):  # pragma: no cover
+    assert eclingo_control.solver is not None
     if int(eclingo_control.control.configuration.stats) > 0:
         sys.stderr.write("\n")  # pragma: no cover
         sys.stderr.write(

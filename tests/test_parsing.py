@@ -38,7 +38,7 @@ class TestCase(unittest.TestCase):
 
     def assert_equal_program(self, program, expected):
         expected_program = clingo_parse_program(expected)
-        self.assertListEqual(sorted(program), sorted(expected_program))
+        self.assertCountEqual(sorted(program), sorted(expected_program))
 
 
 class Test(TestCase):
@@ -190,4 +190,57 @@ class Test(TestCase):
         self.assert_equal_program(
             parse_program("#heuristic a. [1,sign]", [], "base"),
             "#heuristic u(a). [1,sign]",
+        )
+
+
+class MandOldNegationTest(TestCase):
+    def test_epistemic_atom(self):
+        self.assert_equal_program(
+            parse_program(":- &m{a}."),
+            ":- not k(not1(u(a))). {k(not1(u(a)))} :- not1(u(a)). not1(u(a)) :- not u(a).",
+        )
+        self.assert_equal_program(
+            parse_program(":- &m{not a}."),
+            ":- not k(not2(u(a))). {k(not2(u(a)))} :- not2(u(a)). not2(u(a)) :- not not u(a).",
+        )
+        self.assert_equal_program(
+            parse_program(":- &m{not not a}."),
+            ":- not k(not1(u(a))). {k(not1(u(a)))} :- not1(u(a)). not1(u(a)) :- not u(a).",
+        )
+        self.assert_equal_program(
+            parse_program(":- not &m{not a}."),
+            ":- not not k(not2(u(a))). {k(not2(u(a)))} :- not2(u(a)). not2(u(a)) :- not not u(a).",
+        )
+        self.assert_equal_program(
+            parse_program(":- not &m{not a}."),
+            ":- not not k(not2(u(a))). {k(not2(u(a)))} :- not2(u(a)). not2(u(a)) :- not not u(a).",
+        )
+        self.assert_equal_program(
+            parse_program(":- not &m{not not a}."),
+            ":- not not k(not1(u(a))). {k(not1(u(a)))} :- not1(u(a)). not1(u(a)) :- not u(a).",
+        )
+        self.assert_equal_program(
+            parse_program(":- not not &m{a}."),
+            ":- not k(not1(u(a))). {k(not1(u(a)))} :- not1(u(a)). not1(u(a)) :- not u(a).",
+        )
+        self.assert_equal_program(
+            parse_program(":- not not &m{not a}."),
+            ":- not k(not2(u(a))). {k(not2(u(a)))} :- not2(u(a)). not2(u(a)) :- not not u(a).",
+        )
+        self.assert_equal_program(
+            parse_program(":- not not &m{not not a}."),
+            ":- not k(not1(u(a))). {k(not1(u(a)))} :- not1(u(a)). not1(u(a)) :- not u(a).",
+        )
+
+        self.assert_equal_program(
+            parse_program(":- not &m{~ a}."),
+            ":- not not k(not2(u(a))). {k(not2(u(a)))} :- not2(u(a)). not2(u(a)) :- not not u(a).",
+        )
+        self.assert_equal_program(
+            parse_program(":- not &m{~ a}."),
+            ":- not not k(not2(u(a))). {k(not2(u(a)))} :- not2(u(a)). not2(u(a)) :- not not u(a).",
+        )
+        self.assert_equal_program(
+            parse_program(":- not not &m{~ a}."),
+            ":- not k(not2(u(a))). {k(not2(u(a)))} :- not2(u(a)). not2(u(a)) :- not not u(a).",
         )

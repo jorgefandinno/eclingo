@@ -17,13 +17,11 @@ def partition1(
 
     l0: List[T] = []
     other: List[T] = []
-    l0_append = l0.append
-    other_append = other.append
     for item in iterable:
         if pred(item):
-            l0_append(fun(item))
+            l0.append(fun(item))
         else:
-            other_append(fun(item))
+            other.append(fun(item))
     return l0, other
 
 
@@ -41,16 +39,13 @@ def partition2(
     l0: List[T] = []
     l1: List[T] = []
     other: List[T] = []
-    l0_append = l0.append
-    l1_append = l1.append
-    other_append = other.append
     for item in iterable:
         if pred0(item):
-            l0_append(fun(item))
+            l0.append(fun(item))
         elif pred1(item):
-            l1_append(fun(item))
+            l1.append(fun(item))
         else:
-            other_append(fun(item))
+            other.append(fun(item))
     return l0, l1, other
 
 
@@ -70,19 +65,15 @@ def partition3(
     l1: List[T] = []
     l2: List[T] = []
     other: List[T] = []
-    l0_append = l0.append
-    l1_append = l1.append
-    l2_append = l2.append
-    other_append = other.append
     for item in iterable:
         if pred0(item):
-            l0_append(fun(item))
+            l0.append(fun(item))
         elif pred1(item):
-            l1_append(fun(item))
+            l1.append(fun(item))
         elif pred2(item):
-            l2_append(fun(item))
+            l2.append(fun(item))
         else:
-            other_append(fun(item))
+            other.append(fun(item))
     return l0, l1, l2, other
 
 
@@ -104,22 +95,17 @@ def partition4(  # pylint: disable-msg=too-many-locals,too-many-positional-argum
     l2: List[T] = []
     l3: List[T] = []
     other: List[T] = []
-    l0_append = l0.append
-    l1_append = l1.append
-    l2_append = l2.append
-    l3_append = l3.append
-    other_append = other.append
     for item in iterable:
         if pred0(item):
-            l0_append(fun(item))
+            l0.append(fun(item))
         elif pred1(item):
-            l1_append(fun(item))
+            l1.append(fun(item))
         elif pred2(item):
-            l2_append(fun(item))
+            l2.append(fun(item))
         elif pred3(item):
-            l3_append(fun(item))
+            l3.append(fun(item))
         else:
-            other_append(fun(item))
+            other.append(fun(item))
     return l0, l1, l2, l3, other
 
 
@@ -142,14 +128,13 @@ def partition(
         return partition3(iterable, pred[0], pred[1], pred[2], fun)
 
     lists: Tuple[List[T], ...] = tuple([] for _ in range(len(pred) + 1))
-    appends = tuple(li.append for li in lists)
     for item in iterable:
         added = False
         for i, p in enumerate(pred):
             if p(item):
-                appends[i](fun(item))
+                lists[i].append(fun(item))
                 added = True
                 break
         if not added:
-            appends[-1](fun(item))
+            lists[-1].append(fun(item))
     return lists
