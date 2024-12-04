@@ -151,8 +151,9 @@ class Application:
             output_index = sys.argv.index("--output=")
         except ValueError:
             output_index = -1
-        if "--output=reify" in sys.argv or (
-            output_index >= 0 and sys.argv[output_index + 1] == "reify"
+        if ("--output=reify" in sys.argv 
+            or (output_index >= 0 and sys.argv[output_index + 1] == "reify")
+            or"--text" in sys.argv
         ):
             return  # pragma: no cover
 

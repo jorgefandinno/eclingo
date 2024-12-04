@@ -60,6 +60,7 @@ class _ProgramParser(object):
         parameters: Sequence[str] = (),
         name: str = "base",
         config: AppConfig = AppConfig(semantics="c19-1"),
+        only_m_normal_form: bool = False,
     ):
         self.initial_location = Location(
             begin=Position(filename="<string>", line=1, column=1),
@@ -75,6 +76,7 @@ class _ProgramParser(object):
         self.rewritten_prg = self.config.rewritten_program
         self.rewritten = self.config.eclingo_rewritten
         self.theory_parser = parse_theory(_ProgramParser.eclingo_theory)
+        self.only_m_normal_form = only_m_normal_form
 
     def __call__(self) -> None:
         ast.parse_string(self.program, self._parse_statement)
@@ -87,6 +89,11 @@ class _ProgramParser(object):
         statement = self.theory_parser(statement)
         statement = parse_epistemic_literals_elements(statement)
         statement = parse_m_literals(statement)
+
+        if self.only_m_normal_form:
+            self.callback(statement)
+            return
+
         statement = reify_symbolic_atoms(statement, U_NAME, reify_strong_negation=True)
 
         # this avoids collitions between user predicates and auxiliary predicates
@@ -161,5 +168,7 @@ def parse_program(
     parameters: Sequence[str] = (),
     name: str = "base",
     config: AppConfig = AppConfig(semantics="c19-1"),
+    *,
+    only_m_normal_form: bool = False,
 ) -> None:
-    _ProgramParser(program, callback, parameters, name, config)()
+    _ProgramParser(program, callback, parameters, name, config, only_m_normal_form)()
