@@ -61,7 +61,7 @@ class Control(object):
             self.add_program(program.read())
 
     def ground(
-        self, parts: Sequence[Tuple[str, Sequence[Symbol]]] = (("base", []),)
+        self, parts: Sequence[Tuple[str, Sequence[Symbol]]] = (("base", ()),)
     ) -> None:
         start_time = time.time()
         self.grounder.ground(parts)
