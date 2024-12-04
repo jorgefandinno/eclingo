@@ -9,6 +9,7 @@ from .transformers.parser_negations import StrongNegationReplacement
 from .transformers.theory_parser_epistemic import (
     double_negate_epistemic_listerals,
     parse_epistemic_literals_elements,
+    parse_m_literals,
     replace_epistemic_literals_by_auxiliary_atoms,
     replace_negations_by_auxiliary_atoms_in_epistemic_literals,
 )
@@ -47,7 +48,8 @@ class _ProgramParser(object):
            -   : 0, unary;
            ~   : 0, unary
          };
-    &k/0 : term, body
+    &k/0 : term, body;
+    &m/0 : term, body
     }.
     """
 
@@ -84,7 +86,7 @@ class _ProgramParser(object):
     def _parse_statement(self, statement: ast.AST) -> None:
         statement = self.theory_parser(statement)
         statement = parse_epistemic_literals_elements(statement)
-
+        statement = parse_m_literals(statement)
         statement = reify_symbolic_atoms(statement, U_NAME, reify_strong_negation=True)
 
         # this avoids collitions between user predicates and auxiliary predicates
